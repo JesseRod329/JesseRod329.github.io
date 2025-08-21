@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; script-src 'none'; object-src 'none'; media-src 'none'; child-src 'none'; form-action 'none'; base-uri 'self';">
+<title>Jesse — Ideas, Technology, Design</title>
+<style>
+  /* Reset & basic styles */
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { 
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+    background:#fff; 
+    color:#111; 
+    line-height:1.5; 
+    font-weight:400;
+    overflow-x:hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  /* Hero Section */
+  .hero {
+    display:flex; 
+    flex-direction:column;
+    justify-content:center; 
+    align-items:center; 
+    min-height:100vh;
+    text-align:center; 
+    padding:2rem;
+    gap:3rem;
+  }
+  .hero h1 {
+    font-size:clamp(2.5rem, 8vw, 5rem); 
+    font-weight:900; 
+    letter-spacing:-0.02em; 
+    text-transform:uppercase;
+    max-width:1000px; 
+    margin:0 auto;
+    line-height:0.9;
+    animation: heroFadeIn 2s ease forwards;
+    opacity:0;
+    order:2;
+  }
+
+  /* Circle Animation Container */
+  .circle-container {
+    position:relative; 
+    width:clamp(250px, 35vw, 350px); 
+    height:clamp(250px, 35vw, 350px); 
+    order:1;
+    animation: circlesFadeIn 2s ease forwards 0.5s;
+    opacity:0;
+  }
+
+  .circle {
+    position:absolute; 
+    width:clamp(50px, 8vw, 80px); 
+    height:clamp(50px, 8vw, 80px); 
+    border:4px solid #111; 
+    border-radius:50%;
+    top:50%; 
+    left:50%; 
+    transform-origin:50% 50%;
+    transform:translate(-50%, -50%);
+  }
+
+  .circle:nth-child(1) { 
+    animation: rotateCircle1 12s linear infinite;
+  }
+  .circle:nth-child(2) { 
+    animation: rotateCircle2 18s linear infinite reverse;
+  }
+  .circle:nth-child(3) { 
+    animation: rotateCircle3 24s linear infinite;
+  }
+
+  @keyframes rotateCircle1 {
+    0% { transform: translate(-50%, -50%) rotate(0deg) translateX(clamp(30px, 6vw, 45px)) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg) translateX(clamp(30px, 6vw, 45px)) rotate(-360deg); }
+  }
+
+  @keyframes rotateCircle2 {
+    0% { transform: translate(-50%, -50%) rotate(0deg) translateX(clamp(50px, 10vw, 70px)) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg) translateX(clamp(50px, 10vw, 70px)) rotate(-360deg); }
+  }
+
+  @keyframes rotateCircle3 {
+    0% { transform: translate(-50%, -50%) rotate(0deg) translateX(clamp(70px, 14vw, 95px)) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg) translateX(clamp(70px, 14vw, 95px)) rotate(-360deg); }
+  }
+
+  @keyframes heroFadeIn {
+    0% { opacity:0; transform: translateY(30px); }
+    100% { opacity:1; transform: translateY(0); }
+  }
+
+  @keyframes circlesFadeIn {
+    0% { opacity:0; transform: translateY(-10px); }
+    100% { opacity:0.15; transform: translateY(0); }
+  }
+
+  /* Bio Section */
+  .bio {
+    max-width:700px; 
+    margin:6rem auto; 
+    text-align:center; 
+    font-size:1.125rem; 
+    line-height:1.7;
+    padding:0 2rem;
+    font-weight:300;
+  }
+
+  /* Services Grid */
+  .services {
+    display:grid; 
+    grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+    gap:1px; 
+    max-width:1200px; 
+    margin:6rem auto; 
+    padding:0 2rem;
+    background:#f8f8f8;
+  }
+  .service-card {
+    background:#fff;
+    padding:3rem 2rem; 
+    text-align:center; 
+    transition:all 0.2s ease;
+    cursor:pointer;
+  }
+  .service-card:hover { 
+    background:#111; 
+    color:#fff;
+  }
+  .service-card h3 { 
+    font-size:1.25rem; 
+    margin-bottom:1rem; 
+    text-transform:uppercase; 
+    font-weight:700;
+    letter-spacing:0.05em;
+  }
+  .service-card p { 
+    font-size:0.95rem; 
+    opacity:0.8; 
+    font-weight:300;
+  }
+
+  /* Contact Section */
+  .contact {
+    text-align:center; 
+    margin:8rem 0; 
+    font-size:1.25rem;
+    padding:0 2rem;
+  }
+  .contact p {
+    margin-bottom:2rem;
+    font-weight:400;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+  }
+  .contact a {
+    display:inline-block; 
+    padding:1rem 2rem;
+    background:#ff3; 
+    color:#111; 
+    font-weight:700; 
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    transition:all 0.2s ease;
+    border:2px solid #ff3;
+  }
+  .contact a:hover { 
+    background:transparent; 
+    color:#ff3; 
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .services {
+      grid-template-columns: 1fr;
+      margin:4rem auto;
+    }
+    .service-card {
+      padding:2rem 1.5rem;
+    }
+    .bio {
+      margin:4rem auto;
+      font-size:1rem;
+    }
+    .contact {
+      margin:6rem 0;
+    }
+  }
+
+  /* Subtle animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .bio, .services, .contact {
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  .bio { animation-delay: 0.4s; }
+  .services { animation-delay: 0.6s; }
+  .contact { animation-delay: 0.8s; }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="circle-container">
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+  </div>
+  <h1>Ideas, Technology, and Design — Curated by Jesse</h1>
+</section>
+
+<!-- Bio -->
+<section class="bio">
+  <p>I move between AI, design, and finance with one goal: to create work that feels timeless and useful. From building tools to designing visuals, my work connects culture with clarity.</p>
+</section>
+
+<!-- Services Grid -->
+<section class="services">
+  <div class="service-card">
+    <h3>AI / Automation</h3>
+    <p>Tools that think with you.</p>
+  </div>
+  <div class="service-card">
+    <h3>Websites</h3>
+    <p>Digital spaces with purpose.</p>
+  </div>
+  <div class="service-card">
+    <h3>Logos / Design</h3>
+    <p>Identity you can wear.</p>
+  </div>
+  <div class="service-card">
+    <h3>Resumes / Careers</h3>
+    <p>Documents that open doors.</p>
+  </div>
+  <div class="service-card">
+    <h3>Finance</h3>
+    <p>Clarity in the numbers.</p>
+  </div>
+</section>
+
+<!-- Contact -->
+<section class="contact">
+  <p>Let's Build Something Together.</p>
+  <a href="mailto:jesse@jesserodriguez.me">jesse@jesserodriguez.me</a>
+</section>
+
+</body>
+</html>
