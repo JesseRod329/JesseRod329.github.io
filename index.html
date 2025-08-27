@@ -6,7 +6,7 @@
 <meta http-equiv="X-Frame-Options" content="DENY">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; script-src 'none'; object-src 'none'; media-src 'none'; child-src 'none'; form-action 'none'; base-uri 'self';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; script-src 'self'; object-src 'none'; media-src 'none'; child-src 'none'; form-action 'none'; base-uri 'self';">
 <title>Jesse — Ideas, Technology, Design</title>
 <style>
   /* Reset & basic styles */
@@ -399,6 +399,94 @@
     color: inherit;
     text-decoration: underline;
   }
+
+  /* Interactive CLI Elements */
+  .cli-input-line {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+  }
+
+  .cli-prompt-text {
+    color: #00ff00;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  .cli-input {
+    background: transparent;
+    border: none;
+    color: #00ff00;
+    font-family: inherit;
+    font-size: inherit;
+    outline: none;
+    flex: 1;
+    margin-left: 0.5rem;
+  }
+
+  .cli-input::placeholder {
+    color: #666;
+  }
+
+  .cli-cursor-active {
+    display: inline-block;
+    width: 8px;
+    height: 1.2em;
+    background: #00ff00;
+    margin-left: 2px;
+    animation: cli-blink 1.5s infinite;
+  }
+
+  .cli-output {
+    margin-top: 1rem;
+  }
+
+  .cli-output-line {
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+  }
+
+  .cli-output-line.command-echo {
+    color: #00ff00;
+    opacity: 0.8;
+  }
+
+  .cli-output-line.error {
+    color: #ff6b6b;
+  }
+
+  .cli-output-line.info {
+    color: #64b5f6;
+  }
+
+  .cli-output-line.welcome {
+    color: #888;
+  }
+
+  .cli-output-line.help {
+    color: #ccc;
+  }
+
+  .cli-output-line.about,
+  .cli-output-line.projects,
+  .cli-output-line.resume,
+  .cli-output-line.contact {
+    color: #e0e0e0;
+  }
+
+  .cli-output-line.security {
+    color: #4caf50;
+  }
+
+  .cli-output-line.headers {
+    color: #ff9800;
+  }
+
+  /* Enhanced scrolling for terminal */
+  .cli-terminal {
+    max-height: 100vh;
+    overflow-y: auto;
+  }
 </style>
 </head>
 <body>
@@ -505,5 +593,6 @@
   <a href="/classic.html">View classic version</a>
 </footer>
 
+<script src="/assets/cli.js" defer></script>
 </body>
 </html>
