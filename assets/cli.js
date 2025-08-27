@@ -330,6 +330,27 @@ class PortfolioCLI {
       'against XSS, clickjacking, and injection attacks.',
       ''
     ], 'security');
+    
+    // Add link to detailed security documentation
+    this.addSecurityLink();
+  }
+
+  addSecurityLink() {
+    const outputLine = document.createElement('div');
+    outputLine.className = 'cli-output-line security';
+    
+    const linkText = document.createTextNode('📖 ');
+    const link = document.createElement('a');
+    link.href = '/security.html';
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = 'View detailed security documentation';
+    
+    outputLine.appendChild(linkText);
+    outputLine.appendChild(link);
+    
+    this.outputContainer.appendChild(outputLine);
+    this.scrollToBottom();
   }
 
   showHeaders() {
