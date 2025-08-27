@@ -213,12 +213,219 @@
   .bio { animation-delay: 0.4s; }
   .services { animation-delay: 0.6s; }
   .contact { animation-delay: 0.8s; }
+
+  /* CLI Terminal Section */
+  .cli-terminal {
+    background: #000;
+    color: #00ff00;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cli-window {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    background: #000;
+    border: 1px solid #333;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.1);
+  }
+
+  .cli-header {
+    background: #222;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .cli-dots {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .cli-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .cli-dot:nth-child(1) { background: #ff5f56; }
+  .cli-dot:nth-child(2) { background: #ffbd2e; }
+  .cli-dot:nth-child(3) { background: #27ca3f; }
+
+  .cli-title {
+    color: #999;
+    font-size: 0.875rem;
+    margin-left: 1rem;
+  }
+
+  .cli-content {
+    padding: 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .cli-line {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .cli-prompt::before {
+    content: "jesse@portfolio:~$ ";
+    color: #00ff00;
+    font-weight: bold;
+  }
+
+  .cli-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 1.2em;
+    background: #00ff00;
+    margin-left: 2px;
+    animation: cli-blink 1.5s infinite;
+  }
+
+  .cli-greeting {
+    color: #00ff00;
+    margin-bottom: 1rem;
+    animation: cli-typewriter 2s ease-out forwards;
+    opacity: 0;
+  }
+
+  .cli-hint {
+    color: #888;
+    font-style: italic;
+    animation: cli-typewriter 2s ease-out forwards 1s;
+    opacity: 0;
+  }
+
+  @keyframes cli-blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  @keyframes cli-typewriter {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  .cli-noscript {
+    display: none;
+    background: #111;
+    color: #ccc;
+    padding: 2rem;
+    border-radius: 8px;
+    margin-top: 2rem;
+  }
+
+  .cli-noscript h3 {
+    color: #00ff00;
+    margin-bottom: 1rem;
+    font-family: inherit;
+  }
+
+  .cli-noscript ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .cli-noscript li {
+    margin-bottom: 0.5rem;
+  }
+
+  .cli-noscript a {
+    color: #00ff00;
+    text-decoration: none;
+    font-family: inherit;
+  }
+
+  .cli-noscript a:hover {
+    text-decoration: underline;
+  }
+
+  .cli-noscript a::before {
+    content: "> ";
+    color: #888;
+  }
+
+  /* Show noscript content when JS is disabled */
+  noscript .cli-noscript {
+    display: block;
+  }
+
+  /* Make original hero secondary */
+  .hero-secondary {
+    margin-top: 4rem;
+  }
+
+  /* Responsive adjustments for CLI */
+  @media (max-width: 768px) {
+    .cli-terminal {
+      padding: 1rem;
+    }
+    
+    .cli-content {
+      padding: 1rem;
+      font-size: 0.875rem;
+    }
+  }
 </style>
 </head>
 <body>
 
-<!-- Hero -->
-<section class="hero">
+<!-- Terminal Hero -->
+<section class="cli-terminal" id="terminal">
+  <div class="cli-window">
+    <div class="cli-header">
+      <div class="cli-dots">
+        <div class="cli-dot"></div>
+        <div class="cli-dot"></div>
+        <div class="cli-dot"></div>
+      </div>
+      <div class="cli-title">jesse@portfolio — Terminal</div>
+    </div>
+    <div class="cli-content">
+      <div class="cli-greeting">
+        Welcome to Jesse Rodriguez's portfolio interface.
+      </div>
+      <div class="cli-hint">
+        Type "help" to see available commands.
+      </div>
+      <div class="cli-line cli-prompt">
+        <span class="cli-cursor"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Accessible navigation fallback -->
+  <noscript>
+    <div class="cli-noscript">
+      <h3>Available Commands</h3>
+      <ul>
+        <li><a href="#about">about</a> — Learn about Jesse's background and philosophy</li>
+        <li><a href="#projects">projects</a> — View portfolio and recent work</li>
+        <li><a href="#resume">resume</a> — Professional experience and skills</li>
+        <li><a href="#contact">contact</a> — Get in touch for collaborations</li>
+        <li><a href="#security">security</a> — Technical security implementation</li>
+        <li><a href="#headers">headers</a> — View HTTP security headers</li>
+      </ul>
+    </div>
+  </noscript>
+</section>
+
+<!-- Original Hero (Secondary) -->
+<section class="hero hero-secondary" id="about">
   <div class="circle-container">
     <div class="circle"></div>
     <div class="circle"></div>
@@ -233,7 +440,7 @@
 </section>
 
 <!-- Services Grid -->
-<section class="services">
+<section class="services" id="projects">
   <div class="service-card">
     <h3>AI / Automation</h3>
     <p>Tools that think with you.</p>
@@ -246,7 +453,7 @@
     <h3>Logos / Design</h3>
     <p>Identity you can wear.</p>
   </div>
-  <div class="service-card">
+  <div class="service-card" id="resume">
     <h3>Resumes / Careers</h3>
     <p>Documents that open doors.</p>
   </div>
@@ -257,9 +464,21 @@
 </section>
 
 <!-- Contact -->
-<section class="contact">
+<section class="contact" id="contact">
   <p>Let's Build Something Together.</p>
   <a href="mailto:jesse@jesserodriguez.me">jesse@jesserodriguez.me</a>
+</section>
+
+<!-- Security Section (Hidden, for anchor links) -->
+<section id="security" style="display:none;">
+  <h2>Security Implementation</h2>
+  <p>Enterprise-level security headers and CSP policy implemented.</p>
+</section>
+
+<!-- Headers Section (Hidden, for anchor links) -->
+<section id="headers" style="display:none;">
+  <h2>HTTP Security Headers</h2>
+  <p>X-Frame-Options, X-Content-Type-Options, CSP, and Referrer-Policy configured.</p>
 </section>
 
 <!-- Footer -->
