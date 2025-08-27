@@ -273,12 +273,31 @@ class PortfolioCLI {
       '• Editorial design aesthetic implementation',
       '• Enterprise security best practices',
       '',
-      '📄 Download full resume: [PDF coming soon]',
-      '',
       'Skills: AI/ML, Web Development, Design Systems,',
       '        Financial Analysis, Security Implementation',
       ''
     ], 'resume');
+    
+    // Add clickable PDF link
+    this.addResumeLink();
+  }
+
+  addResumeLink() {
+    const outputLine = document.createElement('div');
+    outputLine.className = 'cli-output-line resume';
+    
+    const linkText = document.createTextNode('📄 ');
+    const link = document.createElement('a');
+    link.href = '/assets/resume.pdf';
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = 'Open resume (PDF)';
+    
+    outputLine.appendChild(linkText);
+    outputLine.appendChild(link);
+    
+    this.outputContainer.appendChild(outputLine);
+    this.scrollToBottom();
   }
 
   showContact() {
