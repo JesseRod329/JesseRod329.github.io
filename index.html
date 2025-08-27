@@ -380,6 +380,25 @@
       font-size: 0.875rem;
     }
   }
+
+  /* Hidden sections for anchor navigation */
+  .hidden-section {
+    display: none;
+  }
+
+  /* Footer styling */
+  .footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.875rem;
+    opacity: 0.6;
+    font-weight: 300;
+  }
+
+  .footer a {
+    color: inherit;
+    text-decoration: underline;
+  }
 </style>
 </head>
 <body>
@@ -470,20 +489,20 @@
 </section>
 
 <!-- Security Section (Hidden, for anchor links) -->
-<section id="security" style="display:none;">
+<section id="security" class="hidden-section">
   <h2>Security Implementation</h2>
   <p>Enterprise-level security headers and CSP policy implemented.</p>
 </section>
 
 <!-- Headers Section (Hidden, for anchor links) -->
-<section id="headers" style="display:none;">
+<section id="headers" class="hidden-section">
   <h2>HTTP Security Headers</h2>
   <p>X-Frame-Options, X-Content-Type-Options, CSP, and Referrer-Policy configured.</p>
 </section>
 
 <!-- Footer -->
-<footer style="text-align:center; padding:2rem; font-size:0.875rem; opacity:0.6; font-weight:300;">
-  <a href="/classic.html" style="color:inherit; text-decoration:underline;">View classic version</a>
+<footer class="footer">
+  <a href="/classic.html">View classic version</a>
 </footer>
 
 </body>
