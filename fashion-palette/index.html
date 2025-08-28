@@ -7,6 +7,9 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; script-src 'unsafe-inline'; object-src 'none'; media-src 'none'; child-src 'none'; form-action 'none'; base-uri 'self';">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Fashion Color Palette Generator</title>
     <style>
         * {
@@ -251,6 +254,9 @@
             <h1>Fashion Color Palette Generator</h1>
             <p>Upload any fashion image to extract beautiful color palettes for outfit coordination. All processing happens locally - your images never leave your device.</p>
         </div>
+        
+        <!-- Force cache bust and show content immediately -->
+        <div style="display: none;" id="debug">v2.0 - Standalone Version Loaded</div>
         
         <div class="privacy-notice">
             <div class="privacy-notice-text">
@@ -554,10 +560,26 @@
             }
         }
         
-        // Initialize the app
+        // Initialize the app with error handling
         document.addEventListener('DOMContentLoaded', () => {
-            new ColorPaletteGenerator();
+            try {
+                console.log('Fashion Palette Generator v2.0 - Initializing...');
+                new ColorPaletteGenerator();
+                console.log('Fashion Palette Generator - Initialized successfully');
+            } catch (error) {
+                console.error('Fashion Palette Generator Error:', error);
+                document.body.innerHTML = `
+                    <div style="padding: 40px; text-align: center; font-family: Arial, sans-serif;">
+                        <h1>Fashion Palette Generator</h1>
+                        <p style="color: red; margin: 20px 0;">Error loading application: ${error.message}</p>
+                        <p><a href="/" style="color: blue;">← Back to Portfolio</a></p>
+                    </div>
+                `;
+            }
         });
+
+        // Immediate debug output
+        console.log('Fashion Palette Generator Script Loaded - v2.0');
     </script>
 </body>
 </html>
