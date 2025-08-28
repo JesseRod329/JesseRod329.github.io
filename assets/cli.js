@@ -22,6 +22,7 @@ class PortfolioCLI {
       contact: this.showContact.bind(this),
       security: this.showSecurity.bind(this),
       headers: this.showHeaders.bind(this),
+      palette: this.showPalette.bind(this),
       clear: this.clearTerminal.bind(this)
     };
 
@@ -229,6 +230,7 @@ class PortfolioCLI {
       '  contact   - Get in touch',
       '  security  - Security implementation details',
       '  headers   - HTTP security headers info',
+      '  palette   - Fashion color palette generator',
       '  clear     - Clear terminal output',
       '',
       'Use TAB for autocomplete, ↑/↓ for command history.',
@@ -373,6 +375,49 @@ class PortfolioCLI {
       'GitHub Pages compatibility.',
       ''
     ], 'headers');
+  }
+
+  showPalette() {
+    this.addMultilineOutput([
+      '🎨 Fashion Palette Generator',
+      '',
+      'Privacy-first color extraction tool for fashion images.',
+      '',
+      'Features:',
+      '• Upload fashion images for color analysis',
+      '• Extract dominant colors using advanced algorithms',
+      '• Generate complementary, analogous, and triadic palettes',
+      '• Click-to-copy hex codes for design work',
+      '• 100% client-side processing - no uploads to servers',
+      '',
+      'Privacy & Security:',
+      '• No data stored or transmitted',
+      '• Images processed locally in your browser',
+      '• Immediate memory cleanup after processing',
+      '• CSP compliant with strict security policies',
+      ''
+    ], 'palette');
+    
+    // Add link to palette generator
+    this.addPaletteLink();
+  }
+
+  addPaletteLink() {
+    const outputLine = document.createElement('div');
+    outputLine.className = 'cli-output-line palette';
+    
+    const linkText = document.createTextNode('🚀 ');
+    const link = document.createElement('a');
+    link.href = '/fashion-palette/';
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = 'Launch Fashion Palette Generator';
+    
+    outputLine.appendChild(linkText);
+    outputLine.appendChild(link);
+    
+    this.outputContainer.appendChild(outputLine);
+    this.scrollToBottom();
   }
 
   clearTerminal() {
