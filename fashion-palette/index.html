@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; script-src 'self'; object-src 'none'; media-src 'none'; child-src 'none'; form-action 'none'; base-uri 'self';">
+    <title>Fashion Palette Generator — Privacy-First Color Extraction</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <a href="/" class="nav-home">← Back to Portfolio</a>
+            <h1 class="nav-title">Fashion Palette Generator</h1>
+            <div class="nav-privacy">Privacy-First • No Data Stored</div>
+        </div>
+    </nav>
+
+    <!-- Main Application -->
+    <main id="palette-root" class="main-container">
+        <!-- React app mounts here -->
+        <div class="loading-state">
+            <div class="loading-spinner"></div>
+            <p>Loading fashion palette generator...</p>
+        </div>
+    </main>
+
+    <!-- No Script Fallback -->
+    <noscript>
+        <div class="noscript-container">
+            <h2>JavaScript Required</h2>
+            <p>This fashion palette generator requires JavaScript to process images locally in your browser.</p>
+            <div class="noscript-features">
+                <h3>Privacy-First Features:</h3>
+                <ul>
+                    <li>✅ All processing happens in your browser</li>
+                    <li>✅ No images uploaded to servers</li>
+                    <li>✅ No data stored or tracked</li>
+                    <li>✅ Immediate memory cleanup after processing</li>
+                </ul>
+            </div>
+            <a href="/" class="noscript-back">← Return to Portfolio</a>
+        </div>
+    </noscript>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-privacy">
+                <h3>Privacy Promise</h3>
+                <p>• No server uploads • No data storage • No tracking • Immediate cleanup</p>
+            </div>
+            <div class="footer-tech">
+                <h3>Technology</h3>
+                <p>React • Canvas API • Client-side processing • CSP compliant</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- React and Dependencies -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Main Application Script -->
+    <script src="main.js" defer></script>
+</body>
+</html>
