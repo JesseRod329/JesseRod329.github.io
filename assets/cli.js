@@ -23,6 +23,7 @@ class PortfolioCLI {
       security: this.showSecurity.bind(this),
       headers: this.showHeaders.bind(this),
       palette: this.showPalette.bind(this),
+      brainwave: this.showBrainwave.bind(this),
       clear: this.clearTerminal.bind(this)
     };
 
@@ -231,6 +232,7 @@ class PortfolioCLI {
       '  security  - Security implementation details',
       '  headers   - HTTP security headers info',
       '  palette   - Fashion color palette generator',
+      '  brainwave - AI neural activity simulator',
       '  clear     - Clear terminal output',
       '',
       'Use TAB for autocomplete, ↑/↓ for command history.',
@@ -412,6 +414,54 @@ class PortfolioCLI {
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
     link.textContent = 'Launch Fashion Palette Generator';
+    
+    outputLine.appendChild(linkText);
+    outputLine.appendChild(link);
+    
+    this.outputContainer.appendChild(outputLine);
+    this.scrollToBottom();
+  }
+
+  showBrainwave() {
+    this.addMultilineOutput([
+      '🧠 AI Brainwave Simulator',
+      '',
+      'Privacy-first neural activity visualization and analysis.',
+      '',
+      'Features:',
+      '• Interactive sliders: Focus, Relaxation, Creativity, Alertness',
+      '• Real-time brainwave visualization with 4 frequency bands',
+      '• AI-powered mental state analysis and suggestions',
+      '• Smooth 60fps animations with harmonic wave patterns',
+      '• Responsive design for desktop and mobile',
+      '',
+      'Neural Frequencies:',
+      '• β (Beta) - Focus waves: 14-30 Hz simulation',
+      '• α (Alpha) - Relaxation waves: 8-14 Hz simulation',
+      '• θ (Theta) - Creativity waves: 4-8 Hz simulation',
+      '• γ (Gamma) - Alertness waves: 30-100 Hz simulation',
+      '',
+      'Privacy & Security:',
+      '• 100% client-side processing',
+      '• No data transmission or storage',
+      '• Self-contained with zero external dependencies',
+      ''
+    ], 'brainwave');
+    
+    // Add link to brainwave simulator
+    this.addBrainwaveLink();
+  }
+
+  addBrainwaveLink() {
+    const outputLine = document.createElement('div');
+    outputLine.className = 'cli-output-line brainwave';
+    
+    const linkText = document.createTextNode('🚀 ');
+    const link = document.createElement('a');
+    link.href = '/brainwave-simulator.html';
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = 'Launch AI Brainwave Simulator';
     
     outputLine.appendChild(linkText);
     outputLine.appendChild(link);
