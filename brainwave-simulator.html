@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; object-src 'none'; media-src 'none'; child-src 'none'; form-action 'none'; base-uri 'self'; connect-src 'none';">
+    <title>AI Brainwave Simulator - Privacy-First Neural Activity Monitor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #00d4ff, #5865f2, #ff6b6b);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .header p {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .privacy-notice {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            color: #00d4ff;
+            font-size: 0.9rem;
+            max-width: 500px;
+        }
+
+        .canvas-container {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 16px;
+            padding: 20px;
+            border: 2px solid rgba(0, 212, 255, 0.2);
+            box-shadow: 0 0 50px rgba(0, 212, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        #brainwaveCanvas {
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: radial-gradient(ellipse at center, rgba(0, 20, 40, 0.8) 0%, rgba(0, 0, 0, 0.9) 100%);
+            box-shadow: inset 0 0 50px rgba(0, 212, 255, 0.1);
+        }
+
+        .controls {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 16px;
+            padding: 30px;
+            border: 2px solid rgba(88, 101, 242, 0.2);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .slider-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(to right, #2a2a3e, #4a4a6e);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #00d4ff, #5865f2);
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.8);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #00d4ff, #5865f2);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        .slider-value {
+            position: absolute;
+            right: 0;
+            top: -25px;
+            font-size: 0.9rem;
+            color: #00d4ff;
+            font-weight: 600;
+        }
+
+        .focus { border-left: 4px solid #ff6b6b; }
+        .relaxation { border-left: 4px solid #4ecdc4; }
+        .creativity { border-left: 4px solid #ffe66d; }
+        .alertness { border-left: 4px solid #ff8b94; }
+
+        .reset-button {
+            background: linear-gradient(45deg, #5865f2, #00d4ff);
+            border: none;
+            border-radius: 12px;
+            padding: 15px 30px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(88, 101, 242, 0.3);
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .reset-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(88, 101, 242, 0.4);
+            background: linear-gradient(45deg, #6b73ff, #00e4ff);
+        }
+
+        .reset-button:active {
+            transform: translateY(0);
+        }
+
+        .feedback {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 16px;
+            padding: 25px;
+            border: 2px solid rgba(255, 107, 107, 0.2);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .feedback h3 {
+            color: #ff6b6b;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .mental-state {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #00d4ff, #ffe66d);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .suggestions {
+            color: #a0a0a0;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .values-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .value-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .value-label {
+            font-size: 0.8rem;
+            color: #a0a0a0;
+            margin-bottom: 5px;
+        }
+
+        .value-number {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #00d4ff;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            #brainwaveCanvas {
+                width: 100%;
+                max-width: 400px;
+                height: 200px;
+            }
+            
+            .controls, .feedback {
+                padding: 20px;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .pulsing {
+            animation: pulse 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AI Brainwave Simulator</h1>
+            <p>Privacy-first neural activity visualization. All processing happens locally in your browser.</p>
+        </div>
+
+        <div class="privacy-notice">
+            🔒 <strong>Privacy Guaranteed:</strong> No data transmission • Client-side only • Zero tracking
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="brainwaveCanvas" width="800" height="400" aria-label="Brainwave visualization canvas showing real-time neural patterns"></canvas>
+        </div>
+
+        <div class="controls">
+            <div class="control-group focus">
+                <label for="focusSlider">🎯 Focus</label>
+                <div class="slider-container">
+                    <input type="range" id="focusSlider" class="slider" min="0" max="100" value="50" 
+                           aria-label="Focus level from 0 to 100" aria-describedby="focusValue">
+                    <span class="slider-value" id="focusValue">50</span>
+                </div>
+            </div>
+
+            <div class="control-group relaxation">
+                <label for="relaxationSlider">🧘 Relaxation</label>
+                <div class="slider-container">
+                    <input type="range" id="relaxationSlider" class="slider" min="0" max="100" value="50"
+                           aria-label="Relaxation level from 0 to 100" aria-describedby="relaxationValue">
+                    <span class="slider-value" id="relaxationValue">50</span>
+                </div>
+            </div>
+
+            <div class="control-group creativity">
+                <label for="creativitySlider">🎨 Creativity</label>
+                <div class="slider-container">
+                    <input type="range" id="creativitySlider" class="slider" min="0" max="100" value="50"
+                           aria-label="Creativity level from 0 to 100" aria-describedby="creativityValue">
+                    <span class="slider-value" id="creativityValue">50</span>
+                </div>
+            </div>
+
+            <div class="control-group alertness">
+                <label for="alertnessSlider">⚡ Alertness</label>
+                <div class="slider-container">
+                    <input type="range" id="alertnessSlider" class="slider" min="0" max="100" value="50"
+                           aria-label="Alertness level from 0 to 100" aria-describedby="alertnessValue">
+                    <span class="slider-value" id="alertnessValue">50</span>
+                </div>
+            </div>
+
+            <button class="reset-button" id="resetButton" aria-label="Reset all sliders to default values">
+                🔄 Reset to Baseline
+            </button>
+        </div>
+
+        <div class="feedback">
+            <h3>🧠 AI Neural Analysis</h3>
+            <div class="mental-state" id="mentalState">Balanced Mental State</div>
+            <div class="suggestions" id="suggestions">Your brainwave patterns show a harmonious balance across all cognitive domains. This is an optimal state for general well-being and productivity.</div>
+            
+            <div class="values-display">
+                <div class="value-item">
+                    <div class="value-label">Focus</div>
+                    <div class="value-number" id="focusDisplay">50</div>
+                </div>
+                <div class="value-item">
+                    <div class="value-label">Relaxation</div>
+                    <div class="value-number" id="relaxationDisplay">50</div>
+                </div>
+                <div class="value-item">
+                    <div class="value-label">Creativity</div>
+                    <div class="value-number" id="creativityDisplay">50</div>
+                </div>
+                <div class="value-item">
+                    <div class="value-label">Alertness</div>
+                    <div class="value-number" id="alertnessDisplay">50</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class BrainwaveSimulator {
+            constructor() {
+                this.canvas = document.getElementById('brainwaveCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.animationId = null;
+                this.time = 0;
+                
+                // Brainwave parameters
+                this.focus = 50;
+                this.relaxation = 50;
+                this.creativity = 50;
+                this.alertness = 50;
+                
+                // Visual parameters
+                this.waves = [];
+                this.colorTime = 0;
+                
+                this.initializeWaves();
+                this.setupEventListeners();
+                this.startAnimation();
+                this.updateFeedback();
+                
+                // Make canvas responsive
+                this.handleResize();
+                window.addEventListener('resize', () => this.handleResize());
+            }
+            
+            handleResize() {
+                const container = this.canvas.parentElement;
+                const containerWidth = container.clientWidth - 40; // Account for padding
+                const maxWidth = 800;
+                const maxHeight = 400;
+                
+                if (window.innerWidth <= 768) {
+                    this.canvas.width = Math.min(containerWidth, 400);
+                    this.canvas.height = 200;
+                } else {
+                    this.canvas.width = Math.min(containerWidth, maxWidth);
+                    this.canvas.height = maxHeight;
+                }
+            }
+            
+            initializeWaves() {
+                this.waves = [
+                    { frequency: 0.5, amplitude: 30, phase: 0, color: '#ff6b6b' }, // Focus - Beta waves
+                    { frequency: 0.3, amplitude: 40, phase: Math.PI / 3, color: '#4ecdc4' }, // Relaxation - Alpha waves
+                    { frequency: 0.8, amplitude: 25, phase: Math.PI / 2, color: '#ffe66d' }, // Creativity - Theta waves
+                    { frequency: 1.2, amplitude: 20, phase: Math.PI, color: '#ff8b94' }  // Alertness - Gamma waves
+                ];
+            }
+            
+            setupEventListeners() {
+                const sliders = ['focus', 'relaxation', 'creativity', 'alertness'];
+                
+                sliders.forEach(type => {
+                    const slider = document.getElementById(`${type}Slider`);
+                    const valueDisplay = document.getElementById(`${type}Value`);
+                    const numberDisplay = document.getElementById(`${type}Display`);
+                    
+                    slider.addEventListener('input', (e) => {
+                        const value = parseInt(e.target.value);
+                        this[type] = value;
+                        valueDisplay.textContent = value;
+                        numberDisplay.textContent = value;
+                        this.updateFeedback();
+                    });
+                });
+                
+                document.getElementById('resetButton').addEventListener('click', () => {
+                    this.resetToBaseline();
+                });
+            }
+            
+            resetToBaseline() {
+                const sliders = ['focus', 'relaxation', 'creativity', 'alertness'];
+                
+                sliders.forEach(type => {
+                    this[type] = 50;
+                    document.getElementById(`${type}Slider`).value = 50;
+                    document.getElementById(`${type}Value`).textContent = '50';
+                    document.getElementById(`${type}Display`).textContent = '50';
+                });
+                
+                this.updateFeedback();
+            }
+            
+            updateFeedback() {
+                const total = this.focus + this.relaxation + this.creativity + this.alertness;
+                const avg = total / 4;
+                
+                let state = '';
+                let suggestions = '';
+                
+                // Determine dominant mental state
+                const values = {
+                    focus: this.focus,
+                    relaxation: this.relaxation,
+                    creativity: this.creativity,
+                    alertness: this.alertness
+                };
+                
+                const maxValue = Math.max(...Object.values(values));
+                const minValue = Math.min(...Object.values(values));
+                const dominant = Object.keys(values).find(key => values[key] === maxValue);
+                
+                if (maxValue - minValue < 20) {
+                    state = 'Balanced Mental State';
+                    suggestions = 'Your brainwave patterns show harmonious balance across all cognitive domains. This is optimal for general well-being and sustained productivity.';
+                } else if (dominant === 'focus' && this.focus > 75) {
+                    state = 'Deep Focus Mode';
+                    suggestions = 'Intense concentration detected. Perfect for complex problem-solving and detailed work. Consider taking breaks to prevent mental fatigue.';
+                } else if (dominant === 'relaxation' && this.relaxation > 75) {
+                    state = 'Meditation State';
+                    suggestions = 'Deep relaxation achieved. Excellent for stress relief and mental recovery. This state promotes healing and emotional balance.';
+                } else if (dominant === 'creativity' && this.creativity > 75) {
+                    state = 'Creative Flow State';
+                    suggestions = 'High creative energy detected. Ideal for brainstorming, artistic work, and innovative thinking. Let your imagination run free!';
+                } else if (dominant === 'alertness' && this.alertness > 75) {
+                    state = 'Hypervigilant State';
+                    suggestions = 'Peak alertness achieved. Great for learning, quick decision-making, and reactive tasks. Monitor for overstimulation.';
+                } else if (this.focus > 60 && this.creativity > 60) {
+                    state = 'Productive Thinking';
+                    suggestions = 'Optimal combination of focus and creativity. Perfect for strategic planning and innovative problem-solving.';
+                } else if (this.relaxation > 60 && this.creativity > 60) {
+                    state = 'Inspired Relaxation';
+                    suggestions = 'Calm creativity emerges. Great for artistic expression, mindful creation, and gentle innovation.';
+                } else {
+                    state = 'Transitional State';
+                    suggestions = 'Your mental state is shifting. Allow the natural flow of consciousness to guide you to your optimal state.';
+                }
+                
+                document.getElementById('mentalState').textContent = state;
+                document.getElementById('suggestions').textContent = suggestions;
+            }
+            
+            drawBrainwaves() {
+                const width = this.canvas.width;
+                const height = this.canvas.height;
+                
+                // Clear canvas with gradient background
+                this.ctx.fillStyle = 'rgba(0, 10, 20, 0.1)';
+                this.ctx.fillRect(0, 0, width, height);
+                
+                // Draw grid
+                this.drawGrid();
+                
+                // Update wave parameters based on sliders
+                this.waves[0].amplitude = (this.focus / 100) * 40 + 10; // Focus
+                this.waves[1].amplitude = (this.relaxation / 100) * 50 + 15; // Relaxation
+                this.waves[2].amplitude = (this.creativity / 100) * 35 + 10; // Creativity
+                this.waves[3].amplitude = (this.alertness / 100) * 30 + 5; // Alertness
+                
+                this.waves[0].frequency = 0.4 + (this.focus / 100) * 0.6; // Beta frequency
+                this.waves[1].frequency = 0.2 + (this.relaxation / 100) * 0.3; // Alpha frequency
+                this.waves[2].frequency = 0.6 + (this.creativity / 100) * 0.4; // Theta frequency
+                this.waves[3].frequency = 0.8 + (this.alertness / 100) * 0.8; // Gamma frequency
+                
+                // Draw each brainwave
+                this.waves.forEach((wave, index) => {
+                    this.drawWave(wave, index);
+                });
+                
+                // Draw overlay effects
+                this.drawOverlayEffects();
+            }
+            
+            drawGrid() {
+                const width = this.canvas.width;
+                const height = this.canvas.height;
+                
+                this.ctx.strokeStyle = 'rgba(0, 212, 255, 0.1)';
+                this.ctx.lineWidth = 1;
+                
+                // Horizontal lines
+                for (let y = 0; y < height; y += 40) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(0, y);
+                    this.ctx.lineTo(width, y);
+                    this.ctx.stroke();
+                }
+                
+                // Vertical lines
+                for (let x = 0; x < width; x += 60) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x, 0);
+                    this.ctx.lineTo(x, height);
+                    this.ctx.stroke();
+                }
+            }
+            
+            drawWave(wave, index) {
+                const width = this.canvas.width;
+                const height = this.canvas.height;
+                const centerY = height / 2;
+                
+                this.ctx.beginPath();
+                this.ctx.lineWidth = 2 + (wave.amplitude / 50) * 2;
+                
+                // Create gradient color that changes over time
+                const colorShift = Math.sin(this.colorTime * 0.01 + index) * 0.3;
+                const alpha = 0.7 + Math.sin(this.time * 0.05 + index) * 0.3;
+                
+                this.ctx.strokeStyle = this.hexToRgba(wave.color, alpha);
+                this.ctx.shadowColor = wave.color;
+                this.ctx.shadowBlur = 10 + wave.amplitude * 0.3;
+                
+                for (let x = 0; x < width; x += 2) {
+                    const normalizedX = x / width;
+                    
+                    // Base wave calculation
+                    let y = Math.sin(normalizedX * Math.PI * wave.frequency * 6 + this.time * 0.02 + wave.phase) * wave.amplitude;
+                    
+                    // Add harmonics for complexity
+                    y += Math.sin(normalizedX * Math.PI * wave.frequency * 12 + this.time * 0.03 + wave.phase * 2) * (wave.amplitude * 0.3);
+                    y += Math.sin(normalizedX * Math.PI * wave.frequency * 18 + this.time * 0.01 + wave.phase * 3) * (wave.amplitude * 0.1);
+                    
+                    // Add noise for realism
+                    y += (Math.random() - 0.5) * wave.amplitude * 0.1;
+                    
+                    const plotY = centerY + y + Math.sin(this.time * 0.01 + index) * 20;
+                    
+                    if (x === 0) {
+                        this.ctx.moveTo(x, plotY);
+                    } else {
+                        this.ctx.lineTo(x, plotY);
+                    }
+                }
+                
+                this.ctx.stroke();
+                this.ctx.shadowBlur = 0;
+            }
+            
+            drawOverlayEffects() {
+                const width = this.canvas.width;
+                const height = this.canvas.height;
+                
+                // Draw pulsing center point
+                const centerX = width / 2;
+                const centerY = height / 2;
+                const pulseRadius = 5 + Math.sin(this.time * 0.05) * 3;
+                
+                this.ctx.beginPath();
+                this.ctx.arc(centerX, centerY, pulseRadius, 0, Math.PI * 2);
+                this.ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                this.ctx.shadowColor = '#ffffff';
+                this.ctx.shadowBlur = 20;
+                this.ctx.fill();
+                this.ctx.shadowBlur = 0;
+                
+                // Draw frequency indicators
+                this.drawFrequencyIndicators();
+            }
+            
+            drawFrequencyIndicators() {
+                const frequencies = [
+                    { name: 'β', value: this.focus, color: '#ff6b6b', x: 50 },
+                    { name: 'α', value: this.relaxation, color: '#4ecdc4', x: 150 },
+                    { name: 'θ', value: this.creativity, color: '#ffe66d', x: 250 },
+                    { name: 'γ', value: this.alertness, color: '#ff8b94', x: 350 }
+                ];
+                
+                frequencies.forEach(freq => {
+                    if (freq.x < this.canvas.width - 30) {
+                        const intensity = freq.value / 100;
+                        const barHeight = intensity * 30;
+                        
+                        this.ctx.fillStyle = this.hexToRgba(freq.color, 0.7);
+                        this.ctx.fillRect(freq.x, this.canvas.height - 40, 20, -barHeight);
+                        
+                        this.ctx.fillStyle = freq.color;
+                        this.ctx.font = '14px sans-serif';
+                        this.ctx.textAlign = 'center';
+                        this.ctx.fillText(freq.name, freq.x + 10, this.canvas.height - 45);
+                    }
+                });
+            }
+            
+            hexToRgba(hex, alpha) {
+                const r = parseInt(hex.slice(1, 3), 16);
+                const g = parseInt(hex.slice(3, 5), 16);
+                const b = parseInt(hex.slice(5, 7), 16);
+                return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+            }
+            
+            animate() {
+                this.time += 1;
+                this.colorTime += 1;
+                this.drawBrainwaves();
+                this.animationId = requestAnimationFrame(() => this.animate());
+            }
+            
+            startAnimation() {
+                if (this.animationId) {
+                    cancelAnimationFrame(this.animationId);
+                }
+                this.animate();
+            }
+            
+            stopAnimation() {
+                if (this.animationId) {
+                    cancelAnimationFrame(this.animationId);
+                    this.animationId = null;
+                }
+            }
+        }
+        
+        // Initialize the simulator when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                console.log('AI Brainwave Simulator v1.0 - Initializing...');
+                new BrainwaveSimulator();
+                console.log('Brainwave Simulator - Initialized successfully');
+            } catch (error) {
+                console.error('Brainwave Simulator Error:', error);
+                const canvas = document.getElementById('brainwaveCanvas');
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#ff6b6b';
+                ctx.font = '20px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('Error loading simulator', canvas.width / 2, canvas.height / 2);
+            }
+        });
+        
+        // Prevent page reload on slider drag
+        document.addEventListener('dragstart', (e) => {
+            if (e.target.type === 'range') {
+                e.preventDefault();
+            }
+        });
+        
+        console.log('AI Brainwave Simulator Script Loaded - Privacy-First Neural Visualization');
+    </script>
+</body>
+</html>
