@@ -6,66 +6,558 @@
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; script-src 'self'; object-src 'none'; media-src 'none'; child-src 'none'; form-action 'none'; base-uri 'self';">
-    <title>Fashion Palette Generator — Privacy-First Color Extraction</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; script-src 'unsafe-inline'; object-src 'none'; media-src 'none'; child-src 'none'; form-action 'none'; base-uri 'self';">
+    <title>Fashion Color Palette Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #fdf2f8 0%, #f3e8ff 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #374151;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #6b7280;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .nav-back {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #8b5cf6;
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .nav-back:hover {
+            background: rgba(139, 92, 246, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .privacy-notice {
+            background: #dbeafe;
+            border: 1px solid #93c5fd;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .privacy-notice-text {
+            color: #1e40af;
+            font-size: 14px;
+        }
+        
+        .upload-area {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .upload-zone {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 60px 20px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        
+        .upload-zone:hover {
+            border-color: #8b5cf6;
+        }
+        
+        .upload-zone.dragover {
+            border-color: #8b5cf6;
+            background: #faf5ff;
+        }
+        
+        .upload-button {
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 16px;
+        }
+        
+        .upload-button:hover {
+            background: #7c3aed;
+        }
+        
+        .processing {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 4px solid #8b5cf6;
+            border-top: 4px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .image-preview {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .palette-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .palette-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .palette-description {
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+        
+        .color-swatches {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .color-swatch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .color-swatch:hover {
+            transform: scale(1.05);
+        }
+        
+        .color-circle {
+            width: 64px;
+            height: 64px;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 8px;
+        }
+        
+        .color-hex {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        .fashion-tip {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 14px;
+            color: #374151;
+        }
+        
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .nav-back {
+                position: static;
+                display: inline-block;
+                margin-bottom: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .upload-area {
+                padding: 20px;
+            }
+            
+            .upload-zone {
+                padding: 40px 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="nav-bar">
-        <div class="nav-container">
-            <a href="/" class="nav-home">← Back to Portfolio</a>
-            <h1 class="nav-title">Fashion Palette Generator</h1>
-            <div class="nav-privacy">Privacy-First • No Data Stored</div>
+    <div class="container">
+        <a href="/" class="nav-back">← Back to Portfolio</a>
+        
+        <div class="header">
+            <h1>Fashion Color Palette Generator</h1>
+            <p>Upload any fashion image to extract beautiful color palettes for outfit coordination. All processing happens locally - your images never leave your device.</p>
         </div>
-    </nav>
-
-    <!-- Main Application -->
-    <main id="palette-root" class="main-container">
-        <!-- React app mounts here -->
-        <div class="loading-state">
-            <div class="loading-spinner"></div>
-            <p>Loading fashion palette generator...</p>
-        </div>
-    </main>
-
-    <!-- No Script Fallback -->
-    <noscript>
-        <div class="noscript-container">
-            <h2>JavaScript Required</h2>
-            <p>This fashion palette generator requires JavaScript to process images locally in your browser.</p>
-            <div class="noscript-features">
-                <h3>Privacy-First Features:</h3>
-                <ul>
-                    <li>✅ All processing happens in your browser</li>
-                    <li>✅ No images uploaded to servers</li>
-                    <li>✅ No data stored or tracked</li>
-                    <li>✅ Immediate memory cleanup after processing</li>
-                </ul>
-            </div>
-            <a href="/" class="noscript-back">← Return to Portfolio</a>
-        </div>
-    </noscript>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-privacy">
-                <h3>Privacy Promise</h3>
-                <p>• No server uploads • No data storage • No tracking • Immediate cleanup</p>
-            </div>
-            <div class="footer-tech">
-                <h3>Technology</h3>
-                <p>React • Canvas API • Client-side processing • CSP compliant</p>
+        
+        <div class="privacy-notice">
+            <div class="privacy-notice-text">
+                <strong>Privacy First:</strong> Your images are processed entirely in your browser. No data is uploaded to any server or stored anywhere.
             </div>
         </div>
-    </footer>
+        
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-zone" id="uploadZone">
+                <div style="font-size: 48px; margin-bottom: 16px;">📸</div>
+                <h3 style="margin-bottom: 8px;">Upload Your Fashion Image</h3>
+                <p style="color: #6b7280; margin-bottom: 16px;">Drag and drop or click to select an image of clothing, outfit, or inspiration</p>
+                <button class="upload-button" onclick="document.getElementById('fileInput').click()">Choose Image</button>
+            </div>
+            <input type="file" id="fileInput" accept="image/*" class="hidden">
+        </div>
+        
+        <div class="processing hidden" id="processing">
+            <div class="spinner"></div>
+            <p>Analyzing colors...</p>
+        </div>
+        
+        <div class="image-preview hidden" id="imagePreview">
+            <h3 style="margin-bottom: 16px;">Uploaded Image</h3>
+            <img id="previewImg" class="preview-image" alt="Uploaded image">
+        </div>
+        
+        <div id="palettesContainer"></div>
+        
+        <canvas id="canvas" class="hidden"></canvas>
+    </div>
 
-    <!-- React and Dependencies -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
-    <!-- Main Application Script -->
-    <script src="main.js" defer></script>
+    <script>
+        class ColorPaletteGenerator {
+            constructor() {
+                this.canvas = document.getElementById('canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.setupEventListeners();
+            }
+            
+            setupEventListeners() {
+                const fileInput = document.getElementById('fileInput');
+                const uploadZone = document.getElementById('uploadZone');
+                
+                fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
+                
+                uploadZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    uploadZone.classList.add('dragover');
+                });
+                
+                uploadZone.addEventListener('dragleave', () => {
+                    uploadZone.classList.remove('dragover');
+                });
+                
+                uploadZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    uploadZone.classList.remove('dragover');
+                    const files = e.dataTransfer.files;
+                    if (files[0]) this.processFile(files[0]);
+                });
+            }
+            
+            handleFileSelect(e) {
+                const file = e.target.files[0];
+                if (file) this.processFile(file);
+            }
+            
+            processFile(file) {
+                document.getElementById('processing').classList.remove('hidden');
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        this.showImagePreview(e.target.result);
+                        this.analyzeImage(img);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            showImagePreview(src) {
+                const preview = document.getElementById('imagePreview');
+                const img = document.getElementById('previewImg');
+                img.src = src;
+                preview.classList.remove('hidden');
+            }
+            
+            analyzeImage(img) {
+                // Resize for processing
+                const maxSize = 300;
+                const ratio = Math.min(maxSize / img.width, maxSize / img.height);
+                this.canvas.width = img.width * ratio;
+                this.canvas.height = img.height * ratio;
+                
+                this.ctx.drawImage(img, 0, 0, this.canvas.width, this.canvas.height);
+                const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+                
+                const dominantColors = this.extractColors(imageData);
+                this.generatePalettes(dominantColors);
+                
+                document.getElementById('processing').classList.add('hidden');
+                
+                // Cleanup
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            }
+            
+            extractColors(imageData, numColors = 5) {
+                const data = imageData.data;
+                const colorCounts = {};
+                
+                for (let i = 0; i < data.length; i += 40) {
+                    const r = Math.round(data[i] / 10) * 10;
+                    const g = Math.round(data[i + 1] / 10) * 10;
+                    const b = Math.round(data[i + 2] / 10) * 10;
+                    
+                    const brightness = (r + g + b) / 3;
+                    if (brightness < 20 || brightness > 235) continue;
+                    
+                    const key = `${r},${g},${b}`;
+                    colorCounts[key] = (colorCounts[key] || 0) + 1;
+                }
+                
+                return Object.entries(colorCounts)
+                    .sort(([,a], [,b]) => b - a)
+                    .slice(0, numColors)
+                    .map(([color]) => {
+                        const [r, g, b] = color.split(',').map(Number);
+                        return { r, g, b, hex: this.rgbToHex(r, g, b) };
+                    });
+            }
+            
+            generatePalettes(dominantColors) {
+                if (!dominantColors.length) return;
+                
+                const baseColor = dominantColors[0];
+                const complementary = this.generateComplementary(baseColor);
+                const analogous = this.generateAnalogous(baseColor);
+                const triadic = this.generateTriadic(baseColor);
+                
+                const palettes = [
+                    {
+                        name: "Dominant Colors",
+                        description: "Main colors from your image",
+                        colors: dominantColors.slice(0, 4),
+                        tip: "Perfect for creating a cohesive look based on your favorite piece"
+                    },
+                    {
+                        name: "Complementary",
+                        description: "High contrast, bold combinations",
+                        colors: [baseColor, complementary],
+                        tip: "Great for statement pieces and eye-catching contrasts"
+                    },
+                    {
+                        name: "Analogous",
+                        description: "Harmonious, subtle combinations",
+                        colors: [baseColor, ...analogous],
+                        tip: "Ideal for professional settings and elegant, toned looks"
+                    },
+                    {
+                        name: "Triadic",
+                        description: "Vibrant, balanced combinations",
+                        colors: [baseColor, ...triadic],
+                        tip: "Perfect for creative, artistic outfits with balanced energy"
+                    }
+                ];
+                
+                this.displayPalettes(palettes);
+            }
+            
+            displayPalettes(palettes) {
+                const container = document.getElementById('palettesContainer');
+                container.innerHTML = '';
+                
+                palettes.forEach(palette => {
+                    const section = document.createElement('div');
+                    section.className = 'palette-section';
+                    
+                    section.innerHTML = `
+                        <h3 class="palette-title">${palette.name}</h3>
+                        <p class="palette-description">${palette.description}</p>
+                        <div class="color-swatches">
+                            ${palette.colors.map((color, index) => `
+                                <div class="color-swatch" data-color="${color.hex}">
+                                    <div class="color-circle" style="background-color: ${color.hex}"></div>
+                                    <span class="color-hex">${color.hex}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="fashion-tip">
+                            <strong>Fashion Tip:</strong> ${palette.tip}
+                        </div>
+                    `;
+                    
+                    // Add click handlers for color copying
+                    section.querySelectorAll('.color-swatch').forEach(swatch => {
+                        swatch.addEventListener('click', () => {
+                            const hex = swatch.dataset.color;
+                            this.copyColor(hex, swatch);
+                        });
+                    });
+                    
+                    container.appendChild(section);
+                });
+            }
+            
+            copyColor(hex, element) {
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(hex).then(() => {
+                        const hexSpan = element.querySelector('.color-hex');
+                        const originalText = hexSpan.textContent;
+                        hexSpan.textContent = 'Copied!';
+                        hexSpan.style.color = '#059669';
+                        setTimeout(() => {
+                            hexSpan.textContent = originalText;
+                            hexSpan.style.color = '#6b7280';
+                        }, 1000);
+                    });
+                }
+            }
+            
+            // Color utility functions
+            rgbToHex(r, g, b) {
+                return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+            }
+            
+            rgbToHsl(r, g, b) {
+                r /= 255; g /= 255; b /= 255;
+                const max = Math.max(r, g, b);
+                const min = Math.min(r, g, b);
+                let h, s, l = (max + min) / 2;
+                
+                if (max === min) {
+                    h = s = 0;
+                } else {
+                    const d = max - min;
+                    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                    switch (max) {
+                        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                        case g: h = (b - r) / d + 2; break;
+                        case b: h = (r - g) / d + 4; break;
+                    }
+                    h /= 6;
+                }
+                return [h * 360, s * 100, l * 100];
+            }
+            
+            hslToRgb(h, s, l) {
+                h /= 360; s /= 100; l /= 100;
+                const hue2rgb = (p, q, t) => {
+                    if (t < 0) t += 1;
+                    if (t > 1) t -= 1;
+                    if (t < 1/6) return p + (q - p) * 6 * t;
+                    if (t < 1/2) return q;
+                    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                    return p;
+                };
+                
+                if (s === 0) {
+                    return [l * 255, l * 255, l * 255];
+                } else {
+                    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                    const p = 2 * l - q;
+                    return [
+                        Math.round(hue2rgb(p, q, h + 1/3) * 255),
+                        Math.round(hue2rgb(p, q, h) * 255),
+                        Math.round(hue2rgb(p, q, h - 1/3) * 255)
+                    ];
+                }
+            }
+            
+            generateComplementary(baseColor) {
+                const [h, s, l] = this.rgbToHsl(baseColor.r, baseColor.g, baseColor.b);
+                const complementaryH = (h + 180) % 360;
+                const [r, g, b] = this.hslToRgb(complementaryH, s, l);
+                return { r, g, b, hex: this.rgbToHex(r, g, b) };
+            }
+            
+            generateAnalogous(baseColor) {
+                const [h, s, l] = this.rgbToHsl(baseColor.r, baseColor.g, baseColor.b);
+                return [
+                    { h: (h + 30) % 360, s, l },
+                    { h: (h - 30 + 360) % 360, s, l }
+                ].map(({ h, s, l }) => {
+                    const [r, g, b] = this.hslToRgb(h, s, l);
+                    return { r, g, b, hex: this.rgbToHex(r, g, b) };
+                });
+            }
+            
+            generateTriadic(baseColor) {
+                const [h, s, l] = this.rgbToHsl(baseColor.r, baseColor.g, baseColor.b);
+                return [
+                    { h: (h + 120) % 360, s, l },
+                    { h: (h + 240) % 360, s, l }
+                ].map(({ h, s, l }) => {
+                    const [r, g, b] = this.hslToRgb(h, s, l);
+                    return { r, g, b, hex: this.rgbToHex(r, g, b) };
+                });
+            }
+        }
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            new ColorPaletteGenerator();
+        });
+    </script>
 </body>
 </html>
