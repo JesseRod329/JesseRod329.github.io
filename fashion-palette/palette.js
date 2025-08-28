@@ -14,8 +14,14 @@ class ColorPaletteGenerator {
     setupEventListeners() {
         const fileInput = document.getElementById('fileInput');
         const uploadZone = document.getElementById('uploadZone');
+        const uploadButton = document.getElementById('uploadButton');
         
         fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
+        
+        // Add click handler for upload button
+        uploadButton.addEventListener('click', () => {
+            fileInput.click();
+        });
         
         uploadZone.addEventListener('dragover', (e) => {
             e.preventDefault();
