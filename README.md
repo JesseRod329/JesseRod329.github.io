@@ -3,7 +3,7 @@
 **Live Site:** [https://jesserodriguez.me](https://jesserodriguez.me)
 
 **Description:**  
-A single-page, responsive HTML portfolio website showcasing the intersection of AI, design, and finance. Features dynamic mathematical circle animations and enterprise-level security implementation. Built with an editorial aesthetic inspired by Kanye × Virgil × Anna Wintour design philosophy.
+A single-page, responsive HTML portfolio website showcasing the intersection of AI, design, and fashion. Features dynamic mathematical circle animations and enterprise-level security implementation. Built with an editorial aesthetic inspired by Kanye × Virgil × Anna Wintour design philosophy.
 
 ---
 
@@ -12,7 +12,7 @@ A single-page, responsive HTML portfolio website showcasing the intersection of 
 - **Editorial design aesthetic** - Clean, bold typography with modern spacing
 - **Enterprise security implementation** - Full CSP, clickjacking protection, and security headers
 - **Responsive design** - Optimized for all screen sizes using clamp() and modern CSS
-- **Service showcase** - AI/Automation, Websites, Logos/Design, Resumes/Careers, Finance
+- **Service showcase** - AI/Automation, Websites, Logos/Design, Resumes/Careers, Fashion
 - **Professional contact integration** - Direct mailto link to jesse@jesserodriguez.me
 - **Zero external dependencies** - Fully self-contained with no third-party scripts
 - **Lightning fast performance** - Optimized static HTML/CSS only

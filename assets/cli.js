@@ -244,7 +244,7 @@ class PortfolioCLI {
     this.addMultilineOutput([
       'Jesse Rodriguez - Ideas, Technology, Design',
       '',
-      'I move between AI, design, and finance with one goal:',
+      'I move between AI, design, and fashion with one goal:',
       'to create work that feels timeless and useful.',
       '',
       'From building tools to designing visuals,',
@@ -261,7 +261,7 @@ class PortfolioCLI {
       '→ Websites           - Digital spaces with purpose', 
       '→ Logos / Design     - Identity you can wear',
       '→ Resumes / Careers  - Documents that open doors',
-      '→ Finance           - Clarity in the numbers',
+      '→ Fashion           - Clarity in the numbers',
       '',
       'Scroll down to see the full services grid.',
       ''
@@ -272,7 +272,7 @@ class PortfolioCLI {
     this.addMultilineOutput([
       'Professional Experience:',
       '',
-      '• Intersection of AI, Design, and Finance',
+      '• Intersection of AI, Design, and Fashion',
       '• Full-stack development and automation',
       '• Editorial design aesthetic implementation',
       '• Enterprise security best practices',
