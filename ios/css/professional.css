@@ -1,0 +1,794 @@
+/**
+ * iOS Professional Interaction Apps Styling
+ * Resume, Contact, Analytics, and Social features with native iOS design
+ */
+
+.ios-professional-app {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-color);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.ios-professional-header {
+  height: 88px;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 20px 12px 20px;
+  position: relative;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.ios-professional-header.resume {
+  background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+}
+
+.ios-professional-header.contact {
+  background: linear-gradient(135deg, #34C759 0%, #30D158 100%);
+}
+
+.ios-professional-header.analytics {
+  background: linear-gradient(135deg, #795548 0%, #5D4037 100%);
+}
+
+.ios-professional-header.social {
+  background: linear-gradient(135deg, #FF3B30 0%, #FF2D92 100%);
+}
+
+.ios-professional-back {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-professional-back:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.ios-professional-title {
+  color: white;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+  position: absolute;
+  left: 20px;
+  bottom: 12px;
+  right: 20px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-professional-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  background: var(--bg-color);
+  -webkit-overflow-scrolling: touch;
+}
+
+.ios-professional-body::-webkit-scrollbar {
+  width: 0;
+  display: none;
+}
+
+/* Resume App Styles */
+.ios-resume-section {
+  background: var(--card-color);
+  border-radius: 16px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ios-resume-header {
+  padding: 20px;
+  background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+  color: white;
+  text-align: center;
+}
+
+.ios-resume-name {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-resume-title {
+  font-size: 16px;
+  font-weight: 500;
+  opacity: 0.9;
+  margin-bottom: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-resume-contact {
+  font-size: 14px;
+  opacity: 0.8;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-resume-content {
+  padding: 20px;
+}
+
+.ios-resume-section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid rgba(33, 150, 243, 0.2);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-resume-item {
+  margin-bottom: 16px;
+  padding: 16px;
+  background: var(--bg-color);
+  border-radius: 12px;
+}
+
+.ios-resume-item-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-resume-item-subtitle {
+  font-size: 14px;
+  color: #2196F3;
+  font-weight: 500;
+  margin-bottom: 4px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-resume-item-date {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  font-family: 'SF Mono', Monaco, monospace;
+}
+
+.ios-resume-item-description {
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.5;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+/* Skills Visualization */
+.ios-skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.ios-skill-item {
+  background: var(--bg-color);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.ios-skill-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.ios-skill-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-skill-level {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-family: 'SF Mono', Monaco, monospace;
+}
+
+.ios-skill-bar {
+  height: 6px;
+  background: rgba(33, 150, 243, 0.2);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.ios-skill-progress {
+  height: 100%;
+  background: linear-gradient(90deg, #2196F3, #1976D2);
+  border-radius: 3px;
+  transition: width 1s ease-out;
+  position: relative;
+}
+
+.ios-skill-progress::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: ios-skill-shine 2s ease-in-out infinite;
+}
+
+@keyframes ios-skill-shine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Export Controls */
+.ios-export-controls {
+  background: var(--card-color);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ios-export-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-export-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.ios-export-button {
+  background: #2196F3;
+  color: white;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-export-button:hover {
+  background: #1976D2;
+  transform: translateY(-1px);
+}
+
+.ios-export-button:active {
+  transform: translateY(0);
+}
+
+/* Contact App Styles */
+.ios-contact-form {
+  background: var(--card-color);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ios-form-group {
+  margin-bottom: 20px;
+}
+
+.ios-form-label {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-form-input,
+.ios-form-textarea,
+.ios-form-select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  background: var(--bg-color);
+  color: var(--text-primary);
+  font-size: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  transition: border-color 0.2s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.ios-form-input:focus,
+.ios-form-textarea:focus,
+.ios-form-select:focus {
+  outline: none;
+  border-color: #34C759;
+  box-shadow: 0 0 0 3px rgba(52, 199, 89, 0.1);
+}
+
+.ios-form-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.ios-form-error {
+  color: #FF3B30;
+  font-size: 14px;
+  margin-top: 4px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-form-valid {
+  border-color: #34C759;
+}
+
+.ios-form-invalid {
+  border-color: #FF3B30;
+}
+
+.ios-contact-methods {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.ios-contact-method {
+  background: var(--card-color);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  box-shadow: 
+    0 2px 12px rgba(0, 0, 0, 0.06),
+    0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.ios-contact-method:hover {
+  transform: translateY(-2px);
+  border-color: #34C759;
+  box-shadow: 
+    0 8px 30px rgba(0, 0, 0, 0.1),
+    0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.ios-contact-method.selected {
+  border-color: #34C759;
+  background: rgba(52, 199, 89, 0.05);
+}
+
+.ios-contact-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.ios-contact-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-contact-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-submit-button {
+  background: #34C759;
+  color: white;
+  border: none;
+  padding: 16px 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-submit-button:hover {
+  background: #30D158;
+  transform: translateY(-1px);
+}
+
+.ios-submit-button:disabled {
+  background: rgba(52, 199, 89, 0.3);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Analytics App Styles */
+.ios-analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.ios-analytics-card {
+  background: var(--card-color);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ios-analytics-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.ios-analytics-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-analytics-card-icon {
+  font-size: 20px;
+  color: #795548;
+}
+
+.ios-analytics-metric {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  font-family: 'SF Mono', Monaco, monospace;
+}
+
+.ios-analytics-change {
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-analytics-change.positive {
+  color: #34C759;
+}
+
+.ios-analytics-change.negative {
+  color: #FF3B30;
+}
+
+.ios-analytics-change.neutral {
+  color: var(--text-secondary);
+}
+
+/* Chart Containers */
+.ios-chart-container {
+  background: var(--card-color);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ios-chart-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-chart {
+  height: 200px;
+  background: var(--bg-color);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: end;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.ios-chart-bar {
+  flex: 1;
+  background: linear-gradient(to top, #795548, #A1887F);
+  border-radius: 4px 4px 0 0;
+  min-height: 20px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.ios-chart-bar::after {
+  content: attr(data-value);
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: 'SF Mono', Monaco, monospace;
+}
+
+.ios-chart-bar:hover {
+  background: linear-gradient(to top, #6D4C41, #8D6E63);
+}
+
+/* Social App Styles */
+.ios-social-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.ios-social-section {
+  background: var(--card-color);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ios-social-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.ios-social-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: white;
+}
+
+.ios-social-icon.github {
+  background: #333;
+}
+
+.ios-social-icon.linkedin {
+  background: #0077B5;
+}
+
+.ios-social-icon.twitter {
+  background: #1DA1F2;
+}
+
+.ios-social-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-social-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: var(--bg-color);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+
+.ios-social-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.ios-social-item-icon {
+  font-size: 16px;
+  margin-top: 2px;
+  opacity: 0.7;
+}
+
+.ios-social-item-content {
+  flex: 1;
+}
+
+.ios-social-item-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-social-item-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+.ios-social-item-date {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-family: 'SF Mono', Monaco, monospace;
+}
+
+/* Achievement Badges */
+.ios-badges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.ios-badge {
+  background: var(--bg-color);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.ios-badge:hover {
+  transform: scale(1.05);
+}
+
+.ios-badge-icon {
+  font-size: 24px;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.ios-badge-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+}
+
+/* Responsive Design */
+@media (max-width: 430px) {
+  .ios-professional-body {
+    padding: 16px;
+  }
+  
+  .ios-analytics-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .ios-skills-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .ios-export-buttons {
+    grid-template-columns: 1fr;
+  }
+  
+  .ios-contact-methods {
+    grid-template-columns: 1fr;
+  }
+  
+  .ios-resume-header {
+    padding: 16px;
+  }
+  
+  .ios-resume-name {
+    font-size: 20px;
+  }
+  
+  .ios-chart {
+    height: 150px;
+  }
+  
+  .ios-badges-grid {
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+  }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .ios-form-input,
+  .ios-form-textarea,
+  .ios-form-select {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .ios-form-input:focus,
+  .ios-form-textarea:focus,
+  .ios-form-select:focus {
+    border-color: #34C759;
+    box-shadow: 0 0 0 3px rgba(52, 199, 89, 0.2);
+  }
+  
+  .ios-contact-method:hover {
+    border-color: #34C759;
+  }
+  
+  .ios-social-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* Touch feedback */
+@media (hover: none) and (pointer: coarse) {
+  .ios-export-button:hover,
+  .ios-submit-button:hover,
+  .ios-contact-method:hover {
+    transform: none;
+  }
+  
+  .ios-export-button:active,
+  .ios-submit-button:active {
+    transform: scale(0.95);
+  }
+  
+  .ios-contact-method:active {
+    transform: scale(0.98);
+  }
+  
+  .ios-badge:hover {
+    transform: none;
+  }
+  
+  .ios-badge:active {
+    transform: scale(0.95);
+  }
+}

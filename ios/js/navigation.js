@@ -419,6 +419,8 @@ class iOSNavigation {
             case 'resume':
                 description.textContent = 'Professional experience and career documentation.';
                 this.addAppLink(links, 'View Resume (PDF)', '/assets/resume.pdf');
+                // Create full resume app
+                this.createProfessionalInterface(placeholder, 'resume');
                 break;
             case 'utilities':
                 description.textContent = 'Development utilities and productivity enhancers.';
@@ -435,6 +437,8 @@ class iOSNavigation {
                 break;
             case 'analytics':
                 description.textContent = 'Data visualization and performance analytics tools.';
+                // Create full analytics app
+                this.createProfessionalInterface(placeholder, 'analytics');
                 break;
             case 'terminal':
                 description.textContent = 'Command-line interface and developer tools.';
@@ -445,9 +449,13 @@ class iOSNavigation {
             case 'contact':
                 description.textContent = 'Get in touch for collaborations and projects.';
                 this.addAppLink(links, 'Send Email', 'mailto:jesse@jesserodriguez.me');
+                // Create full contact app
+                this.createProfessionalInterface(placeholder, 'contact');
                 break;
             case 'social':
                 description.textContent = 'Connect and share across social platforms.';
+                // Create full social app
+                this.createProfessionalInterface(placeholder, 'social');
                 break;
             default:
                 description.textContent = `Welcome to ${appConfig.title}. This app is currently in development.`;
@@ -1215,6 +1223,68 @@ class iOSNavigation {
             // Replace placeholder with content
             container.innerHTML = '';
             container.appendChild(contentContainer);
+        }
+    }
+    
+    createProfessionalInterface(container, appType) {
+        // Load professional apps CSS if not already loaded
+        if (!document.querySelector('link[href*="professional.css"]')) {
+            const professionalCSS = document.createElement('link');
+            professionalCSS.rel = 'stylesheet';
+            professionalCSS.href = '/ios/css/professional.css';
+            document.head.appendChild(professionalCSS);
+        }
+        
+        // Load professional apps script if not already loaded
+        if (!window.iOSProfessionalApps) {
+            const professionalScript = document.createElement('script');
+            professionalScript.src = '/ios/js/professional.js';
+            professionalScript.onload = () => {
+                this.initializeProfessionalApp(container, appType);
+            };
+            document.head.appendChild(professionalScript);
+        } else {
+            this.initializeProfessionalApp(container, appType);
+        }
+    }
+    
+    initializeProfessionalApp(container, appType) {
+        // Create professional apps instance
+        const professionalAppsInstance = new window.iOSProfessionalApps();
+        
+        // Clear the placeholder content and replace with professional app
+        const appContent = container.closest('.ios-app-content');
+        if (appContent) {
+            // Create professional container
+            const professionalContainer = document.createElement('div');
+            professionalContainer.className = 'ios-professional-body';
+            professionalContainer.style.cssText = `
+                flex: 1;
+                overflow-y: auto;
+                padding: 20px;
+                background: var(--bg-color);
+                -webkit-overflow-scrolling: touch;
+            `;
+            
+            // Initialize the appropriate professional app
+            switch (appType) {
+                case 'resume':
+                    professionalAppsInstance.createResumeApp(professionalContainer);
+                    break;
+                case 'contact':
+                    professionalAppsInstance.createContactApp(professionalContainer);
+                    break;
+                case 'analytics':
+                    professionalAppsInstance.createAnalyticsApp(professionalContainer);
+                    break;
+                case 'social':
+                    professionalAppsInstance.createSocialApp(professionalContainer);
+                    break;
+            }
+            
+            // Replace placeholder with professional app
+            container.innerHTML = '';
+            container.appendChild(professionalContainer);
         }
     }
     
