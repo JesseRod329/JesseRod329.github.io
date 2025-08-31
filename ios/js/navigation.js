@@ -171,15 +171,17 @@ class iOSNavigation {
                 
                 // Add touch feedback for mobile
                 app.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
                     console.log('Touch start:', appClass);
                     this.addTouchFeedback(app);
                 });
                 
                 app.addEventListener('touchend', (e) => {
-                    e.preventDefault();
                     console.log('Touch end:', appClass);
                     this.removeTouchFeedback(app);
+                    // Small delay to ensure touch feedback is visible
+                    setTimeout(() => {
+                        this.launchApp(appClass);
+                    }, 100);
                 });
                 
                 // Add mouse events for desktop
@@ -224,15 +226,17 @@ class iOSNavigation {
                 
                 // Add touch feedback for mobile
                 app.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
                     console.log('Dock touch start:', appClass);
                     this.addTouchFeedback(app);
                 });
                 
                 app.addEventListener('touchend', (e) => {
-                    e.preventDefault();
                     console.log('Dock touch end:', appClass);
                     this.removeTouchFeedback(app);
+                    // Small delay to ensure touch feedback is visible
+                    setTimeout(() => {
+                        this.launchApp(appClass);
+                    }, 100);
                 });
                 
                 // Add mouse events for desktop
