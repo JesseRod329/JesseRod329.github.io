@@ -7,76 +7,106 @@
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; script-src 'self'; object-src 'none'; media-src 'none'; child-src 'none'; form-action 'none'; base-uri 'self';">
-<title>Jesse — iOS Portfolio</title>
-<style>
-  /* iOS-specific styles will be added here */
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { 
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif; 
-    background:#000; 
-    color:#fff; 
-    line-height:1.4; 
-    font-weight:400;
-    overflow-x:hidden;
-    -webkit-font-smoothing: antialiased;
-  }
-  
-  .ios-container {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 2rem 1rem;
-  }
-  
-  .ios-hero h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    background: linear-gradient(45deg, #007AFF, #5856D6, #FF2D92);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  
-  .ios-subtitle {
-    font-size: 1.1rem;
-    color: #8E8E93;
-    margin-bottom: 2rem;
-    max-width: 300px;
-  }
-  
-  .ios-placeholder {
-    background: #1C1C1E;
-    border-radius: 16px;
-    padding: 2rem;
-    margin: 2rem 0;
-    border: 1px solid #38383A;
-  }
-  
-  .back-link {
-    color: #007AFF;
-    text-decoration: none;
-    font-size: 0.9rem;
-    margin-top: 2rem;
-  }
-</style>
+<title>Jesse — iPhone Portfolio</title>
+<link rel="stylesheet" href="css/iphone.css">
 </head>
 <body>
 
-<div class="ios-container">
-  <div class="ios-hero">
-    <h1>Jesse Rodriguez</h1>
-    <p class="ios-subtitle">iOS Portfolio Coming Soon</p>
+<div class="ios-device">
+  <!-- Dynamic Island -->
+  <div class="ios-dynamic-island"></div>
+  
+  <!-- Status Bar -->
+  <div class="ios-status-bar">
+    <div class="ios-status-left">9:41</div>
+    <div class="ios-status-right">
+      <div class="ios-status-icon signal"></div>
+      <div class="ios-status-icon wifi"></div>
+      <div class="ios-status-icon battery"></div>
+    </div>
   </div>
   
-  <div class="ios-placeholder">
-    <p>Native iOS experience in development...</p>
+  <!-- Screen Content -->
+  <div class="ios-screen">
+    <div class="ios-home-screen">
+      
+      <!-- App Grid -->
+      <div class="ios-app-grid">
+        
+        <!-- Row 1 -->
+        <div class="ios-app ai-tools">
+          <div class="ios-app-icon">🤖</div>
+          <div class="ios-app-label">AI Tools</div>
+        </div>
+        
+        <div class="ios-app websites">
+          <div class="ios-app-icon">🌐</div>
+          <div class="ios-app-label">Websites</div>
+        </div>
+        
+        <div class="ios-app fashion">
+          <div class="ios-app-icon">👗</div>
+          <div class="ios-app-label">Fashion</div>
+        </div>
+        
+        <div class="ios-app design">
+          <div class="ios-app-icon">🎨</div>
+          <div class="ios-app-label">Design</div>
+        </div>
+        
+        <!-- Row 2 -->
+        <div class="ios-app resume">
+          <div class="ios-app-icon">📄</div>
+          <div class="ios-app-label">Resume</div>
+        </div>
+        
+        <div class="ios-app utilities">
+          <div class="ios-app-icon">⚙️</div>
+          <div class="ios-app-label">Utilities</div>
+        </div>
+        
+        <div class="ios-app brainwave">
+          <div class="ios-app-icon">🧠</div>
+          <div class="ios-app-label">BrainWave</div>
+        </div>
+        
+        <div class="ios-app palettes">
+          <div class="ios-app-icon">🎭</div>
+          <div class="ios-app-label">Palettes</div>
+        </div>
+        
+        <!-- Row 3 -->
+        <div class="ios-app analytics">
+          <div class="ios-app-icon">📊</div>
+          <div class="ios-app-label">Analytics</div>
+        </div>
+        
+      </div>
+      
+    </div>
   </div>
   
-  <a href="/" class="back-link">← Back to Desktop Version</a>
+  <!-- Dock -->
+  <div class="ios-dock">
+    <div class="ios-dock-app home">
+      <div class="ios-dock-icon">🏠</div>
+    </div>
+    
+    <div class="ios-dock-app terminal">
+      <div class="ios-dock-icon">💻</div>
+    </div>
+    
+    <div class="ios-dock-app contact">
+      <div class="ios-dock-icon">📧</div>
+    </div>
+    
+    <div class="ios-dock-app social">
+      <div class="ios-dock-icon">🔗</div>
+    </div>
+  </div>
+  
+  <!-- Home Indicator -->
+  <div class="ios-home-indicator"></div>
 </div>
 
 </body>
