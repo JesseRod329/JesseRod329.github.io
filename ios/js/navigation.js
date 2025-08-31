@@ -641,22 +641,30 @@ class iOSNavigation {
             min-width: 200px;
         `;
         
-        // Touch feedback for mobile
+        // Touch feedback and app launching for mobile
         link.addEventListener('touchstart', () => {
             link.style.transform = 'scale(0.95)';
             link.style.boxShadow = '0 2px 10px rgba(0, 122, 255, 0.4)';
         });
         
-        link.addEventListener('touchend', () => {
+        link.addEventListener('touchend', (e) => {
             link.style.transform = 'scale(1)';
             link.style.boxShadow = '0 4px 20px rgba(0, 122, 255, 0.3)';
+            
+            // Launch app on touchend for mobile
+            console.log('Launch button touched:', text, 'URL:', url);
+            if (!callback) {
+                console.log('Opening in new tab from touch:', url);
+                // Force open in new tab
+                window.open(url, '_blank');
+            }
         });
         
-        // Debug click events
+        // Click events for desktop
         link.addEventListener('click', (e) => {
             console.log('Launch button clicked:', text, 'URL:', url);
             if (!callback) {
-                console.log('Opening in new tab:', url);
+                console.log('Opening in new tab from click:', url);
                 // Force open in new tab
                 window.open(url, '_blank');
             }
