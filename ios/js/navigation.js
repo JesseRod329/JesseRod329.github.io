@@ -388,13 +388,19 @@ class iOSNavigation {
         switch (appId) {
             case 'ai-tools':
                 description.textContent = 'Intelligent automation and AI-powered tools for productivity and creativity.';
+                // Create full AI tools showcase
+                this.createContentInterface(placeholder, 'ai-tools');
                 break;
             case 'websites':
                 description.textContent = 'Digital spaces designed with purpose and modern web technologies.';
+                // Create full websites showcase
+                this.createContentInterface(placeholder, 'websites');
                 break;
             case 'fashion':
                 description.textContent = 'Fashion insights, color palettes, and style automation tools.';
                 this.addAppLink(links, 'Fashion Palette Generator', '/fashion-palette/');
+                // Create full fashion showcase
+                this.createContentInterface(placeholder, 'fashion');
                 break;
             case 'design':
                 description.textContent = 'Creative design tools and visual identity systems.';
@@ -407,6 +413,8 @@ class iOSNavigation {
                         }, 300);
                     }, 100);
                 });
+                // Create full design showcase
+                this.createContentInterface(placeholder, 'design');
                 break;
             case 'resume':
                 description.textContent = 'Professional experience and career documentation.';
@@ -1146,6 +1154,68 @@ class iOSNavigation {
         });
         
         container.appendChild(modal);
+    }
+    
+    createContentInterface(container, appType) {
+        // Load content apps CSS if not already loaded
+        if (!document.querySelector('link[href*="content-apps.css"]')) {
+            const contentCSS = document.createElement('link');
+            contentCSS.rel = 'stylesheet';
+            contentCSS.href = '/ios/css/content-apps.css';
+            document.head.appendChild(contentCSS);
+        }
+        
+        // Load content apps script if not already loaded
+        if (!window.iOSContentApps) {
+            const contentScript = document.createElement('script');
+            contentScript.src = '/ios/js/content-apps.js';
+            contentScript.onload = () => {
+                this.initializeContentApp(container, appType);
+            };
+            document.head.appendChild(contentScript);
+        } else {
+            this.initializeContentApp(container, appType);
+        }
+    }
+    
+    initializeContentApp(container, appType) {
+        // Create content apps instance
+        const contentAppsInstance = new window.iOSContentApps();
+        
+        // Clear the placeholder content and replace with content app
+        const appContent = container.closest('.ios-app-content');
+        if (appContent) {
+            // Create content container
+            const contentContainer = document.createElement('div');
+            contentContainer.className = 'ios-content-body';
+            contentContainer.style.cssText = `
+                flex: 1;
+                overflow-y: auto;
+                padding: 20px;
+                background: var(--bg-color);
+                -webkit-overflow-scrolling: touch;
+            `;
+            
+            // Initialize the appropriate content app
+            switch (appType) {
+                case 'ai-tools':
+                    contentAppsInstance.createAIToolsApp(contentContainer);
+                    break;
+                case 'websites':
+                    contentAppsInstance.createWebsitesApp(contentContainer);
+                    break;
+                case 'fashion':
+                    contentAppsInstance.createFashionApp(contentContainer);
+                    break;
+                case 'design':
+                    contentAppsInstance.createDesignApp(contentContainer);
+                    break;
+            }
+            
+            // Replace placeholder with content
+            container.innerHTML = '';
+            container.appendChild(contentContainer);
+        }
     }
     
     createAppViews() {
