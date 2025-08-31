@@ -248,7 +248,10 @@ class iOSNavigation {
     }
     
     updateAppView(appId, appConfig) {
-        this.appContainer.innerHTML = '';
+        // Safely clear container
+        while (this.appContainer.firstChild) {
+            this.appContainer.removeChild(this.appContainer.firstChild);
+        }
         
         // Create app view
         const appView = document.createElement('div');
@@ -556,6 +559,8 @@ class iOSNavigation {
         if (!window.iOSTerminal) {
             const terminalScript = document.createElement('script');
             terminalScript.src = '/ios/js/terminal.js';
+            terminalScript.integrity = 'sha384-XYwf811Gd3ZYlDA/xXbguNehnPu9oSldc8mlD02NngEjT+yjyD/RaF8j685dut5B';
+            terminalScript.crossOrigin = 'anonymous';
             terminalScript.onload = () => {
                 this.initializeTerminal(container);
             };
@@ -566,8 +571,10 @@ class iOSNavigation {
     }
     
     initializeTerminal(container) {
-        // Clear the placeholder content
-        container.innerHTML = '';
+        // Safely clear the placeholder content
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
         
         // Create terminal interface
         const terminal = document.createElement('div');
@@ -641,7 +648,10 @@ class iOSNavigation {
         
         // Render output function
         const renderOutput = () => {
-            output.innerHTML = '';
+            // Safely clear output
+            while (output.firstChild) {
+                output.removeChild(output.firstChild);
+            }
             terminalInstance.outputLines.forEach(line => {
                 const lineElement = document.createElement('div');
                 lineElement.className = 'ios-terminal-line';
@@ -729,7 +739,10 @@ class iOSNavigation {
         // Replace the app content with terminal
         const appContent = container.closest('.ios-app-content');
         if (appContent) {
-            appContent.innerHTML = '';
+            // Safely clear app content
+            while (appContent.firstChild) {
+                appContent.removeChild(appContent.firstChild);
+            }
             appContent.appendChild(terminal);
             
             // Focus input and initial render
@@ -752,6 +765,8 @@ class iOSNavigation {
         if (!window.iOSColorPalettes) {
             const palettesScript = document.createElement('script');
             palettesScript.src = '/ios/js/palettes.js';
+            palettesScript.integrity = 'sha384-3WYxgiQV9XeDBlthfwrZfM33fPms99JZNHVgo7RUtp8hE6Rc/6y1P9oGBDcqiXVm';
+            palettesScript.crossOrigin = 'anonymous';
             palettesScript.onload = () => {
                 this.initializePalettes(container);
             };
@@ -768,7 +783,10 @@ class iOSNavigation {
         // Clear the placeholder content and replace with palettes app
         const appContent = container.closest('.ios-app-content');
         if (appContent) {
-            appContent.innerHTML = '';
+            // Safely clear app content
+            while (appContent.firstChild) {
+                appContent.removeChild(appContent.firstChild);
+            }
             
             // Create main palettes container
             const palettesContainer = document.createElement('div');
@@ -876,7 +894,10 @@ class iOSNavigation {
                     break;
             }
             
-            result.innerHTML = '';
+            // Safely clear result
+            while (result.firstChild) {
+                result.removeChild(result.firstChild);
+            }
             colors.forEach(color => {
                 const swatch = document.createElement('div');
                 swatch.className = 'ios-color-swatch';
@@ -1179,6 +1200,8 @@ class iOSNavigation {
         if (!window.iOSContentApps) {
             const contentScript = document.createElement('script');
             contentScript.src = '/ios/js/content-apps.js';
+            contentScript.integrity = 'sha384-xZvqWLTa4DK+w6Yp+0f9WE8e4dnZqDWxAE275ZT6d8bfKhdAtjpiamlDS4nbtwdT';
+            contentScript.crossOrigin = 'anonymous';
             contentScript.onload = () => {
                 this.initializeContentApp(container, appType);
             };
@@ -1222,8 +1245,10 @@ class iOSNavigation {
                     break;
             }
             
-            // Replace placeholder with content
-            container.innerHTML = '';
+            // Safely replace placeholder with content
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
             container.appendChild(contentContainer);
         }
     }
@@ -1241,6 +1266,8 @@ class iOSNavigation {
         if (!window.iOSProfessionalApps) {
             const professionalScript = document.createElement('script');
             professionalScript.src = '/ios/js/professional.js';
+            professionalScript.integrity = 'sha384-9C3CtsCGNtTlbA/CQJFsksO+bJN9e81OOiBXVeE6FzwtHO2rBXEOuqf/EG57Cpz5';
+            professionalScript.crossOrigin = 'anonymous';
             professionalScript.onload = () => {
                 this.initializeProfessionalApp(container, appType);
             };
@@ -1284,8 +1311,10 @@ class iOSNavigation {
                     break;
             }
             
-            // Replace placeholder with professional app
-            container.innerHTML = '';
+            // Safely replace placeholder with professional app
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
             container.appendChild(professionalContainer);
         }
     }

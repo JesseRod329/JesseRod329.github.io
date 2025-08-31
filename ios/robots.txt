@@ -1,0 +1,34 @@
+# iOS Portfolio - Robots.txt
+# This is the mobile-optimized iOS-style portfolio
+
+User-agent: *
+Allow: /
+
+# Allow all iOS portfolio pages
+Allow: /ios/
+Allow: /ios/index.html
+Allow: /ios/css/
+Allow: /ios/js/
+Allow: /ios/assets/
+
+# PWA files
+Allow: /ios/manifest.json
+Allow: /ios/sw.js
+
+# Block build artifacts and temporary files
+Disallow: /ios/dist/
+Disallow: /ios/build.js
+Disallow: /ios/*.log
+Disallow: /ios/*.tmp
+
+# Allow search engines to access critical resources
+Allow: /ios/assets/icons/
+
+# Sitemap location
+Sitemap: https://jesserodriguez.me/sitemap.xml
+
+# Crawl-delay for performance
+Crawl-delay: 1
+
+# Security note: This portfolio implements strict CSP
+# All apps run client-side with no data collection

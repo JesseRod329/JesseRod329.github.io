@@ -1,0 +1,82 @@
+# GitHub Pages Configuration for Jesse Rodriguez Portfolio
+# https://jesserodriguez.me
+
+# Site settings
+title: Jesse Rodriguez Portfolio
+description: "AI, Design & Fashion Professional - Interactive portfolio featuring iOS-style mobile experience and comprehensive project showcase"
+url: "https://jesserodriguez.me"
+baseurl: ""
+
+# Author information
+author:
+  name: Jesse Rodriguez
+  email: jesse@jesserodriguez.me
+  twitter: jesserodriguez
+
+# SEO settings
+lang: en_US
+timezone: America/Los_Angeles
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+permalink: pretty
+
+# Exclude from processing
+exclude:
+  - README.md
+  - SECURITY_NOTES.md
+  - TESTING.md
+  - IOS_DEPLOY.md
+  - IOS_TESTING.md
+  - PWA_OPTIMIZATION_SUMMARY.md
+  - SECURITY_AUDIT_REPORT.md
+  - .github/
+  - ios/build.js
+  - ios/dist/
+  - ios/PWA_OPTIMIZATION_SUMMARY.md
+  - "*.log"
+  - "*.tmp"
+
+# Include specific files
+include:
+  - .htaccess
+  - _pages
+  - ios/
+  - ios/manifest.json
+  - ios/sw.js
+  - sitemap.xml
+  - robots.txt
+
+# Plugin settings
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Security headers (implemented via meta tags)
+security:
+  csp: "default-src 'self'; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; script-src 'self'; object-src 'none'; media-src 'none'; child-src 'none'; form-action 'none'; base-uri 'self';"
+  
+# PWA settings
+pwa:
+  enabled: true
+  manifest_path: "/ios/manifest.json"
+  service_worker_path: "/ios/sw.js"
+
+# iOS Portfolio specific settings
+ios_portfolio:
+  enabled: true
+  mobile_redirect: true
+  apps:
+    - ai-tools
+    - websites
+    - fashion
+    - design
+    - resume
+    - utilities
+    - brainwave
+    - palettes
+    - analytics
+    - terminal
+    - contact
+    - social

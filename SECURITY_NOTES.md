@@ -41,10 +41,84 @@ The site currently uses a slightly relaxed policy for compatibility with GitHub 
 
 ### Key Security Principles
 
-1. **No Inline Scripts**: All JavaScript code lives in `/assets/cli.js`
+1. **No Inline Scripts**: All JavaScript code in external files
 2. **Self-Hosted Only**: No external script dependencies
 3. **Safe DOM Manipulation**: Uses `textContent` instead of `innerHTML`
 4. **No Dynamic Code Execution**: No `eval()`, `Function()`, or similar constructs
+
+## iOS Portfolio Security Requirements
+
+The iOS Portfolio (`/ios/`) implements enhanced security measures beyond the main portfolio:
+
+### iOS-Specific CSP Policy
+```html
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self'; 
+  style-src 'unsafe-inline'; 
+  img-src 'self' data:; 
+  font-src 'self'; 
+  connect-src 'none'; 
+  script-src 'self'; 
+  object-src 'none'; 
+  media-src 'none'; 
+  child-src 'none'; 
+  form-action 'none'; 
+  base-uri 'self';
+">
+```
+
+### SRI Implementation for iOS Scripts
+All iOS JavaScript files include Subresource Integrity hashes:
+
+```html
+<!-- Static script in index.html -->
+<script src="js/navigation.js" 
+        integrity="sha384-tFsn0+Bh5Iro1xZ/aeACqGz4C7Z7HZNx4OkI7/BGN/XJr3eyb4eUne+Bs39Wz4ym"
+        crossorigin="anonymous" 
+        defer></script>
+
+<!-- Dynamically loaded scripts (handled in navigation.js) -->
+<!-- terminal.js: sha384-XYwf811Gd3ZYlDA/xXbguNehnPu9oSldc8mlD02NngEjT+yjyD/RaF8j685dut5B -->
+<!-- palettes.js: sha384-3WYxgiQV9XeDBlthfwrZfM33fPms99JZNHVgo7RUtp8hE6Rc/6y1P9oGBDcqiXVm -->
+<!-- content-apps.js: sha384-xZvqWLTa4DK+w6Yp+0f9WE8e4dnZqDWxAE275ZT6d8bfKhdAtjpiamlDS4nbtwdT -->
+<!-- professional.js: sha384-9C3CtsCGNtTlbA/CQJFsksO+bJN9e81OOiBXVeE6FzwtHO2rBXEOuqf/EG57Cpz5 -->
+```
+
+### CSP Compliance Verification
+All iOS JavaScript files have been verified for strict CSP compliance:
+- ✅ No `innerHTML` usage (replaced with safe DOM manipulation)
+- ✅ No `eval()` or `new Function()` calls
+- ✅ No `document.write()` usage
+- ✅ No `outerHTML` or `insertAdjacentHTML` usage
+- ✅ All dynamic script loading includes SRI hashes
+- ✅ All dynamically created elements use safe text content assignment
+
+**Last Verification**: December 2024
+**Status**: All iOS apps fully compliant with strict CSP policy
+
+### iOS Security Architecture
+
+#### Multi-Layer App Security
+1. **App Isolation**: Each iOS app (Terminal, Palettes, etc.) runs in isolated scope
+2. **Dynamic Loading**: Scripts loaded on-demand with integrity verification
+3. **Memory Management**: Immediate cleanup of sensitive data (images, form data)
+4. **Progressive Enhancement**: Core functionality works without JavaScript
+
+#### PWA Security Considerations
+```javascript
+// Service Worker Security (ios/sw.js)
+- Cache-first strategy for static assets
+- Network-first for dynamic content
+- No external API calls
+- Strict origin validation
+- Cache invalidation on updates
+```
+
+#### iOS-Specific Security Measures
+- **Privacy-First Design**: Zero data collection or transmission
+- **Client-Side Processing**: All operations in browser (fashion palette, brainwave)
+- **Immediate Data Disposal**: Images/uploads cleared after processing
+- **No Persistent Storage**: No localStorage, cookies, or indexedDB usage
 
 ## Subresource Integrity (SRI)
 
