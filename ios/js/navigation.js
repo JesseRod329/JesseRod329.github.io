@@ -517,17 +517,13 @@ class iOSNavigation {
                 break;
             case 'brainwave':
                 description.textContent = 'AI-powered neural activity visualization and analysis.';
-                // Directly redirect to brainwave simulator
-                setTimeout(() => {
-                    window.open('/brainwave-simulator.html', '_blank');
-                }, 100);
+                // Create launch button for brainwave simulator
+                this.addAppLink(links, '🚀 Launch Brainwave Simulator', '/brainwave-simulator.html');
                 break;
             case 'palettes':
                 description.textContent = 'Interactive color palettes with harmony generation and export tools.';
-                // Directly redirect to fashion palette generator
-                setTimeout(() => {
-                    window.open('/fashion-palette/', '_blank');
-                }, 100);
+                // Create launch button for fashion palette generator
+                this.addAppLink(links, '🎨 Launch Fashion Palette Generator', '/fashion-palette/');
                 break;
             case 'analytics':
                 description.textContent = 'Data visualization and performance analytics tools.';
