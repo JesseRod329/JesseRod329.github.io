@@ -420,6 +420,8 @@ class iOSNavigation {
             case 'terminal':
                 description.textContent = 'Command-line interface and developer tools.';
                 this.addAppLink(links, 'Open Desktop Terminal', '/desktop.html');
+                // Create full terminal interface
+                this.createTerminalInterface(placeholder);
                 break;
             case 'contact':
                 description.textContent = 'Get in touch for collaborations and projects.';
@@ -500,6 +502,202 @@ class iOSNavigation {
             this.currentApp = null;
             this.isTransitioning = false;
         }, 300);
+    }
+    
+    createTerminalInterface(container) {
+        // Load terminal CSS if not already loaded
+        if (!document.querySelector('link[href*="terminal.css"]')) {
+            const terminalCSS = document.createElement('link');
+            terminalCSS.rel = 'stylesheet';
+            terminalCSS.href = '/ios/css/terminal.css';
+            document.head.appendChild(terminalCSS);
+        }
+        
+        // Load terminal script if not already loaded
+        if (!window.iOSTerminal) {
+            const terminalScript = document.createElement('script');
+            terminalScript.src = '/ios/js/terminal.js';
+            terminalScript.onload = () => {
+                this.initializeTerminal(container);
+            };
+            document.head.appendChild(terminalScript);
+        } else {
+            this.initializeTerminal(container);
+        }
+    }
+    
+    initializeTerminal(container) {
+        // Clear the placeholder content
+        container.innerHTML = '';
+        
+        // Create terminal interface
+        const terminal = document.createElement('div');
+        terminal.className = 'ios-terminal';
+        terminal.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000000;
+            color: #00ff00;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            display: flex;
+            flex-direction: column;
+        `;
+        
+        // Terminal output area
+        const output = document.createElement('div');
+        output.className = 'ios-terminal-output';
+        output.style.cssText = `
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #000000;
+            font-size: 13px;
+            line-height: 1.3;
+        `;
+        
+        // Terminal input area
+        const inputContainer = document.createElement('div');
+        inputContainer.className = 'ios-terminal-input-container';
+        inputContainer.style.cssText = `
+            padding: 15px 20px;
+            background: #000000;
+            border-top: 1px solid #333;
+            display: flex;
+            align-items: center;
+        `;
+        
+        const prompt = document.createElement('span');
+        prompt.className = 'ios-terminal-input-prompt';
+        prompt.style.cssText = `
+            color: #00ff00;
+            font-weight: bold;
+            white-space: nowrap;
+            margin-right: 8px;
+        `;
+        
+        const input = document.createElement('input');
+        input.className = 'ios-terminal-input';
+        input.type = 'text';
+        input.placeholder = 'Type a command...';
+        input.style.cssText = `
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 13px;
+            outline: none;
+            flex: 1;
+        `;
+        
+        // Create terminal instance
+        const terminalInstance = new window.iOSTerminal();
+        
+        // Update prompt text
+        const updatePrompt = () => {
+            prompt.textContent = terminalInstance.getPrompt();
+        };
+        
+        // Render output function
+        const renderOutput = () => {
+            output.innerHTML = '';
+            terminalInstance.outputLines.forEach(line => {
+                const lineElement = document.createElement('div');
+                lineElement.className = 'ios-terminal-line';
+                lineElement.textContent = line.text; // Safe text rendering
+                
+                // Apply styling based on type
+                switch (line.type) {
+                    case 'command':
+                        lineElement.style.color = '#ffffff';
+                        break;
+                    case 'error':
+                        lineElement.style.color = '#ff4444';
+                        break;
+                    case 'success':
+                        lineElement.style.color = '#44ff44';
+                        break;
+                    case 'info':
+                        lineElement.style.color = '#4488ff';
+                        break;
+                    case 'warning':
+                        lineElement.style.color = '#ffaa44';
+                        break;
+                    default:
+                        lineElement.style.color = '#cccccc';
+                }
+                
+                output.appendChild(lineElement);
+            });
+            
+            // Scroll to bottom
+            output.scrollTop = output.scrollHeight;
+        };
+        
+        // Handle input
+        let historyIndex = -1;
+        
+        input.addEventListener('keydown', (e) => {
+            switch (e.key) {
+                case 'Enter':
+                    e.preventDefault();
+                    const command = input.value.trim();
+                    if (command) {
+                        terminalInstance.processCommand(command);
+                        input.value = '';
+                        updatePrompt();
+                        renderOutput();
+                        historyIndex = -1;
+                    }
+                    break;
+                    
+                case 'ArrowUp':
+                    e.preventDefault();
+                    const prevCommand = terminalInstance.navigateHistory(-1);
+                    if (prevCommand !== '') {
+                        input.value = prevCommand;
+                    }
+                    break;
+                    
+                case 'ArrowDown':
+                    e.preventDefault();
+                    const nextCommand = terminalInstance.navigateHistory(1);
+                    input.value = nextCommand;
+                    break;
+                    
+                case 'Tab':
+                    e.preventDefault();
+                    const partial = input.value;
+                    const suggestions = terminalInstance.getCommandSuggestions(partial);
+                    if (suggestions.length === 1) {
+                        input.value = suggestions[0];
+                    } else if (suggestions.length > 1) {
+                        terminalInstance.addOutput(`Available: ${suggestions.join(', ')}`, 'info');
+                        renderOutput();
+                    }
+                    break;
+            }
+        });
+        
+        // Assemble terminal
+        inputContainer.appendChild(prompt);
+        inputContainer.appendChild(input);
+        terminal.appendChild(output);
+        terminal.appendChild(inputContainer);
+        
+        // Replace the app content with terminal
+        const appContent = container.closest('.ios-app-content');
+        if (appContent) {
+            appContent.innerHTML = '';
+            appContent.appendChild(terminal);
+            
+            // Focus input and initial render
+            updatePrompt();
+            renderOutput();
+            input.focus();
+        }
     }
     
     createAppViews() {
