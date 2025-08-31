@@ -398,6 +398,15 @@ class iOSNavigation {
                 break;
             case 'design':
                 description.textContent = 'Creative design tools and visual identity systems.';
+                this.addAppLink(links, 'Color Palettes', '#', () => {
+                    // Launch palettes app from design
+                    setTimeout(() => {
+                        this.goBack();
+                        setTimeout(() => {
+                            this.launchApp('palettes');
+                        }, 300);
+                    }, 100);
+                });
                 break;
             case 'resume':
                 description.textContent = 'Professional experience and career documentation.';
@@ -411,8 +420,10 @@ class iOSNavigation {
                 this.addAppLink(links, 'Launch Brainwave Simulator', '/brainwave-simulator.html');
                 break;
             case 'palettes':
-                description.textContent = 'Color palette generation and fashion color analysis.';
-                this.addAppLink(links, 'Color Palette Generator', '/fashion-palette/');
+                description.textContent = 'Interactive color palettes with harmony generation and export tools.';
+                this.addAppLink(links, 'Fashion Palette Generator', '/fashion-palette/');
+                // Create full palettes interface
+                this.createPalettesInterface(placeholder);
                 break;
             case 'analytics':
                 description.textContent = 'Data visualization and performance analytics tools.';
@@ -443,12 +454,21 @@ class iOSNavigation {
         return placeholder;
     }
     
-    addAppLink(container, text, url) {
+    addAppLink(container, text, url, callback = null) {
         const link = document.createElement('a');
         link.href = url;
         link.textContent = text;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
+        
+        if (callback) {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                callback();
+            });
+        } else {
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+        }
+        
         link.style.cssText = `
             display: inline-block;
             padding: 12px 24px;
@@ -459,6 +479,7 @@ class iOSNavigation {
             font-weight: 600;
             transition: all 0.2s ease;
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            cursor: pointer;
         `;
         
         link.addEventListener('mouseenter', () => {
@@ -698,6 +719,433 @@ class iOSNavigation {
             renderOutput();
             input.focus();
         }
+    }
+    
+    createPalettesInterface(container) {
+        // Load palettes CSS if not already loaded
+        if (!document.querySelector('link[href*="palettes.css"]')) {
+            const palettesCSS = document.createElement('link');
+            palettesCSS.rel = 'stylesheet';
+            palettesCSS.href = '/ios/css/palettes.css';
+            document.head.appendChild(palettesCSS);
+        }
+        
+        // Load palettes script if not already loaded
+        if (!window.iOSColorPalettes) {
+            const palettesScript = document.createElement('script');
+            palettesScript.src = '/ios/js/palettes.js';
+            palettesScript.onload = () => {
+                this.initializePalettes(container);
+            };
+            document.head.appendChild(palettesScript);
+        } else {
+            this.initializePalettes(container);
+        }
+    }
+    
+    initializePalettes(container) {
+        // Create palettes instance
+        const palettesInstance = new window.iOSColorPalettes();
+        
+        // Clear the placeholder content and replace with palettes app
+        const appContent = container.closest('.ios-app-content');
+        if (appContent) {
+            appContent.innerHTML = '';
+            
+            // Create main palettes container
+            const palettesContainer = document.createElement('div');
+            palettesContainer.className = 'ios-palettes-content';
+            palettesContainer.style.cssText = `
+                flex: 1;
+                overflow-y: auto;
+                padding: 20px;
+                background: var(--bg-color);
+            `;
+            
+            // Create sections
+            this.createHarmonySection(palettesContainer, palettesInstance);
+            this.createPredefinedPalettes(palettesContainer, palettesInstance);
+            this.createAccessibilitySection(palettesContainer, palettesInstance);
+            this.createExportModal(appContent, palettesInstance);
+            
+            appContent.appendChild(palettesContainer);
+        }
+    }
+    
+    createHarmonySection(container, palettesInstance) {
+        const section = document.createElement('div');
+        section.className = 'ios-palette-section';
+        
+        const title = document.createElement('h2');
+        title.className = 'ios-section-title';
+        title.textContent = 'Color Harmony Generator';
+        
+        const subtitle = document.createElement('p');
+        subtitle.className = 'ios-section-subtitle';
+        subtitle.textContent = 'Enter a base color to generate harmonious color schemes';
+        
+        const harmonyCard = document.createElement('div');
+        harmonyCard.className = 'ios-harmony-section';
+        
+        // Controls
+        const controls = document.createElement('div');
+        controls.className = 'ios-harmony-controls';
+        
+        const input = document.createElement('input');
+        input.className = 'ios-harmony-input';
+        input.type = 'text';
+        input.placeholder = '#007AFF';
+        input.value = '#007AFF';
+        
+        const generateBtn = document.createElement('button');
+        generateBtn.className = 'ios-harmony-button';
+        generateBtn.textContent = 'Generate';
+        
+        controls.appendChild(input);
+        controls.appendChild(generateBtn);
+        
+        // Harmony types
+        const types = document.createElement('div');
+        types.className = 'ios-harmony-types';
+        
+        const harmonyTypes = [
+            { name: 'Complementary', key: 'complementary' },
+            { name: 'Triadic', key: 'triadic' },
+            { name: 'Analogous', key: 'analogous' },
+            { name: 'Monochromatic', key: 'monochromatic' }
+        ];
+        
+        let selectedType = 'complementary';
+        
+        harmonyTypes.forEach(type => {
+            const btn = document.createElement('button');
+            btn.className = 'ios-harmony-type';
+            btn.textContent = type.name;
+            if (type.key === selectedType) btn.classList.add('active');
+            
+            btn.addEventListener('click', () => {
+                types.querySelectorAll('.ios-harmony-type').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                selectedType = type.key;
+                generateHarmony();
+            });
+            
+            types.appendChild(btn);
+        });
+        
+        // Result display
+        const result = document.createElement('div');
+        result.className = 'ios-harmony-result';
+        
+        const generateHarmony = () => {
+            const baseColor = input.value.trim();
+            if (!/^#[0-9A-F]{6}$/i.test(baseColor)) return;
+            
+            let colors = [];
+            
+            switch (selectedType) {
+                case 'complementary':
+                    colors = palettesInstance.generateComplementary(baseColor);
+                    break;
+                case 'triadic':
+                    colors = palettesInstance.generateTriadic(baseColor);
+                    break;
+                case 'analogous':
+                    colors = palettesInstance.generateAnalogous(baseColor);
+                    break;
+                case 'monochromatic':
+                    colors = palettesInstance.generateMonochromatic(baseColor);
+                    break;
+            }
+            
+            result.innerHTML = '';
+            colors.forEach(color => {
+                const swatch = document.createElement('div');
+                swatch.className = 'ios-color-swatch';
+                swatch.style.backgroundColor = color;
+                swatch.style.flex = '1';
+                swatch.style.cursor = 'pointer';
+                swatch.style.position = 'relative';
+                
+                const hex = document.createElement('div');
+                hex.className = 'ios-color-hex';
+                hex.textContent = color;
+                swatch.appendChild(hex);
+                
+                swatch.addEventListener('click', () => {
+                    palettesInstance.copyColor(color, swatch);
+                });
+                
+                result.appendChild(swatch);
+            });
+        };
+        
+        generateBtn.addEventListener('click', generateHarmony);
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') generateHarmony();
+        });
+        
+        // Initial generation
+        generateHarmony();
+        
+        harmonyCard.appendChild(controls);
+        harmonyCard.appendChild(types);
+        harmonyCard.appendChild(result);
+        
+        section.appendChild(title);
+        section.appendChild(subtitle);
+        section.appendChild(harmonyCard);
+        
+        container.appendChild(section);
+    }
+    
+    createPredefinedPalettes(container, palettesInstance) {
+        Object.entries(palettesInstance.predefinedPalettes).forEach(([category, palettes]) => {
+            const section = document.createElement('div');
+            section.className = 'ios-palette-section';
+            
+            const title = document.createElement('h2');
+            title.className = 'ios-section-title';
+            title.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+            
+            const grid = document.createElement('div');
+            grid.className = 'ios-palette-grid';
+            
+            palettes.forEach(palette => {
+                const card = document.createElement('div');
+                card.className = 'ios-palette-card';
+                
+                const header = document.createElement('div');
+                header.className = 'ios-palette-header';
+                
+                const name = document.createElement('h3');
+                name.className = 'ios-palette-name';
+                name.textContent = palette.name;
+                
+                const desc = document.createElement('p');
+                desc.className = 'ios-palette-description';
+                desc.textContent = palette.description;
+                
+                header.appendChild(name);
+                header.appendChild(desc);
+                
+                const colors = document.createElement('div');
+                colors.className = 'ios-palette-colors';
+                
+                palette.colors.forEach(color => {
+                    const swatch = document.createElement('div');
+                    swatch.className = 'ios-color-swatch';
+                    swatch.style.backgroundColor = color;
+                    
+                    const hex = document.createElement('div');
+                    hex.className = 'ios-color-hex';
+                    hex.textContent = color;
+                    swatch.appendChild(hex);
+                    
+                    swatch.addEventListener('click', () => {
+                        palettesInstance.copyColor(color, swatch);
+                    });
+                    
+                    colors.appendChild(swatch);
+                });
+                
+                const actions = document.createElement('div');
+                actions.className = 'ios-palette-actions';
+                
+                const exportBtn = document.createElement('button');
+                exportBtn.className = 'ios-export-button';
+                exportBtn.textContent = 'Export';
+                exportBtn.addEventListener('click', () => {
+                    palettesInstance.showExportModal([palette]);
+                });
+                
+                actions.appendChild(exportBtn);
+                
+                card.appendChild(header);
+                card.appendChild(colors);
+                card.appendChild(actions);
+                
+                grid.appendChild(card);
+            });
+            
+            section.appendChild(title);
+            section.appendChild(grid);
+            container.appendChild(section);
+        });
+    }
+    
+    createAccessibilitySection(container, palettesInstance) {
+        const section = document.createElement('div');
+        section.className = 'ios-palette-section';
+        
+        const title = document.createElement('h2');
+        title.className = 'ios-section-title';
+        title.textContent = 'Accessibility Checker';
+        
+        const subtitle = document.createElement('p');
+        subtitle.className = 'ios-section-subtitle';
+        subtitle.textContent = 'Check color contrast ratios for accessibility compliance';
+        
+        const checker = document.createElement('div');
+        checker.className = 'ios-accessibility-checker';
+        
+        // Common color pairs to check
+        const colorPairs = [
+            { fg: '#000000', bg: '#FFFFFF', name: 'Black on White' },
+            { fg: '#FFFFFF', bg: '#000000', name: 'White on Black' },
+            { fg: '#007AFF', bg: '#FFFFFF', name: 'iOS Blue on White' },
+            { fg: '#FFFFFF', bg: '#007AFF', name: 'White on iOS Blue' },
+            { fg: '#00FF00', bg: '#000000', name: 'Terminal Green on Black' }
+        ];
+        
+        colorPairs.forEach(pair => {
+            const pairDiv = document.createElement('div');
+            pairDiv.className = 'ios-contrast-pair';
+            
+            const colors = document.createElement('div');
+            colors.className = 'ios-contrast-colors';
+            
+            const fgSwatch = document.createElement('div');
+            fgSwatch.className = 'ios-contrast-color';
+            fgSwatch.style.backgroundColor = pair.fg;
+            
+            const bgSwatch = document.createElement('div');
+            bgSwatch.className = 'ios-contrast-color';
+            bgSwatch.style.backgroundColor = pair.bg;
+            
+            colors.appendChild(fgSwatch);
+            colors.appendChild(bgSwatch);
+            
+            const info = document.createElement('div');
+            info.className = 'ios-contrast-info';
+            
+            const ratio = palettesInstance.calculateContrast(pair.fg, pair.bg);
+            const level = palettesInstance.getContrastLevel(ratio);
+            
+            const ratioSpan = document.createElement('div');
+            ratioSpan.className = 'ios-contrast-ratio';
+            ratioSpan.textContent = `${pair.name}: ${ratio.toFixed(2)}:1`;
+            
+            const levelSpan = document.createElement('span');
+            levelSpan.className = `ios-contrast-level ios-contrast-${level.toLowerCase()}`;
+            levelSpan.textContent = level;
+            
+            info.appendChild(ratioSpan);
+            info.appendChild(levelSpan);
+            
+            pairDiv.appendChild(colors);
+            pairDiv.appendChild(info);
+            
+            checker.appendChild(pairDiv);
+        });
+        
+        section.appendChild(title);
+        section.appendChild(subtitle);
+        section.appendChild(checker);
+        
+        container.appendChild(section);
+    }
+    
+    createExportModal(container, palettesInstance) {
+        const modal = document.createElement('div');
+        modal.className = 'ios-export-modal';
+        
+        const content = document.createElement('div');
+        content.className = 'ios-export-content';
+        
+        const header = document.createElement('div');
+        header.className = 'ios-export-header';
+        
+        const title = document.createElement('h3');
+        title.className = 'ios-export-title';
+        title.textContent = 'Export Palette';
+        
+        const subtitle = document.createElement('p');
+        subtitle.className = 'ios-export-subtitle';
+        subtitle.textContent = 'Choose your export format';
+        
+        header.appendChild(title);
+        header.appendChild(subtitle);
+        
+        const formats = document.createElement('div');
+        formats.className = 'ios-export-formats';
+        
+        const formatOptions = [
+            { key: 'css', name: 'CSS Variables', desc: 'CSS custom properties for web development', icon: 'CSS' },
+            { key: 'json', name: 'JSON', desc: 'Structured data for applications', icon: 'JSON' },
+            { key: 'text', name: 'Text', desc: 'Plain text format for documentation', icon: 'TXT' },
+            { key: 'swift', name: 'Swift', desc: 'iOS UIColor extensions for Swift', icon: 'SWIFT' }
+        ];
+        
+        formatOptions.forEach(format => {
+            const option = document.createElement('div');
+            option.className = 'ios-format-option';
+            if (format.key === 'css') option.classList.add('selected');
+            
+            const icon = document.createElement('div');
+            icon.className = 'ios-format-icon';
+            icon.textContent = format.icon;
+            
+            const info = document.createElement('div');
+            info.className = 'ios-format-info';
+            
+            const name = document.createElement('div');
+            name.className = 'ios-format-name';
+            name.textContent = format.name;
+            
+            const desc = document.createElement('div');
+            desc.className = 'ios-format-desc';
+            desc.textContent = format.desc;
+            
+            info.appendChild(name);
+            info.appendChild(desc);
+            
+            option.appendChild(icon);
+            option.appendChild(info);
+            
+            option.addEventListener('click', () => {
+                formats.querySelectorAll('.ios-format-option').forEach(o => o.classList.remove('selected'));
+                option.classList.add('selected');
+                palettesInstance.selectedExportFormat = format.key;
+            });
+            
+            formats.appendChild(option);
+        });
+        
+        const actions = document.createElement('div');
+        actions.className = 'ios-export-actions';
+        
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'ios-export-action ios-export-cancel';
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.addEventListener('click', () => {
+            palettesInstance.hideExportModal();
+        });
+        
+        const confirmBtn = document.createElement('button');
+        confirmBtn.className = 'ios-export-action ios-export-confirm';
+        confirmBtn.textContent = 'Export';
+        confirmBtn.addEventListener('click', () => {
+            palettesInstance.handleExport();
+        });
+        
+        actions.appendChild(cancelBtn);
+        actions.appendChild(confirmBtn);
+        
+        content.appendChild(header);
+        content.appendChild(formats);
+        content.appendChild(actions);
+        
+        modal.appendChild(content);
+        
+        // Close modal when clicking outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                palettesInstance.hideExportModal();
+            }
+        });
+        
+        container.appendChild(modal);
     }
     
     createAppViews() {
