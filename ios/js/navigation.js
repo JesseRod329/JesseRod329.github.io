@@ -169,11 +169,11 @@ class iOSNavigation {
                     this.launchApp(appClass);
                 });
                 
-                // Fallback for mobile - ensure click events work
+                // Touch feedback only - don't prevent default scrolling
                 app.addEventListener('touchend', (e) => {
-                    // Prevent default to avoid double-firing with click
-                    e.preventDefault();
-                }, { passive: false });
+                    // Don't prevent default - allow scrolling to work
+                    // Only handle touch feedback
+                });
                 
                 // Add touch feedback for mobile
                 let touchStartTime = 0;
@@ -252,11 +252,11 @@ class iOSNavigation {
                     this.launchApp(appClass);
                 });
                 
-                // Fallback for mobile - ensure click events work
+                // Touch feedback only - don't prevent default scrolling
                 app.addEventListener('touchend', (e) => {
-                    // Prevent default to avoid double-firing with click
-                    e.preventDefault();
-                }, { passive: false });
+                    // Don't prevent default - allow scrolling to work
+                    // Only handle touch feedback
+                });
                 
                 // Add touch feedback for mobile
                 let dockTouchStartTime = 0;
@@ -661,6 +661,16 @@ class iOSNavigation {
         link.addEventListener('touchend', () => {
             link.style.transform = 'scale(1)';
             link.style.boxShadow = '0 4px 20px rgba(0, 122, 255, 0.3)';
+        });
+        
+        // Debug click events
+        link.addEventListener('click', (e) => {
+            console.log('Launch button clicked:', text, 'URL:', url);
+            if (!callback) {
+                console.log('Opening in new tab:', url);
+                // Force open in new tab
+                window.open(url, '_blank');
+            }
         });
         
         // Hover effects for desktop
