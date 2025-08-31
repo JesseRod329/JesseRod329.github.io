@@ -163,41 +163,18 @@ class iOSNavigation {
                     this.launchApp(appClass);
                 });
                 
-                // Touch feedback and app launching for mobile
-                let touchStartTime = 0;
-                let touchStartX = 0;
-                let touchStartY = 0;
-                
+                // Simple touch handling for mobile
                 app.addEventListener('touchstart', (e) => {
                     console.log('Touch start:', appClass);
-                    touchStartTime = Date.now();
-                    touchStartX = e.touches[0].clientX;
-                    touchStartY = e.touches[0].clientY;
                     this.addTouchFeedback(app);
                 });
                 
                 app.addEventListener('touchend', (e) => {
                     console.log('Touch end:', appClass);
                     this.removeTouchFeedback(app);
-                    
-                    const touchEndTime = Date.now();
-                    const touchDuration = touchEndTime - touchStartTime;
-                    const touchEndX = e.changedTouches[0].clientX;
-                    const touchEndY = e.changedTouches[0].clientY;
-                    const touchDistance = Math.sqrt(
-                        Math.pow(touchEndX - touchStartX, 2) + 
-                        Math.pow(touchEndY - touchStartY, 2)
-                    );
-                    
-                    // Only launch app if it's a reasonable tap (not too long, not too much movement)
-                    if (touchDuration < 500 && touchDistance < 30) {
-                        console.log('Valid tap detected, launching app:', appClass);
-                        setTimeout(() => {
-                            this.launchApp(appClass);
-                        }, 100);
-                    } else {
-                        console.log('Touch gesture ignored (duration:', touchDuration, 'ms, distance:', touchDistance, 'px)');
-                    }
+                    // Launch app immediately on touch end
+                    console.log('Launching app from touch:', appClass);
+                    this.launchApp(appClass);
                 });
                 
                 // Add mouse events for desktop
@@ -240,42 +217,18 @@ class iOSNavigation {
                     this.launchApp(appClass);
                 });
                 
-                // Touch feedback only - don't prevent default scrolling
-                // Touch feedback and app launching for mobile
-                let dockTouchStartTime = 0;
-                let dockTouchStartX = 0;
-                let dockTouchStartY = 0;
-                
+                // Simple touch handling for mobile
                 app.addEventListener('touchstart', (e) => {
                     console.log('Dock touch start:', appClass);
-                    dockTouchStartTime = Date.now();
-                    dockTouchStartX = e.touches[0].clientX;
-                    dockTouchStartY = e.touches[0].clientY;
                     this.addTouchFeedback(app);
                 });
                 
                 app.addEventListener('touchend', (e) => {
                     console.log('Dock touch end:', appClass);
                     this.removeTouchFeedback(app);
-                    
-                    const touchEndTime = Date.now();
-                    const touchDuration = touchEndTime - dockTouchStartTime;
-                    const touchEndX = e.changedTouches[0].clientX;
-                    const touchEndY = e.changedTouches[0].clientY;
-                    const touchDistance = Math.sqrt(
-                        Math.pow(touchEndX - dockTouchStartX, 2) + 
-                        Math.pow(touchEndY - dockTouchStartY, 2)
-                    );
-                    
-                    // Only launch app if it's a reasonable tap (not too long, not too much movement)
-                    if (touchDuration < 500 && touchDistance < 30) {
-                        console.log('Valid dock tap detected, launching app:', appClass);
-                        setTimeout(() => {
-                            this.launchApp(appClass);
-                        }, 100);
-                    } else {
-                        console.log('Dock touch gesture ignored (duration:', touchDuration, 'ms, distance:', touchDistance, 'px)');
-                    }
+                    // Launch app immediately on touch end
+                    console.log('Launching dock app from touch:', appClass);
+                    this.launchApp(appClass);
                 });
                 
                 // Add mouse events for desktop
@@ -408,25 +361,28 @@ class iOSNavigation {
             height: 88px;
             background: ${appConfig.color};
             display: flex;
-            align-items: flex-end;
-            padding: 0 20px 12px 20px;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 12px 20px;
             position: relative;
         `;
         
-        // Back button
+        // Back button - positioned at top
         const backButton = document.createElement('button');
         backButton.className = 'ios-back-button';
         backButton.style.cssText = `
             background: none;
             border: none;
             color: white;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            padding: 8px;
+            padding: 8px 12px;
             border-radius: 8px;
             transition: background-color 0.2s ease;
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            align-self: flex-start;
+            margin-bottom: 8px;
         `;
         backButton.textContent = '← Back';
         
@@ -442,19 +398,16 @@ class iOSNavigation {
             backButton.style.backgroundColor = 'transparent';
         });
         
-        // App title
+        // App title - positioned below back button
         const title = document.createElement('h1');
         title.style.cssText = `
             color: white;
-            font-size: 34px;
+            font-size: 28px;
             font-weight: 700;
             margin: 0;
-            position: absolute;
-            left: 20px;
-            bottom: 12px;
-            right: 20px;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            align-self: flex-start;
         `;
         title.textContent = appConfig.title;
         
