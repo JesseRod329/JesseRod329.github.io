@@ -169,13 +169,7 @@ class iOSNavigation {
                     this.launchApp(appClass);
                 });
                 
-                // Touch feedback only - don't prevent default scrolling
-                app.addEventListener('touchend', (e) => {
-                    // Don't prevent default - allow scrolling to work
-                    // Only handle touch feedback
-                });
-                
-                // Add touch feedback for mobile
+                // Touch feedback and app launching for mobile
                 let touchStartTime = 0;
                 let touchStartX = 0;
                 let touchStartY = 0;
@@ -253,12 +247,7 @@ class iOSNavigation {
                 });
                 
                 // Touch feedback only - don't prevent default scrolling
-                app.addEventListener('touchend', (e) => {
-                    // Don't prevent default - allow scrolling to work
-                    // Only handle touch feedback
-                });
-                
-                // Add touch feedback for mobile
+                // Touch feedback and app launching for mobile
                 let dockTouchStartTime = 0;
                 let dockTouchStartX = 0;
                 let dockTouchStartY = 0;
