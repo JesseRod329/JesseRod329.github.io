@@ -620,45 +620,8 @@
 
 <!-- Footer -->
 <footer class="footer">
-  <a href="/classic.html">View classic version</a> | 
-  <a href="/desktop.html">Desktop version</a> | 
-  <a href="/ios/">Mobile version</a>
+  <a href="/classic.html">View classic version</a>
 </footer>
-
-<!-- Mobile Detection (JavaScript) -->
-<script src="/assets/mobile-detect.js"></script>
-
-<!-- Mobile Detection Fallback (No JavaScript) -->
-<noscript>
-  <div style="display: none;">
-    <meta http-equiv="refresh" content="0; url=/ios/">
-  </div>
-  <style>
-    @media (max-width: 767px) {
-      .mobile-redirect-notice {
-        display: block !important;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        background: #007AFF;
-        color: white;
-        text-align: center;
-        padding: 1rem;
-        z-index: 10000;
-        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      }
-      .mobile-redirect-notice a {
-        color: white;
-        text-decoration: underline;
-        font-weight: bold;
-      }
-    }
-  </style>
-  <div class="mobile-redirect-notice" style="display: none;">
-    📱 <a href="/ios/">Tap here for mobile-optimized version</a>
-  </div>
-</noscript>
 
 <script src="/assets/cli.js" defer></script>
 </body>
