@@ -169,6 +169,12 @@ class iOSNavigation {
                     this.launchApp(appClass);
                 });
                 
+                // Fallback for mobile - ensure click events work
+                app.addEventListener('touchend', (e) => {
+                    // Prevent default to avoid double-firing with click
+                    e.preventDefault();
+                }, { passive: false });
+                
                 // Add touch feedback for mobile
                 let touchStartTime = 0;
                 let touchStartX = 0;
@@ -195,8 +201,8 @@ class iOSNavigation {
                         Math.pow(touchEndY - touchStartY, 2)
                     );
                     
-                    // Only launch app if it's a proper tap (short duration, small movement)
-                    if (touchDuration < 300 && touchDistance < 10) {
+                    // Only launch app if it's a reasonable tap (not too long, not too much movement)
+                    if (touchDuration < 500 && touchDistance < 30) {
                         console.log('Valid tap detected, launching app:', appClass);
                         setTimeout(() => {
                             this.launchApp(appClass);
@@ -246,6 +252,12 @@ class iOSNavigation {
                     this.launchApp(appClass);
                 });
                 
+                // Fallback for mobile - ensure click events work
+                app.addEventListener('touchend', (e) => {
+                    // Prevent default to avoid double-firing with click
+                    e.preventDefault();
+                }, { passive: false });
+                
                 // Add touch feedback for mobile
                 let dockTouchStartTime = 0;
                 let dockTouchStartX = 0;
@@ -272,8 +284,8 @@ class iOSNavigation {
                         Math.pow(touchEndY - dockTouchStartY, 2)
                     );
                     
-                    // Only launch app if it's a proper tap (short duration, small movement)
-                    if (touchDuration < 300 && touchDistance < 10) {
+                    // Only launch app if it's a reasonable tap (not too long, not too much movement)
+                    if (touchDuration < 500 && touchDistance < 30) {
                         console.log('Valid dock tap detected, launching app:', appClass);
                         setTimeout(() => {
                             this.launchApp(appClass);
