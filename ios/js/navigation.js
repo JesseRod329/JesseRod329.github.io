@@ -576,12 +576,12 @@ class iOSNavigation {
                 description.textContent = 'Development utilities and productivity enhancers.';
                 break;
             case 'brainwave':
-                description.textContent = 'AI-powered neural activity visualization and analysis.';
+                description.textContent = 'AI-powered neural activity visualization and analysis. Tap the button below to launch the full Brainwave Simulator app.';
                 // Create launch button for brainwave simulator
                 this.addAppLink(links, '🚀 Launch Brainwave Simulator', '/brainwave-simulator.html');
                 break;
             case 'palettes':
-                description.textContent = 'Interactive color palettes with harmony generation and export tools.';
+                description.textContent = 'Interactive color palettes with harmony generation and export tools. Tap the button below to launch the full Fashion Palette Generator.';
                 // Create launch button for fashion palette generator
                 this.addAppLink(links, '🎨 Launch Fashion Palette Generator', '/fashion-palette/');
                 break;
@@ -637,25 +637,41 @@ class iOSNavigation {
         
         link.style.cssText = `
             display: inline-block;
-            padding: 12px 24px;
-            background: #007AFF;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
             color: white;
             text-decoration: none;
-            border-radius: 12px;
-            font-weight: 600;
-            transition: all 0.2s ease;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
             cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
+            text-align: center;
+            min-width: 200px;
         `;
         
+        // Touch feedback for mobile
+        link.addEventListener('touchstart', () => {
+            link.style.transform = 'scale(0.95)';
+            link.style.boxShadow = '0 2px 10px rgba(0, 122, 255, 0.4)';
+        });
+        
+        link.addEventListener('touchend', () => {
+            link.style.transform = 'scale(1)';
+            link.style.boxShadow = '0 4px 20px rgba(0, 122, 255, 0.3)';
+        });
+        
+        // Hover effects for desktop
         link.addEventListener('mouseenter', () => {
-            link.style.backgroundColor = '#0056CC';
-            link.style.transform = 'scale(1.02)';
+            link.style.transform = 'translateY(-2px) scale(1.02)';
+            link.style.boxShadow = '0 8px 30px rgba(0, 122, 255, 0.4)';
         });
         
         link.addEventListener('mouseleave', () => {
-            link.style.backgroundColor = '#007AFF';
-            link.style.transform = 'scale(1)';
+            link.style.transform = 'translateY(0) scale(1)';
+            link.style.boxShadow = '0 4px 20px rgba(0, 122, 255, 0.3)';
         });
         
         container.appendChild(link);
