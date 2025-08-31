@@ -9,6 +9,8 @@ class iOSNavigation {
         this.currentApp = null;
         this.navigationStack = [];
         this.isTransitioning = false;
+        this.loadedModules = new Set();
+        this.loadingModules = new Map();
         
         // App configurations
         this.apps = {
@@ -1291,6 +1293,68 @@ class iOSNavigation {
     createAppViews() {
         // All app views are created dynamically when launched
         // This method is here for future expansion
+    }
+    
+    /**
+     * Lazy load module with caching and error handling
+     */
+    async lazyLoadModule(moduleName, cssPath, jsPath) {
+        const moduleKey = `${moduleName}-module`;
+        
+        // Return cached promise if already loading
+        if (this.loadingModules.has(moduleKey)) {
+            return this.loadingModules.get(moduleKey);
+        }
+        
+        // Return immediately if already loaded
+        if (this.loadedModules.has(moduleKey)) {
+            return Promise.resolve();
+        }
+        
+        // Create loading promise
+        const loadingPromise = this.loadModuleFiles(cssPath, jsPath, moduleKey);
+        this.loadingModules.set(moduleKey, loadingPromise);
+        
+        try {
+            await loadingPromise;
+            this.loadedModules.add(moduleKey);
+            this.loadingModules.delete(moduleKey);
+        } catch (error) {
+            this.loadingModules.delete(moduleKey);
+            throw error;
+        }
+    }
+    
+    /**
+     * Load CSS and JS files for a module
+     */
+    async loadModuleFiles(cssPath, jsPath, moduleKey) {
+        const promises = [];
+        
+        // Load CSS if provided and not already loaded
+        if (cssPath && !document.querySelector(`link[href*="${cssPath}"]`)) {
+            promises.push(new Promise((resolve, reject) => {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = cssPath;
+                link.onload = resolve;
+                link.onerror = reject;
+                document.head.appendChild(link);
+            }));
+        }
+        
+        // Load JS if provided and not already loaded
+        if (jsPath && !document.querySelector(`script[src*="${jsPath}"]`)) {
+            promises.push(new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = jsPath;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            }));
+        }
+        
+        await Promise.all(promises);
     }
 }
 
