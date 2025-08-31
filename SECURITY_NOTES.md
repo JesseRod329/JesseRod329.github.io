@@ -50,22 +50,31 @@ The site currently uses a slightly relaxed policy for compatibility with GitHub 
 
 The iOS Portfolio (`/ios/`) implements enhanced security measures beyond the main portfolio:
 
-### iOS-Specific CSP Policy
+### Relaxed CSP Policy for Full Functionality
+**Note**: Policies have been relaxed to ensure all features work properly, including mobile detection, dynamic content loading, and interactive apps.
+
 ```html
 <meta http-equiv="Content-Security-Policy" content="
-  default-src 'self'; 
-  style-src 'unsafe-inline'; 
-  img-src 'self' data:; 
-  font-src 'self'; 
-  connect-src 'none'; 
-  script-src 'self'; 
+  default-src 'self' 'unsafe-inline' 'unsafe-eval'; 
+  style-src 'self' 'unsafe-inline'; 
+  img-src 'self' data: blob:; 
+  font-src 'self' data:; 
+  connect-src 'self'; 
+  script-src 'self' 'unsafe-inline' 'unsafe-eval'; 
   object-src 'none'; 
-  media-src 'none'; 
-  child-src 'none'; 
-  form-action 'none'; 
+  media-src 'self'; 
+  child-src 'self'; 
+  form-action 'self'; 
   base-uri 'self';
 ">
 ```
+
+**Key Changes from Strict Policy**:
+- Added `'unsafe-inline'` and `'unsafe-eval'` for scripts to support dynamic features
+- Enabled `connect-src 'self'` for AJAX/fetch requests
+- Added `blob:` support for image processing
+- Enabled `media-src` for potential audio/video content
+- Added `child-src` and `form-action` for complete functionality
 
 ### SRI Implementation for iOS Scripts
 All iOS JavaScript files include Subresource Integrity hashes:
