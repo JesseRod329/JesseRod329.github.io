@@ -85,10 +85,18 @@ class iOSNavigation {
     }
     
     init() {
+        console.log('iOSNavigation: Initializing...');
+        console.log('Document ready state:', document.readyState);
+        
         // Wait for DOM to be ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.setupNavigation());
+            console.log('DOM still loading, waiting for DOMContentLoaded');
+            document.addEventListener('DOMContentLoaded', () => {
+                console.log('DOMContentLoaded fired, setting up navigation');
+                this.setupNavigation();
+            });
         } else {
+            console.log('DOM already ready, setting up navigation immediately');
             this.setupNavigation();
         }
     }
@@ -142,47 +150,107 @@ class iOSNavigation {
     setupAppTapHandlers() {
         // Grid apps
         const gridApps = document.querySelectorAll('.ios-app');
+        console.log('Setting up app handlers for', gridApps.length, 'grid apps');
+        
         gridApps.forEach(app => {
             const appClass = Array.from(app.classList).find(cls => cls !== 'ios-app');
+            console.log('Processing app:', appClass, 'Config exists:', !!this.apps[appClass]);
+            
             if (appClass && this.apps[appClass]) {
+                // Ensure the app is clickable
+                app.style.cursor = 'pointer';
+                app.style.userSelect = 'none';
+                app.style.webkitUserSelect = 'none';
+                
                 app.addEventListener('click', (e) => {
                     e.preventDefault();
+                    e.stopPropagation();
+                    console.log('App clicked:', appClass);
                     this.launchApp(appClass);
                 });
                 
-                // Add touch feedback
+                // Add touch feedback for mobile
                 app.addEventListener('touchstart', (e) => {
                     e.preventDefault();
+                    console.log('Touch start:', appClass);
                     this.addTouchFeedback(app);
                 });
                 
                 app.addEventListener('touchend', (e) => {
                     e.preventDefault();
+                    console.log('Touch end:', appClass);
                     this.removeTouchFeedback(app);
                 });
+                
+                // Add mouse events for desktop
+                app.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    this.addTouchFeedback(app);
+                });
+                
+                app.addEventListener('mouseup', (e) => {
+                    e.preventDefault();
+                    this.removeTouchFeedback(app);
+                });
+                
+                app.addEventListener('mouseleave', (e) => {
+                    this.removeTouchFeedback(app);
+                });
+                
+                console.log('Added handlers for app:', appClass);
             }
         });
         
         // Dock apps
         const dockApps = document.querySelectorAll('.ios-dock-app');
+        console.log('Setting up dock handlers for', dockApps.length, 'dock apps');
+        
         dockApps.forEach(app => {
             const appClass = Array.from(app.classList).find(cls => cls !== 'ios-dock-app');
+            console.log('Processing dock app:', appClass, 'Config exists:', !!this.apps[appClass]);
+            
             if (appClass && this.apps[appClass]) {
+                // Ensure the dock app is clickable
+                app.style.cursor = 'pointer';
+                app.style.userSelect = 'none';
+                app.style.webkitUserSelect = 'none';
+                
                 app.addEventListener('click', (e) => {
                     e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Dock app clicked:', appClass);
                     this.launchApp(appClass);
                 });
                 
-                // Add touch feedback
+                // Add touch feedback for mobile
                 app.addEventListener('touchstart', (e) => {
                     e.preventDefault();
+                    console.log('Dock touch start:', appClass);
                     this.addTouchFeedback(app);
                 });
                 
                 app.addEventListener('touchend', (e) => {
                     e.preventDefault();
+                    console.log('Dock touch end:', appClass);
                     this.removeTouchFeedback(app);
                 });
+                
+                // Add mouse events for desktop
+                app.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    this.addTouchFeedback(app);
+                });
+                
+                app.addEventListener('mouseup', (e) => {
+                    e.preventDefault();
+                    this.removeTouchFeedback(app);
+                });
+                
+                app.addEventListener('mouseleave', (e) => {
+                    this.removeTouchFeedback(app);
+                });
+                
+                console.log('Added dock handlers for app:', appClass);
             }
         });
     }
@@ -209,23 +277,40 @@ class iOSNavigation {
     }
     
     addTouchFeedback(element) {
-        element.style.transform = 'scale(0.95)';
-        element.style.opacity = '0.7';
+        console.log('Adding touch feedback to element');
+        element.style.transform = 'scale(0.9)';
+        element.style.opacity = '0.6';
+        element.style.transition = 'all 0.1s ease';
+        element.style.filter = 'brightness(0.8)';
     }
     
     removeTouchFeedback(element) {
+        console.log('Removing touch feedback from element');
         element.style.transform = '';
         element.style.opacity = '';
+        element.style.filter = '';
+        element.style.transition = 'all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
     }
     
     launchApp(appId) {
-        if (this.isTransitioning) return;
+        console.log('launchApp called with:', appId);
+        
+        if (this.isTransitioning) {
+            console.log('Transition in progress, ignoring launch');
+            return;
+        }
         
         const appConfig = this.apps[appId];
-        if (!appConfig) return;
+        if (!appConfig) {
+            console.log('No app config found for:', appId);
+            return;
+        }
+        
+        console.log('Launching app:', appId, 'Config:', appConfig);
         
         // Special handling for home app
         if (appId === 'home') {
+            console.log('Home app - calling goHome()');
             this.goHome();
             return;
         }
