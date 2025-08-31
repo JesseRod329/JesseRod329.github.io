@@ -138,13 +138,7 @@ class iOSNavigation {
         // Home indicator gesture
         this.setupHomeGesture();
         
-        // Prevent default touch behaviors on device
-        const device = document.querySelector('.ios-device');
-        if (device) {
-            device.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-            }, { passive: false });
-        }
+        // Note: Removed global preventDefault to allow scrolling within app views
     }
     
     setupAppTapHandlers() {
