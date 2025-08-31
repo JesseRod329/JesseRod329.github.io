@@ -170,18 +170,40 @@ class iOSNavigation {
                 });
                 
                 // Add touch feedback for mobile
+                let touchStartTime = 0;
+                let touchStartX = 0;
+                let touchStartY = 0;
+                
                 app.addEventListener('touchstart', (e) => {
                     console.log('Touch start:', appClass);
+                    touchStartTime = Date.now();
+                    touchStartX = e.touches[0].clientX;
+                    touchStartY = e.touches[0].clientY;
                     this.addTouchFeedback(app);
                 });
                 
                 app.addEventListener('touchend', (e) => {
                     console.log('Touch end:', appClass);
                     this.removeTouchFeedback(app);
-                    // Small delay to ensure touch feedback is visible
-                    setTimeout(() => {
-                        this.launchApp(appClass);
-                    }, 100);
+                    
+                    const touchEndTime = Date.now();
+                    const touchDuration = touchEndTime - touchStartTime;
+                    const touchEndX = e.changedTouches[0].clientX;
+                    const touchEndY = e.changedTouches[0].clientY;
+                    const touchDistance = Math.sqrt(
+                        Math.pow(touchEndX - touchStartX, 2) + 
+                        Math.pow(touchEndY - touchStartY, 2)
+                    );
+                    
+                    // Only launch app if it's a proper tap (short duration, small movement)
+                    if (touchDuration < 300 && touchDistance < 10) {
+                        console.log('Valid tap detected, launching app:', appClass);
+                        setTimeout(() => {
+                            this.launchApp(appClass);
+                        }, 100);
+                    } else {
+                        console.log('Touch gesture ignored (duration:', touchDuration, 'ms, distance:', touchDistance, 'px)');
+                    }
                 });
                 
                 // Add mouse events for desktop
@@ -225,18 +247,40 @@ class iOSNavigation {
                 });
                 
                 // Add touch feedback for mobile
+                let dockTouchStartTime = 0;
+                let dockTouchStartX = 0;
+                let dockTouchStartY = 0;
+                
                 app.addEventListener('touchstart', (e) => {
                     console.log('Dock touch start:', appClass);
+                    dockTouchStartTime = Date.now();
+                    dockTouchStartX = e.touches[0].clientX;
+                    dockTouchStartY = e.touches[0].clientY;
                     this.addTouchFeedback(app);
                 });
                 
                 app.addEventListener('touchend', (e) => {
                     console.log('Dock touch end:', appClass);
                     this.removeTouchFeedback(app);
-                    // Small delay to ensure touch feedback is visible
-                    setTimeout(() => {
-                        this.launchApp(appClass);
-                    }, 100);
+                    
+                    const touchEndTime = Date.now();
+                    const touchDuration = touchEndTime - dockTouchStartTime;
+                    const touchEndX = e.changedTouches[0].clientX;
+                    const touchEndY = e.changedTouches[0].clientY;
+                    const touchDistance = Math.sqrt(
+                        Math.pow(touchEndX - dockTouchStartX, 2) + 
+                        Math.pow(touchEndY - dockTouchStartY, 2)
+                    );
+                    
+                    // Only launch app if it's a proper tap (short duration, small movement)
+                    if (touchDuration < 300 && touchDistance < 10) {
+                        console.log('Valid dock tap detected, launching app:', appClass);
+                        setTimeout(() => {
+                            this.launchApp(appClass);
+                        }, 100);
+                    } else {
+                        console.log('Dock touch gesture ignored (duration:', touchDuration, 'ms, distance:', touchDistance, 'px)');
+                    }
                 });
                 
                 // Add mouse events for desktop
