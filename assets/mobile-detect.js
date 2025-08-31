@@ -7,27 +7,57 @@
     'use strict';
     
     function isMobileDevice() {
-        // Check for mobile user agents
-        const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+        // Enhanced mobile detection for iPhone and other mobile devices
         const userAgent = navigator.userAgent;
         
-        // Check screen size (mobile if width < 768px)
-        const isSmallScreen = window.innerWidth < 768;
+        // iPhone/iPad specific detection
+        const isIOS = /iPad|iPhone|iPod/.test(userAgent);
         
-        // Check for touch capability
+        // General mobile device detection
+        const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i;
+        const isMobileUA = mobileRegex.test(userAgent);
+        
+        // Screen size detection (mobile if width <= 768px)
+        const isSmallScreen = window.innerWidth <= 768;
+        
+        // Touch capability detection
         const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
         
-        return mobileRegex.test(userAgent) || (isSmallScreen && isTouchDevice);
+        // Platform detection
+        const isMobilePlatform = /Mobi|Android/i.test(userAgent);
+        
+        // Force redirect for common mobile patterns
+        const isMobile = isIOS || isMobileUA || isMobilePlatform || (isSmallScreen && isTouchDevice);
+        
+        console.log('Mobile Detection:', {
+            userAgent,
+            isIOS,
+            isMobileUA,
+            isSmallScreen,
+            isTouchDevice,
+            isMobilePlatform,
+            windowWidth: window.innerWidth,
+            finalResult: isMobile
+        });
+        
+        return isMobile;
     }
     
     function redirectToMobile() {
         // Only redirect if we're not already on mobile or ios path
         const currentPath = window.location.pathname;
+        
+        console.log('Redirect check:', {
+            currentPath,
+            includesIOS: currentPath.includes('/ios/'),
+            includesDesktop: currentPath.includes('desktop.html'),
+            shouldRedirect: !currentPath.includes('/ios/') && !currentPath.includes('desktop.html')
+        });
+        
         if (!currentPath.includes('/ios/') && !currentPath.includes('desktop.html')) {
-            // Add a small delay to prevent jarring redirects
-            setTimeout(() => {
-                window.location.href = '/ios/';
-            }, 100);
+            console.log('Redirecting to /ios/');
+            // Immediate redirect for mobile devices
+            window.location.replace('/ios/');
         }
     }
     
@@ -38,10 +68,11 @@
         }
     }
     
-    // Run detection when DOM is ready
+    // Run detection immediately for fastest redirect
+    init();
+    
+    // Also run when DOM is ready as backup
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
     }
 })();
