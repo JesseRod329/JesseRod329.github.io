@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circular Daily Planner - Preview Card</title>
+<style>
+  /* Planner Card Styles */
+  .planner-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 1px solid #dee2e6;
+    border-radius: 16px;
+    padding: 24px;
+    margin: 16px 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    max-width: 400px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .planner-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .planner-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #fd7e14, #0d6efd, #6f42c1);
+  }
+
+  .planner-card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .planner-card-icon {
+    font-size: 32px;
+    margin-right: 12px;
+  }
+
+  .planner-card-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #212529;
+    margin: 0;
+  }
+
+  .planner-card-description {
+    color: #6c757d;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+
+  .planner-card-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .planner-card-feature {
+    background: rgba(13, 110, 253, 0.1);
+    color: #0d6efd;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .planner-card-actions {
+    display: flex;
+    gap: 12px;
+  }
+
+  .planner-card-btn {
+    background: #0d6efd;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .planner-card-btn:hover {
+    background: #0b5ed7;
+    transform: translateY(-1px);
+  }
+
+  .planner-card-btn-secondary {
+    background: transparent;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+  }
+
+  .planner-card-btn-secondary:hover {
+    background: #f8f9fa;
+    color: #495057;
+  }
+
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    .planner-card {
+      background: linear-gradient(135deg, #2d2d30 0%, #3e3e42 100%);
+      border-color: #495057;
+      color: #ffffff;
+    }
+
+    .planner-card-title {
+      color: #ffffff;
+    }
+
+    .planner-card-description {
+      color: #adb5bd;
+    }
+
+    .planner-card-btn-secondary {
+      border-color: #495057;
+      color: #adb5bd;
+    }
+
+    .planner-card-btn-secondary:hover {
+      background: #3e3e42;
+      color: #ffffff;
+    }
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .planner-card {
+      margin: 8px 0;
+      padding: 16px;
+    }
+
+    .planner-card-actions {
+      flex-direction: column;
+    }
+
+    .planner-card-btn {
+      justify-content: center;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="planner-card">
+    <div class="planner-card-header">
+      <div class="planner-card-icon">📅</div>
+      <h3 class="planner-card-title">Circular Daily Planner</h3>
+    </div>
+    
+    <p class="planner-card-description">
+      Organize your day with a beautiful, intuitive circular interface. 
+      Time-based task management with light/dark mode support.
+    </p>
+    
+    <div class="planner-card-features">
+      <span class="planner-card-feature">⏰ Time-based</span>
+      <span class="planner-card-feature">🎨 Theme-aware</span>
+      <span class="planner-card-feature">📱 Mobile</span>
+      <span class="planner-card-feature">♿ Accessible</span>
+    </div>
+    
+    <div class="planner-card-actions">
+      <a href="/planner/" class="planner-card-btn">
+        <span>🚀</span>
+        Launch Planner
+      </a>
+      <a href="/planner/" class="planner-card-btn planner-card-btn-secondary">
+        <span>ℹ️</span>
+        Learn More
+      </a>
+    </div>
+  </div>
+</body>
+</html>

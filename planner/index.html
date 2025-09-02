@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; script-src 'self'; object-src 'none'; media-src 'self'; child-src 'self'; form-action 'self'; base-uri 'self';">
+
+<!-- SEO Meta Tags -->
+<meta name="description" content="Circular Daily Planner - Organize your day with a beautiful, intuitive circular interface. Light and dark mode support.">
+<meta name="keywords" content="daily planner, circular planner, productivity, time management, schedule">
+<meta name="author" content="Jesse Rodriguez">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://jesserodriguez.me/planner/">
+
+<!-- Open Graph Meta Tags -->
+<meta property="og:title" content="Circular Daily Planner - Jesse Rodriguez">
+<meta property="og:description" content="Organize your day with a beautiful, intuitive circular interface. Light and dark mode support.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jesserodriguez.me/planner/">
+<meta property="og:site_name" content="Jesse Rodriguez Portfolio">
+<meta property="og:image" content="https://jesserodriguez.me/planner/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Circular Daily Planner interface showing time wheel with tasks">
+<meta property="og:locale" content="en_US">
+
+<!-- Twitter Card Meta Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@jesserodriguez">
+<meta name="twitter:creator" content="@jesserodriguez">
+<meta name="twitter:title" content="Circular Daily Planner - Jesse Rodriguez">
+<meta name="twitter:description" content="Organize your day with a beautiful, intuitive circular interface. Light and dark mode support.">
+<meta name="twitter:image" content="https://jesserodriguez.me/planner/assets/og-image.png">
+<meta name="twitter:image:alt" content="Circular Daily Planner interface showing time wheel with tasks">
+
+<!-- Additional Meta Tags -->
+<meta name="application-name" content="Circular Daily Planner">
+<meta name="apple-mobile-web-app-title" content="Daily Planner">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0d6efd">
+<meta name="msapplication-TileColor" content="#0d6efd">
+<meta name="msapplication-config" content="/browserconfig.xml">
+
+<title>Circular Daily Planner — Jesse Rodriguez</title>
+
+<!-- Preload critical resources -->
+<link rel="preload" href="css/themes.css" as="style">
+<link rel="preload" href="css/planner.css" as="style">
+
+<!-- Stylesheets -->
+<link rel="stylesheet" href="css/themes.css">
+<link rel="stylesheet" href="css/planner.css">
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="planner-nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-container">
+    <a href="/" class="nav-back" aria-label="Return to portfolio homepage">← Back to Portfolio</a>
+    <h1 class="nav-title">Circular Daily Planner</h1>
+    <div class="nav-actions">
+      <button id="export-btn" class="export-btn" aria-label="Export planner as image" title="Export your planner as a wallpaper or lockscreen image">
+        <span class="export-icon" aria-hidden="true">📤</span>
+        <span class="sr-only">Export</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Planner Interface -->
+<main class="planner-main" role="main">
+  <div class="planner-container">
+    
+    <!-- Form Section -->
+    <section class="planner-form-section" aria-labelledby="form-heading">
+      <h2 id="form-heading" class="sr-only">Daily Planner Form</h2>
+      <form class="planner-form" id="planner-form" novalidate role="form" aria-label="Create your daily planner">
+        
+        <!-- Personal Information Card -->
+        <div class="form-card">
+          <div class="form-card-header">
+            <h2 class="form-card-title">Personal Information</h2>
+            <p class="form-card-description">Basic details for your daily planner</p>
+          </div>
+          
+          <div class="form-card-content">
+            <div class="form-group">
+              <label for="planner-name" class="form-label">Your Name</label>
+              <input 
+                type="text" 
+                id="planner-name" 
+                name="planner-name" 
+                class="form-input" 
+                placeholder="Enter your name"
+                required
+                minlength="2"
+                maxlength="50"
+                autocomplete="name"
+                aria-describedby="name-help"
+              >
+              <div id="name-help" class="form-help">This will appear on your planner</div>
+            </div>
+            
+            <div class="form-group">
+              <label for="planner-date" class="form-label">Planning Date</label>
+              <input 
+                type="date" 
+                id="planner-date" 
+                name="planner-date" 
+                class="form-input" 
+                required
+                aria-describedby="date-help"
+              >
+              <div id="date-help" class="form-help">Select the date you're planning for</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task Builder Card -->
+        <div class="form-card">
+          <div class="form-card-header">
+            <h2 class="form-card-title">Daily Tasks</h2>
+            <p class="form-card-description">Add tasks with specific times for your day</p>
+          </div>
+          
+          <div class="form-card-content">
+            <!-- Task Input Template -->
+            <div class="task-input-group">
+              <div class="form-group">
+                <label for="task-time" class="form-label">Time</label>
+                <input 
+                  type="time" 
+                  id="task-time" 
+                  name="task-time" 
+                  class="form-input form-input-time" 
+                  required
+                  aria-describedby="time-help"
+                >
+                <div id="time-help" class="form-help">When should this task be done?</div>
+              </div>
+              
+              <div class="form-group">
+                <label for="task-description" class="form-label">Task Description</label>
+                <input 
+                  type="text" 
+                  id="task-description" 
+                  name="task-description" 
+                  class="form-input" 
+                  placeholder="What needs to be done?"
+                  required
+                  minlength="3"
+                  maxlength="200"
+                  aria-describedby="task-help"
+                >
+                <div id="task-help" class="form-help">Brief description of the task</div>
+              </div>
+              
+              <div class="form-group">
+                <label for="task-priority" class="form-label">Priority</label>
+                <select 
+                  id="task-priority" 
+                  name="task-priority" 
+                  class="form-select" 
+                  required
+                  aria-describedby="priority-help"
+                >
+                  <option value="">Select priority</option>
+                  <option value="low">Low Priority</option>
+                  <option value="medium">Medium Priority</option>
+                  <option value="high">High Priority</option>
+                  <option value="urgent">Urgent</option>
+                </select>
+                <div id="priority-help" class="form-help">How important is this task?</div>
+              </div>
+              
+              <button type="button" class="btn btn-secondary btn-add-task" id="add-task-btn">
+                <span class="btn-icon">➕</span>
+                Add Task
+              </button>
+            </div>
+            
+            <!-- Task List (Enhanced with JS) -->
+            <div class="task-list-container" id="task-list-container">
+              <div class="task-list-empty">
+                <div class="empty-state">
+                  <div class="empty-state-icon">📝</div>
+                  <h3 class="empty-state-title">No tasks yet</h3>
+                  <p class="empty-state-description">Add your first task above to get started</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes & Reminders Card -->
+        <div class="form-card">
+          <div class="form-card-header">
+            <h2 class="form-card-title">Notes & Reminders</h2>
+            <p class="form-card-description">Additional thoughts and important reminders</p>
+          </div>
+          
+          <div class="form-card-content">
+            <div class="form-group">
+              <label for="daily-notes" class="form-label">Daily Notes</label>
+              <textarea 
+                id="daily-notes" 
+                name="daily-notes" 
+                class="form-textarea" 
+                placeholder="Any additional notes, thoughts, or observations for today..."
+                rows="4"
+                maxlength="1000"
+                aria-describedby="notes-help"
+              ></textarea>
+              <div id="notes-help" class="form-help">Optional notes to remember throughout the day</div>
+            </div>
+            
+            <div class="form-group">
+              <label for="reminders" class="form-label">Important Reminders</label>
+              <textarea 
+                id="reminders" 
+                name="reminders" 
+                class="form-textarea" 
+                placeholder="Don't forget to..."
+                rows="3"
+                maxlength="500"
+                aria-describedby="reminders-help"
+              ></textarea>
+              <div id="reminders-help" class="form-help">Critical reminders that need attention</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Generate Planner Card -->
+        <div class="form-card form-card-action">
+          <div class="form-card-content">
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary btn-generate" id="generate-planner-btn">
+                <span class="btn-icon">🎯</span>
+                Generate My Planner
+              </button>
+              
+              <button type="button" class="btn btn-secondary" id="clear-form-btn">
+                <span class="btn-icon">🗑️</span>
+                Clear Form
+              </button>
+            </div>
+            
+            <div class="form-progress" id="form-progress" style="display: none;">
+              <div class="progress-bar">
+                <div class="progress-fill"></div>
+              </div>
+              <p class="progress-text">Generating your personalized planner...</p>
+            </div>
+          </div>
+        </div>
+        
+      </form>
+    </section>
+
+    <!-- Preview Section (Hidden initially) -->
+    <section class="planner-preview-section" id="planner-preview" style="display: none;">
+      <div class="form-card">
+        <div class="form-card-header">
+          <h2 class="form-card-title">Your Daily Planner</h2>
+          <p class="form-card-description">Preview of your personalized circular planner</p>
+        </div>
+        
+        <div class="form-card-content">
+          <div class="planner-preview-placeholder">
+            <div class="preview-icon">⏰</div>
+            <h3 class="preview-title">Planner Preview</h3>
+            <p class="preview-description">Your circular planner will appear here</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- Hidden Canvas for Export -->
+<canvas id="export-canvas" style="display: none;"></canvas>
+
+<!-- Schema.org Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Circular Daily Planner",
+  "description": "Organize your day with a beautiful, intuitive circular interface. Light and dark mode support.",
+  "url": "https://jesserodriguez.me/planner/",
+  "applicationCategory": "ProductivityApplication",
+  "operatingSystem": "Web Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Jesse Rodriguez",
+    "url": "https://jesserodriguez.me"
+  },
+  "creator": {
+    "@type": "Person",
+    "name": "Jesse Rodriguez",
+    "url": "https://jesserodriguez.me"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Jesse Rodriguez",
+    "url": "https://jesserodriguez.me"
+  },
+  "dateCreated": "2024-12-15",
+  "dateModified": "2024-12-15",
+  "inLanguage": "en-US",
+  "isAccessibleForFree": true,
+  "browserRequirements": "Requires JavaScript. Requires HTML5.",
+  "softwareVersion": "1.0",
+  "screenshot": "https://jesserodriguez.me/planner/assets/og-image.png",
+  "featureList": [
+    "Circular time-based interface",
+    "Light and dark mode support",
+    "Mobile-responsive design",
+    "Task prioritization",
+    "Export to wallpaper/lockscreen",
+    "Keyboard navigation",
+    "Screen reader support"
+  ],
+  "accessibilityFeature": [
+    "alternativeText",
+    "highContrastDisplay",
+    "keyboardNavigation",
+    "screenReaderSupport",
+    "reducedMotion"
+  ],
+  "accessibilityHazard": "none",
+  "accessibilityAPI": "ARIA"
+}
+</script>
+
+<!-- Scripts -->
+<script src="js/form-handler.js" defer></script>
+<script src="js/planner.js" defer></script>
+<script src="js/canvas-export.js" defer></script>
+
+</body>
+</html>

@@ -73,6 +73,20 @@
     <mobile:mobile/>
   </url>
   
+  <!-- Circular Daily Planner -->
+  <url>
+    <loc>https://jesserodriguez.me/planner/</loc>
+    <lastmod>2024-12-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <mobile:mobile/>
+    <image:image>
+      <image:loc>https://jesserodriguez.me/planner/assets/og-image.png</image:loc>
+      <image:title>Circular Daily Planner</image:title>
+      <image:caption>Organize your day with a beautiful, intuitive circular interface</image:caption>
+    </image:image>
+  </url>
+  
   <!-- PWA Manifest -->
   <url>
     <loc>https://jesserodriguez.me/ios/manifest.json</loc>
