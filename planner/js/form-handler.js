@@ -415,14 +415,26 @@ class PlannerFormHandler {
 
   validateForm() {
     let isValid = true;
-    const requiredFields = this.form.querySelectorAll('[required]');
-    
-    requiredFields.forEach(field => {
+
+    // Validate required fields, but skip empty task-builder inputs.
+    const allRequired = Array.from(this.form.querySelectorAll('[required]'));
+    const fieldsToValidate = allRequired.filter((field) => {
+      const id = field.id;
+      // Only validate the task builder inputs if the user has started filling them.
+      if (id === 'task-time' || id === 'task-description' || id === 'task-priority') {
+        const value = (field.value || '').toString().trim();
+        return value.length > 0; // skip empty in-progress inputs
+      }
+      return true;
+    });
+
+    fieldsToValidate.forEach((field) => {
       if (!this.validateField(field)) {
         isValid = false;
       }
     });
 
+    // Require at least one saved task (not just text in the builder inputs)
     if (this.formData.tasks.length === 0) {
       this.showNotification('Please add at least one task', 'error');
       isValid = false;

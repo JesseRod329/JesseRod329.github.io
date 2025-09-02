@@ -24,8 +24,8 @@ class CircularPlannerGenerator {
   }
 
   setup() {
-    this.plannerContainer = document.getElementById('planner-preview-section');
-    this.previewSection = document.getElementById('planner-preview-section');
+    this.plannerContainer = document.getElementById('planner-preview');
+    this.previewSection = document.getElementById('planner-preview');
     
     if (!this.plannerContainer) {
       console.warn('Planner container not found');
@@ -85,13 +85,13 @@ class CircularPlannerGenerator {
   }
 
   updatePreview(formData) {
-    if (!formData || !formData.tasks || formData.tasks.length === 0) {
+    const tasks = (formData?.tasks || []).filter(t => t && t.time && t.description);
+    if (tasks.length < 1) {
       this.showEmptyState();
       return;
     }
-
-    // Create a simple preview
-    this.createPreview(formData);
+    // Create a simple preview (one task is sufficient)
+    this.createPreview({ ...formData, tasks });
   }
 
   createPreview(formData) {
@@ -143,13 +143,14 @@ class CircularPlannerGenerator {
       // Get current form data
       const formData = this.getFormData();
       
-      if (!formData.tasks || formData.tasks.length === 0) {
+      const validTasks = (formData.tasks || []).filter(t => t && t.time && t.description);
+      if (validTasks.length < 1) {
         this.showNotification('Please add at least one task to generate your planner', 'error');
         return;
       }
 
       // Generate the circular planner
-      await this.renderCircularPlanner(formData);
+      await this.renderCircularPlanner({ ...formData, tasks: validTasks });
       
       this.currentPlannerData = formData;
       this.showNotification('Planner generated successfully!', 'success');
