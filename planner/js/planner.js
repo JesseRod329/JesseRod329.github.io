@@ -90,8 +90,11 @@ class CircularPlannerGenerator {
       this.showEmptyState();
       return;
     }
+    // Persist latest data from the form-handler so we don't try to
+    // re-read tasks from the DOM (which doesn't contain inputs).
+    this.currentPlannerData = { ...formData, tasks };
     // Create a simple preview (one task is sufficient)
-    this.createPreview({ ...formData, tasks });
+    this.createPreview(this.currentPlannerData);
   }
 
   createPreview(formData) {
@@ -140,8 +143,8 @@ class CircularPlannerGenerator {
     this.setFormState('generating');
 
     try {
-      // Get current form data
-      const formData = this.getFormData();
+      // Use the latest data provided by form-handler (source of truth)
+      const formData = this.currentPlannerData || { tasks: [] };
       
       const validTasks = (formData.tasks || []).filter(t => t && t.time && t.description);
       if (validTasks.length < 1) {

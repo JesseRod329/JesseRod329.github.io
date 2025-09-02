@@ -52,7 +52,8 @@ class CanvasExport {
   setupEventListeners() {
     // Listen for export requests from planner generator
     document.addEventListener('exportPlanner', (event) => {
-      this.showExportModal(event.detail);
+      const data = event.detail || this.getCurrentPlannerData();
+      this.showExportModal(data);
     });
 
     // Handle export button clicks
@@ -60,6 +61,31 @@ class CanvasExport {
     if (exportBtn) {
       exportBtn.addEventListener('click', () => this.showExportModal());
     }
+  }
+
+  // Provide a safer fallback when planner data isn't available from form inputs
+  getCurrentPlannerData() {
+    if (window.plannerGenerator && window.plannerGenerator.currentPlannerData) {
+      return window.plannerGenerator.currentPlannerData;
+    }
+    // Fallback to minimal preview extraction
+    const previewTasks = Array.from(document.querySelectorAll('.preview-task'));
+    const tasks = previewTasks.map(el => ({
+      time: el.querySelector('.preview-time')?.textContent || '',
+      description: el.querySelector('.preview-description')?.textContent || '',
+      priority: (el.querySelector('.preview-priority')?.textContent || 'medium').toLowerCase()
+    })).filter(t => t.time && t.description);
+    return {
+      personalInfo: {
+        name: document.getElementById('planner-name')?.value || 'You',
+        date: document.getElementById('planner-date')?.value || new Date().toISOString().split('T')[0]
+      },
+      tasks,
+      notes: {
+        notes: document.getElementById('daily-notes')?.value || '',
+        reminders: document.getElementById('reminders')?.value || ''
+      }
+    };
   }
 
   showExportModal(plannerData = null) {
