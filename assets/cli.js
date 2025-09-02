@@ -265,6 +265,11 @@ class PortfolioCLI {
       '→ Resumes / Careers  - Documents that open doors',
       '→ Fashion           - Clarity in the numbers',
       '',
+      'Featured Tools:',
+      '• Circular Daily Planner - Time-based task organization',
+      '• Fashion Palette Generator - Color harmony analysis',
+      '• Brainwave Simulator - AI neural activity visualization',
+      '',
       'Scroll down to see the full services grid.',
       ''
     ], 'projects');
