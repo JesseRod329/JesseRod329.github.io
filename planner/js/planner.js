@@ -1,22 +1,21 @@
 /**
- * Circular Daily Planner - Main Application Logic
- * Handles time wheel rendering, task management, and real-time updates
+ * Circular Daily Planner Generator
+ * Creates beautiful, theme-aware circular planner from form data
+ * CSP Compliant - No unsafe-inline, progressive enhancement
  */
 
-class CircularPlanner {
+class CircularPlannerGenerator {
   constructor() {
-    this.tasks = this.loadTasks();
-    this.currentTime = new Date();
-    this.timeWheel = null;
-    this.taskList = null;
-    this.currentTimeElement = null;
-    this.currentDateElement = null;
+    this.formHandler = null;
+    this.plannerContainer = null;
+    this.previewSection = null;
+    this.currentPlannerData = null;
+    this.isGenerating = false;
     
     this.init();
   }
 
   init() {
-    // Wait for DOM to be ready
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => this.setup());
     } else {
@@ -25,33 +24,244 @@ class CircularPlanner {
   }
 
   setup() {
-    this.timeWheel = document.getElementById('time-wheel');
-    this.taskList = document.getElementById('task-list');
-    this.currentTimeElement = document.getElementById('current-time');
-    this.currentDateElement = document.getElementById('current-date');
-
-    if (!this.timeWheel || !this.taskList) {
-      console.error('Required elements not found');
+    this.plannerContainer = document.getElementById('planner-preview-section');
+    this.previewSection = document.getElementById('planner-preview-section');
+    
+    if (!this.plannerContainer) {
+      console.warn('Planner container not found');
       return;
     }
 
-    this.renderTimeWheel();
-    this.renderTasks();
-    this.updateCurrentTime();
+    this.setupEventListeners();
+    this.initializePlanner();
+  }
+
+  setupEventListeners() {
+    // Listen for form data changes from form handler
+    document.addEventListener('plannerFormDataChanged', (event) => {
+      this.updatePreview(event.detail);
+    });
+
+    // Listen for generate button clicks
+    const generateBtn = document.getElementById('generate-planner-btn');
+    if (generateBtn) {
+      generateBtn.addEventListener('click', () => this.generatePlanner());
+    }
+
+    // Listen for export button clicks
+    const exportBtn = document.getElementById('export-btn');
+    if (exportBtn) {
+      exportBtn.addEventListener('click', () => this.exportPlanner());
+    }
+  }
+
+  initializePlanner() {
+    // Show initial empty state
+    this.showEmptyState();
+  }
+
+  showEmptyState() {
+    this.plannerContainer.innerHTML = `
+      <div class="planner-empty-state">
+        <div class="empty-state-icon">📅</div>
+        <h3>Ready to Plan Your Day</h3>
+        <p>Fill out the form above to generate your personalized circular daily planner.</p>
+        <div class="empty-state-features">
+          <div class="feature-item">
+            <span class="feature-icon">🎨</span>
+            <span>Theme-aware design</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">⏰</span>
+            <span>Time-based organization</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">📱</span>
+            <span>Mobile responsive</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  updatePreview(formData) {
+    if (!formData || !formData.tasks || formData.tasks.length === 0) {
+      this.showEmptyState();
+      return;
+    }
+
+    // Create a simple preview
+    this.createPreview(formData);
+  }
+
+  createPreview(formData) {
+    const tasks = formData.tasks.filter(task => task.time && task.description);
+    
+    if (tasks.length === 0) {
+      this.showEmptyState();
+      return;
+    }
+
+    this.plannerContainer.innerHTML = `
+      <div class="planner-preview">
+        <div class="preview-header">
+          <h3>Preview</h3>
+          <p>${tasks.length} task${tasks.length !== 1 ? 's' : ''} ready</p>
+        </div>
+        <div class="preview-tasks">
+          ${tasks.slice(0, 3).map(task => `
+            <div class="preview-task">
+              <span class="preview-time">${task.time}</span>
+              <span class="preview-description">${this.escapeHtml(task.description)}</span>
+              <span class="preview-priority priority-${task.priority}">${task.priority}</span>
+            </div>
+          `).join('')}
+          ${tasks.length > 3 ? `<div class="preview-more">+${tasks.length - 3} more tasks</div>` : ''}
+        </div>
+        <div class="preview-actions">
+          <button class="btn btn-primary" id="generate-planner-btn">
+            Generate Full Planner
+          </button>
+        </div>
+      </div>
+    `;
+
+    // Re-attach event listener
+    const generateBtn = document.getElementById('generate-planner-btn');
+    if (generateBtn) {
+      generateBtn.addEventListener('click', () => this.generatePlanner());
+    }
+  }
+
+  async generatePlanner() {
+    if (this.isGenerating) return;
+    
+    this.isGenerating = true;
+    this.setFormState('generating');
+
+    try {
+      // Get current form data
+      const formData = this.getFormData();
+      
+      if (!formData.tasks || formData.tasks.length === 0) {
+        this.showNotification('Please add at least one task to generate your planner', 'error');
+        return;
+      }
+
+      // Generate the circular planner
+      await this.renderCircularPlanner(formData);
+      
+      this.currentPlannerData = formData;
+      this.showNotification('Planner generated successfully!', 'success');
+      
+    } catch (error) {
+      console.error('Error generating planner:', error);
+      this.showNotification('Error generating planner. Please try again.', 'error');
+    } finally {
+      this.isGenerating = false;
+      this.setFormState('complete');
+    }
+  }
+
+  async renderCircularPlanner(formData) {
+    const tasks = formData.tasks.filter(task => task.time && task.description);
+    
+    this.plannerContainer.innerHTML = `
+      <div class="circular-planner">
+        <div class="planner-header">
+          <h2>${formData.personalInfo.name || 'Daily Planner'}</h2>
+          <p class="planner-date">${this.formatDate(formData.personalInfo.date)}</p>
+        </div>
+        
+        <div class="planner-content">
+          <div class="time-wheel-container">
+            <div class="time-wheel" id="time-wheel">
+              <div class="wheel-center">
+                <div class="center-date">${this.formatDateShort(formData.personalInfo.date)}</div>
+                <div class="center-time" id="current-time">${this.getCurrentTime()}</div>
+                <div class="center-name">${formData.personalInfo.name || 'You'}</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="tasks-panel">
+            <div class="tasks-header">
+              <h3>Today's Tasks</h3>
+              <div class="task-stats">
+                <span class="stat-item">
+                  <span class="stat-number">${tasks.length}</span>
+                  <span class="stat-label">Total</span>
+                </span>
+                <span class="stat-item">
+                  <span class="stat-number">${tasks.filter(t => t.priority === 'high').length}</span>
+                  <span class="stat-label">High Priority</span>
+                </span>
+              </div>
+            </div>
+            <div class="tasks-list" id="tasks-list">
+              ${this.renderTaskList(tasks)}
+            </div>
+          </div>
+        </div>
+        
+        ${formData.notes.notes || formData.notes.reminders ? `
+          <div class="notes-section">
+            <h3>Notes & Reminders</h3>
+            <div class="notes-content">
+              ${formData.notes.notes ? `
+                <div class="notes-item">
+                  <h4>Notes</h4>
+                  <p>${this.escapeHtml(formData.notes.notes)}</p>
+                </div>
+              ` : ''}
+              ${formData.notes.reminders ? `
+                <div class="notes-item">
+                  <h4>Reminders</h4>
+                  <p>${this.escapeHtml(formData.notes.reminders)}</p>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        ` : ''}
+        
+        <div class="planner-actions">
+          <button class="btn btn-secondary" id="edit-planner-btn">
+            <span class="btn-icon">✏️</span>
+            Edit Planner
+          </button>
+          <button class="btn btn-primary" id="export-planner-btn">
+            <span class="btn-icon">📤</span>
+            Export Planner
+          </button>
+        </div>
+      </div>
+    `;
+
+    // Render the circular time wheel
+    await this.renderTimeWheel(tasks);
+    
+    // Setup interactive elements
+    this.setupPlannerInteractions();
+    
+    // Start time updates
     this.startTimeUpdates();
   }
 
-  renderTimeWheel() {
-    this.timeWheel.innerHTML = '';
-    
-    // Create 24 hour markers
+  async renderTimeWheel(tasks) {
+    const timeWheel = document.getElementById('time-wheel');
+    if (!timeWheel) return;
+
+    // Clear existing content
+    timeWheel.innerHTML = '';
+
+    // Create hour markers
     for (let hour = 0; hour < 24; hour++) {
       const angle = (hour * 15) - 90; // 15 degrees per hour, start at top (-90)
       const isMajor = hour % 6 === 0; // Major markers every 6 hours
       
       // Create hour marker
       const marker = document.createElement('div');
-      marker.className = `hour-marker ${isMajor ? 'major' : ''}`;
+      marker.className = `hour-marker ${isMajor ? 'major' : 'minor'}`;
       marker.style.transform = `rotate(${angle}deg)`;
       
       // Create hour label
@@ -60,7 +270,7 @@ class CircularPlanner {
       label.textContent = this.formatHour(hour);
       
       // Position label
-      const radius = 45; // Percentage from center
+      const radius = 42; // Percentage from center
       const labelAngle = (angle * Math.PI) / 180;
       const x = 50 + radius * Math.cos(labelAngle);
       const y = 50 + radius * Math.sin(labelAngle);
@@ -68,49 +278,193 @@ class CircularPlanner {
       label.style.left = `${x}%`;
       label.style.top = `${y}%`;
       
-      this.timeWheel.appendChild(marker);
-      this.timeWheel.appendChild(label);
+      timeWheel.appendChild(marker);
+      timeWheel.appendChild(label);
     }
 
-    // Create time segments for tasks
-    this.renderTimeSegments();
-  }
-
-  renderTimeSegments() {
-    const currentHour = this.currentTime.getHours();
-    const currentMinute = this.currentTime.getMinutes();
-    const currentAngle = (currentHour + currentMinute / 60) * 15 - 90;
-
-    // Clear existing segments
-    const existingSegments = this.timeWheel.querySelectorAll('.time-segment');
-    existingSegments.forEach(segment => segment.remove());
-
-    // Create segments for each task
-    this.tasks.forEach(task => {
+    // Create task markers
+    tasks.forEach((task, index) => {
       if (task.time) {
         const [hours, minutes] = task.time.split(':').map(Number);
         const taskAngle = (hours + minutes / 60) * 15 - 90;
-        const isPast = hours < currentHour || (hours === currentHour && minutes < currentMinute);
-        const isCurrent = hours === currentHour && Math.abs(minutes - currentMinute) <= 30;
-
-        const segment = document.createElement('div');
-        segment.className = `time-segment ${isPast ? 'past' : isCurrent ? 'current' : 'future'}`;
+        const timeOfDay = this.getTimeOfDay(hours);
         
-        // Position segment
+        // Create task marker
+        const taskMarker = document.createElement('div');
+        taskMarker.className = `task-marker task-marker-${timeOfDay} priority-${task.priority}`;
+        taskMarker.dataset.taskIndex = index;
+        taskMarker.title = `${task.time} - ${task.description}`;
+        
+        // Position task marker
         const radius = 35; // Percentage from center
-        const segmentAngle = (taskAngle * Math.PI) / 180;
-        const x = 50 + radius * Math.cos(segmentAngle);
-        const y = 50 + radius * Math.sin(segmentAngle);
+        const markerAngle = (taskAngle * Math.PI) / 180;
+        const x = 50 + radius * Math.cos(markerAngle);
+        const y = 50 + radius * Math.sin(markerAngle);
         
-        segment.style.left = `${x - 2}%`;
-        segment.style.top = `${y - 2}%`;
-        segment.style.width = '4%';
-        segment.style.height = '4%';
-        segment.title = `${task.time} - ${task.text}`;
+        taskMarker.style.left = `${x - 1.5}%`;
+        taskMarker.style.top = `${y - 1.5}%`;
         
-        this.timeWheel.appendChild(segment);
+        timeWheel.appendChild(taskMarker);
       }
     });
+
+    // Add current time indicator
+    this.updateCurrentTimeIndicator();
+  }
+
+  renderTaskList(tasks) {
+    if (tasks.length === 0) {
+      return `
+        <div class="no-tasks">
+          <p>No tasks scheduled for today.</p>
+        </div>
+      `;
+    }
+
+    // Sort tasks by time
+    const sortedTasks = [...tasks].sort((a, b) => a.time.localeCompare(b.time));
+
+    return sortedTasks.map((task, index) => `
+      <div class="task-item" data-task-index="${index}">
+        <div class="task-time">${task.time}</div>
+        <div class="task-content">
+          <div class="task-description">${this.escapeHtml(task.description)}</div>
+          <div class="task-priority priority-${task.priority}">
+            ${task.priority}
+          </div>
+        </div>
+        <div class="task-actions">
+          <button class="task-btn complete" data-task-index="${index}" aria-label="Mark as complete">
+            <span class="btn-icon">✓</span>
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  setupPlannerInteractions() {
+    // Task completion buttons
+    const completeButtons = document.querySelectorAll('.task-btn.complete');
+    completeButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const taskIndex = parseInt(e.currentTarget.dataset.taskIndex);
+        this.toggleTaskCompletion(taskIndex);
+      });
+    });
+
+    // Edit planner button
+    const editBtn = document.getElementById('edit-planner-btn');
+    if (editBtn) {
+      editBtn.addEventListener('click', () => this.editPlanner());
+    }
+
+    // Export planner button
+    const exportBtn = document.getElementById('export-planner-btn');
+    if (exportBtn) {
+      exportBtn.addEventListener('click', () => this.exportPlanner());
+    }
+  }
+
+  toggleTaskCompletion(taskIndex) {
+    const taskItem = document.querySelector(`[data-task-index="${taskIndex}"]`);
+    const completeBtn = taskItem?.querySelector('.task-btn.complete');
+    
+    if (!taskItem || !completeBtn) return;
+
+    const isCompleted = taskItem.classList.contains('completed');
+    
+    if (isCompleted) {
+      taskItem.classList.remove('completed');
+      completeBtn.innerHTML = '<span class="btn-icon">✓</span>';
+      completeBtn.setAttribute('aria-label', 'Mark as complete');
+    } else {
+      taskItem.classList.add('completed');
+      completeBtn.innerHTML = '<span class="btn-icon">↩️</span>';
+      completeBtn.setAttribute('aria-label', 'Mark as incomplete');
+    }
+
+    // Update task marker on wheel
+    const taskMarker = document.querySelector(`.task-marker[data-task-index="${taskIndex}"]`);
+    if (taskMarker) {
+      taskMarker.classList.toggle('completed', !isCompleted);
+    }
+
+    // Show feedback
+    this.showNotification(
+      isCompleted ? 'Task marked as incomplete' : 'Task completed! 🎉',
+      'success'
+    );
+  }
+
+  editPlanner() {
+    // Scroll to form section
+    const formSection = document.querySelector('.planner-form-section');
+    if (formSection) {
+      formSection.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    this.showNotification('Edit your planner in the form above', 'info');
+  }
+
+  exportPlanner() {
+    if (!this.currentPlannerData) {
+      this.showNotification('No planner data to export', 'error');
+      return;
+    }
+
+    try {
+      const exportData = {
+        ...this.currentPlannerData,
+        exportDate: new Date().toISOString(),
+        version: '1.0'
+      };
+
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+        type: 'application/json'
+      });
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `planner-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      this.showNotification('Planner exported successfully!', 'success');
+    } catch (error) {
+      console.error('Export error:', error);
+      this.showNotification('Error exporting planner', 'error');
+    }
+  }
+
+  startTimeUpdates() {
+    // Update current time every minute
+    setInterval(() => {
+      this.updateCurrentTimeIndicator();
+    }, 60000);
+  }
+
+  updateCurrentTimeIndicator() {
+    const currentTimeElement = document.getElementById('current-time');
+    if (currentTimeElement) {
+      currentTimeElement.textContent = this.getCurrentTime();
+    }
+  }
+
+  getCurrentTime() {
+    return new Date().toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+  }
+
+  getTimeOfDay(hour) {
+    if (hour >= 5 && hour < 12) return 'morning';
+    if (hour >= 12 && hour < 17) return 'afternoon';
+    return 'evening';
   }
 
   formatHour(hour) {
@@ -120,138 +474,101 @@ class CircularPlanner {
     return `${hour - 12} PM`;
   }
 
-  renderTasks() {
-    this.taskList.innerHTML = '';
+  formatDate(dateString) {
+    if (!dateString) return new Date().toLocaleDateString();
     
-    if (this.tasks.length === 0) {
-      const emptyState = document.createElement('div');
-      emptyState.className = 'empty-state';
-      emptyState.innerHTML = `
-        <p style="text-align: center; color: var(--text-secondary); padding: 2rem;">
-          No tasks yet. Add your first task above!
-        </p>
-      `;
-      this.taskList.appendChild(emptyState);
-      return;
-    }
-
-    // Sort tasks by time
-    const sortedTasks = [...this.tasks].sort((a, b) => {
-      if (!a.time && !b.time) return 0;
-      if (!a.time) return 1;
-      if (!b.time) return -1;
-      return a.time.localeCompare(b.time);
-    });
-
-    sortedTasks.forEach((task, index) => {
-      const taskElement = this.createTaskElement(task, index);
-      this.taskList.appendChild(taskElement);
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
   }
 
-  createTaskElement(task, index) {
-    const taskDiv = document.createElement('div');
-    taskDiv.className = `task-item ${task.completed ? 'completed' : ''}`;
-    taskDiv.dataset.index = index;
-
-    taskDiv.innerHTML = `
-      <div class="task-time">${task.time || '--:--'}</div>
-      <div class="task-text">${this.escapeHtml(task.text)}</div>
-      <div class="task-actions">
-        <button class="task-btn complete" onclick="planner.toggleTask(${index})">
-          ${task.completed ? '↩️' : '✓'}
-        </button>
-        <button class="task-btn delete" onclick="planner.deleteTask(${index})">
-          🗑️
-        </button>
-      </div>
-    `;
-
-    return taskDiv;
+  formatDateShort(dateString) {
+    if (!dateString) return new Date().toLocaleDateString();
+    
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric'
+    });
   }
 
-  addTask(text, time) {
-    if (!text.trim()) return;
+  getFormData() {
+    // Get form data from form handler
+    const form = document.getElementById('planner-form');
+    if (!form) return { tasks: [] };
 
-    const task = {
-      id: Date.now(),
-      text: text.trim(),
-      time: time || null,
-      completed: false,
-      createdAt: new Date().toISOString()
+    const formData = new FormData(form);
+    const data = {
+      personalInfo: {
+        name: formData.get('planner-name') || '',
+        date: formData.get('planner-date') || new Date().toISOString().split('T')[0]
+      },
+      tasks: this.getTasksFromForm(),
+      notes: {
+        notes: formData.get('notes') || '',
+        reminders: formData.get('reminders') || ''
+      }
     };
 
-    this.tasks.push(task);
-    this.saveTasks();
-    this.renderTasks();
-    this.renderTimeSegments();
+    return data;
   }
 
-  toggleTask(index) {
-    if (index >= 0 && index < this.tasks.length) {
-      this.tasks[index].completed = !this.tasks[index].completed;
-      this.saveTasks();
-      this.renderTasks();
-    }
-  }
-
-  deleteTask(index) {
-    if (index >= 0 && index < this.tasks.length) {
-      this.tasks.splice(index, 1);
-      this.saveTasks();
-      this.renderTasks();
-      this.renderTimeSegments();
-    }
-  }
-
-  updateCurrentTime() {
-    this.currentTime = new Date();
+  getTasksFromForm() {
+    const tasks = [];
+    const taskElements = document.querySelectorAll('.task-item');
     
-    if (this.currentTimeElement) {
-      const timeString = this.currentTime.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      });
-      this.currentTimeElement.textContent = timeString;
-    }
-
-    if (this.currentDateElement) {
-      const dateString = this.currentTime.toLocaleDateString('en-US', {
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric'
-      });
-      this.currentDateElement.textContent = dateString;
-    }
-
-    // Update time segments
-    this.renderTimeSegments();
+    taskElements.forEach((taskElement, index) => {
+      const timeInput = taskElement.querySelector('input[name^="task_time"]');
+      const descInput = taskElement.querySelector('input[name^="task_description"]');
+      const prioritySelect = taskElement.querySelector('select[name^="task_priority"]');
+      
+      if (timeInput && descInput && prioritySelect) {
+        tasks.push({
+          time: timeInput.value,
+          description: descInput.value,
+          priority: prioritySelect.value,
+          completed: false
+        });
+      }
+    });
+    
+    return tasks;
   }
 
-  startTimeUpdates() {
-    // Update every minute
-    setInterval(() => {
-      this.updateCurrentTime();
-    }, 60000);
-  }
-
-  loadTasks() {
-    try {
-      const saved = localStorage.getItem('circular-planner-tasks');
-      return saved ? JSON.parse(saved) : [];
-    } catch (error) {
-      console.error('Error loading tasks:', error);
-      return [];
+  setFormState(state) {
+    const form = document.getElementById('planner-form');
+    if (form) {
+      form.setAttribute('data-state', state);
     }
   }
 
-  saveTasks() {
-    try {
-      localStorage.setItem('circular-planner-tasks', JSON.stringify(this.tasks));
-    } catch (error) {
-      console.error('Error saving tasks:', error);
-    }
+  showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Show notification
+    setTimeout(() => {
+      notification.classList.add('show');
+    }, 100);
+    
+    // Remove notification after delay
+    setTimeout(() => {
+      notification.classList.remove('show');
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.parentNode.removeChild(notification);
+        }
+      }, 300);
+    }, 3000);
   }
 
   escapeHtml(text) {
@@ -259,36 +576,14 @@ class CircularPlanner {
     div.textContent = text;
     return div.innerHTML;
   }
-
-  // Export functionality
-  exportTasks() {
-    const exportData = {
-      tasks: this.tasks,
-      exportDate: new Date().toISOString(),
-      version: '1.0'
-    };
-
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-      type: 'application/json'
-    });
-
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `planner-export-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
 }
 
-// Initialize planner when script loads
-let planner;
+// Initialize planner generator when script loads
+let plannerGenerator;
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
-    planner = new CircularPlanner();
+    plannerGenerator = new CircularPlannerGenerator();
   });
 } else {
-  planner = new CircularPlanner();
+  plannerGenerator = new CircularPlannerGenerator();
 }

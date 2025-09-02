@@ -338,32 +338,32 @@ class PlannerFormHandler {
   updateFormData(input) {
     const fieldName = input.name || input.id;
     
-    if (fieldName.startsWith('planner-')) {
-      this.formData.personalInfo[fieldName] = input.value;
-    } else if (fieldName.startsWith('daily-') || fieldName.startsWith('reminders')) {
-      this.formData.notes[fieldName] = input.value;
+    if (fieldName === 'planner-name') {
+      this.formData.personalInfo.name = input.value;
+    } else if (fieldName === 'planner-date') {
+      this.formData.personalInfo.date = input.value;
+    } else if (fieldName === 'notes') {
+      this.formData.notes.notes = input.value;
+    } else if (fieldName === 'reminders') {
+      this.formData.notes.reminders = input.value;
     }
   }
 
   updatePreview() {
-    const taskCount = this.formData.tasks.length;
-    const name = this.formData.personalInfo['planner-name'] || 'Your';
-    const date = this.formData.personalInfo['planner-date'] || 'today';
-    
-    const previewSection = document.getElementById('planner-preview');
-    if (previewSection) {
-      const previewContent = previewSection.querySelector('.planner-preview-placeholder');
-      if (previewContent) {
-        previewContent.innerHTML = `
-          <div class="preview-icon">⏰</div>
-          <h3 class="preview-title">${name}'s Daily Planner</h3>
-          <p class="preview-description">${taskCount} task${taskCount !== 1 ? 's' : ''} scheduled for ${date}</p>
-          <div class="preview-tasks">
-            ${this.generateTaskPreview()}
-          </div>
-        `;
-      }
-    }
+    // Dispatch event to planner generator
+    const event = new CustomEvent('plannerFormDataChanged', {
+      detail: this.getFormData()
+    });
+    document.dispatchEvent(event);
+  }
+
+  getFormData() {
+    return {
+      personalInfo: this.formData.personalInfo,
+      tasks: this.formData.tasks,
+      notes: this.formData.notes,
+      state: this.formData.state
+    };
   }
 
   generateTaskPreview() {
