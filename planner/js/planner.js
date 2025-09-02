@@ -412,31 +412,11 @@ class CircularPlannerGenerator {
       return;
     }
 
-    try {
-      const exportData = {
-        ...this.currentPlannerData,
-        exportDate: new Date().toISOString(),
-        version: '1.0'
-      };
-
-      const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-        type: 'application/json'
-      });
-
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `planner-${new Date().toISOString().split('T')[0]}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      this.showNotification('Planner exported successfully!', 'success');
-    } catch (error) {
-      console.error('Export error:', error);
-      this.showNotification('Error exporting planner', 'error');
-    }
+    // Dispatch event to canvas export system
+    const event = new CustomEvent('exportPlanner', {
+      detail: this.currentPlannerData
+    });
+    document.dispatchEvent(event);
   }
 
   startTimeUpdates() {
@@ -583,7 +563,9 @@ let plannerGenerator;
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     plannerGenerator = new CircularPlannerGenerator();
+    window.plannerGenerator = plannerGenerator;
   });
 } else {
   plannerGenerator = new CircularPlannerGenerator();
+  window.plannerGenerator = plannerGenerator;
 }
