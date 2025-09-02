@@ -321,6 +321,97 @@ body {
   margin: 0;
 }
 
+/* Dynamic Task Items */
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-sm);
+  transition: all var(--transition-normal);
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.task-item:hover {
+  border-color: var(--interactive-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--shadow-md);
+}
+
+.task-time {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--interactive-primary);
+  min-width: 60px;
+  font-family: var(--font-family-mono);
+}
+
+.task-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.task-description {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.task-priority {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.75rem;
+  text-transform: capitalize;
+}
+
+.priority-icon {
+  font-size: 0.875rem;
+}
+
+.priority-low { color: var(--interactive-success); }
+.priority-medium { color: var(--accent-afternoon); }
+.priority-high { color: var(--accent-morning); }
+.priority-urgent { color: var(--interactive-danger); }
+
+.task-actions {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.btn-sm {
+  padding: var(--space-xs);
+  min-height: 32px;
+  font-size: 0.875rem;
+}
+
+.btn-edit {
+  background: var(--accent-afternoon);
+  color: var(--text-inverse);
+  border-color: var(--accent-afternoon);
+}
+
+.btn-edit:hover {
+  background: var(--interactive-primary-hover);
+  border-color: var(--interactive-primary-hover);
+}
+
+.btn-delete {
+  background: var(--interactive-danger);
+  color: var(--text-inverse);
+  border-color: var(--interactive-danger);
+}
+
+.btn-delete:hover {
+  background: var(--interactive-danger-hover);
+  border-color: var(--interactive-danger-hover);
+}
+
 /* Form Actions */
 .form-actions {
   display: flex;
@@ -398,7 +489,137 @@ body {
 .preview-description {
   font-size: 1rem;
   color: var(--text-secondary);
-  margin: 0;
+  margin: 0 0 var(--space-lg) 0;
+}
+
+.preview-tasks {
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.preview-task {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-xs);
+  transition: all var(--transition-normal);
+}
+
+.preview-task:hover {
+  border-color: var(--interactive-primary);
+  transform: translateX(4px);
+}
+
+.preview-task-time {
+  font-family: var(--font-family-mono);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--interactive-primary);
+  min-width: 60px;
+}
+
+.preview-task-description {
+  flex: 1;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.preview-task-priority {
+  font-size: 1rem;
+}
+
+.preview-no-tasks {
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: var(--space-lg);
+}
+
+/* Notifications */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  color: var(--text-inverse);
+  font-weight: 500;
+  z-index: 1000;
+  transform: translateX(100%);
+  transition: transform var(--transition-slow);
+  max-width: 300px;
+  word-wrap: break-word;
+  box-shadow: 0 4px 12px var(--shadow-lg);
+}
+
+.notification.notification-error {
+  background: var(--interactive-danger);
+}
+
+.notification.notification-success {
+  background: var(--interactive-success);
+}
+
+.notification.notification-info {
+  background: var(--interactive-primary);
+}
+
+.notification.notification-warning {
+  background: var(--accent-morning);
+}
+
+/* Form State Management */
+.form[data-state="idle"] {
+  opacity: 1;
+}
+
+.form[data-state="validating"] {
+  opacity: 0.8;
+}
+
+.form[data-state="generating"] {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.form[data-state="complete"] {
+  opacity: 1;
+}
+
+/* Animation Classes */
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideOutToTop {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.task-item.animate-in {
+  animation: slideInFromTop 0.3s ease forwards;
+}
+
+.task-item.animate-out {
+  animation: slideOutToTop 0.3s ease forwards;
 }
 
 /* Time Wheel */
