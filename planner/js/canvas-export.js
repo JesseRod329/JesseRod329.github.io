@@ -108,11 +108,13 @@ class CanvasExport {
             
             <div class="export-option-group">
               <h4>Phone Lockscreen</h4>
+              <p class="export-option-description">Optimized for lockscreen wallpapers with safe areas and minimalist design</p>
               <div class="export-option-grid">
                 ${Object.entries(this.phoneSpecs).map(([name, specs]) => `
                   <button class="export-option-btn" data-type="phone" data-name="${name}" data-width="${specs.width}" data-height="${specs.height}" data-scale="${specs.scale}">
                     <div class="export-option-name">${name}</div>
                     <div class="export-option-size">${specs.width} × ${specs.height}</div>
+                    <div class="export-option-type">Lockscreen</div>
                   </button>
                 `).join('')}
               </div>
@@ -231,6 +233,9 @@ class CanvasExport {
     try {
       this.showNotification('Generating export...', 'info');
       
+      // Set lockscreen export flag
+      this.isLockscreenExport = option.type === 'phone';
+      
       // Create high-resolution canvas
       const scale = option.scale || 2;
       const canvas = document.createElement('canvas');
@@ -290,6 +295,11 @@ class CanvasExport {
   }
 
   async renderPhoneLayout(ctx, width, height, plannerData, themeColors, padding) {
+    // Check if this is a lockscreen export
+    if (this.isLockscreenExport) {
+      return this.renderLockscreenLayout(ctx, width, height, plannerData, themeColors, padding);
+    }
+    
     const centerX = width / 2;
     const centerY = height / 2;
     
@@ -539,6 +549,259 @@ class CanvasExport {
     
     ctx.fillText(line, x, currentY);
     return currentY + lineHeight;
+  }
+
+  // Lockscreen-specific rendering methods
+  async renderLockscreenLayout(ctx, width, height, plannerData, themeColors, padding) {
+    // Calculate safe areas for different phone types
+    const safeAreas = this.calculateSafeAreas(width, height);
+    
+    // Render subtle background texture
+    this.renderLockscreenBackground(ctx, width, height, themeColors);
+    
+    // Render time/date area (preserved for system display)
+    this.renderLockscreenTimeArea(ctx, width, height, plannerData, themeColors, safeAreas);
+    
+    // Render compact task cards
+    this.renderLockscreenTasks(ctx, width, height, plannerData, themeColors, safeAreas);
+    
+    // Render user name (if provided)
+    if (plannerData.personalInfo.name) {
+      this.renderLockscreenUserName(ctx, width, height, plannerData, themeColors, safeAreas);
+    }
+    
+    // Render subtle branding/date
+    this.renderLockscreenBranding(ctx, width, height, plannerData, themeColors, safeAreas);
+  }
+
+  calculateSafeAreas(width, height) {
+    // Safe areas for different phone types
+    const isNotch = width >= 375 && height >= 812; // iPhone X and newer
+    const isAndroid = width >= 384 && height >= 854; // Modern Android
+    
+    return {
+      top: isNotch ? 60 : 40, // Status bar + notch area
+      bottom: 100, // Home indicator area
+      left: 20,
+      right: 20,
+      timeArea: {
+        top: isNotch ? 120 : 80,
+        height: 120,
+        left: 20,
+        right: 20
+      },
+      contentArea: {
+        top: isNotch ? 260 : 220,
+        bottom: 120,
+        left: 20,
+        right: 20
+      }
+    };
+  }
+
+  renderLockscreenBackground(ctx, width, height, themeColors) {
+    // Create subtle gradient background
+    const gradient = ctx.createLinearGradient(0, 0, 0, height);
+    
+    if (themeColors.background.includes('#ffffff') || themeColors.background.includes('255, 255, 255')) {
+      // Light theme - subtle light gradient
+      gradient.addColorStop(0, this.lightenColor(themeColors.background, 0.05));
+      gradient.addColorStop(1, this.darkenColor(themeColors.background, 0.05));
+    } else {
+      // Dark theme - subtle dark gradient
+      gradient.addColorStop(0, this.lightenColor(themeColors.background, 0.1));
+      gradient.addColorStop(1, this.darkenColor(themeColors.background, 0.1));
+    }
+    
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+    
+    // Add subtle texture pattern
+    this.renderSubtleTexture(ctx, width, height, themeColors);
+  }
+
+  renderSubtleTexture(ctx, width, height, themeColors) {
+    // Create subtle dot pattern for texture
+    const dotSize = 1;
+    const spacing = 40;
+    const opacity = themeColors.background.includes('#ffffff') ? 0.03 : 0.05;
+    
+    ctx.fillStyle = this.hexToRgba(themeColors.textPrimary, opacity);
+    
+    for (let x = 0; x < width; x += spacing) {
+      for (let y = 0; y < height; y += spacing) {
+        // Random offset for natural look
+        const offsetX = (Math.sin(x * 0.01) * 10) % spacing;
+        const offsetY = (Math.cos(y * 0.01) * 10) % spacing;
+        
+        ctx.beginPath();
+        ctx.arc(x + offsetX, y + offsetY, dotSize, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+    }
+  }
+
+  renderLockscreenTimeArea(ctx, width, height, plannerData, themeColors, safeAreas) {
+    // This area is intentionally left mostly empty to preserve space for system time/date
+    // Only add subtle indicators that don't interfere with system UI
+    
+    const timeArea = safeAreas.timeArea;
+    const centerX = width / 2;
+    
+    // Subtle date indicator (small, unobtrusive)
+    ctx.fillStyle = this.hexToRgba(themeColors.textSecondary, 0.3);
+    ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(this.formatDateShort(plannerData.personalInfo.date), centerX, timeArea.top + 20);
+  }
+
+  renderLockscreenTasks(ctx, width, height, plannerData, themeColors, safeAreas) {
+    const tasks = plannerData.tasks.filter(task => task.time && task.description);
+    if (tasks.length === 0) return;
+    
+    const contentArea = safeAreas.contentArea;
+    const centerX = width / 2;
+    const availableWidth = width - contentArea.left - contentArea.right;
+    const cardWidth = Math.min(availableWidth - 20, 300);
+    const cardSpacing = 12;
+    
+    // Sort tasks by time and take top 3-4 most important
+    const sortedTasks = [...tasks].sort((a, b) => {
+      // Prioritize by time and priority
+      const timeA = a.time;
+      const timeB = b.time;
+      const priorityOrder = { urgent: 4, high: 3, medium: 2, low: 1 };
+      const priorityA = priorityOrder[a.priority] || 2;
+      const priorityB = priorityOrder[b.priority] || 2;
+      
+      if (priorityA !== priorityB) return priorityB - priorityA;
+      return timeA.localeCompare(timeB);
+    });
+    
+    const maxTasks = Math.min(sortedTasks.length, 4);
+    const totalHeight = (maxTasks * 60) + ((maxTasks - 1) * cardSpacing);
+    const startY = contentArea.top + (contentArea.bottom - contentArea.top - totalHeight) / 2;
+    
+    sortedTasks.slice(0, maxTasks).forEach((task, index) => {
+      const cardY = startY + (index * (60 + cardSpacing));
+      this.renderLockscreenTaskCard(ctx, centerX, cardY, cardWidth, task, themeColors);
+    });
+  }
+
+  renderLockscreenTaskCard(ctx, centerX, y, width, task, themeColors) {
+    const cardHeight = 50;
+    const cardX = centerX - width / 2;
+    
+    // Card background with subtle shadow
+    ctx.fillStyle = this.hexToRgba(themeColors.surface, 0.8);
+    ctx.strokeStyle = this.hexToRgba(themeColors.border, 0.3);
+    ctx.lineWidth = 1;
+    
+    // Rounded rectangle
+    this.roundRect(ctx, cardX, y, width, cardHeight, 12);
+    ctx.fill();
+    ctx.stroke();
+    
+    // Priority indicator (left side)
+    const priorityColor = this.getPriorityColor(task.priority, themeColors);
+    ctx.fillStyle = priorityColor;
+    ctx.beginPath();
+    ctx.arc(cardX + 15, y + cardHeight / 2, 4, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Time (left side, below priority)
+    ctx.fillStyle = this.hexToRgba(themeColors.textSecondary, 0.8);
+    ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(task.time, cardX + 25, y + 18);
+    
+    // Task description (center)
+    ctx.fillStyle = this.hexToRgba(themeColors.textPrimary, 0.9);
+    ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.textAlign = 'left';
+    
+    const maxDescWidth = width - 80;
+    const description = this.truncateText(ctx, task.description, maxDescWidth);
+    ctx.fillText(description, cardX + 25, y + 35);
+    
+    // Time of day indicator (right side)
+    const [hours] = task.time.split(':').map(Number);
+    const timeOfDay = this.getTimeOfDay(hours);
+    const timeColor = this.getTimeOfDayColor(timeOfDay, themeColors);
+    
+    ctx.fillStyle = this.hexToRgba(timeColor, 0.6);
+    ctx.beginPath();
+    ctx.arc(cardX + width - 15, y + cardHeight / 2, 3, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+
+  renderLockscreenUserName(ctx, width, height, plannerData, themeColors, safeAreas) {
+    const centerX = width / 2;
+    const userNameY = safeAreas.contentArea.bottom - 40;
+    
+    ctx.fillStyle = this.hexToRgba(themeColors.textPrimary, 0.6);
+    ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(`Hello, ${plannerData.personalInfo.name}`, centerX, userNameY);
+  }
+
+  renderLockscreenBranding(ctx, width, height, plannerData, themeColors, safeAreas) {
+    const centerX = width / 2;
+    const brandingY = height - 30;
+    
+    ctx.fillStyle = this.hexToRgba(themeColors.textMuted, 0.4);
+    ctx.font = '10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Circular Daily Planner', centerX, brandingY);
+  }
+
+  // Utility methods for lockscreen rendering
+  roundRect(ctx, x, y, width, height, radius) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+  }
+
+  truncateText(ctx, text, maxWidth) {
+    if (ctx.measureText(text).width <= maxWidth) {
+      return text;
+    }
+    
+    let truncated = text;
+    while (ctx.measureText(truncated + '...').width > maxWidth && truncated.length > 0) {
+      truncated = truncated.slice(0, -1);
+    }
+    
+    return truncated + '...';
+  }
+
+  hexToRgba(hex, alpha) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
+  lightenColor(hex, amount) {
+    const r = Math.min(255, parseInt(hex.slice(1, 3), 16) + Math.round(255 * amount));
+    const g = Math.min(255, parseInt(hex.slice(3, 5), 16) + Math.round(255 * amount));
+    const b = Math.min(255, parseInt(hex.slice(5, 7), 16) + Math.round(255 * amount));
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+  }
+
+  darkenColor(hex, amount) {
+    const r = Math.max(0, parseInt(hex.slice(1, 3), 16) - Math.round(255 * amount));
+    const g = Math.max(0, parseInt(hex.slice(3, 5), 16) - Math.round(255 * amount));
+    const b = Math.max(0, parseInt(hex.slice(5, 7), 16) - Math.round(255 * amount));
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
   }
 
   getThemeColors() {
