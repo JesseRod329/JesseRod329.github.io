@@ -1,6 +1,6 @@
 /**
  * Circular Daily Planner Styles
- * Main layout and component styling
+ * Main layout and component styling using theme system
  */
 
 /* Reset and base styles */
@@ -11,8 +11,8 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
-  background: var(--bg-color);
+  font-family: var(--font-family-primary);
+  background: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -22,9 +22,9 @@ body {
 
 /* Navigation */
 .planner-nav {
-  background: var(--surface-color);
-  border-bottom: 1px solid var(--border-color);
-  box-shadow: 0 2px 8px var(--shadow-color);
+  background: var(--surface-card);
+  border-bottom: 1px solid var(--border-light);
+  box-shadow: 0 2px 8px var(--shadow-sm);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -33,21 +33,21 @@ body {
 .nav-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem 2rem;
+  padding: var(--space-lg) var(--space-xl);
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .nav-back {
-  color: var(--accent-color);
+  color: var(--interactive-primary);
   text-decoration: none;
   font-weight: 500;
-  transition: color 0.2s ease;
+  transition: color var(--transition-normal);
 }
 
 .nav-back:hover {
-  color: var(--accent-hover);
+  color: var(--interactive-primary-hover);
 }
 
 .nav-title {
@@ -65,7 +65,7 @@ body {
 
 /* Main content */
 .planner-main {
-  padding: 2rem;
+  padding: var(--space-xl);
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -73,7 +73,7 @@ body {
 .planner-container {
   display: grid;
   grid-template-columns: 1fr 400px;
-  gap: 3rem;
+  gap: var(--space-2xl);
   align-items: start;
 }
 
@@ -90,9 +90,9 @@ body {
   aspect-ratio: 1;
   border-radius: 50%;
   background: var(--wheel-bg);
-  border: 2px solid var(--border-color);
+  border: 2px solid var(--wheel-border);
   position: relative;
-  box-shadow: 0 8px 32px var(--shadow-color);
+  box-shadow: 0 8px 32px var(--shadow-lg);
 }
 
 /* Hour markers */
@@ -100,7 +100,7 @@ body {
   position: absolute;
   width: 2px;
   height: 20px;
-  background: var(--wheel-hour);
+  background: var(--wheel-hour-minor);
   transform-origin: 50% 100%;
   top: 10px;
   left: 50%;
@@ -110,7 +110,7 @@ body {
 .hour-marker.major {
   height: 30px;
   width: 3px;
-  background: var(--text-primary);
+  background: var(--wheel-hour-major);
 }
 
 .hour-label {
@@ -127,7 +127,7 @@ body {
   position: absolute;
   border-radius: 50%;
   opacity: 0.3;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--transition-slow);
 }
 
 .time-segment.past {
@@ -150,7 +150,7 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  background: var(--surface-color);
+  background: var(--surface-card);
   border-radius: 50%;
   width: 120px;
   height: 120px;
@@ -158,15 +158,15 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 4px 16px var(--shadow-color);
-  border: 2px solid var(--border-color);
+  box-shadow: 0 4px 16px var(--shadow-md);
+  border: 2px solid var(--border-light);
 }
 
 .current-time {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--accent-color);
-  margin-bottom: 0.25rem;
+  color: var(--interactive-primary);
+  margin-bottom: var(--space-xs);
 }
 
 .current-date {
@@ -178,71 +178,71 @@ body {
 
 /* Task Panel */
 .task-panel {
-  background: var(--surface-color);
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 8px 32px var(--shadow-color);
-  border: 1px solid var(--border-color);
+  background: var(--surface-card);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  box-shadow: 0 8px 32px var(--shadow-lg);
+  border: 1px solid var(--border-light);
   height: fit-content;
 }
 
 .task-input-container {
   display: flex;
-  gap: 0.75rem;
-  margin-bottom: 2rem;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xl);
   flex-wrap: wrap;
 }
 
 .task-input {
   flex: 1;
   min-width: 200px;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background: var(--bg-color);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  background: var(--surface-input);
   color: var(--text-primary);
   font-size: 1rem;
-  transition: border-color 0.2s ease;
+  transition: border-color var(--transition-normal);
 }
 
 .task-input:focus {
   outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--shadow-sm);
 }
 
 .time-input {
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background: var(--bg-color);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  background: var(--surface-input);
   color: var(--text-primary);
   font-size: 1rem;
   min-width: 120px;
-  transition: border-color 0.2s ease;
+  transition: border-color var(--transition-normal);
 }
 
 .time-input:focus {
   outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--shadow-sm);
 }
 
 .add-task-btn {
-  padding: 0.75rem 1.5rem;
-  background: var(--accent-color);
-  color: white;
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--interactive-primary);
+  color: var(--text-inverse);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-normal);
   white-space: nowrap;
 }
 
 .add-task-btn:hover {
-  background: var(--accent-hover);
+  background: var(--interactive-primary-hover);
   transform: translateY(-1px);
 }
 
@@ -254,24 +254,24 @@ body {
 .task-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--space-sm);
 }
 
 .task-item {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  background: var(--bg-color);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  transition: all 0.2s ease;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
 }
 
 .task-item:hover {
-  border-color: var(--accent-color);
+  border-color: var(--interactive-primary);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px var(--shadow-color);
+  box-shadow: 0 4px 12px var(--shadow-md);
 }
 
 .task-item.completed {
@@ -282,7 +282,7 @@ body {
 .task-time {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--accent-color);
+  color: var(--interactive-primary);
   min-width: 60px;
 }
 
@@ -293,41 +293,41 @@ body {
 
 .task-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-xs);
 }
 
 .task-btn {
-  padding: 0.5rem;
+  padding: var(--space-xs);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 0.875rem;
-  transition: all 0.2s ease;
+  transition: all var(--transition-normal);
 }
 
 .task-btn.complete {
-  background: #10b981;
-  color: white;
+  background: var(--interactive-success);
+  color: var(--text-inverse);
 }
 
 .task-btn.complete:hover {
-  background: #059669;
+  background: var(--interactive-success-hover);
 }
 
 .task-btn.delete {
-  background: #ef4444;
-  color: white;
+  background: var(--interactive-danger);
+  color: var(--text-inverse);
 }
 
 .task-btn.delete:hover {
-  background: #dc2626;
+  background: var(--interactive-danger-hover);
 }
 
 /* Responsive design */
 @media (max-width: 1024px) {
   .planner-container {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: var(--space-xl);
   }
   
   .task-panel {
@@ -337,13 +337,13 @@ body {
 
 @media (max-width: 768px) {
   .planner-main {
-    padding: 1rem;
+    padding: var(--space-md);
   }
   
   .nav-container {
-    padding: 1rem;
+    padding: var(--space-md);
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--space-md);
     text-align: center;
   }
   
@@ -420,21 +420,8 @@ body {
 .time-input:focus,
 .add-task-btn:focus,
 .task-btn:focus {
-  outline: 2px solid var(--accent-color);
+  outline: 2px solid var(--border-focus);
   outline-offset: 2px;
 }
 
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  :root {
-    --border-color: #000000;
-    --shadow-color: rgba(0, 0, 0, 0.5);
-  }
-  
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --border-color: #ffffff;
-      --shadow-color: rgba(255, 255, 255, 0.3);
-    }
-  }
-}
+

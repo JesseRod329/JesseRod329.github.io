@@ -9,7 +9,7 @@ class FormHandler {
     this.taskInput = null;
     this.timeInput = null;
     this.addButton = null;
-    this.themeToggle = null;
+
     this.exportButton = null;
     
     this.init();
@@ -28,7 +28,7 @@ class FormHandler {
     this.taskInput = document.getElementById('task-input');
     this.timeInput = document.getElementById('task-time');
     this.addButton = document.getElementById('add-task');
-    this.themeToggle = document.getElementById('theme-toggle');
+
     this.exportButton = document.getElementById('export-btn');
 
     if (!this.taskInput || !this.timeInput || !this.addButton) {
@@ -37,7 +37,7 @@ class FormHandler {
     }
 
     this.setupEventListeners();
-    this.setupThemeToggle();
+
     this.setupExportButton();
     this.setDefaultTime();
   }
@@ -68,16 +68,7 @@ class FormHandler {
     this.taskInput.focus();
   }
 
-  setupThemeToggle() {
-    if (!this.themeToggle) return;
 
-    this.themeToggle.addEventListener('click', () => {
-      this.toggleTheme();
-    });
-
-    // Update theme icon based on current theme
-    this.updateThemeIcon();
-  }
 
   setupExportButton() {
     if (!this.exportButton) return;
@@ -129,45 +120,7 @@ class FormHandler {
     this.timeInput.value = defaultTime;
   }
 
-  toggleTheme() {
-    const body = document.body;
-    const currentTheme = this.getCurrentTheme();
-    
-    if (currentTheme === 'dark') {
-      body.classList.remove('theme-dark');
-      body.classList.add('theme-light');
-      localStorage.setItem('planner-theme', 'light');
-    } else {
-      body.classList.remove('theme-light');
-      body.classList.add('theme-dark');
-      localStorage.setItem('planner-theme', 'dark');
-    }
 
-    this.updateThemeIcon();
-  }
-
-  getCurrentTheme() {
-    // Check for manual override first
-    if (document.body.classList.contains('theme-light')) return 'light';
-    if (document.body.classList.contains('theme-dark')) return 'dark';
-    
-    // Check localStorage
-    const saved = localStorage.getItem('planner-theme');
-    if (saved) return saved;
-    
-    // Check system preference
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }
-
-  updateThemeIcon() {
-    if (!this.themeToggle) return;
-
-    const themeIcon = this.themeToggle.querySelector('.theme-icon');
-    if (!themeIcon) return;
-
-    const currentTheme = this.getCurrentTheme();
-    themeIcon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
-  }
 
   handleExport() {
     if (!this.planner || typeof this.planner.exportTasks !== 'function') {

@@ -1,162 +1,339 @@
 /**
- * Theme System for Circular Daily Planner
- * Supports light/dark mode with system preference detection
+ * System-Based Theme Foundation for Circular Daily Planner
+ * Automatic light/dark mode switching with WCAG AA compliance
+ * No JavaScript theme switching - pure CSS system preference detection
  */
 
-/* CSS Variables for theming */
+/* ==========================================================================
+   CSS CUSTOM PROPERTIES - THEME FOUNDATION
+   ========================================================================== */
+
 :root {
-  /* Light theme colors */
-  --planner-bg-light: #f8fafc;
-  --planner-surface-light: #ffffff;
-  --planner-text-primary-light: #1e293b;
-  --planner-text-secondary-light: #64748b;
-  --planner-accent-light: #3b82f6;
-  --planner-accent-hover-light: #2563eb;
-  --planner-border-light: #e2e8f0;
-  --planner-shadow-light: rgba(0, 0, 0, 0.1);
+  /* ========================================================================
+     LIGHT MODE - Clean whites, soft grays, subtle colors
+     ======================================================================== */
   
-  /* Dark theme colors */
-  --planner-bg-dark: #0f172a;
-  --planner-surface-dark: #1e293b;
-  --planner-text-primary-dark: #f1f5f9;
-  --planner-text-secondary-dark: #94a3b8;
-  --planner-accent-dark: #60a5fa;
-  --planner-accent-hover-dark: #3b82f6;
-  --planner-border-dark: #334155;
-  --planner-shadow-dark: rgba(0, 0, 0, 0.3);
+  /* Background Colors */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
+  --bg-overlay: rgba(255, 255, 255, 0.95);
   
-  /* Time wheel colors */
-  --wheel-bg-light: #ffffff;
-  --wheel-bg-dark: #1e293b;
-  --wheel-hour-light: #64748b;
-  --wheel-hour-dark: #94a3b8;
-  --wheel-current-light: #3b82f6;
-  --wheel-current-dark: #60a5fa;
-  --wheel-past-light: #e2e8f0;
-  --wheel-past-dark: #334155;
-  --wheel-future-light: #f1f5f9;
-  --wheel-future-dark: #0f172a;
+  /* Text Colors */
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --text-muted: #adb5bd;
+  --text-inverse: #ffffff;
+  
+  /* Accent Colors - Time-based */
+  --accent-morning: #fd7e14;
+  --accent-afternoon: #0d6efd;
+  --accent-evening: #6f42c1;
+  --accent-neutral: #6c757d;
+  
+  /* Interactive Colors */
+  --interactive-primary: #0d6efd;
+  --interactive-primary-hover: #0b5ed7;
+  --interactive-primary-active: #0a58ca;
+  --interactive-secondary: #6c757d;
+  --interactive-secondary-hover: #5c636a;
+  --interactive-danger: #dc3545;
+  --interactive-danger-hover: #bb2d3b;
+  --interactive-success: #198754;
+  --interactive-success-hover: #157347;
+  
+  /* Border Colors */
+  --border-light: #e9ecef;
+  --border-medium: #dee2e6;
+  --border-strong: #adb5bd;
+  --border-focus: #0d6efd;
+  
+  /* Shadow Colors */
+  --shadow-sm: rgba(0, 0, 0, 0.05);
+  --shadow-md: rgba(0, 0, 0, 0.1);
+  --shadow-lg: rgba(0, 0, 0, 0.15);
+  --shadow-xl: rgba(0, 0, 0, 0.2);
+  
+  /* Time Wheel Colors */
+  --wheel-bg: #ffffff;
+  --wheel-border: #dee2e6;
+  --wheel-hour-major: #212529;
+  --wheel-hour-minor: #6c757d;
+  --wheel-current: #0d6efd;
+  --wheel-past: #e9ecef;
+  --wheel-future: #f8f9fa;
+  --wheel-task-morning: #fd7e14;
+  --wheel-task-afternoon: #0d6efd;
+  --wheel-task-evening: #6f42c1;
+  
+  /* Task Status Colors */
+  --task-pending: #6c757d;
+  --task-completed: #198754;
+  --task-overdue: #dc3545;
+  
+  /* Surface Colors */
+  --surface-card: #ffffff;
+  --surface-elevated: #ffffff;
+  --surface-input: #ffffff;
+  
+  /* Typography */
+  --font-family-primary: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+  --font-family-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+  
+  /* Spacing Scale */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+  
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+  
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.2s ease;
+  --transition-slow: 0.3s ease;
 }
 
-/* Light mode (default) */
-body {
-  --bg-color: var(--planner-bg-light);
-  --surface-color: var(--planner-surface-light);
-  --text-primary: var(--planner-text-primary-light);
-  --text-secondary: var(--planner-text-secondary-light);
-  --accent-color: var(--planner-accent-light);
-  --accent-hover: var(--planner-accent-hover-light);
-  --border-color: var(--planner-border-light);
-  --shadow-color: var(--planner-shadow-light);
-  
-  /* Time wheel variables */
-  --wheel-bg: var(--wheel-bg-light);
-  --wheel-hour: var(--wheel-hour-light);
-  --wheel-current: var(--wheel-current-light);
-  --wheel-past: var(--wheel-past-light);
-  --wheel-future: var(--wheel-future-light);
-}
+/* ==========================================================================
+   DARK MODE - Deep backgrounds, muted colors, proper contrast
+   ========================================================================== */
 
-/* Dark mode */
 @media (prefers-color-scheme: dark) {
-  body {
-    --bg-color: var(--planner-bg-dark);
-    --surface-color: var(--planner-surface-dark);
-    --text-primary: var(--planner-text-primary-dark);
-    --text-secondary: var(--planner-text-secondary-dark);
-    --accent-color: var(--planner-accent-dark);
-    --accent-hover: var(--planner-accent-hover-dark);
-    --border-color: var(--planner-border-dark);
-    --shadow-color: var(--planner-shadow-dark);
+  :root {
+    /* Background Colors */
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d30;
+    --bg-tertiary: #3e3e42;
+    --bg-overlay: rgba(26, 26, 26, 0.95);
     
-    /* Time wheel variables */
-    --wheel-bg: var(--wheel-bg-dark);
-    --wheel-hour: var(--wheel-hour-light);
-    --wheel-current: var(--wheel-current-dark);
-    --wheel-past: var(--wheel-past-dark);
-    --wheel-future: var(--wheel-future-dark);
+    /* Text Colors */
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --text-muted: #999999;
+    --text-inverse: #212529;
+    
+    /* Accent Colors - Time-based (adjusted for dark mode) */
+    --accent-morning: #fd7e14;
+    --accent-afternoon: #4dabf7;
+    --accent-evening: #9775fa;
+    --accent-neutral: #999999;
+    
+    /* Interactive Colors */
+    --interactive-primary: #4dabf7;
+    --interactive-primary-hover: #339af0;
+    --interactive-primary-active: #228be6;
+    --interactive-secondary: #999999;
+    --interactive-secondary-hover: #cccccc;
+    --interactive-danger: #ff6b6b;
+    --interactive-danger-hover: #ff5252;
+    --interactive-success: #51cf66;
+    --interactive-success-hover: #40c057;
+    
+    /* Border Colors */
+    --border-light: #3e3e42;
+    --border-medium: #4a4a4a;
+    --border-strong: #666666;
+    --border-focus: #4dabf7;
+    
+    /* Shadow Colors */
+    --shadow-sm: rgba(0, 0, 0, 0.2);
+    --shadow-md: rgba(0, 0, 0, 0.3);
+    --shadow-lg: rgba(0, 0, 0, 0.4);
+    --shadow-xl: rgba(0, 0, 0, 0.5);
+    
+    /* Time Wheel Colors */
+    --wheel-bg: #2d2d30;
+    --wheel-border: #4a4a4a;
+    --wheel-hour-major: #ffffff;
+    --wheel-hour-minor: #cccccc;
+    --wheel-current: #4dabf7;
+    --wheel-past: #3e3e42;
+    --wheel-future: #2d2d30;
+    --wheel-task-morning: #fd7e14;
+    --wheel-task-afternoon: #4dabf7;
+    --wheel-task-evening: #9775fa;
+    
+    /* Task Status Colors */
+    --task-pending: #999999;
+    --task-completed: #51cf66;
+    --task-overdue: #ff6b6b;
+    
+    /* Surface Colors */
+    --surface-card: #2d2d30;
+    --surface-elevated: #3e3e42;
+    --surface-input: #3e3e42;
   }
 }
 
-/* Manual theme override classes */
-body.theme-light {
-  --bg-color: var(--planner-bg-light);
-  --surface-color: var(--planner-surface-light);
-  --text-primary: var(--planner-text-primary-light);
-  --text-secondary: var(--planner-text-secondary-light);
-  --accent-color: var(--planner-accent-light);
-  --accent-hover: var(--planner-accent-hover-light);
-  --border-color: var(--planner-border-light);
-  --shadow-color: var(--planner-shadow-light);
-  --wheel-bg: var(--wheel-bg-light);
-  --wheel-hour: var(--wheel-hour-light);
-  --wheel-current: var(--wheel-current-light);
-  --wheel-past: var(--wheel-past-light);
-  --wheel-future: var(--wheel-future-light);
+/* ==========================================================================
+   HIGH CONTRAST MODE SUPPORT
+   ========================================================================== */
+
+@media (prefers-contrast: high) {
+  :root {
+    --border-light: #000000;
+    --border-medium: #000000;
+    --border-strong: #000000;
+    --shadow-sm: rgba(0, 0, 0, 0.3);
+    --shadow-md: rgba(0, 0, 0, 0.5);
+    --shadow-lg: rgba(0, 0, 0, 0.7);
+    --shadow-xl: rgba(0, 0, 0, 0.8);
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --border-light: #ffffff;
+      --border-medium: #ffffff;
+      --border-strong: #ffffff;
+      --shadow-sm: rgba(255, 255, 255, 0.3);
+      --shadow-md: rgba(255, 255, 255, 0.5);
+      --shadow-lg: rgba(255, 255, 255, 0.7);
+      --shadow-xl: rgba(255, 255, 255, 0.8);
+    }
+  }
 }
 
-body.theme-dark {
-  --bg-color: var(--planner-bg-dark);
-  --surface-color: var(--planner-surface-dark);
-  --text-primary: var(--planner-text-primary-dark);
-  --text-secondary: var(--planner-text-secondary-dark);
-  --accent-color: var(--planner-accent-dark);
-  --accent-hover: var(--planner-accent-hover-dark);
-  --border-color: var(--planner-border-dark);
-  --shadow-color: var(--planner-shadow-dark);
-  --wheel-bg: var(--wheel-bg-dark);
-  --wheel-hour: var(--wheel-hour-light);
-  --wheel-current: var(--wheel-current-dark);
-  --wheel-past: var(--wheel-past-dark);
-  --wheel-future: var(--wheel-future-dark);
+/* ==========================================================================
+   REDUCED MOTION SUPPORT
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0s;
+    --transition-normal: 0s;
+    --transition-slow: 0s;
+  }
+  
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
-/* Theme transition */
+/* ==========================================================================
+   UTILITY CLASSES FOR THEME-AWARE COMPONENTS
+   ========================================================================== */
+
+/* Background utilities */
+.bg-primary { background-color: var(--bg-primary); }
+.bg-secondary { background-color: var(--bg-secondary); }
+.bg-tertiary { background-color: var(--bg-tertiary); }
+.bg-surface { background-color: var(--surface-card); }
+.bg-elevated { background-color: var(--surface-elevated); }
+
+/* Text utilities */
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }
+.text-inverse { color: var(--text-inverse); }
+
+/* Border utilities */
+.border-light { border-color: var(--border-light); }
+.border-medium { border-color: var(--border-medium); }
+.border-strong { border-color: var(--border-strong); }
+.border-focus { border-color: var(--border-focus); }
+
+/* Shadow utilities */
+.shadow-sm { box-shadow: 0 1px 2px var(--shadow-sm); }
+.shadow-md { box-shadow: 0 4px 6px var(--shadow-md); }
+.shadow-lg { box-shadow: 0 10px 15px var(--shadow-lg); }
+.shadow-xl { box-shadow: 0 20px 25px var(--shadow-xl); }
+
+/* Interactive state utilities */
+.interactive-primary {
+  background-color: var(--interactive-primary);
+  color: var(--text-inverse);
+  border: 1px solid var(--interactive-primary);
+}
+
+.interactive-primary:hover {
+  background-color: var(--interactive-primary-hover);
+  border-color: var(--interactive-primary-hover);
+}
+
+.interactive-primary:active {
+  background-color: var(--interactive-primary-active);
+  border-color: var(--interactive-primary-active);
+}
+
+.interactive-secondary {
+  background-color: var(--interactive-secondary);
+  color: var(--text-inverse);
+  border: 1px solid var(--interactive-secondary);
+}
+
+.interactive-secondary:hover {
+  background-color: var(--interactive-secondary-hover);
+  border-color: var(--interactive-secondary-hover);
+}
+
+/* Time-based accent utilities */
+.accent-morning { color: var(--accent-morning); }
+.accent-afternoon { color: var(--accent-afternoon); }
+.accent-evening { color: var(--accent-evening); }
+.accent-neutral { color: var(--accent-neutral); }
+
+/* Focus utilities for accessibility */
+.focus-ring:focus {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.focus-ring:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ==========================================================================
+   THEME TRANSITION SUPPORT
+   ========================================================================== */
+
+/* Smooth transitions for theme changes */
+* {
+  transition: 
+    background-color var(--transition-normal),
+    border-color var(--transition-normal),
+    color var(--transition-normal),
+    box-shadow var(--transition-normal);
+}
+
+/* Ensure theme changes are smooth */
 body {
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Theme toggle button styling */
-.theme-toggle {
-  background: var(--surface-color);
-  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
   color: var(--text-primary);
-  border-radius: 8px;
-  padding: 8px 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 16px;
+  transition: 
+    background-color var(--transition-slow),
+    color var(--transition-slow);
 }
 
-.theme-toggle:hover {
-  background: var(--accent-color);
-  color: white;
-  transform: scale(1.05);
-}
+/* ==========================================================================
+   PRINT STYLES
+   ========================================================================== */
 
-.theme-toggle:active {
-  transform: scale(0.95);
-}
-
-/* Export button styling */
-.export-btn {
-  background: var(--surface-color);
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-  border-radius: 8px;
-  padding: 8px 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 16px;
-  margin-left: 8px;
-}
-
-.export-btn:hover {
-  background: var(--accent-color);
-  color: white;
-  transform: scale(1.05);
-}
-
-.export-btn:active {
-  transform: scale(0.95);
+@media print {
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --text-primary: #000000;
+    --text-secondary: #333333;
+    --border-light: #cccccc;
+    --shadow-sm: transparent;
+    --shadow-md: transparent;
+    --shadow-lg: transparent;
+    --shadow-xl: transparent;
+  }
+  
+  * {
+    background: transparent !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
 }

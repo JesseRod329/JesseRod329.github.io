@@ -86,12 +86,12 @@ class CanvasExporter {
     const computedStyle = getComputedStyle(document.body);
     
     return {
-      background: computedStyle.getPropertyValue('--bg-color').trim() || '#f8fafc',
-      surface: computedStyle.getPropertyValue('--surface-color').trim() || '#ffffff',
-      textPrimary: computedStyle.getPropertyValue('--text-primary').trim() || '#1e293b',
-      textSecondary: computedStyle.getPropertyValue('--text-secondary').trim() || '#64748b',
-      accent: computedStyle.getPropertyValue('--accent-color').trim() || '#3b82f6',
-      border: computedStyle.getPropertyValue('--border-color').trim() || '#e2e8f0'
+      background: computedStyle.getPropertyValue('--bg-primary').trim() || '#ffffff',
+      surface: computedStyle.getPropertyValue('--surface-card').trim() || '#ffffff',
+      textPrimary: computedStyle.getPropertyValue('--text-primary').trim() || '#212529',
+      textSecondary: computedStyle.getPropertyValue('--text-secondary').trim() || '#6c757d',
+      accent: computedStyle.getPropertyValue('--interactive-primary').trim() || '#0d6efd',
+      border: computedStyle.getPropertyValue('--border-light').trim() || '#e9ecef'
     };
   }
 
