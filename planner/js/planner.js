@@ -152,13 +152,8 @@ class CircularPlannerGenerator {
         return;
       }
 
-      // Generate view: aesthetic on small screens, classic otherwise
-      const prefersAesthetic = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
-      if (prefersAesthetic) {
-        await this.renderAestheticPlanner({ ...formData, tasks: validTasks });
-      } else {
-        await this.renderCircularPlanner({ ...formData, tasks: validTasks });
-      }
+      // Generate aesthetic view on all screen sizes
+      await this.renderAestheticPlanner({ ...formData, tasks: validTasks });
       
       this.currentPlannerData = formData;
       this.showNotification('Planner generated successfully!', 'success');
