@@ -509,7 +509,7 @@ class PortfolioCLI {
     
     const linkText = document.createTextNode('🚀 ');
     const link = document.createElement('a');
-    link.href = '/planner/';
+    link.href = '/planner/index.html';
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
     link.textContent = 'Launch Circular Daily Planner';
