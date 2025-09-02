@@ -24,8 +24,8 @@ class CircularPlannerGenerator {
   }
 
   setup() {
-    this.plannerContainer = document.getElementById('planner-preview-section');
-    this.previewSection = document.getElementById('planner-preview-section');
+    this.plannerContainer = document.getElementById('planner-preview');
+    this.previewSection = document.getElementById('planner-preview');
     
     if (!this.plannerContainer) {
       console.warn('Planner container not found');
