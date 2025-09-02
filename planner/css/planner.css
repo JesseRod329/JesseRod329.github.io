@@ -1888,3 +1888,27 @@ canvas {
 }
 
 
+/* Mobile-first refinements for circular planner */
+@media (max-width: 600px) {
+  .planner-main { padding: var(--space-lg); }
+  .planner-container { gap: var(--space-lg); }
+
+  .circular-planner { background: var(--surface-card); border: 1px solid var(--border-light); border-radius: 16px; padding: 16px; }
+  .circular-planner .planner-content { display: flex; flex-direction: column; gap: 20px; }
+  .time-wheel-container { display: grid; place-items: center; }
+  .time-wheel { position: relative; width: 320px; height: 320px; max-width: 86vw; max-height: 86vw; border-radius: 50%; background: var(--bg-primary); border: 2px solid var(--border-light); }
+  .time-wheel .wheel-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 36%; height: 36%; border-radius: 50%; background: var(--surface-card); border: 1px solid var(--border-light); display: grid; place-items: center; text-align: center; padding: 6px; }
+  .time-wheel .hour-marker { position: absolute; top: 50%; left: 50%; width: 50%; height: 2px; transform-origin: left center; opacity: 0.5; }
+  .time-wheel .hour-label { position: absolute; transform: translate(-50%, -50%); font-size: 10px; color: var(--text-secondary); }
+  .task-marker { position: absolute; width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 0 2px var(--surface-card); transition: transform 150ms ease; }
+  .task-marker:hover, .task-marker:active { transform: scale(1.2); }
+  .task-marker-morning { background: var(--accent-morning); }
+  .task-marker-afternoon { background: var(--accent-afternoon); }
+  .task-marker-evening { background: var(--accent-evening); }
+  .task-marker.completed { outline: 2px solid var(--interactive-success); }
+  .tasks-panel { background: var(--surface-card); border: 1px solid var(--border-light); border-radius: 12px; padding: 12px; }
+  .tasks-panel .task-item { display: grid; grid-template-columns: 56px 1fr auto; align-items: center; gap: 10px; padding: 10px 8px; border-bottom: 1px solid var(--border-light); }
+  .tasks-panel .task-item:last-child { border-bottom: 0; }
+}
+
+
