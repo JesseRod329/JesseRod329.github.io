@@ -233,6 +233,10 @@ class CircularPlannerGenerator {
             <h1 class="date">${this.escapeHtml(this.formatDate(formData.personalInfo?.date))}</h1>
             <p class="subtitle">Your Daily Journey Awaits</p>
           </header>
+          <div class="planner-actions" style="display:flex;justify-content:center;gap:12px;margin-bottom:16px;">
+            <button class="btn btn-secondary" id="edit-planner-btn" aria-label="Edit planner" style="padding:10px 16px;border-radius:12px;border:1px solid var(--border-light);background:var(--surface-card);color:var(--text-primary);">✏️ Edit</button>
+            <button class="btn btn-primary" id="export-planner-btn" aria-label="Export planner" style="padding:10px 16px;border-radius:12px;background: var(--interactive-primary); color:#fff;">📤 Export</button>
+          </div>
           <div class="planner-grid">${row1.join('')}</div>
           ${row2 ? `<div class="planner-grid" style="margin-top:0;">${row2}</div>` : ''}
           ${(formData.notes?.notes || formData.notes?.reminders) ? `
