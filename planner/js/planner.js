@@ -146,7 +146,8 @@ class CircularPlannerGenerator {
       // Use the latest data provided by form-handler (source of truth)
       const formData = this.currentPlannerData || { tasks: [] };
       
-      const validTasks = (formData.tasks || []).filter(t => t && t.time && t.description);
+      // Accept tasks with at least a description. Time is optional in the aesthetic view.
+      const validTasks = (formData.tasks || []).filter(t => t && t.description && String(t.description).trim().length > 0);
       if (validTasks.length < 1) {
         this.showNotification('Please add at least one task to generate your planner', 'error');
         return;
@@ -169,7 +170,7 @@ class CircularPlannerGenerator {
 
   // Aesthetic glossy circle layout (mobile-first)
   async renderAestheticPlanner(formData) {
-    const tasks = (formData.tasks || []).filter(t => t.time && t.description);
+    const tasks = (formData.tasks || []).filter(t => t && t.description && String(t.description).trim().length > 0);
     const container = this.plannerContainer;
     if (!container) return;
 

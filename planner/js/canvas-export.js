@@ -325,24 +325,107 @@ class CanvasExport {
   }
 
   async renderPlannerToCanvas(ctx, width, height, plannerData, option) {
-    // Get theme colors
+    // Render export in the same aesthetic style as the on-screen planner
     const themeColors = this.getThemeColors();
-    
-    // Set background
     ctx.fillStyle = themeColors.background;
     ctx.fillRect(0, 0, width, height);
-    
-    // Calculate layout based on format
+
     const isPhone = option.type === 'phone';
-    const padding = isPhone ? 40 : 80;
-    const centerX = width / 2;
-    const centerY = height / 2;
-    
-    if (isPhone) {
-      await this.renderPhoneLayout(ctx, width, height, plannerData, themeColors, padding);
-    } else {
-      await this.renderDesktopLayout(ctx, width, height, plannerData, themeColors, padding);
-    }
+    const padding = isPhone ? 24 : 48;
+
+    // Header: date and subtitle
+    ctx.fillStyle = themeColors.textPrimary;
+    ctx.textAlign = 'center';
+    ctx.font = isPhone ? '600 22px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif' : '600 32px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif';
+    const dateStr = plannerData.personalInfo?.date ? this.formatDate(plannerData.personalInfo.date) : this.formatDate(new Date().toISOString());
+    ctx.fillText(dateStr, width / 2, padding + (isPhone ? 8 : 12));
+    ctx.fillStyle = themeColors.textSecondary;
+    ctx.font = isPhone ? '400 14px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif' : '400 18px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif';
+    ctx.fillText('Your Daily Journey Awaits', width / 2, padding + (isPhone ? 32 : 40));
+
+    // Layout parameters
+    const circleSize = Math.min((isPhone ? width * 0.72 : width * 0.28), (isPhone ? height * 0.28 : height * 0.32));
+    const topY = padding + (isPhone ? 70 : 90);
+    const gap = isPhone ? 20 : 30;
+
+    // Helper: draw glossy circle card
+    const drawCircleCard = (cx, cy, task) => {
+      // Card background
+      const grd = ctx.createLinearGradient(cx - circleSize/2, cy - circleSize/2, cx + circleSize/2, cy + circleSize/2);
+      const band = (task.time || '').split(':')[0];
+      const label = (task.timeLabel || task.label || '').toLowerCase();
+      const bandKey = label || (band>=5 && band<12 ? 'morning' : band>=12 && band<17 ? 'afternoon' : 'evening');
+      const bgA = bandKey==='morning'? '#fed7aa' : bandKey==='afternoon'? '#a5b4fc' : '#c084fc';
+      const bgB = bandKey==='morning'? '#fb923c' : bandKey==='afternoon'? '#3b82f6' : '#8b5cf6';
+      grd.addColorStop(0, bgA);
+      grd.addColorStop(1, bgB);
+      ctx.fillStyle = grd;
+      this.roundRect(ctx, cx - circleSize/2, cy - circleSize/2, circleSize, circleSize, circleSize/2);
+      ctx.fill();
+
+      // Priority badge
+      const pr = (task.priority||'medium').toLowerCase();
+      const pColor = pr==='high'||pr==='urgent'? '#ef4444' : pr==='low'? '#10b981' : '#eab308';
+      ctx.fillStyle = pColor;
+      this.roundRect(ctx, cx + circleSize/2 - 78, cy - circleSize/2 + 12, 66, 24, 12);
+      ctx.fill();
+      ctx.fillStyle = pr==='medium'? '#000' : '#fff';
+      ctx.font = isPhone ? '700 11px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif' : '700 12px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(pr.toUpperCase(), cx + circleSize/2 - 45, cy - circleSize/2 + 29);
+
+      // Texts
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.font = isPhone ? '600 12px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif' : '600 14px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif';
+      const bandText = `${(bandKey.charAt(0).toUpperCase()+bandKey.slice(1))}${task.time? ' • '+task.time:''}`;
+      ctx.fillText(bandText, cx, cy - (circleSize*0.18));
+
+      ctx.font = isPhone ? '700 18px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif' : '700 22px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif';
+      const title = task.title || task.description;
+      this.wrapCanvasText(ctx, title, cx, cy - 4, circleSize*0.72, isPhone? 20 : 24);
+
+      if (task.title && task.description){
+        ctx.font = isPhone ? '400 12px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif' : '400 14px -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif';
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        this.wrapCanvasText(ctx, task.description, cx, cy + 22, circleSize*0.78, isPhone? 16 : 18, 4);
+      }
+    };
+
+    // Prepare tasks
+    const tasks = (plannerData.tasks||[]).filter(t=>t && (t.title || (t.description && String(t.description).trim())));
+
+    // Layout two circles and hub, then remaining
+    if (tasks[0]) drawCircleCard(width/2 - circleSize - gap/2, topY + circleSize/2, tasks[0]);
+    if (tasks[1]) drawCircleCard(width/2 + circleSize + gap/2 - circleSize, topY + circleSize/2, tasks[1]);
+
+    // Center hub
+    const hubR = Math.min(circleSize*0.66, isPhone? width*0.3 : width*0.12);
+    ctx.fillStyle = this.hexToRgba(themeColors.surface, 0.25);
+    this.roundRect(ctx, width/2 - hubR/2, topY + circleSize/2 - hubR/2, hubR, hubR, hubR/2);
+    ctx.fill();
+    ctx.strokeStyle = this.hexToRgba(themeColors.border, 0.6);
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = '#ffffff';
+    ctx.font = isPhone ? '700 16px -apple-system' : '700 18px -apple-system';
+    ctx.textAlign = 'center';
+    ctx.fillText('Today', width/2, topY + circleSize/2 - 6);
+    ctx.font = isPhone ? '400 12px -apple-system' : '400 14px -apple-system';
+    const yr = plannerData.personalInfo?.date ? new Date(plannerData.personalInfo.date).getFullYear() : new Date().getFullYear();
+    ctx.fillText(String(yr), width/2, topY + circleSize/2 + 14);
+
+    // Remaining tasks rows
+    let y = topY + circleSize + (isPhone? 30 : 40);
+    const perRow = isPhone ? 1 : 3;
+    let xStart = padding + circleSize/2;
+    let col = 0;
+    tasks.slice(2).forEach(task => {
+      const cx = padding + (col * (circleSize + gap)) + circleSize/2;
+      drawCircleCard(cx, y + circleSize/2, task);
+      col++;
+      if (col >= perRow){ col = 0; y += circleSize + gap; }
+    });
   }
 
   async renderPhoneLayout(ctx, width, height, plannerData, themeColors, padding) {
@@ -600,6 +683,33 @@ class CanvasExport {
     
     ctx.fillText(line, x, currentY);
     return currentY + lineHeight;
+  }
+
+  // Centered text wrapper
+  wrapCanvasText(ctx, text, centerX, baseY, maxWidth, lineHeight, maxLines = 2) {
+    if (!text) return;
+    const words = String(text).split(' ');
+    let line = '';
+    let y = baseY;
+    let lines = 0;
+    for (let i=0;i<words.length;i++){
+      const test = line + words[i] + ' ';
+      if (ctx.measureText(test).width > maxWidth && i>0){
+        ctx.fillText(line.trim(), centerX, y);
+        line='';
+        y += lineHeight;
+        lines++;
+        if (lines>=maxLines-1){
+          // last line with ellipsis if needed
+          let rem = words.slice(i).join(' ');
+          while (ctx.measureText(rem + '…').width > maxWidth && rem.length>0){ rem = rem.slice(0,-1); }
+          ctx.fillText(rem + (rem.length? '…' : ''), centerX, y);
+          return;
+        }
+      }
+      line = test;
+    }
+    ctx.fillText(line.trim(), centerX, y);
   }
 
   // Lockscreen-specific rendering methods
