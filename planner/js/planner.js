@@ -223,11 +223,6 @@ class CircularPlannerGenerator {
 
     container.innerHTML = `
       <div class="planner-aesthetic">
-        <div class="background-elements">
-          <div class="floating-circle fc1"></div>
-          <div class="floating-circle fc2"></div>
-          <div class="floating-circle fc3"></div>
-        </div>
         <div class="container">
           <header class="header">
             <h1 class="date">${this.escapeHtml(this.formatDate(formData.personalInfo?.date))}</h1>
@@ -247,6 +242,10 @@ class CircularPlannerGenerator {
             </div>
           ` : ''}
         </div>
+        <button id="export-planner-fab" aria-label="Export planner" title="Export"
+                style="position:fixed;right:16px;bottom:16px;z-index:1000;padding:12px 16px;border-radius:999px;border:none;box-shadow:0 8px 20px rgba(0,0,0,.25);background: var(--interactive-primary); color:#fff;cursor:pointer;">
+          📤 Export
+        </button>
       </div>
     `;
 
@@ -259,8 +258,15 @@ class CircularPlannerGenerator {
       });
     });
 
+    // Hook up actions
+    const editBtn = document.getElementById('edit-planner-btn');
+    if (editBtn) editBtn.addEventListener('click', () => this.editPlanner());
+    const exportBtn = document.getElementById('export-planner-btn');
+    if (exportBtn) exportBtn.addEventListener('click', () => this.exportPlanner());
+    const exportFab = document.getElementById('export-planner-fab');
+    if (exportFab) exportFab.addEventListener('click', () => this.exportPlanner());
+
     this.currentPlannerData = formData;
-    this.setupPlannerInteractions();
   }
 
   async renderCircularPlanner(formData) {
