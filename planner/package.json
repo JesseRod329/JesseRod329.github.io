@@ -1,0 +1,44 @@
+{
+  "name": "circular-daily-planner",
+  "version": "1.0.0",
+  "description": "A beautiful, intuitive daily planner with a circular time-based interface",
+  "main": "index.html",
+  "scripts": {
+    "build": "node build.js",
+    "test": "node test-suite.js",
+    "test:a11y": "echo 'Accessibility testing requires manual verification'",
+    "test:perf": "echo 'Performance testing requires Lighthouse CI'",
+    "test:browser": "echo 'Cross-browser testing requires manual verification'",
+    "dev": "python3 -m http.server 8080",
+    "generate-og": "node generate-og-image.js",
+    "lint": "echo 'Linting requires manual verification'",
+    "validate": "node test-suite.js && echo 'Validation complete'"
+  },
+  "keywords": [
+    "planner",
+    "productivity",
+    "time-management",
+    "circular-interface",
+    "daily-planner",
+    "web-app"
+  ],
+  "author": "Jesse Rodriguez",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JesseRod329/JesseRod329.github.io"
+  },
+  "homepage": "https://jesserodriguez.me/planner",
+  "devDependencies": {
+    "clean-css": "^5.3.2",
+    "terser": "^5.24.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
