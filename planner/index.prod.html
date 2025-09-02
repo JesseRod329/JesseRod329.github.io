@@ -25,12 +25,11 @@
 <title>Circular Daily Planner — Jesse Rodriguez</title>
 
 <!-- Preload critical resources -->
-<link rel="preload" href="css/themes.css" as="style">
-<link rel="preload" href="css/planner.css" as="style">
+<link rel="preload" href="dist/planner.min.css" as="style">
+<link rel="preload" href="dist/planner.min.js" as="script">
 
 <!-- Stylesheets -->
-<link rel="stylesheet" href="css/themes.css">
-<link rel="stylesheet" href="css/planner.css">
+<link rel="stylesheet" href="dist/planner.min.css">
 </head>
 <body>
 
@@ -154,20 +153,23 @@
                 <div id="priority-help" class="form-help">How important is this task?</div>
               </div>
               
-              <button type="button" class="btn btn-secondary btn-add-task" id="add-task-btn">
-                <span class="btn-icon">➕</span>
-                Add Task
-              </button>
+              <div class="form-group">
+                <button type="button" id="add-task-btn" class="btn btn-primary">
+                  <span class="btn-icon">➕</span>
+                  Add Task
+                </button>
+              </div>
             </div>
             
-            <!-- Task List (Enhanced with JS) -->
+            <!-- Task List Container -->
             <div class="task-list-container" id="task-list-container">
-              <div class="task-list-empty">
-                <div class="empty-state">
-                  <div class="empty-state-icon">📝</div>
-                  <h3 class="empty-state-title">No tasks yet</h3>
-                  <p class="empty-state-description">Add your first task above to get started</p>
-                </div>
+              <div class="task-list-empty" id="task-list-empty">
+                <div class="empty-state-icon">📝</div>
+                <h3>No tasks yet</h3>
+                <p>Add your first task above to get started with your daily planner.</p>
+              </div>
+              <div class="task-list" id="task-list" role="list" aria-label="Daily tasks">
+                <!-- Dynamic tasks will be added here -->
               </div>
             </div>
           </div>
@@ -177,36 +179,36 @@
         <div class="form-card">
           <div class="form-card-header">
             <h2 class="form-card-title">Notes & Reminders</h2>
-            <p class="form-card-description">Additional thoughts and important reminders</p>
+            <p class="form-card-description">Additional information for your day</p>
           </div>
           
           <div class="form-card-content">
             <div class="form-group">
-              <label for="daily-notes" class="form-label">Daily Notes</label>
+              <label for="notes" class="form-label">Daily Notes</label>
               <textarea 
-                id="daily-notes" 
-                name="daily-notes" 
+                id="notes" 
+                name="notes" 
                 class="form-textarea" 
-                placeholder="Any additional notes, thoughts, or observations for today..."
-                rows="4"
-                maxlength="1000"
+                placeholder="Any additional notes for today..."
+                rows="3"
+                maxlength="500"
                 aria-describedby="notes-help"
               ></textarea>
-              <div id="notes-help" class="form-help">Optional notes to remember throughout the day</div>
+              <div id="notes-help" class="form-help">Optional notes or thoughts for the day</div>
             </div>
             
             <div class="form-group">
-              <label for="reminders" class="form-label">Important Reminders</label>
+              <label for="reminders" class="form-label">Reminders</label>
               <textarea 
                 id="reminders" 
                 name="reminders" 
                 class="form-textarea" 
-                placeholder="Don't forget to..."
-                rows="3"
-                maxlength="500"
+                placeholder="Important reminders..."
+                rows="2"
+                maxlength="300"
                 aria-describedby="reminders-help"
               ></textarea>
-              <div id="reminders-help" class="form-help">Critical reminders that need attention</div>
+              <div id="reminders-help" class="form-help">Key reminders or important items</div>
             </div>
           </div>
         </div>
@@ -215,12 +217,11 @@
         <div class="form-card form-card-action">
           <div class="form-card-content">
             <div class="form-actions">
-              <button type="submit" class="btn btn-primary btn-generate" id="generate-planner-btn">
+              <button type="submit" id="generate-planner-btn" class="btn btn-primary btn-generate">
                 <span class="btn-icon">🎯</span>
-                Generate My Planner
+                Generate Planner
               </button>
-              
-              <button type="button" class="btn btn-secondary" id="clear-form-btn">
+              <button type="button" id="clear-form-btn" class="btn btn-secondary">
                 <span class="btn-icon">🗑️</span>
                 Clear Form
               </button>
@@ -230,42 +231,29 @@
               <div class="progress-bar">
                 <div class="progress-fill"></div>
               </div>
-              <p class="progress-text">Generating your personalized planner...</p>
+              <p class="progress-text">Generating your planner...</p>
             </div>
           </div>
         </div>
-        
       </form>
     </section>
 
-    <!-- Preview Section (Hidden initially) -->
-    <section class="planner-preview-section" id="planner-preview" style="display: none;">
-      <div class="form-card">
-        <div class="form-card-header">
-          <h2 class="form-card-title">Your Daily Planner</h2>
-          <p class="form-card-description">Preview of your personalized circular planner</p>
-        </div>
-        
-        <div class="form-card-content">
-          <div class="planner-preview-placeholder">
-            <div class="preview-icon">⏰</div>
-            <h3 class="preview-title">Planner Preview</h3>
-            <p class="preview-description">Your circular planner will appear here</p>
-          </div>
+    <!-- Preview Section -->
+    <section class="planner-preview-section" id="planner-preview-section" aria-labelledby="preview-heading">
+      <h2 id="preview-heading" class="sr-only">Planner Preview</h2>
+      <div class="planner-preview" id="planner-preview">
+        <div class="planner-preview-placeholder">
+          <div class="preview-icon">⏰</div>
+          <h3 class="preview-title">Ready to Plan Your Day</h3>
+          <p class="preview-description">Fill out the form above to generate your personalized circular daily planner.</p>
         </div>
       </div>
     </section>
-
   </div>
 </main>
 
-<!-- Hidden Canvas for Export -->
-<canvas id="export-canvas" style="display: none;"></canvas>
-
 <!-- Scripts -->
-<script src="js/form-handler.js" defer></script>
-<script src="js/planner.js" defer></script>
-<script src="js/canvas-export.js" defer></script>
+<script src="dist/planner.min.js" defer></script>
 
 </body>
 </html>

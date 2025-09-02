@@ -46,6 +46,12 @@ class PlannerFormHandler {
     const addTaskBtn = document.getElementById('add-task-btn');
     if (addTaskBtn) {
       addTaskBtn.addEventListener('click', () => this.addTask());
+      addTaskBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          this.addTask();
+        }
+      });
     }
 
     this.form.addEventListener('submit', (e) => this.handleFormSubmit(e));
@@ -53,11 +59,20 @@ class PlannerFormHandler {
     const clearBtn = document.getElementById('clear-form-btn');
     if (clearBtn) {
       clearBtn.addEventListener('click', () => this.clearForm());
+      clearBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          this.clearForm();
+        }
+      });
     }
 
     this.form.addEventListener('input', (e) => this.handleFormInput(e));
     this.form.addEventListener('change', (e) => this.handleFormChange(e));
     document.addEventListener('keydown', (e) => this.handleKeyboardShortcuts(e));
+
+    // Add ARIA live region for screen reader announcements
+    this.createLiveRegion();
   }
 
   setupFormValidation() {
@@ -547,6 +562,139 @@ class PlannerFormHandler {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+  }
+
+  // Accessibility methods
+  createLiveRegion() {
+    const liveRegion = document.createElement('div');
+    liveRegion.id = 'live-region';
+    liveRegion.setAttribute('aria-live', 'polite');
+    liveRegion.setAttribute('aria-atomic', 'true');
+    liveRegion.className = 'sr-only';
+    document.body.appendChild(liveRegion);
+    this.liveRegion = liveRegion;
+  }
+
+  announceToScreenReader(message) {
+    if (this.liveRegion) {
+      this.liveRegion.textContent = message;
+      // Clear after announcement
+      setTimeout(() => {
+        this.liveRegion.textContent = '';
+      }, 1000);
+    }
+  }
+
+  handleKeyboardShortcuts(e) {
+    // Ctrl/Cmd + Enter to generate planner
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      const generateBtn = document.getElementById('generate-planner-btn');
+      if (generateBtn && !generateBtn.disabled) {
+        this.handleFormSubmit(e);
+      }
+    }
+    
+    // Escape to clear form
+    if (e.key === 'Escape' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+      if (confirm('Are you sure you want to clear the form?')) {
+        this.clearForm();
+      }
+    }
+  }
+
+  // Enhanced task creation with accessibility
+  createTaskElement(taskId, taskData) {
+    const taskElement = document.createElement('div');
+    taskElement.className = 'task-item';
+    taskElement.dataset.taskId = taskId;
+    taskElement.setAttribute('role', 'listitem');
+    taskElement.setAttribute('aria-label', `Task: ${taskData.description} at ${taskData.time}, ${taskData.priority} priority`);
+
+    taskElement.innerHTML = `
+      <div class="task-time" aria-label="Time: ${taskData.time}">${taskData.time}</div>
+      <div class="task-content">
+        <div class="task-description" aria-label="Description: ${this.escapeHtml(taskData.description)}">${this.escapeHtml(taskData.description)}</div>
+        <div class="task-priority priority-${taskData.priority}" aria-label="Priority: ${taskData.priority}">
+          ${this.getPriorityIcon(taskData.priority)}
+        </div>
+      </div>
+      <div class="task-actions" role="group" aria-label="Task actions">
+        <button class="task-btn btn-edit" aria-label="Edit task: ${this.escapeHtml(taskData.description)}" title="Edit this task">
+          <span class="btn-icon" aria-hidden="true">✏️</span>
+        </button>
+        <button class="task-btn btn-delete" aria-label="Delete task: ${this.escapeHtml(taskData.description)}" title="Delete this task">
+          <span class="btn-icon" aria-hidden="true">🗑️</span>
+        </button>
+      </div>
+    `;
+
+    return taskElement;
+  }
+
+  getPriorityIcon(priority) {
+    const icons = {
+      urgent: '🔴',
+      high: '🟠',
+      medium: '🟡',
+      low: '🟢'
+    };
+    return icons[priority] || '⚪';
+  }
+
+  // Enhanced add task with screen reader announcement
+  addTask() {
+    const taskData = this.getCurrentTaskInputs();
+    
+    if (!this.validateTaskInputs(taskData)) {
+      this.announceToScreenReader('Please fix the errors before adding the task');
+      return;
+    }
+
+    const taskId = `task-${++this.taskCounter}`;
+    const taskElement = this.createTaskElement(taskId, taskData);
+    
+    this.taskContainer.appendChild(taskElement);
+    this.animateTaskIn(taskElement);
+    this.clearTaskInputs();
+    
+    this.formData.tasks.push({
+      id: taskId,
+      time: taskData.time,
+      description: taskData.description,
+      priority: taskData.priority
+    });
+
+    this.updatePreview();
+    this.showNotification('Task added successfully!', 'success');
+    this.announceToScreenReader(`Task added: ${taskData.description} at ${taskData.time}`);
+    
+    // Focus on the new task for keyboard navigation
+    const editBtn = taskElement.querySelector('.btn-edit');
+    if (editBtn) {
+      editBtn.focus();
+    }
+  }
+
+  // Enhanced remove task with screen reader announcement
+  removeTask(taskId) {
+    const taskElement = document.querySelector(`[data-task-id="${taskId}"]`);
+    if (!taskElement) return;
+
+    const taskDescription = taskElement.querySelector('.task-description').textContent;
+    
+    this.animateTaskOut(taskElement, () => {
+      taskElement.remove();
+      this.formData.tasks = this.formData.tasks.filter(task => task.id !== taskId);
+      
+      if (this.formData.tasks.length === 0) {
+        this.showEmptyState();
+      }
+      
+      this.updatePreview();
+      this.showNotification('Task removed', 'info');
+      this.announceToScreenReader(`Task removed: ${taskDescription}`);
+    });
   }
 }
 

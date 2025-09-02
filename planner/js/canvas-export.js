@@ -236,33 +236,58 @@ class CanvasExport {
       // Set lockscreen export flag
       this.isLockscreenExport = option.type === 'phone';
       
-      // Create high-resolution canvas
-      const scale = option.scale || 2;
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
+      // Use requestIdleCallback for better performance
+      const generateCanvas = () => {
+        return new Promise((resolve) => {
+          const createCanvas = () => {
+            // Create high-resolution canvas
+            const scale = option.scale || 2;
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = option.width * scale;
+            canvas.height = option.height * scale;
+            
+            // Scale context for high resolution
+            ctx.scale(scale, scale);
+            
+            resolve({ canvas, ctx });
+          };
+          
+          if (window.requestIdleCallback) {
+            window.requestIdleCallback(createCanvas, { timeout: 1000 });
+          } else {
+            setTimeout(createCanvas, 0);
+          }
+        });
+      };
       
-      canvas.width = option.width * scale;
-      canvas.height = option.height * scale;
+      const { canvas, ctx } = await generateCanvas();
       
-      // Scale context for high resolution
-      ctx.scale(scale, scale);
-      
-      // Render planner to canvas
+      // Render planner to canvas with progress updates
       await this.renderPlannerToCanvas(ctx, option.width, option.height, plannerData, option);
       
       // Generate filename
       const filename = this.generateFilename(plannerData, option);
       
-      // Download file
+      // Download file with better error handling
       canvas.toBlob((blob) => {
+        if (!blob) {
+          this.showNotification('Error generating image', 'error');
+          return;
+        }
+        
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = filename;
+        a.setAttribute('aria-label', `Download ${filename}`);
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+        
+        // Clean up URL after a delay
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
         
         this.showNotification('Export generated successfully!', 'success');
       }, 'image/png', 1.0);
