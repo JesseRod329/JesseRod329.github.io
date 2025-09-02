@@ -1,13 +1,16 @@
 # Jesse Rodriguez Portfolio
 
-**Live Site:** [https://jesserodriguez.me](https://jesserodriguez.me)
+**Live Site:** [https://jesserodriguez.me](https://jesserodriguez.me)  
+**Circular Daily Planner:** [https://jesserodriguez.me/planner](https://jesserodriguez.me/planner)
 
 **Description:**  
-A single-page, responsive HTML portfolio website showcasing the intersection of AI, design, and fashion. Features dynamic mathematical circle animations and enterprise-level security implementation. Built with an editorial aesthetic inspired by Kanye × Virgil × Anna Wintour design philosophy.
+A comprehensive portfolio website featuring a main portfolio showcase and an innovative circular daily planner application. The portfolio demonstrates the intersection of AI, design, and fashion with dynamic mathematical circle animations and enterprise-level security implementation. The planner offers a unique time-based interface for daily productivity with export capabilities for wallpapers and lockscreens.
 
 ---
 
-## Features
+## 🌟 Featured Applications
+
+### Main Portfolio
 - **Dynamic rotating circles animation** - Mathematical visual element with 3 orbiting circles
 - **Editorial design aesthetic** - Clean, bold typography with modern spacing
 - **Enterprise security implementation** - Full CSP, clickjacking protection, and security headers
@@ -17,17 +20,35 @@ A single-page, responsive HTML portfolio website showcasing the intersection of 
 - **Zero external dependencies** - Fully self-contained with no third-party scripts
 - **Lightning fast performance** - Optimized static HTML/CSS only
 
+### 🎯 Circular Daily Planner
+- **Beautiful circular interface** - 24-hour visual time wheel with aesthetic glossy design
+- **Smart task management** - Time-based scheduling with priority indicators
+- **Theme-aware design** - Automatic light/dark mode based on system preference
+- **Export capabilities** - Desktop wallpapers and phone lockscreens (25+ device models)
+- **Accessibility compliant** - WCAG AA standards with keyboard navigation and screen reader support
+- **Mobile optimized** - Touch-friendly interface with responsive design
+- **High-resolution exports** - 2x scaling for crisp, professional output
+- **Progressive enhancement** - Works without JavaScript, enhanced with JS
+
 ---
 
 ## Technical Implementation
 
-### Animation System
+### Portfolio Animation System
 ```css
 /* Three rotating circles with different speeds and orbits */
 Circle 1: 12s rotation, 45px orbit (inner)
 Circle 2: 18s reverse rotation, 70px orbit (middle) 
 Circle 3: 24s rotation, 95px orbit (outer)
 ```
+
+### Planner Technical Stack
+- **Frontend**: Vanilla JavaScript (ES6+), HTML5, CSS3
+- **Canvas API**: HTML5 Canvas for high-resolution image exports
+- **Theme System**: CSS Custom Properties with `prefers-color-scheme`
+- **Build System**: Node.js with clean-css and terser for minification
+- **Performance**: Lazy loading with `requestIdleCallback`
+- **Bundle Size**: 88.8KB total (CSS: 33.9KB, JS: 54.9KB)
 
 ### Security Headers Implemented
 ```html
@@ -37,9 +58,17 @@ Referrer-Policy: strict-origin-when-cross-origin
 Content-Security-Policy: [Full enterprise policy]
 ```
 
+### Planner Export Specifications
+- **Desktop Wallpapers**: 1920x1080, 3840x2160, 3440x1440
+- **Phone Models**: 25+ devices (iPhone 15 Pro, Samsung S24, Google Pixel 8, etc.)
+- **Export Format**: High-resolution PNG with 2x scaling
+- **Theme Integration**: Exports respect current light/dark theme
+
 ---
 
 ## Installation / Setup
+
+### Portfolio Setup
 1. **Clone the repository**  
 ```bash
 git clone https://github.com/JesseRod329/JesseRod329.github.io.git
@@ -54,17 +83,56 @@ cd JesseRod329.github.io
    * Adjust typography and spacing variables
    * Update contact email address
 
+### Planner Development Setup
+1. **Navigate to planner directory**
+```bash
+cd planner
+```
+
+2. **Install dependencies** (for build process)
+```bash
+npm install
+```
+
+3. **Run development server**
+```bash
+python3 -m http.server 8080
+# Open http://localhost:8080
+```
+
+4. **Build for production**
+```bash
+npm run build
+# Generates minified assets in dist/
+```
+
+5. **Run tests**
+```bash
+npm test
+# Comprehensive testing suite
+```
+
 ---
 
 ## Deployment on GitHub Pages
 
-✅ **Already Deployed!** This site is live at [jesserodriguez.me](https://jesserodriguez.me)
+✅ **Already Deployed!** Both applications are live:
+- **Portfolio**: [jesserodriguez.me](https://jesserodriguez.me)
+- **Planner**: [jesserodriguez.me/planner](https://jesserodriguez.me/planner)
 
 **Setup Process:**
 1. Custom domain configured via `CNAME` file
 2. Branch protection enabled for main branch
 3. Pull request workflow for all changes
 4. HTTPS automatically enabled by GitHub Pages
+5. Automatic builds and deployments on push to main
+
+**Planner Deployment Features:**
+- Production-ready minified assets
+- Open Graph meta tags for social sharing
+- Sitemap integration for SEO
+- Mobile-optimized PWA features
+- Cross-browser compatibility testing
 
 ---
 
@@ -116,10 +184,37 @@ This site follows enterprise-level security best practices for static GitHub Pag
 
 ## Performance
 
+### Portfolio Performance
 - **Size:** 6.6KB total (highly optimized)
 - **Load Time:** <100ms (static HTML/CSS only)
 - **CDN:** Fastly global delivery network
 - **Mobile Optimized:** Responsive typography and touch-friendly interfaces
+
+### Planner Performance
+- **Bundle Size:** 88.8KB total (CSS: 33.9KB, JS: 54.9KB)
+- **First Contentful Paint:** <1.5s target
+- **Lighthouse Performance:** >95 target
+- **Accessibility Score:** >95 target
+- **Lazy Loading:** Canvas operations use `requestIdleCallback`
+- **Mobile Optimized:** Touch-friendly with responsive design
+- **Cross-Browser:** Chrome 80+, Firefox 75+, Safari 13+, Edge 80+
+
+---
+
+## 📚 Documentation
+
+### Planner Documentation
+- **[User Guide](PLANNER_README.md)** - Complete user instructions and features
+- **[Testing Guide](PLANNER_TESTING.md)** - Comprehensive testing checklist
+- **[Deployment Guide](PLANNER_DEPLOY.md)** - Production deployment instructions
+
+### Key Features Documentation
+- **Circular Interface**: 24-hour visual time wheel with aesthetic design
+- **Export System**: Desktop wallpapers and phone lockscreens (25+ models)
+- **Theme System**: Automatic light/dark mode with CSS custom properties
+- **Accessibility**: WCAG AA compliance with keyboard navigation
+- **Mobile Optimization**: Touch-friendly responsive design
+- **Performance**: Optimized bundle size with lazy loading
 
 ---
 
@@ -133,6 +228,7 @@ This project is licensed under the MIT License.
 
 **Jesse Rodriguez**  
 📧 [jesse@jesserodriguez.me](mailto:jesse@jesserodriguez.me)  
-🌐 [jesserodriguez.me](https://jesserodriguez.me)
+🌐 [jesserodriguez.me](https://jesserodriguez.me)  
+📱 [Circular Daily Planner](https://jesserodriguez.me/planner)
 
 *Connecting ideas, technology, and design.*
