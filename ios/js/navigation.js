@@ -54,6 +54,11 @@ class iOSNavigation {
                 icon: '🎭',
                 color: 'linear-gradient(135deg, #FF9800 0%, #F57C00 100%)'
             },
+            'planner': {
+                title: 'Planner',
+                icon: '📅',
+                color: 'linear-gradient(135deg, #0d6efd 0%, #9775fa 100%)'
+            },
             'analytics': {
                 title: 'Analytics',
                 icon: '📊',
@@ -195,6 +200,28 @@ class iOSNavigation {
                 console.log('Added handlers for app:', appClass);
             }
         });
+
+        // If planner tile is missing on the screen markup, add it at the end
+        const grid = document.querySelector('.ios-app-grid');
+        if (grid && !grid.querySelector('.ios-app.planner')) {
+            const plannerTile = document.createElement('div');
+            plannerTile.className = 'ios-app planner';
+            const icon = document.createElement('div');
+            icon.className = 'ios-app-icon';
+            icon.textContent = this.apps['planner'].icon;
+            const label = document.createElement('div');
+            label.className = 'ios-app-label';
+            label.textContent = this.apps['planner'].title;
+            plannerTile.appendChild(icon);
+            plannerTile.appendChild(label);
+            grid.appendChild(plannerTile);
+
+            // Wire handlers for the new tile
+            plannerTile.style.cursor = 'pointer';
+            plannerTile.addEventListener('click', () => {
+                window.location.href = '/planner/index.html';
+            });
+        }
         
         // Dock apps
         const dockApps = document.querySelectorAll('.ios-dock-app');
