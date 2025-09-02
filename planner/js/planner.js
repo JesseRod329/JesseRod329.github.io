@@ -152,8 +152,13 @@ class CircularPlannerGenerator {
         return;
       }
 
-      // Generate the circular planner
-      await this.renderCircularPlanner({ ...formData, tasks: validTasks });
+      // Generate view: aesthetic on small screens, classic otherwise
+      const prefersAesthetic = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+      if (prefersAesthetic) {
+        await this.renderAestheticPlanner({ ...formData, tasks: validTasks });
+      } else {
+        await this.renderCircularPlanner({ ...formData, tasks: validTasks });
+      }
       
       this.currentPlannerData = formData;
       this.showNotification('Planner generated successfully!', 'success');
@@ -165,6 +170,98 @@ class CircularPlannerGenerator {
       this.isGenerating = false;
       this.setFormState('complete');
     }
+  }
+
+  // Aesthetic glossy circle layout (mobile-first)
+  async renderAestheticPlanner(formData) {
+    const tasks = (formData.tasks || []).filter(t => t.time && t.description);
+    const container = this.plannerContainer;
+    if (!container) return;
+
+    const getTimeBand = (time) => {
+      const [h, m] = (time || '0:00').split(':').map(Number);
+      if (h >= 5 && h < 12) return 'morning';
+      if (h >= 12 && h < 17) return 'afternoon';
+      return 'evening';
+    };
+
+    const getPriorityClass = (p) => {
+      const s = (p || 'medium').toLowerCase();
+      if (s === 'high' || s === 'urgent') return 'priority-high';
+      if (s === 'low') return 'priority-low';
+      return 'priority-medium';
+    };
+
+    const yearStr = (formData.personalInfo?.date ? new Date(formData.personalInfo.date).getFullYear() : new Date().getFullYear());
+
+    const taskCircle = (task, index) => {
+      const band = getTimeBand(task.time);
+      const priorityClass = getPriorityClass(task.priority);
+      const priorityText = (task.priority || 'medium').toUpperCase();
+      const bandLabel = band.charAt(0).toUpperCase() + band.slice(1);
+      const timeLabel = `${bandLabel} • ${task.time}`;
+      return `
+        <div class="task-circle ${band}" data-task-index="${index}">
+          <div class="priority-badge ${priorityClass}">${priorityText}</div>
+          <div class="completion-checkbox" aria-label="Toggle completion"></div>
+          <svg class="progress-ring" viewBox="0 0 320 320" aria-hidden="true">
+            <circle class="progress-ring-circle" cx="160" cy="160" r="155"></circle>
+          </svg>
+          <div class="time-label">${this.escapeHtml(timeLabel)}</div>
+          <h3 class="task-title">${this.escapeHtml(task.description)}</h3>
+          ${task.notes ? `<p class="task-description">${this.escapeHtml(task.notes)}</p>` : ''}
+        </div>
+      `;
+    };
+
+    const row1 = [];
+    if (tasks[0]) row1.push(taskCircle(tasks[0], 0));
+    row1.push(`
+      <div class="center-hub">
+        <div class="hub-title">Today</div>
+        <div class="hub-date">${yearStr}</div>
+      </div>
+    `);
+    if (tasks[1]) row1.push(taskCircle(tasks[1], 1));
+
+    const row2 = tasks.slice(2).map((t, i) => taskCircle(t, i + 2)).join('');
+
+    container.innerHTML = `
+      <div class="planner-aesthetic">
+        <div class="background-elements">
+          <div class="floating-circle fc1"></div>
+          <div class="floating-circle fc2"></div>
+          <div class="floating-circle fc3"></div>
+        </div>
+        <div class="container">
+          <header class="header">
+            <h1 class="date">${this.escapeHtml(this.formatDate(formData.personalInfo?.date))}</h1>
+            <p class="subtitle">Your Daily Journey Awaits</p>
+          </header>
+          <div class="planner-grid">${row1.join('')}</div>
+          ${row2 ? `<div class="planner-grid" style="margin-top:0;">${row2}</div>` : ''}
+          ${(formData.notes?.notes || formData.notes?.reminders) ? `
+            <div class="notes-section">
+              <h3 class="notes-title">Daily Reminders</h3>
+              ${formData.notes?.notes ? `<div class=\"note-item\">${this.escapeHtml(formData.notes.notes)}</div>` : ''}
+              ${formData.notes?.reminders ? `<div class=\"note-item\">${this.escapeHtml(formData.notes.reminders)}</div>` : ''}
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    `;
+
+    // Toggle completion
+    container.querySelectorAll('.task-circle').forEach(el => {
+      el.addEventListener('click', () => {
+        el.classList.toggle('completed');
+        const cb = el.querySelector('.completion-checkbox');
+        if (cb) cb.classList.toggle('completed');
+      });
+    });
+
+    this.currentPlannerData = formData;
+    this.setupPlannerInteractions();
   }
 
   async renderCircularPlanner(formData) {
