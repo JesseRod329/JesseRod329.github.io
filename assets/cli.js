@@ -24,6 +24,7 @@ class PortfolioCLI {
       headers: this.showHeaders.bind(this),
       palette: this.showPalette.bind(this),
       brainwave: this.showBrainwave.bind(this),
+      planner: this.showPlanner.bind(this),
       clear: this.clearTerminal.bind(this)
     };
 
@@ -233,6 +234,7 @@ class PortfolioCLI {
       '  headers   - HTTP security headers info',
       '  palette   - Fashion color palette generator',
       '  brainwave - AI neural activity simulator',
+      '  planner   - Circular daily planner',
       '  clear     - Clear terminal output',
       '',
       'Use TAB for autocomplete, ↑/↓ for command history.',
@@ -462,6 +464,50 @@ class PortfolioCLI {
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
     link.textContent = 'Launch AI Brainwave Simulator';
+    
+    outputLine.appendChild(linkText);
+    outputLine.appendChild(link);
+    
+    this.outputContainer.appendChild(outputLine);
+    this.scrollToBottom();
+  }
+
+  showPlanner() {
+    this.addMultilineOutput([
+      '📅 Circular Daily Planner',
+      '',
+      'Organize your day with a beautiful, intuitive circular interface.',
+      '',
+      'Features:',
+      '• 24-hour circular time wheel with visual task placement',
+      '• Light and dark mode support with system preference detection',
+      '• Task management with time-based scheduling',
+      '• Real-time clock with current time indicator',
+      '• Export functionality for tasks and visual planner',
+      '• Responsive design for desktop and mobile',
+      '',
+      'Privacy & Security:',
+      '• 100% client-side processing',
+      '• Tasks stored locally in your browser',
+      '• No data transmission or external dependencies',
+      '• CSP compliant with strict security policies',
+      ''
+    ], 'planner');
+    
+    // Add link to planner
+    this.addPlannerLink();
+  }
+
+  addPlannerLink() {
+    const outputLine = document.createElement('div');
+    outputLine.className = 'cli-output-line planner';
+    
+    const linkText = document.createTextNode('🚀 ');
+    const link = document.createElement('a');
+    link.href = '/planner/';
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = 'Launch Circular Daily Planner';
     
     outputLine.appendChild(linkText);
     outputLine.appendChild(link);
