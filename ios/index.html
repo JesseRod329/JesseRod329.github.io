@@ -64,7 +64,7 @@
   
   <!-- Status Bar -->
   <div class="ios-status-bar">
-    <div class="ios-status-left">9:41</div>
+    <div class="ios-status-left" id="current-time">9:41</div>
     <div class="ios-status-right">
       <div class="ios-status-icon signal"></div>
       <div class="ios-status-icon wifi"></div>
@@ -180,5 +180,28 @@ if ('serviceWorker' in navigator) {
                 integrity="sha384-71Q6GfKNHXt0kDm1CHcAeK1uMsylR3BdBhKiOSb0VVFSiHJBsagYqK+eBCnG/enz"
                 crossorigin="anonymous" 
                 defer></script>
+
+<script>
+// Dynamic time display for iOS status bar
+function updateTime() {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    
+    // Format time in 12-hour format like iOS
+    const displayHours = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
+    const displayMinutes = minutes.toString().padStart(2, '0');
+    const timeString = `${displayHours}:${displayMinutes}`;
+    
+    const timeElement = document.getElementById('current-time');
+    if (timeElement) {
+        timeElement.textContent = timeString;
+    }
+}
+
+// Update time immediately and then every minute
+updateTime();
+setInterval(updateTime, 60000); // Update every 60 seconds
+</script>
 </body>
 </html>
