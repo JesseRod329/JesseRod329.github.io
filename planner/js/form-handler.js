@@ -109,18 +109,19 @@ class PlannerFormHandler {
     }
 
     const taskId = `task-${++this.taskCounter}`;
-    const taskElement = this.createTaskElement(taskId, taskData);
+    // Fill defaults for optional fields
+    const normalized = {
+      time: taskData.time || '',
+      description: taskData.description,
+      priority: (taskData.priority || 'medium').toLowerCase()
+    };
+    const taskElement = this.createTaskElement(taskId, normalized);
     
     this.taskContainer.appendChild(taskElement);
     this.animateTaskIn(taskElement);
     this.clearTaskInputs();
     
-    this.formData.tasks.push({
-      id: taskId,
-      time: taskData.time,
-      description: taskData.description,
-      priority: taskData.priority
-    });
+    this.formData.tasks.push({ id: taskId, ...normalized });
 
     this.updatePreview();
     this.showNotification('Task added successfully!', 'success');
@@ -135,34 +136,17 @@ class PlannerFormHandler {
   }
 
   validateTaskInputs(taskData) {
-    let isValid = true;
-
-    if (!taskData.time) {
-      this.showFieldError('task-time', 'Please select a time');
-      isValid = false;
-    } else {
-      this.clearFieldError('task-time');
+    // Relaxed validation: description is required; time/priority optional
+    const desc = (taskData.description || '').trim();
+    if (!desc) {
+      this.showFieldError('task-description', 'Please enter a task description');
+      this.showNotification('Please add a task description', 'error');
+      return false;
     }
-
-    if (!taskData.description || taskData.description.length < 3) {
-      this.showFieldError('task-description', 'Please enter a task description (at least 3 characters)');
-      isValid = false;
-    } else {
-      this.clearFieldError('task-description');
-    }
-
-    if (!taskData.priority) {
-      this.showFieldError('task-priority', 'Please select a priority level');
-      isValid = false;
-    } else {
-      this.clearFieldError('task-priority');
-    }
-
-    if (!isValid) {
-      this.showNotification('Please fix the errors above', 'error');
-    }
-
-    return isValid;
+    this.clearFieldError('task-description');
+    this.clearFieldError('task-time');
+    this.clearFieldError('task-priority');
+    return true;
   }
 
   createTaskElement(taskId, taskData) {
