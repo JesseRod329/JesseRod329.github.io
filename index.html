@@ -3,23 +3,77 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://jesserodriguez.me">
+<link rel="dns-prefetch" href="https://jesserodriguez.me">
 <meta http-equiv="X-Frame-Options" content="DENY">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'; media-src 'self'; child-src 'self'; form-action 'self'; base-uri 'self';">
-<title>Jesse — Ideas, Technology, Design</title>
+<title>Jesse Rodriguez — Ideas, Technology, Design | Portfolio</title>
+<meta name="description" content="Portfolio of Jesse Rodriguez showcasing AI automation, web development, design, and innovative digital experiences. Explore cutting-edge projects and professional services.">
+<meta name="keywords" content="Jesse Rodriguez, portfolio, web developer, AI automation, design, technology, fashion tech, iOS development">
+<meta name="author" content="Jesse Rodriguez">
+<meta property="og:title" content="Jesse Rodriguez — Ideas, Technology, Design">
+<meta property="og:description" content="Explore innovative digital experiences at the intersection of AI, design, and technology.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jesserodriguez.me">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jesse Rodriguez — Portfolio">
+<meta name="twitter:description" content="AI automation, web development, and cutting-edge design solutions.">
 <style>
   /* Reset & basic styles */
   * { margin:0; padding:0; box-sizing:border-box; }
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* CSS Variables for theming */
+  :root {
+    --bg-primary: #fff;
+    --bg-secondary: #f8f8f8;
+    --text-primary: #111;
+    --text-secondary: #666;
+    --border-color: #eee;
+    --shadow-color: rgba(0,0,0,0.1);
+    --accent-blue: #007AFF;
+  }
+  
+  [data-theme="dark"] {
+    --bg-primary: #111;
+    --bg-secondary: #1a1a1a;
+    --text-primary: #fff;
+    --text-secondary: #aaa;
+    --border-color: #333;
+    --shadow-color: rgba(255,255,255,0.1);
+  }
   body { 
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
-    background:#fff; 
-    color:#111; 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+    background: var(--bg-primary); 
+    color: var(--text-primary); 
     line-height:1.5; 
     font-weight:400;
     overflow-x:hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
   a { color: inherit; text-decoration: none; }
+  
+  /* Skip Link */
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #007AFF;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0 0 8px 0;
+    text-decoration: none;
+    z-index: 100;
+    transition: top 0.3s ease;
+  }
+  
+  .skip-link:focus {
+    top: 0;
+  }
 
   /* Hero Section */
   .hero {
@@ -121,18 +175,50 @@
     max-width:1200px; 
     margin:6rem auto; 
     padding:0 2rem;
-    background:#f8f8f8;
+    background:var(--bg-secondary);
   }
   .service-card {
-    background:#fff;
+    background:var(--bg-primary);
     padding:3rem 2rem; 
     text-align:center; 
-    transition:all 0.2s ease;
+    transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor:pointer;
+    position: relative;
+    overflow: hidden;
   }
+  
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--text-primary);
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 0;
+  }
+  
+  .service-card:hover::before {
+    transform: translateY(0);
+  }
+  
   .service-card:hover { 
-    background:#111; 
-    color:#fff;
+    color:var(--bg-primary);
+    transform: scale(1.05);
+  }
+  
+  .service-card h3,
+  .service-card p {
+    position: relative;
+    z-index: 1;
+    transition: color 0.3s ease;
+  }
+  
+  .service-card:active {
+    transform: scale(1.02);
+    transition: transform 0.1s ease;
   }
   .service-card h3 { 
     font-size:1.25rem; 
@@ -204,6 +290,49 @@
       opacity: 1;
       transform: translateY(0);
     }
+  }
+  
+  /* Scroll Indicator */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 50px;
+    border: 2px solid var(--text-primary);
+    border-radius: 25px;
+    opacity: 0.8;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+  }
+  
+  .scroll-indicator::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    background: var(--text-primary);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    animation: scrollDown 2s infinite;
+  }
+  
+  @keyframes scrollDown {
+    0% {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(-50%) translateY(20px);
+      opacity: 0;
+    }
+  }
+  
+  .scroll-indicator:hover {
+    opacity: 1;
   }
 
   .bio, .services, .contact {
@@ -527,9 +656,73 @@
     max-height: 100vh;
     overflow-y: auto;
   }
+  
+  /* Dark Mode Toggle */
+  .theme-toggle {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 12px var(--shadow-color);
+    transition: all 0.3s ease;
+    z-index: 100;
+  }
+  
+  .theme-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px var(--shadow-color);
+  }
+  
+  .theme-toggle:active {
+    transform: scale(0.95);
+  }
 </style>
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Jesse Rodriguez",
+  "url": "https://jesserodriguez.me",
+  "email": "jesse@jesserodriguez.me",
+  "jobTitle": "Full Stack Developer & Designer",
+  "description": "AI automation specialist, web developer, and designer creating innovative digital experiences at the intersection of technology and design.",
+  "sameAs": [
+    "https://jesserodriguez.me/ios",
+    "https://jesserodriguez.me/planner",
+    "https://jesserodriguez.me/fashion-palette"
+  ],
+  "knowsAbout": ["AI", "Web Development", "Design", "Fashion Technology", "iOS Development", "User Experience"],
+  "offers": {
+    "@type": "Offer",
+    "itemOffered": {
+      "@type": "Service",
+      "name": "Professional Development Services",
+      "description": "AI automation, web development, design, and consulting services"
+    }
+  }
+}
+</script>
 </head>
-<body>
+<body role="document">
+<!-- Skip Navigation -->
+<a href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to content</a>
+
+<!-- Dark Mode Toggle -->
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+  <span id="themeIcon">🌙</span>
+</button>
 
 <!-- Terminal Hero -->
 <section class="cli-terminal" id="terminal">
@@ -571,49 +764,53 @@
   </noscript>
 </section>
 
+<!-- Main Content -->
+<main id="main-content" role="main">
+
 <!-- Original Hero (Secondary) -->
-<section class="hero hero-secondary" id="about">
-  <div class="circle-container">
+<section class="hero hero-secondary" id="about" role="banner" aria-label="Welcome section">
+  <div class="circle-container" role="img" aria-label="Animated geometric design with rotating circles">
     <div class="circle"></div>
     <div class="circle"></div>
     <div class="circle"></div>
   </div>
   <h1>Ideas, Technology, and Design — Curated by Jesse</h1>
+  <a href="#projects" class="scroll-indicator" aria-label="Scroll down to see projects"></a>
 </section>
 
 <!-- Bio -->
-<section class="bio">
+<section class="bio" role="region" aria-label="About section">
   <p>I move between AI, design, and fashion with one goal: to create work that feels timeless and useful. From building tools to designing visuals, my work connects culture with clarity.</p>
 </section>
 
 <!-- Services Grid -->
-<section class="services" id="projects">
-  <div class="service-card">
+<section class="services" id="projects" role="region" aria-label="Services offered">
+  <div class="service-card" role="article" tabindex="0" aria-label="AI and Automation service">
     <h3>AI / Automation</h3>
     <p>Tools that think with you.</p>
   </div>
-  <div class="service-card">
+  <div class="service-card" role="article" tabindex="0" aria-label="Website development service">
     <h3>Websites</h3>
     <p>Digital spaces with purpose.</p>
   </div>
-  <div class="service-card">
+  <div class="service-card" role="article" tabindex="0" aria-label="Logo and design service">
     <h3>Logos / Design</h3>
     <p>Identity you can wear.</p>
   </div>
-  <div class="service-card" id="resume">
+  <div class="service-card" id="resume" role="article" tabindex="0" aria-label="Resume and career service">
     <h3>Resumes / Careers</h3>
     <p>Documents that open doors.</p>
   </div>
-  <div class="service-card">
+  <div class="service-card" role="article" tabindex="0" aria-label="Fashion consulting service">
     <h3>Fashion</h3>
     <p>Clarity in the numbers.</p>
   </div>
 </section>
 
 <!-- Contact -->
-<section class="contact" id="contact">
+<section class="contact" id="contact" role="contentinfo" aria-label="Contact information">
   <p>Let's Build Something Together.</p>
-  <a href="mailto:jesse@jesserodriguez.me">jesse@jesserodriguez.me</a>
+  <a href="mailto:jesse@jesserodriguez.me" aria-label="Send email to Jesse Rodriguez">jesse@jesserodriguez.me</a>
 </section>
 
 <!-- Security Section (Hidden, for anchor links) -->
@@ -628,15 +825,18 @@
   <p>X-Frame-Options, X-Content-Type-Options, CSP, and Referrer-Policy configured.</p>
 </section>
 
+</main>
+
 <!-- Footer -->
-<footer class="footer">
+<footer class="footer" role="contentinfo" aria-label="Site navigation links">
   <a href="/classic.html">View classic version</a> | 
   <a href="/desktop.html">Desktop version</a> | 
-  <a href="/ios/">Mobile version</a>
+  <a href="/ios/">Mobile version</a> | 
+  <a href="/analytics.html">Analytics Dashboard</a>
 </footer>
 
 <!-- Mobile Detection (JavaScript) -->
-<script src="/assets/mobile-detect.js"></script>
+<script src="/assets/mobile-detect.js" defer></script>
 
 <!-- Backup Mobile Detection (Inline) -->
 <script>
@@ -711,5 +911,50 @@
 </noscript>
 
 <script src="/assets/cli.js" defer></script>
+
+<!-- Dark Mode Script -->
+<script>
+(function() {
+  'use strict';
+  
+  // Check for saved theme preference or default to light mode
+  const currentTheme = localStorage.getItem('theme') || 'light';
+  const root = document.documentElement;
+  const themeToggle = document.getElementById('themeToggle');
+  const themeIcon = document.getElementById('themeIcon');
+  
+  // Apply saved theme on load
+  if (currentTheme === 'dark') {
+    root.setAttribute('data-theme', 'dark');
+    themeIcon.textContent = '☀️';
+  }
+  
+  // Theme toggle function
+  function toggleTheme() {
+    const isDark = root.getAttribute('data-theme') === 'dark';
+    
+    if (isDark) {
+      root.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+      themeIcon.textContent = '🌙';
+    } else {
+      root.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+      themeIcon.textContent = '☀️';
+    }
+  }
+  
+  // Add click event listener
+  themeToggle.addEventListener('click', toggleTheme);
+  
+  // Add keyboard shortcut (Ctrl/Cmd + D)
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+      e.preventDefault();
+      toggleTheme();
+    }
+  });
+})();
+</script>
 </body>
 </html>
