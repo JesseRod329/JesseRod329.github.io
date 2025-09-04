@@ -22,7 +22,7 @@
     "stack": ["PWA", "Service Worker", "JavaScript", "CSS3"],
     "links": {
       "repo": "https://github.com/JesseRod329/ios-pwa",
-      "live": "https://ios-pwa-demo.vercel.app"
+      "live": "https://jesserod329.github.io/ios-pwa"
     }
   },
   {
@@ -35,7 +35,7 @@
     "stack": ["React", "Canvas API", "D3.js", "TypeScript"],
     "links": {
       "repo": "https://github.com/JesseRod329/circular-planner",
-      "live": "https://circular-planner.vercel.app"
+      "live": "https://jesserod329.github.io/circular-planner"
     }
   },
   {
@@ -48,7 +48,7 @@
     "stack": ["React", "Color Theory", "Machine Learning", "Canvas"],
     "links": {
       "repo": "https://github.com/JesseRod329/fashion-palette",
-      "live": "https://fashion-palette.vercel.app"
+      "live": "https://jesserod329.github.io/fashion-palette"
     }
   },
   {
@@ -61,7 +61,7 @@
     "stack": ["D3.js", "WebGL", "JavaScript", "Data Visualization"],
     "links": {
       "repo": "https://github.com/JesseRod329/brainwave-sim",
-      "live": "https://brainwave-sim.vercel.app"
+      "live": "https://jesserod329.github.io/brainwave-sim"
     }
   },
   {
@@ -74,7 +74,7 @@
     "stack": ["Node.js", "React", "WebSocket", "Security APIs"],
     "links": {
       "repo": "https://github.com/JesseRod329/security-dashboard",
-      "live": "https://security-dashboard.vercel.app"
+      "live": "https://jesserod329.github.io/security-dashboard"
     }
   }
 ]
