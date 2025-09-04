@@ -1,0 +1,58 @@
+{
+  "projects": [
+    {
+      "slug": "portfolio-animation",
+      "title": "Portfolio Animation System",
+      "summary": "CSS rotating circles and parallax hero.",
+      "stack": ["React", "Tailwind", "Framer Motion"],
+      "images": ["/assets/placeholder1.jpg", "/assets/placeholder2.jpg"],
+      "repo": "https://github.com/placeholder/portfolio-animation",
+      "live": "#"
+    },
+    {
+      "slug": "ios-pwa",
+      "title": "iOS PWA",
+      "summary": "Offline caching, service worker, touch gestures.",
+      "stack": ["PWA", "Service Worker", "TypeScript"],
+      "images": ["/assets/placeholder3.jpg"],
+      "repo": "https://github.com/placeholder/ios-pwa",
+      "live": "#"
+    },
+    {
+      "slug": "circular-planner",
+      "title": "Circular Planner",
+      "summary": "24-hour canvas planner with export.",
+      "stack": ["Canvas", "React"],
+      "images": ["/assets/placeholder4.jpg"],
+      "repo": "https://github.com/placeholder/circular-planner",
+      "live": "#"
+    },
+    {
+      "slug": "fashion-palette",
+      "title": "Fashion Palette Generator",
+      "summary": "Local image processing and color theory.",
+      "stack": ["React", "Color Science"],
+      "images": ["/assets/placeholder5.jpg"],
+      "repo": "https://github.com/placeholder/fashion-palette",
+      "live": "#"
+    },
+    {
+      "slug": "brainwave-simulator",
+      "title": "Brainwave Simulator",
+      "summary": "Canvas viz of EEG bands.",
+      "stack": ["Canvas", "TypeScript"],
+      "images": ["/assets/placeholder6.jpg"],
+      "repo": "https://github.com/placeholder/brainwave-simulator",
+      "live": "#"
+    },
+    {
+      "slug": "security-dashboard",
+      "title": "Security Dashboard",
+      "summary": "Terminal UI + CSP/security headers visualization.",
+      "stack": ["Security", "React"],
+      "images": ["/assets/placeholder7.jpg"],
+      "repo": "https://github.com/placeholder/security-dashboard",
+      "live": "#"
+    }
+  ]
+}
