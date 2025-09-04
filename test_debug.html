@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Test</title>
+</head>
+<body>
+    <h1>Debug Test Page</h1>
+    <div class="ios-app ai-tools">
+        <div class="ios-app-icon">🤖</div>
+        <div class="ios-app-label">AI Tools</div>
+    </div>
+    <div class="ios-dock-app home">
+        <div class="ios-dock-icon">🏠</div>
+    </div>
+    
+    <script>
+        console.log('Test script loaded');
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded');
+            const apps = document.querySelectorAll('.ios-app');
+            console.log('Found apps:', apps.length);
+            apps.forEach(app => {
+                app.addEventListener('click', function() {
+                    console.log('App clicked!');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
