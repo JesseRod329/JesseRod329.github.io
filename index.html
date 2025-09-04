@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+// Force HTTPS redirect
+if (location.protocol !== 'https:') {
+  location.replace('https:' + window.location.href.substring(window.location.protocol.length));
+}
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preconnect" href="https://jesserodriguez.me">
