@@ -44,11 +44,11 @@
     "date": "2025-07",
     "roles": ["Frontend", "Design"],
     "collab": "Jesse R.",
-    "summary": "A creative tool for generating harmonious color palettes for fashion design. Uses color theory algorithms and machine learning to suggest complementary colors and seasonal trends.",
-    "stack": ["React", "Color Theory", "Machine Learning", "Canvas"],
+    "summary": "A creative tool for generating harmonious color palettes for fashion design. Upload any fashion image to extract beautiful color palettes for outfit coordination. All processing happens locally - your images never leave your device.",
+    "stack": ["React", "Color Theory", "Canvas API", "Local Processing"],
     "links": {
       "repo": "https://github.com/JesseRod329/fashion-palette",
-      "live": "https://jesserod329.github.io/fashion-palette"
+      "live": "https://jesserodriguez.me/fashion-palette/"
     }
   },
   {
