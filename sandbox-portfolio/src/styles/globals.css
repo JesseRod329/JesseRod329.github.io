@@ -26,51 +26,40 @@
 @tailwind components;
 @tailwind utilities;
 
-:root{
-  --bg:#0b0b0c;
-  --fg:#e6e6e6;
-  --muted:#9a9a9a;
+:root {
+  --bg: #0b0b0c;
+  --fg: #e6e6e6;
+  --muted: #9a9a9a;
 }
 
 html.light {
-  --bg:#ffffff;
-  --fg:#111827;
-  --muted:#6b7280;
+  --bg: #ffffff;
+  --fg: #111827;
+  --muted: #6b7280;
 }
 
 html.dark {
-  --bg:#0b0b0c;
-  --fg:#e6e6e6;
-  --muted:#9a9a9a;
+  --bg: #0b0b0c;
+  --fg: #e6e6e6;
+  --muted: #9a9a9a;
 }
 
 html.mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace;
 }
 
-/* Noise layer (small base64 inline 64x64 grayscale PNG). 
-   Replace the data URI with your optimized tiny noise or use CSS-generated fallback */
-.noise-bg::before{
-  content:"";
-  pointer-events:none;
-  position:fixed;
-  inset:0;
-  background-image:
-    radial-gradient(ellipse at center, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.7) 70%);
-  opacity:0.08;
-  mix-blend-mode:overlay;
-  z-index:0;
-}
-
-/* spacing and typography */
-body{ 
-  font-family: 'PP Neue', Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; 
-  line-height:1.2; 
-  background-color: var(--bg);
+body {
+  background: var(--bg);
   color: var(--fg);
+  font-family: Inter, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
 h1,h2,h3 { 
