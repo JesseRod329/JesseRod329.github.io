@@ -27,15 +27,15 @@
   },
   {
     "slug": "circular-planner",
-    "title": "Circular Planner",
+    "title": "Circular Daily Planner",
     "date": "2025-08",
     "roles": ["UI/UX", "Frontend"],
     "collab": "Jesse R.",
-    "summary": "An innovative 24-hour planning interface using circular design patterns. Features drag-and-drop functionality, time blocking, and export capabilities for productivity management.",
-    "stack": ["React", "Canvas API", "D3.js", "TypeScript"],
+    "summary": "An innovative daily planning interface with circular design patterns. Features task management, time blocking, priority settings, and export capabilities for personalized productivity management.",
+    "stack": ["HTML", "CSS", "JavaScript", "Export Functionality"],
     "links": {
       "repo": "https://github.com/JesseRod329/circular-planner",
-      "live": "https://jesserod329.github.io/circular-planner"
+      "live": "https://jesserodriguez.me/planner/index.html"
     }
   },
   {
@@ -53,28 +53,28 @@
   },
   {
     "slug": "brainwave-simulator",
-    "title": "Brainwave Simulator",
+    "title": "AI Brainwave Simulator",
     "date": "2025-07",
     "roles": ["Frontend", "Data Viz"],
     "collab": "Jesse R.",
-    "summary": "An interactive visualization of brainwave patterns and EEG data. Features real-time data processing, customizable frequency bands, and educational content about neural activity.",
-    "stack": ["D3.js", "WebGL", "JavaScript", "Data Visualization"],
+    "summary": "Privacy-first neural activity visualization. All processing happens locally in your browser. Features real-time brainwave pattern analysis with focus, relaxation, creativity, and alertness metrics.",
+    "stack": ["JavaScript", "Canvas API", "Local Processing", "Privacy-First"],
     "links": {
       "repo": "https://github.com/JesseRod329/brainwave-sim",
-      "live": "https://jesserod329.github.io/brainwave-sim"
+      "live": "https://jesserodriguez.me/brainwave-simulator.html"
     }
   },
   {
     "slug": "security-dashboard",
-    "title": "Security Dashboard",
+    "title": "Security Posture Dashboard",
     "date": "2025-06",
     "roles": ["Full Stack", "Security"],
     "collab": "Jesse R.",
-    "summary": "A comprehensive security monitoring dashboard with real-time threat detection, vulnerability scanning, and compliance reporting. Features terminal-style UI and advanced analytics.",
-    "stack": ["Node.js", "React", "WebSocket", "Security APIs"],
+    "summary": "Enterprise-level security implementation for static websites. Achieves 95% security score through comprehensive protection mechanisms including CSP, security headers, and zero attack surface architecture.",
+    "stack": ["Security Headers", "CSP", "HTTPS", "Static Architecture"],
     "links": {
       "repo": "https://github.com/JesseRod329/security-dashboard",
-      "live": "https://jesserod329.github.io/security-dashboard"
+      "live": "https://jesserodriguez.me/security.html"
     }
   }
 ]
