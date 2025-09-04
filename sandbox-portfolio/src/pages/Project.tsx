@@ -1,86 +1,61 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-
-interface Project {
-  slug: string
-  title: string
-  summary: string
-  stack: string[]
-  images: string[]
-  repo?: string
-  live?: string
-}
+import React, { useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import projects from "../data/projects.json";
+import { motion } from "framer-motion";
 
 export default function Project() {
-  const params = useParams()
-  const slug = params.slug!
-  const [data, setData] = useState<{ projects: Project[] } | null>(null)
+  const { slug } = useParams();
+  const index = projects.findIndex(p => p.slug === slug);
+  const project = projects[index];
 
   useEffect(() => {
-    fetch('/src/data/projects.json').then((r) => r.json()).then((d) => setData(d))
-  }, [])
-
-  const project = useMemo(() => data?.projects.find((p) => p.slug === slug), [data, slug])
-  const index = useMemo(() => (data ? data.projects.findIndex((p) => p.slug === slug) : -1), [data, slug])
-  const prev = index > 0 ? data!.projects[index - 1] : null
-  const next = data && index >= 0 && index < data.projects.length - 1 ? data.projects[index + 1] : null
-
-  useEffect(() => {
-    if (next) {
-      // Prefetch next project's images
-      next.images?.forEach((src) => {
-        const img = new Image()
-        img.src = src
-      })
+    // prefetch next project
+    if (projects[index + 1]) {
+      const next = projects[index + 1];
+      // simple image prefetch
+      next.gallery?.forEach(src => {
+        const img = new Image();
+        img.src = src;
+      });
     }
-    if (project) document.title = `${project.title} • Sandbox`
-  }, [project, next])
+  }, [index]);
 
-  if (!project) return <div className="p-6">Loading...</div>
+  if (!project) return <div>Project not found</div>;
 
   return (
-    <div className="p-6 md:p-10">
-      <header className="mb-6">
-        <h1 className="text-2xl font-semibold">{project.title}</h1>
-        <p className="text-white/70 text-sm">{project.summary}</p>
+    <motion.article initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
+      <header className="mb-8">
+        <h1 className="text-5xl font-extralight">{project.title}</h1>
+        <p className="mt-2 text-sm text-[var(--muted)]">
+          {new Date(project.date).toLocaleString("en-US", { month: "short", year: "numeric" })} • {project.roles.join(", ")} • {project.collab}
+        </p>
       </header>
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
-        {project.images.map((src, i) => (
-          <img key={i} src={src} alt="" loading="lazy" className="rounded-md border border-white/10" />
+      <section className="mb-8 grid grid-cols-1 gap-4">
+        <div className="w-full h-[420px] bg-[var(--muted)] rounded-md overflow-hidden">
+          {/* gallery placeholder - show first image */}
+          {project.gallery && project.gallery[0] && (
+            <img src={project.gallery[0]} alt={project.title} loading="lazy" className="w-full h-full object-cover" />
+          )}
+        </div>
+      </section>
+
+      <section className="mb-8">
+        <p className="max-w-[70ch]">{project.summary}</p>
+      </section>
+
+      <section className="mb-8 flex gap-2 flex-wrap">
+        {project.stack?.map(s => (
+          <span key={s} className="px-3 py-1 text-sm text-[var(--muted)] border border-[var(--muted)] rounded-md">
+            {s}
+          </span>
         ))}
       </section>
 
-      <section className="mb-6">
-        <h2 className="text-sm uppercase tracking-wider text-white/60 mb-2">Stack</h2>
-        <div className="flex flex-wrap gap-2">
-          {project.stack.map((s) => (
-            <span key={s} className="px-2 py-1 rounded-full text-xs border border-white/15 text-white/80">{s}</span>
-          ))}
-        </div>
-      </section>
-
-      <section className="flex gap-3 mb-8">
-        {project.repo && (
-          <a className="px-3 py-2 rounded border border-white/15 text-sm" href={project.repo} target="_blank" rel="noreferrer">Repository</a>
-        )}
-        {project.live && (
-          <a className="px-3 py-2 rounded border border-white/15 text-sm" href={project.live} target="_blank" rel="noreferrer">Live</a>
-        )}
-      </section>
-
-      <nav className="flex justify-between text-sm text-white/70">
-        <div>
-          {prev && (
-            <Link to={`/projects/${prev.slug}`} rel="prev" className="hover:text-white">← {prev.title}</Link>
-          )}
-        </div>
-        <div>
-          {next && (
-            <Link to={`/projects/${next.slug}`} rel="next" className="hover:text-white">{next.title} →</Link>
-          )}
-        </div>
+      <nav className="flex justify-between mt-12">
+        {index > 0 ? <Link to={`/projects/${projects[index - 1].slug}`} className="text-sm">← Prev</Link> : <div />}
+        {index < projects.length - 1 ? <Link to={`/projects/${projects[index + 1].slug}`} className="text-sm">Next →</Link> : <div />}
       </nav>
-    </div>
-  )
+    </motion.article>
+  );
 }

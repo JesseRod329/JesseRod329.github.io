@@ -1,22 +1,24 @@
-import { useEffect, useState } from 'react'
-import ProjectRow from '../components/ProjectRow'
+import React from "react";
+import projects from "../data/projects.json";
+import ProjectRow from "../components/ProjectRow";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Projects() {
-  const [projects, setProjects] = useState<any[]>([])
-
-  useEffect(() => {
-    document.title = 'Projects • Sandbox'
-    fetch('/src/data/projects.json').then((r) => r.json()).then((d) => setProjects(d.projects))
-  }, [])
-
   return (
-    <div className="p-6 md:p-10">
-      <h1 className="text-2xl mb-6">Projects</h1>
-      <div>
-        {projects.map((p) => (
-          <ProjectRow key={p.slug} title={p.title} subtitle={p.summary} slug={p.slug} />)
-        )}
-      </div>
-    </div>
-  )
+    <AnimatePresence mode="wait">
+      <motion.section
+        key="projects"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 8 }}
+        transition={{ duration: 0.35 }}
+      >
+        <ul className="list-none p-0 m-0">
+          {projects.map((p, i) => (
+            <ProjectRow key={p.slug} project={p} index={i} />
+          ))}
+        </ul>
+      </motion.section>
+    </AnimatePresence>
+  );
 }

@@ -1,14 +1,18 @@
-export default {
+module.exports = {
   darkMode: 'class',
-  content: ['./index.html', './src/**/*.{ts,tsx,html}'],
+  content: ['./index.html', './src/**/*.{ts,tsx,js,jsx}'],
   theme: {
     extend: {
       fontFamily: {
-        sans: ['PP Neue', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['"PP Neue"', '"Space Grotesk"', 'ui-sans-serif', 'system-ui'],
+        body: ['"PP Neue"', 'Inter', 'ui-sans-serif', 'system-ui'],
+        sans: ['"PP Neue"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'monospace'],
       },
       colors: {
-        // Keep all default Tailwind colors and add custom brand colors
+        bg: 'var(--bg)',
+        fg: 'var(--fg)',
+        muted: 'var(--muted)',
         brand: {
           DEFAULT: '#8B5CF6',
           50: '#F5F3FF',
@@ -23,17 +27,14 @@ export default {
           900: '#4C1D95',
         },
       },
-      boxShadow: {
-        vignette: 'inset 0 0 200px rgba(0,0,0,0.35)',
-      },
       keyframes: {
         fadeIn: {
-          '0%': { opacity: 0 },
-          '100%': { opacity: 1 },
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         },
       },
       animation: {
-        fadeIn: 'fadeIn 450ms ease-out',
+        fadeIn: 'fadeIn 0.5s ease-out',
       },
     },
   },
