@@ -1,39 +1,68 @@
 import { NavLink } from 'react-router-dom'
 import ThemeToggle from './ThemeToggle'
 
-const linkBase = 'block px-4 py-3 text-sm font-light focus-visible:ring-2 focus-visible:ring-offset-2 rounded-lg transition-all duration-200'
-const linkActive = 'font-medium'
-const linkInactive = 'hover:opacity-80'
+const linkBase = 'block py-1 text-base font-normal transition-colors duration-300 relative'
+const linkActive = 'text-fg'
+const linkInactive = 'text-muted hover:text-fg'
 
 export default function Sidebar() {
   return (
-    <div className="h-full flex flex-col justify-between p-6">
+    <div className="w-[200px] p-10 bg-white/10 border-r border-black/10 fixed h-screen z-10 flex flex-col justify-between">
       <div>
-        <div className="mb-16">
-          <h1 className="text-3xl font-light tracking-tight leading-tight" style={{ color: 'var(--fg)' }}>Jesse Rodriguez</h1>
-          <p className="text-sm font-light mt-2 leading-relaxed" style={{ color: 'var(--muted)' }}>Creative Engineer • Experiments</p>
+        <div className="mb-10">
+          <h1 className="text-[28px] font-light mb-2 text-fg leading-tight">
+            Jesse R.
+          </h1>
+          <span className="text-sm font-normal text-fg opacity-70">
+            Designer & Developer
+          </span>
         </div>
-        <nav aria-label="Primary" className="space-y-1">
-          <NavLink to="/" end className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkInactive}`} style={{ color: 'var(--fg)' }}>
-            Home
+        <nav aria-label="Primary" className="space-y-5">
+          <NavLink to="/" end className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkInactive}`}>
+            {({ isActive }) => (
+              <>
+                {isActive && <span className="absolute -left-4 text-fg">•</span>}
+                Home
+              </>
+            )}
           </NavLink>
-          <NavLink to="/projects" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkInactive}`} style={{ color: 'var(--fg)' }}>
-            Projects
+          <NavLink to="/projects" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkInactive}`}>
+            {({ isActive }) => (
+              <>
+                {isActive && <span className="absolute -left-4 text-fg">•</span>}
+                Projects
+              </>
+            )}
           </NavLink>
-          <NavLink to="/info" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkInactive}`} style={{ color: 'var(--fg)' }}>
-            Info
+          <NavLink to="/info" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkInactive}`}>
+            {({ isActive }) => (
+              <>
+                {isActive && <span className="absolute -left-4 text-fg">•</span>}
+                Info
+              </>
+            )}
           </NavLink>
-          <NavLink to="/contact" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkInactive}`} style={{ color: 'var(--fg)' }}>
-            Contact
+          <NavLink to="/contact" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkInactive}`}>
+            {({ isActive }) => (
+              <>
+                {isActive && <span className="absolute -left-4 text-fg">•</span>}
+                Contact
+              </>
+            )}
           </NavLink>
-          <NavLink to="/faq" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkInactive}`} style={{ color: 'var(--fg)' }}>
-            FAQ
+          <NavLink to="/faq" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkInactive}`}>
+            {({ isActive }) => (
+              <>
+                {isActive && <span className="absolute -left-4 text-fg">•</span>}
+                FAQ
+              </>
+            )}
           </NavLink>
         </nav>
       </div>
       <div className="space-y-4">
+        <div className="text-xs text-muted">© Jesse R.</div>
         <ThemeToggle />
-        <div className="text-xs" style={{ color: 'var(--muted)' }}>© {new Date().getFullYear()} Sandbox</div>
       </div>
     </div>
   )

@@ -12,27 +12,34 @@ type Project = {
 };
 
 export default function ProjectRow({ project, index }: { project: Project; index: number }) {
-  const meta = `${new Date(project.date).toLocaleString("en-US", { month: "short", year: "numeric" })} • ${project.roles.join(", ")}${project.collab ? ` • ${project.collab}` : ""}`;
+  const meta = `${new Date(project.date).toLocaleString("en-US", { month: "short", year: "numeric" })} / ${project.roles.join(" / ")}${project.collab ? `: ${project.collab}` : ""}`;
+
+  // Varying title sizes like the reference
+  const titleSizes = [
+    "text-[72px]", "text-[58px]", "text-[52px]", 
+    "text-[68px]", "text-[48px]", "text-[72px]"
+  ];
+  const titleSize = titleSizes[index % titleSizes.length];
 
   return (
     <motion.li
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.35 }}
-      className="group"
+      className="group relative mb-20"
     >
       <Link to={`/projects/${project.slug}`} className="block no-underline">
         <motion.div
-          whileHover={{ y: -3 }}
-          transition={{ type: "spring", stiffness: 300, damping: 24 }}
-          className="py-12"
+          whileHover={{ x: 10 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="relative"
         >
-          <h2 className="text-[clamp(28px,4vw,44px)] font-light leading-tight text-fg transition-colors group-hover:text-fg/90">
+          <h2 className={`${titleSize} font-light tracking-[-0.02em] mb-2 text-fg leading-[0.9]`}>
             {project.title}
           </h2>
-          <p className="mt-2 text-sm text-muted/70 group-hover:text-muted transition-colors">
+          <div className="text-xs text-muted font-normal text-right mt-5">
             {meta}
-          </p>
+          </div>
         </motion.div>
       </Link>
     </motion.li>
