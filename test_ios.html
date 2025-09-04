@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iOS Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .ios-app { 
+            display: inline-block; 
+            padding: 20px; 
+            margin: 10px; 
+            border: 2px solid #ccc; 
+            cursor: pointer; 
+            background: #f0f0f0;
+        }
+        .ios-app:hover { background: #e0e0e0; }
+        .ios-dock-app { 
+            display: inline-block; 
+            padding: 15px; 
+            margin: 5px; 
+            border: 2px solid #333; 
+            cursor: pointer; 
+            background: #333;
+            color: white;
+        }
+        .ios-dock-app:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <h1>iOS Navigation Test</h1>
+    <p>Check browser console for debug messages</p>
+    
+    <div class="ios-app ai-tools">
+        <div class="ios-app-icon">🤖</div>
+        <div class="ios-app-label">AI Tools</div>
+    </div>
+    
+    <div class="ios-dock-app home">
+        <div class="ios-dock-icon">🏠</div>
+    </div>
+    
+    <script>
+        console.log('Test page script loaded');
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded');
+            
+            // Test basic click functionality
+            const apps = document.querySelectorAll('.ios-app');
+            console.log('Found apps:', apps.length);
+            
+            apps.forEach((app, index) => {
+                app.addEventListener('click', function(e) {
+                    console.log('App clicked:', index, e.target);
+                    alert('App clicked!');
+                });
+            });
+            
+            const dockApps = document.querySelectorAll('.ios-dock-app');
+            console.log('Found dock apps:', dockApps.length);
+            
+            dockApps.forEach((app, index) => {
+                app.addEventListener('click', function(e) {
+                    console.log('Dock app clicked:', index, e.target);
+                    alert('Dock app clicked!');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -85,10 +85,13 @@ class iOSNavigation {
     }
     
     init() {
+        console.log('iOS Navigation initializing...');
         // Wait for DOM to be ready
         if (document.readyState === 'loading') {
+            console.log('DOM still loading, waiting for DOMContentLoaded');
             document.addEventListener('DOMContentLoaded', () => this.setupNavigation());
         } else {
+            console.log('DOM already loaded, setting up navigation immediately');
             this.setupNavigation();
         }
     }
@@ -142,10 +145,13 @@ class iOSNavigation {
     setupAppTapHandlers() {
         // Grid apps
         const gridApps = document.querySelectorAll('.ios-app');
+        console.log('Found grid apps:', gridApps.length);
         gridApps.forEach(app => {
             const appClass = Array.from(app.classList).find(cls => cls !== 'ios-app');
+            console.log('Setting up app:', appClass);
             if (appClass && this.apps[appClass]) {
                 app.addEventListener('click', (e) => {
+                    console.log('App clicked:', appClass);
                     e.preventDefault();
                     this.launchApp(appClass);
                 });
@@ -165,10 +171,13 @@ class iOSNavigation {
         
         // Dock apps
         const dockApps = document.querySelectorAll('.ios-dock-app');
+        console.log('Found dock apps:', dockApps.length);
         dockApps.forEach(app => {
             const appClass = Array.from(app.classList).find(cls => cls !== 'ios-dock-app');
+            console.log('Setting up dock app:', appClass);
             if (appClass && this.apps[appClass]) {
                 app.addEventListener('click', (e) => {
+                    console.log('Dock app clicked:', appClass);
                     e.preventDefault();
                     this.launchApp(appClass);
                 });
