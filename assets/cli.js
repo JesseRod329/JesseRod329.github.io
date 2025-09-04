@@ -47,6 +47,7 @@ class PortfolioCLI {
     this.createOutputContainer();
     this.createInputLine();
     this.setupEventListeners();
+    this.setupServiceCardHandlers();
     this.showWelcome();
   }
 
@@ -133,6 +134,51 @@ class PortfolioCLI {
     this.terminal.addEventListener('click', () => {
       this.inputLine.focus();
     });
+  }
+
+  setupServiceCardHandlers() {
+    // Add click handlers to service cards
+    const serviceCards = document.querySelectorAll('.service-card');
+    serviceCards.forEach(card => {
+      card.addEventListener('click', (e) => {
+        e.preventDefault();
+        const cardText = card.querySelector('h3').textContent.toLowerCase();
+        
+        // Map service card titles to commands
+        let command = '';
+        if (cardText.includes('ai') || cardText.includes('automation')) {
+          command = 'projects';
+        } else if (cardText.includes('website')) {
+          command = 'projects';
+        } else if (cardText.includes('logo') || cardText.includes('design')) {
+          command = 'projects';
+        } else if (cardText.includes('resume') || cardText.includes('career')) {
+          command = 'resume';
+        } else if (cardText.includes('fashion')) {
+          command = 'projects';
+        }
+        
+        if (command && this.commands[command]) {
+          // Simulate typing the command
+          this.inputLine.value = command;
+          this.currentInput = command;
+          this.processCommand();
+        }
+      });
+    });
+
+    // Add click handler to contact section
+    const contactSection = document.querySelector('.contact');
+    if (contactSection) {
+      contactSection.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (this.commands['contact']) {
+          this.inputLine.value = 'contact';
+          this.currentInput = 'contact';
+          this.processCommand();
+        }
+      });
+    }
   }
 
   processCommand() {
