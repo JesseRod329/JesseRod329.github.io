@@ -27,7 +27,7 @@
 @tailwind utilities;
 
 :root {
-	--bg: #f9fafb;
+	--bg: #ffffff;
 	--fg: #111827;
 	--muted: #6b7280;
 }
@@ -37,23 +37,29 @@ html {
 	font-family: 'PP Neue', ui-sans-serif, system-ui, sans-serif;
 }
 
-body {
-	background-color: white;
-	color: #111827;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	font-family: 'PP Neue', ui-sans-serif, system-ui, sans-serif;
+html.light {
+	--bg: #ffffff;
+	--fg: #111827;
+	--muted: #6b7280;
 }
 
-.dark {
+html.dark {
 	--bg: #111827;
 	--fg: #f9fafb;
 	--muted: #9ca3af;
 }
 
-.dark body {
-	background-color: #111827;
-	color: #f3f4f6;
+html.mono {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace;
+}
+
+body {
+	background-color: var(--bg);
+	color: var(--fg);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-family: 'PP Neue', ui-sans-serif, system-ui, sans-serif;
+	transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* Three.js background will handle visual effects */

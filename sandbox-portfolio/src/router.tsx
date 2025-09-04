@@ -12,13 +12,13 @@ const FAQ = lazy(() => import('./pages/FAQ'))
 
 function RootLayout() {
   return (
-    <div className="min-h-screen flex bg-white dark:bg-black relative">
+    <div className="min-h-screen flex relative" style={{ backgroundColor: 'var(--bg)', color: 'var(--fg)' }}>
       <ThreeBackground />
-      <aside className="w-64 bg-white/80 dark:bg-black/80 backdrop-blur-sm border-r border-gray-200 dark:border-gray-800 sticky top-0 h-screen z-10">
+      <aside className="w-64 backdrop-blur-sm border-r border-gray-200 dark:border-gray-800 sticky top-0 h-screen z-10" style={{ backgroundColor: 'var(--bg)' }}>
         <Sidebar />
       </aside>
       <main className="flex-1 min-w-0 relative z-10">
-        <Suspense fallback={<div className="p-6 text-sm text-gray-600 dark:text-gray-300">Loading…</div>}>
+        <Suspense fallback={<div className="p-6 text-sm" style={{ color: 'var(--muted)' }}>Loading…</div>}>
           <Outlet />
         </Suspense>
       </main>

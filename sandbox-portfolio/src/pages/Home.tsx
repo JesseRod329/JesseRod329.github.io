@@ -21,7 +21,7 @@ export default function Home() {
   }, [fadeIn])
 
   return (
-    <GSAPAnimations className="p-8 min-h-screen">
+    <GSAPAnimations className="p-8 min-h-screen" style={{ backgroundColor: 'var(--bg)', color: 'var(--fg)' }}>
       <div ref={elementRef} className="space-y-1">
         {projects.map((p, idx) => (
           <motion.div
