@@ -7,7 +7,7 @@
       "stack": ["React", "Tailwind", "Framer Motion"],
       "images": ["/assets/placeholder1.jpg", "/assets/placeholder2.jpg"],
       "repo": "https://github.com/placeholder/portfolio-animation",
-      "live": "#"
+      "live": "/projects/portfolio-animation"
     },
     {
       "slug": "ios-pwa",
@@ -16,7 +16,7 @@
       "stack": ["PWA", "Service Worker", "TypeScript"],
       "images": ["/assets/placeholder3.jpg"],
       "repo": "https://github.com/placeholder/ios-pwa",
-      "live": "#"
+      "live": "/projects/ios-pwa"
     },
     {
       "slug": "circular-planner",
@@ -25,7 +25,7 @@
       "stack": ["Canvas", "React"],
       "images": ["/assets/placeholder4.jpg"],
       "repo": "https://github.com/placeholder/circular-planner",
-      "live": "#"
+      "live": "/projects/circular-planner"
     },
     {
       "slug": "fashion-palette",
@@ -34,7 +34,7 @@
       "stack": ["React", "Color Science"],
       "images": ["/assets/placeholder5.jpg"],
       "repo": "https://github.com/placeholder/fashion-palette",
-      "live": "#"
+      "live": "/projects/fashion-palette"
     },
     {
       "slug": "brainwave-simulator",
@@ -43,7 +43,7 @@
       "stack": ["Canvas", "TypeScript"],
       "images": ["/assets/placeholder6.jpg"],
       "repo": "https://github.com/placeholder/brainwave-simulator",
-      "live": "#"
+      "live": "/projects/brainwave-simulator"
     },
     {
       "slug": "security-dashboard",
@@ -52,7 +52,7 @@
       "stack": ["Security", "React"],
       "images": ["/assets/placeholder7.jpg"],
       "repo": "https://github.com/placeholder/security-dashboard",
-      "live": "#"
+      "live": "/projects/security-dashboard"
     }
   ]
 }

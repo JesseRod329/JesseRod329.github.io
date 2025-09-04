@@ -1,19 +1,19 @@
 import { NavLink } from 'react-router-dom'
 import ThemeToggle from './ThemeToggle'
 
-const linkBase = 'block px-3 py-2 rounded-md text-sm font-medium focus-visible:ring-2 focus-visible:ring-offset-2'
-const linkActive = 'bg-white/10 text-white'
-const linkInactive = 'text-white/70 hover:text-white hover:bg-white/5'
+const linkBase = 'block px-3 py-2 text-sm font-light focus-visible:ring-2 focus-visible:ring-offset-2'
+const linkActive = 'text-gray-900 dark:text-white relative'
+const linkInactive = 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
 
 export default function Sidebar() {
   return (
-    <div className="h-full flex flex-col justify-between p-4">
+    <div className="h-full flex flex-col justify-between p-6">
       <div>
-        <div className="mb-8">
-          <h1 className="text-xl font-semibold tracking-wide">Jesse Rodriguez</h1>
-          <p className="text-xs text-white/60">Creative Engineer • Experiments</p>
+        <div className="mb-12">
+          <h1 className="text-2xl font-thin tracking-wide text-gray-900 dark:text-white">Jesse Rodriguez</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 font-light">Creative Engineer • Experiments</p>
         </div>
-        <nav aria-label="Primary" className="space-y-1">
+        <nav aria-label="Primary" className="space-y-2">
           <NavLink to="/" end className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkInactive}`}>
             Home
           </NavLink>
@@ -31,14 +31,9 @@ export default function Sidebar() {
           </NavLink>
         </nav>
       </div>
-      <div className="space-y-3">
+      <div className="space-y-4">
         <ThemeToggle />
-        <div className="text-[11px] text-white/50">© {new Date().getFullYear()} Sandbox • @jesse</div>
-        <div className="flex gap-3 text-white/60">
-          <a href="https://github.com/JesseRod329" target="_blank" rel="noreferrer" className="hover:text-white">GitHub</a>
-          <a href="#" className="hover:text-white">X</a>
-          <a href="#" className="hover:text-white">LinkedIn</a>
-        </div>
+        <div className="text-xs text-gray-400 dark:text-gray-500">© {new Date().getFullYear()} Sandbox</div>
       </div>
     </div>
   )

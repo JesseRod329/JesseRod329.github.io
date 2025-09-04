@@ -18,22 +18,19 @@ export default function Home() {
   }, [])
 
   return (
-    <NoiseBackground>
-      <div className="p-6 md:p-10">
-        <h2 className="text-lg mb-4">Featured</h2>
-        <div className="divide-y divide-white/5">
-          {projects.map((p, idx) => (
-            <motion.div
-              key={p.slug}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: idx * 0.04 }}
-            >
-              <ProjectRow title={p.title} subtitle={p.subtitle} slug={p.slug} />
-            </motion.div>
-          ))}
-        </div>
+    <div className="p-8 min-h-screen">
+      <div className="space-y-1">
+        {projects.map((p, idx) => (
+          <motion.div
+            key={p.slug}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: idx * 0.04 }}
+          >
+            <ProjectRow title={p.title} subtitle={p.subtitle} slug={p.slug} />
+          </motion.div>
+        ))}
       </div>
-    </NoiseBackground>
+    </div>
   )
 }

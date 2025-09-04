@@ -4,9 +4,11 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        monoalt: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'monospace'],
+        sans: ['PP Neue', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'monospace'],
       },
       colors: {
+        // Keep all default Tailwind colors and add custom brand colors
         brand: {
           DEFAULT: '#8B5CF6',
           50: '#F5F3FF',

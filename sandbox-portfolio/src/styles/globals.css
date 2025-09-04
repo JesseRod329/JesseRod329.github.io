@@ -1,19 +1,59 @@
+@font-face {
+	font-family: 'PP Neue';
+	src: url('/assets/font/PPNeue-Regular.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'PP Neue';
+	src: url('/assets/font/PPNeue-Medium.woff2') format('woff2');
+	font-weight: 500;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'PP Neue';
+	src: url('/assets/font/PPNeue-Bold.woff2') format('woff2');
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-	--bg: #0b0b0f;
-	--fg: #e6e6eb;
-	--muted: #9aa0aa;
+	--bg: #f9fafb;
+	--fg: #111827;
+	--muted: #6b7280;
 }
 
 html {
 	scroll-behavior: smooth;
+	font-family: 'PP Neue', ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
-	@apply bg-[var(--bg)] text-[var(--fg)] antialiased;
+	background-color: white;
+	color: #111827;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-family: 'PP Neue', ui-sans-serif, system-ui, sans-serif;
+}
+
+.dark {
+	--bg: #111827;
+	--fg: #f9fafb;
+	--muted: #9ca3af;
+}
+
+.dark body {
+	background-color: #111827;
+	color: #f3f4f6;
 }
 
 /* Noise and vignette */
@@ -23,7 +63,7 @@ body {
 	inset: 0;
 	pointer-events: none;
 	background-image: url('/assets/noise.png');
-	opacity: 0.06;
+	opacity: 0.03;
 	mix-blend-mode: overlay;
 }
 
@@ -32,7 +72,7 @@ body {
 	position: fixed;
 	inset: 0;
 	pointer-events: none;
-	box-shadow: inset 0 0 200px rgba(0,0,0,0.35);
+	background: radial-gradient(ellipse at bottom right, rgba(0,0,0,0.1) 0%, transparent 70%);
 }
 
 /* Focus rings */

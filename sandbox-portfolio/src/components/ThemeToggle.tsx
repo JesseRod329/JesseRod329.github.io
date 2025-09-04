@@ -28,28 +28,31 @@ export default function ThemeToggle() {
   }, [mode])
 
   return (
-    <div className="inline-flex items-center gap-2" role="group" aria-label="Theme">
-      <button
-        className={`px-2 py-1 rounded text-xs border border-white/10 ${mode === 'dark' ? 'bg-white/10' : 'bg-transparent'}`}
-        onClick={() => setMode('dark')}
-        aria-pressed={mode === 'dark'}
-      >
-        Dark
-      </button>
-      <button
-        className={`px-2 py-1 rounded text-xs border border-white/10 ${mode === 'light' ? 'bg-white/10' : 'bg-transparent'}`}
-        onClick={() => setMode('light')}
-        aria-pressed={mode === 'light'}
-      >
-        Light
-      </button>
-      <button
-        className={`px-2 py-1 rounded text-xs border border-white/10 ${mode === 'mono' ? 'bg-white/10' : 'bg-transparent'}`}
-        onClick={() => setMode('mono')}
-        aria-pressed={mode === 'mono'}
-      >
-        Mono
-      </button>
+    <div className="space-y-1" role="group" aria-label="Theme">
+      <div className="text-xs text-gray-500 dark:text-gray-400 font-light">Theme</div>
+      <div className="space-y-1">
+        <button
+          className={`block text-xs font-light ${mode === 'light' ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}
+          onClick={() => setMode('light')}
+          aria-pressed={mode === 'light'}
+        >
+          LIGHT
+        </button>
+        <button
+          className={`block text-xs font-light ${mode === 'dark' ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}
+          onClick={() => setMode('dark')}
+          aria-pressed={mode === 'dark'}
+        >
+          DARK
+        </button>
+        <button
+          className={`block text-xs font-light ${mode === 'mono' ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}
+          onClick={() => setMode('mono')}
+          aria-pressed={mode === 'mono'}
+        >
+          MONOSPACED
+        </button>
+      </div>
     </div>
   )
 }
