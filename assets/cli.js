@@ -22,6 +22,7 @@ class PortfolioCLI {
       contact: this.showContact.bind(this),
       security: this.showSecurity.bind(this),
       headers: this.showHeaders.bind(this),
+      accessibility: this.showAccessibility.bind(this),
       palette: this.showPalette.bind(this),
       brainwave: this.showBrainwave.bind(this),
       planner: this.showPlanner.bind(this),
@@ -232,6 +233,7 @@ class PortfolioCLI {
       '  contact   - Get in touch',
       '  security  - Security implementation details',
       '  headers   - HTTP security headers info',
+      '  accessibility - Accessibility features and statement',
       '  palette   - Fashion color palette generator',
       '  brainwave - AI neural activity simulator',
       '  planner   - Circular daily planner',
@@ -384,6 +386,36 @@ class PortfolioCLI {
       'GitHub Pages compatibility.',
       ''
     ], 'headers');
+  }
+
+  showAccessibility() {
+    this.addMultilineOutput([
+      '♿ Accessibility',
+      '',
+      'This site aims for WCAG 2.2 AA where practical.',
+      'Keyboard, screen reader, reduced motion, and high-contrast supported.',
+      'Progressive enhancement ensures noscript fallbacks.',
+      ''
+    ], 'info');
+    this.addAccessibilityLink();
+  }
+
+  addAccessibilityLink() {
+    const outputLine = document.createElement('div');
+    outputLine.className = 'cli-output-line info';
+
+    const linkText = document.createTextNode('🔗 ');
+    const link = document.createElement('a');
+    link.href = '/accessibility.html';
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = 'Read the Accessibility statement';
+
+    outputLine.appendChild(linkText);
+    outputLine.appendChild(link);
+
+    this.outputContainer.appendChild(outputLine);
+    this.scrollToBottom();
   }
 
   showPalette() {
