@@ -134,11 +134,14 @@ class iOSNavigation {
         // Home indicator gesture
         this.setupHomeGesture();
         
-        // Prevent default touch behaviors on device
+        // Prevent default touch behaviors on device (but allow app interactions)
         const device = document.querySelector('.ios-device');
         if (device) {
             device.addEventListener('touchstart', (e) => {
-                e.preventDefault();
+                // Only prevent default for non-interactive elements
+                if (!e.target.closest('.ios-app') && !e.target.closest('.ios-dock-app') && !e.target.closest('.ios-home-indicator')) {
+                    e.preventDefault();
+                }
             }, { passive: false });
         }
     }
@@ -153,18 +156,15 @@ class iOSNavigation {
             if (appClass && this.apps[appClass]) {
                 app.addEventListener('click', (e) => {
                     console.log('App clicked:', appClass);
-                    e.preventDefault();
                     this.launchApp(appClass);
                 });
                 
                 // Add touch feedback
                 app.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
                     this.addTouchFeedback(app);
                 });
                 
                 app.addEventListener('touchend', (e) => {
-                    e.preventDefault();
                     this.removeTouchFeedback(app);
                 });
             }
@@ -185,12 +185,10 @@ class iOSNavigation {
                 
                 // Add touch feedback
                 app.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
                     this.addTouchFeedback(app);
                 });
                 
                 app.addEventListener('touchend', (e) => {
-                    e.preventDefault();
                     this.removeTouchFeedback(app);
                 });
             }
@@ -564,18 +562,22 @@ class iOSNavigation {
         if (!document.querySelector('link[href*="terminal.css"]')) {
             const terminalCSS = document.createElement('link');
             terminalCSS.rel = 'stylesheet';
-            terminalCSS.href = '/ios/css/terminal.css';
+            terminalCSS.href = 'css/terminal.css';
             document.head.appendChild(terminalCSS);
         }
         
         // Load terminal script if not already loaded
         if (!window.iOSTerminal) {
             const terminalScript = document.createElement('script');
-            terminalScript.src = '/ios/js/terminal.js';
-            terminalScript.integrity = 'sha384-XYwf811Gd3ZYlDA/xXbguNehnPu9oSldc8mlD02NngEjT+yjyD/RaF8j685dut5B';
+            terminalScript.src = 'js/terminal.js';
+            terminalScript.integrity = 'sha384-5d8c1ff35d4677765894303fc576e0b8d7a19cfbbda1295d73c9a50f4d8d9e01234feca3c83fd1685f23ebce5dbade41';
             terminalScript.crossOrigin = 'anonymous';
             terminalScript.onload = () => {
                 this.initializeTerminal(container);
+            };
+            terminalScript.onerror = () => {
+                console.error('Failed to load terminal.js');
+                this.showFallbackContent(container, 'terminal');
             };
             document.head.appendChild(terminalScript);
         } else {
@@ -770,18 +772,22 @@ class iOSNavigation {
         if (!document.querySelector('link[href*="palettes.css"]')) {
             const palettesCSS = document.createElement('link');
             palettesCSS.rel = 'stylesheet';
-            palettesCSS.href = '/ios/css/palettes.css';
+            palettesCSS.href = 'css/palettes.css';
             document.head.appendChild(palettesCSS);
         }
         
         // Load palettes script if not already loaded
         if (!window.iOSColorPalettes) {
             const palettesScript = document.createElement('script');
-            palettesScript.src = '/ios/js/palettes.js';
-            palettesScript.integrity = 'sha384-3WYxgiQV9XeDBlthfwrZfM33fPms99JZNHVgo7RUtp8hE6Rc/6y1P9oGBDcqiXVm';
+            palettesScript.src = 'js/palettes.js';
+            palettesScript.integrity = 'sha384-dd6631822415f57783065b617f0ad97ccdf77cf9acf7d259347560a3b454b69f2113a45cffacb53fda0604372a897566';
             palettesScript.crossOrigin = 'anonymous';
             palettesScript.onload = () => {
                 this.initializePalettes(container);
+            };
+            palettesScript.onerror = () => {
+                console.error('Failed to load palettes.js');
+                this.showFallbackContent(container, 'palettes');
             };
             document.head.appendChild(palettesScript);
         } else {
@@ -1205,18 +1211,22 @@ class iOSNavigation {
         if (!document.querySelector('link[href*="content-apps.css"]')) {
             const contentCSS = document.createElement('link');
             contentCSS.rel = 'stylesheet';
-            contentCSS.href = '/ios/css/content-apps.css';
+            contentCSS.href = 'css/content-apps.css';
             document.head.appendChild(contentCSS);
         }
         
         // Load content apps script if not already loaded
         if (!window.iOSContentApps) {
             const contentScript = document.createElement('script');
-            contentScript.src = '/ios/js/content-apps.js';
-            contentScript.integrity = 'sha384-xZvqWLTa4DK+w6Yp+0f9WE8e4dnZqDWxAE275ZT6d8bfKhdAtjpiamlDS4nbtwdT';
+            contentScript.src = 'js/content-apps.js';
+            contentScript.integrity = 'sha384-c59bea58b4dae032bec3a629fb47fd584f1ee1d9d9a835b1004dbbe594fa77c6df2a1740b63a626a69434b89dbb70753';
             contentScript.crossOrigin = 'anonymous';
             contentScript.onload = () => {
                 this.initializeContentApp(container, appType);
+            };
+            contentScript.onerror = () => {
+                console.error('Failed to load content-apps.js');
+                this.showFallbackContent(container, appType);
             };
             document.head.appendChild(contentScript);
         } else {
@@ -1271,18 +1281,22 @@ class iOSNavigation {
         if (!document.querySelector('link[href*="professional.css"]')) {
             const professionalCSS = document.createElement('link');
             professionalCSS.rel = 'stylesheet';
-            professionalCSS.href = '/ios/css/professional.css';
+            professionalCSS.href = 'css/professional.css';
             document.head.appendChild(professionalCSS);
         }
         
         // Load professional apps script if not already loaded
         if (!window.iOSProfessionalApps) {
             const professionalScript = document.createElement('script');
-            professionalScript.src = '/ios/js/professional.js';
-            professionalScript.integrity = 'sha384-9C3CtsCGNtTlbA/CQJFsksO+bJN9e81OOiBXVeE6FzwtHO2rBXEOuqf/EG57Cpz5';
+            professionalScript.src = 'js/professional.js';
+            professionalScript.integrity = 'sha384-f42dc2b6c08636d4e56c0fc240916c92c3be6c937d7bcd4e3a205755e13a173c2d1cedab05710ebaa7ff106e7b0a9cf9';
             professionalScript.crossOrigin = 'anonymous';
             professionalScript.onload = () => {
                 this.initializeProfessionalApp(container, appType);
+            };
+            professionalScript.onerror = () => {
+                console.error('Failed to load professional.js');
+                this.showFallbackContent(container, appType);
             };
             document.head.appendChild(professionalScript);
         } else {
@@ -1335,6 +1349,79 @@ class iOSNavigation {
     createAppViews() {
         // All app views are created dynamically when launched
         // This method is here for future expansion
+    }
+    
+    showFallbackContent(container, appType) {
+        // Clear the placeholder content
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
+        
+        // Create fallback content
+        const fallback = document.createElement('div');
+        fallback.style.cssText = `
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+        `;
+        
+        const icon = document.createElement('div');
+        icon.style.cssText = `
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        `;
+        icon.textContent = this.apps[appType]?.icon || '📱';
+        
+        const title = document.createElement('h2');
+        title.style.cssText = `
+            font-size: 24px;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        `;
+        title.textContent = this.apps[appType]?.title || 'App';
+        
+        const message = document.createElement('p');
+        message.style.cssText = `
+            font-size: 16px;
+            line-height: 1.4;
+            margin-bottom: 30px;
+            color: var(--text-secondary);
+        `;
+        message.textContent = 'This app is temporarily unavailable. Please try again later.';
+        
+        const retryButton = document.createElement('button');
+        retryButton.style.cssText = `
+            padding: 12px 24px;
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+        `;
+        retryButton.textContent = 'Retry';
+        retryButton.addEventListener('click', () => {
+            // Retry loading the app
+            if (appType === 'ai-tools' || appType === 'websites' || appType === 'fashion' || appType === 'design') {
+                this.createContentInterface(container, appType);
+            } else if (appType === 'palettes') {
+                this.createPalettesInterface(container);
+            } else if (appType === 'terminal') {
+                this.createTerminalInterface(container);
+            } else if (['resume', 'analytics', 'contact', 'social'].includes(appType)) {
+                this.createProfessionalInterface(container, appType);
+            }
+        });
+        
+        fallback.appendChild(icon);
+        fallback.appendChild(title);
+        fallback.appendChild(message);
+        fallback.appendChild(retryButton);
+        
+        container.appendChild(fallback);
     }
     
     /**
