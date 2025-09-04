@@ -133,11 +133,14 @@ class iOSNavigation {
         // Home indicator gesture
         this.setupHomeGesture();
         
-        // Prevent default touch behaviors on device
+        // Prevent default touch behaviors on device (but allow app interactions)
         const device = document.querySelector('.ios-device');
         if (device) {
             device.addEventListener('touchstart', (e) => {
-                e.preventDefault();
+                // Only prevent default for non-interactive elements
+                if (!e.target.closest('.ios-app') && !e.target.closest('.ios-dock-app') && !e.target.closest('.ios-home-indicator')) {
+                    e.preventDefault();
+                }
             }, { passive: false });
         }
     }
@@ -152,18 +155,15 @@ class iOSNavigation {
             if (appClass && this.apps[appClass]) {
                 app.addEventListener('click', (e) => {
                     console.log('App clicked:', appClass);
-                    e.preventDefault();
                     this.launchApp(appClass);
                 });
                 
                 // Add touch feedback
                 app.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
                     this.addTouchFeedback(app);
                 });
                 
                 app.addEventListener('touchend', (e) => {
-                    e.preventDefault();
                     this.removeTouchFeedback(app);
                 });
             }
@@ -184,12 +184,10 @@ class iOSNavigation {
                 
                 // Add touch feedback
                 app.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
                     this.addTouchFeedback(app);
                 });
                 
                 app.addEventListener('touchend', (e) => {
-                    e.preventDefault();
                     this.removeTouchFeedback(app);
                 });
             }
