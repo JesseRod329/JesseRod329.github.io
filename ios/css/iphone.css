@@ -294,6 +294,14 @@ body {
   background: linear-gradient(135deg, #0d6efd 0%, #9775fa 100%);
 }
 
+.ios-app.security {
+  background: linear-gradient(135deg, #FF5722 0%, #D32F2F 100%);
+}
+
+.ios-app.accessibility {
+  background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+}
+
 /* Dock */
 .ios-dock {
   position: absolute;

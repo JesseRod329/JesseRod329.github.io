@@ -64,6 +64,16 @@ class iOSNavigation {
                 icon: '📊',
                 color: 'linear-gradient(135deg, #795548 0%, #5D4037 100%)'
             },
+            'security': {
+                title: 'Security',
+                icon: '🔒',
+                color: 'linear-gradient(135deg, #FF5722 0%, #D32F2F 100%)'
+            },
+            'accessibility': {
+                title: 'Accessibility',
+                icon: '♿',
+                color: 'linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)'
+            },
             'home': {
                 title: 'Home',
                 icon: '🏠',
@@ -571,6 +581,16 @@ class iOSNavigation {
                 description.textContent = 'Interactive planning and productivity tools. Tap the button below to launch the full Planner app.';
                 // Create launch button for planner
                 this.addAppLink(links, '📅 Launch Planner App', '/planner/index.html');
+                break;
+            case 'security':
+                description.textContent = 'Security dashboard and privacy tools. Tap the button below to view the security page.';
+                // Create launch button for security
+                this.addAppLink(links, '🔒 View Security Dashboard', '/security.html');
+                break;
+            case 'accessibility':
+                description.textContent = 'Accessibility features and inclusive design tools. Tap the button below to view accessibility information.';
+                // Create launch button for accessibility
+                this.addAppLink(links, '♿ View Accessibility Info', '/accessibility.html');
                 break;
             case 'terminal':
                 description.textContent = 'Command-line interface and developer tools.';
