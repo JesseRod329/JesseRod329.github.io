@@ -196,11 +196,11 @@ body {
 .ios-app-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(6, 1fr);
   gap: 16px;
   flex: 1;
   align-content: start;
   padding-top: 20px;
+  grid-auto-rows: auto;
 }
 
 /* App icons */
@@ -224,6 +224,9 @@ body {
   touch-action: manipulation;
   user-select: none;
   -webkit-user-select: none;
+  /* Ensure apps are visible */
+  opacity: 1;
+  visibility: visible;
 }
 
 .ios-app:hover {
@@ -285,6 +288,10 @@ body {
 
 .ios-app.analytics {
   background: linear-gradient(135deg, #795548 0%, #5D4037 100%);
+}
+
+.ios-app.planner {
+  background: linear-gradient(135deg, #0d6efd 0%, #9775fa 100%);
 }
 
 /* Dock */

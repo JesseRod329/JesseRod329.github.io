@@ -107,15 +107,21 @@ class iOSNavigation {
     }
     
     setupNavigation() {
+        console.log('iOSNavigation: Setting up navigation...');
         this.createAppContainer();
         this.setupEventListeners();
         this.createAppViews();
+        console.log('iOSNavigation: Setup complete');
     }
     
     createAppContainer() {
         // Create app view container
         const device = document.querySelector('.ios-device');
-        if (!device) return;
+        console.log('iOSNavigation: Looking for .ios-device element:', device);
+        if (!device) {
+            console.error('iOSNavigation: .ios-device element not found!');
+            return;
+        }
         
         const appContainer = document.createElement('div');
         appContainer.className = 'ios-app-container';
@@ -134,6 +140,7 @@ class iOSNavigation {
         
         device.appendChild(appContainer);
         this.appContainer = appContainer;
+        console.log('iOSNavigation: App container created and added to device');
     }
     
     setupEventListeners() {
@@ -335,6 +342,13 @@ class iOSNavigation {
         if (appId === 'home') {
             console.log('Home app - calling goHome()');
             this.goHome();
+            return;
+        }
+        
+        // Special handling for planner app - redirect to planner page
+        if (appId === 'planner') {
+            console.log('Planner app - redirecting to planner page');
+            window.location.href = '/planner/index.html';
             return;
         }
         
@@ -553,6 +567,11 @@ class iOSNavigation {
                 // Create full analytics app
                 this.createProfessionalInterface(placeholder, 'analytics');
                 break;
+            case 'planner':
+                description.textContent = 'Interactive planning and productivity tools. Tap the button below to launch the full Planner app.';
+                // Create launch button for planner
+                this.addAppLink(links, '📅 Launch Planner App', '/planner/index.html');
+                break;
             case 'terminal':
                 description.textContent = 'Command-line interface and developer tools.';
                 this.addAppLink(links, 'Open Desktop Terminal', '/desktop.html');
@@ -701,10 +720,13 @@ class iOSNavigation {
         if (!window.iOSTerminal) {
             const terminalScript = document.createElement('script');
             terminalScript.src = '/ios/js/terminal.js';
-            terminalScript.integrity = 'sha384-XYwf811Gd3ZYlDA/xXbguNehnPu9oSldc8mlD02NngEjT+yjyD/RaF8j685dut5B';
-            terminalScript.crossOrigin = 'anonymous';
             terminalScript.onload = () => {
                 this.initializeTerminal(container);
+            };
+            terminalScript.onerror = () => {
+                console.error('Failed to load terminal.js');
+                // Fallback to basic terminal interface
+                this.createBasicTerminalInterface(container);
             };
             document.head.appendChild(terminalScript);
         } else {
@@ -907,10 +929,13 @@ class iOSNavigation {
         if (!window.iOSColorPalettes) {
             const palettesScript = document.createElement('script');
             palettesScript.src = '/ios/js/palettes.js';
-            palettesScript.integrity = 'sha384-3WYxgiQV9XeDBlthfwrZfM33fPms99JZNHVgo7RUtp8hE6Rc/6y1P9oGBDcqiXVm';
-            palettesScript.crossOrigin = 'anonymous';
             palettesScript.onload = () => {
                 this.initializePalettes(container);
+            };
+            palettesScript.onerror = () => {
+                console.error('Failed to load palettes.js');
+                // Fallback to basic palettes interface
+                this.createBasicPalettesInterface(container);
             };
             document.head.appendChild(palettesScript);
         } else {
@@ -1342,10 +1367,13 @@ class iOSNavigation {
         if (!window.iOSContentApps) {
             const contentScript = document.createElement('script');
             contentScript.src = '/ios/js/content-apps.js';
-            contentScript.integrity = 'sha384-xZvqWLTa4DK+w6Yp+0f9WE8e4dnZqDWxAE275ZT6d8bfKhdAtjpiamlDS4nbtwdT';
-            contentScript.crossOrigin = 'anonymous';
             contentScript.onload = () => {
                 this.initializeContentApp(container, appType);
+            };
+            contentScript.onerror = () => {
+                console.error('Failed to load content-apps.js');
+                // Fallback to basic content interface
+                this.createBasicContentInterface(container, appType);
             };
             document.head.appendChild(contentScript);
         } else {
@@ -1408,10 +1436,13 @@ class iOSNavigation {
         if (!window.iOSProfessionalApps) {
             const professionalScript = document.createElement('script');
             professionalScript.src = '/ios/js/professional.js';
-            professionalScript.integrity = 'sha384-9C3CtsCGNtTlbA/CQJFsksO+bJN9e81OOiBXVeE6FzwtHO2rBXEOuqf/EG57Cpz5';
-            professionalScript.crossOrigin = 'anonymous';
             professionalScript.onload = () => {
                 this.initializeProfessionalApp(container, appType);
+            };
+            professionalScript.onerror = () => {
+                console.error('Failed to load professional.js');
+                // Fallback to basic professional interface
+                this.createBasicProfessionalInterface(container, appType);
             };
             document.head.appendChild(professionalScript);
         } else {
@@ -1526,6 +1557,230 @@ class iOSNavigation {
         }
         
         await Promise.all(promises);
+    }
+    
+    /**
+     * Fallback methods for when external scripts fail to load
+     */
+    createBasicTerminalInterface(container) {
+        const terminal = document.createElement('div');
+        terminal.style.cssText = `
+            background: #000;
+            color: #00ff00;
+            font-family: monospace;
+            padding: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        `;
+        
+        const output = document.createElement('div');
+        output.innerHTML = `
+            <div>Welcome to Terminal</div>
+            <div>Type 'help' for available commands</div>
+            <div>This is a basic terminal interface.</div>
+        `;
+        output.style.flex = '1';
+        output.style.overflow = 'auto';
+        
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = 'Type a command...';
+        input.style.cssText = `
+            background: transparent;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 10px;
+            margin-top: 10px;
+            font-family: monospace;
+        `;
+        
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const command = input.value.trim();
+                if (command) {
+                    const line = document.createElement('div');
+                    line.textContent = `$ ${command}`;
+                    output.appendChild(line);
+                    
+                    if (command === 'help') {
+                        const help = document.createElement('div');
+                        help.innerHTML = `
+                            <div>Available commands:</div>
+                            <div>- help: Show this help</div>
+                            <div>- clear: Clear screen</div>
+                            <div>- about: Show about info</div>
+                        `;
+                        output.appendChild(help);
+                    } else if (command === 'clear') {
+                        output.innerHTML = '';
+                    } else if (command === 'about') {
+                        const about = document.createElement('div');
+                        about.innerHTML = `
+                            <div>iOS Terminal v1.0</div>
+                            <div>Basic terminal interface</div>
+                        `;
+                        output.appendChild(about);
+                    } else {
+                        const error = document.createElement('div');
+                        error.textContent = `Command not found: ${command}`;
+                        error.style.color = '#ff4444';
+                        output.appendChild(error);
+                    }
+                    
+                    input.value = '';
+                    output.scrollTop = output.scrollHeight;
+                }
+            }
+        });
+        
+        terminal.appendChild(output);
+        terminal.appendChild(input);
+        
+        // Replace the app content with terminal
+        const appContent = container.closest('.ios-app-content');
+        if (appContent) {
+            while (appContent.firstChild) {
+                appContent.removeChild(appContent.firstChild);
+            }
+            appContent.appendChild(terminal);
+            input.focus();
+        }
+    }
+    
+    createBasicPalettesInterface(container) {
+        const palettes = document.createElement('div');
+        palettes.style.cssText = `
+            padding: 20px;
+            background: var(--bg-color);
+            height: 100%;
+            overflow-y: auto;
+        `;
+        
+        const title = document.createElement('h2');
+        title.textContent = 'Color Palettes';
+        title.style.marginBottom = '20px';
+        
+        const description = document.createElement('p');
+        description.textContent = 'Basic color palette interface. Full functionality requires external scripts.';
+        description.style.marginBottom = '20px';
+        description.style.color = 'var(--text-secondary)';
+        
+        const colors = document.createElement('div');
+        colors.style.cssText = `
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        `;
+        
+        const colorPalette = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD'];
+        colorPalette.forEach(color => {
+            const swatch = document.createElement('div');
+            swatch.style.cssText = `
+                height: 60px;
+                background: ${color};
+                border-radius: 8px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: bold;
+                text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            `;
+            swatch.textContent = color;
+            swatch.addEventListener('click', () => {
+                navigator.clipboard.writeText(color);
+                alert(`Copied ${color} to clipboard!`);
+            });
+            colors.appendChild(swatch);
+        });
+        
+        palettes.appendChild(title);
+        palettes.appendChild(description);
+        palettes.appendChild(colors);
+        
+        // Replace the app content with palettes
+        const appContent = container.closest('.ios-app-content');
+        if (appContent) {
+            while (appContent.firstChild) {
+                appContent.removeChild(appContent.firstChild);
+            }
+            appContent.appendChild(palettes);
+        }
+    }
+    
+    createBasicContentInterface(container, appType) {
+        const content = document.createElement('div');
+        content.style.cssText = `
+            padding: 20px;
+            background: var(--bg-color);
+            height: 100%;
+            overflow-y: auto;
+        `;
+        
+        const title = document.createElement('h2');
+        title.textContent = this.apps[appType]?.title || 'Content App';
+        title.style.marginBottom = '20px';
+        
+        const description = document.createElement('p');
+        description.textContent = this.apps[appType]?.description || 'This is a basic content interface.';
+        description.style.marginBottom = '20px';
+        description.style.color = 'var(--text-secondary)';
+        
+        const info = document.createElement('div');
+        info.innerHTML = `
+            <p>Full functionality requires external scripts to load properly.</p>
+            <p>This is a fallback interface with basic content.</p>
+        `;
+        info.style.color = 'var(--text-secondary)';
+        
+        content.appendChild(title);
+        content.appendChild(description);
+        content.appendChild(info);
+        
+        // Replace the app content
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
+        container.appendChild(content);
+    }
+    
+    createBasicProfessionalInterface(container, appType) {
+        const content = document.createElement('div');
+        content.style.cssText = `
+            padding: 20px;
+            background: var(--bg-color);
+            height: 100%;
+            overflow-y: auto;
+        `;
+        
+        const title = document.createElement('h2');
+        title.textContent = this.apps[appType]?.title || 'Professional App';
+        title.style.marginBottom = '20px';
+        
+        const description = document.createElement('p');
+        description.textContent = this.apps[appType]?.description || 'This is a basic professional interface.';
+        description.style.marginBottom = '20px';
+        description.style.color = 'var(--text-secondary)';
+        
+        const info = document.createElement('div');
+        info.innerHTML = `
+            <p>Full functionality requires external scripts to load properly.</p>
+            <p>This is a fallback interface with basic content.</p>
+        `;
+        info.style.color = 'var(--text-secondary)';
+        
+        content.appendChild(title);
+        content.appendChild(description);
+        content.appendChild(info);
+        
+        // Replace the app content
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
+        container.appendChild(content);
     }
 }
 
