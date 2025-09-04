@@ -1,6 +1,7 @@
 # Jesse Rodriguez Portfolio
 
 **Live Site:** [https://jesserodriguez.me](https://jesserodriguez.me)  
+**React Portfolio:** [https://jesserodriguez.me/sandbox-portfolio](https://jesserodriguez.me/sandbox-portfolio)  
 **iOS Mobile Experience:** [https://jesserodriguez.me/ios](https://jesserodriguez.me/ios)  
 **Circular Daily Planner:** [https://jesserodriguez.me/planner](https://jesserodriguez.me/planner)  
 **Fashion Palette Generator:** [https://jesserodriguez.me/fashion-palette](https://jesserodriguez.me/fashion-palette)  
@@ -13,6 +14,16 @@ A comprehensive multi-application portfolio showcasing the intersection of AI, d
 ---
 
 ## 🌟 Featured Applications
+
+### ⚛️ React Portfolio
+- **Modern React architecture** - Built with React 19, TypeScript, and Vite for optimal performance
+- **Interactive project showcase** - Dynamic project cards with launch buttons and live demos
+- **Three.js background effects** - Immersive 3D visual elements and smooth animations
+- **Framer Motion animations** - Seamless page transitions and micro-interactions
+- **Responsive design** - Optimized for all devices with Tailwind CSS
+- **Project management** - Comprehensive project data with live links and tech stacks
+- **Enhanced UX** - Info, Contact, and FAQ pages with interactive elements
+- **Performance optimized** - Fast loading with modern build tools and lazy loading
 
 ### 🏠 Main Portfolio
 - **Dynamic rotating circles animation** - Mathematical visual element with 3 orbiting circles
@@ -71,6 +82,16 @@ A comprehensive multi-application portfolio showcasing the intersection of AI, d
 
 ## Technical Implementation
 
+### React Portfolio Stack
+- **Frontend Framework**: React 19 with TypeScript for type safety
+- **Build Tool**: Vite for fast development and optimized production builds
+- **Styling**: Tailwind CSS with custom design system
+- **Animations**: Framer Motion for smooth page transitions and micro-interactions
+- **3D Graphics**: Three.js for immersive background effects and visual elements
+- **Routing**: React Router DOM for client-side navigation
+- **State Management**: React hooks and context for component state
+- **Performance**: Lazy loading, code splitting, and optimized bundle sizes
+
 ### Portfolio Animation System
 ```css
 /* Three rotating circles with different speeds and orbits */
@@ -125,6 +146,35 @@ Content-Security-Policy: [Full enterprise policy]
 ---
 
 ## Installation / Setup
+
+### React Portfolio Setup
+1. **Navigate to sandbox-portfolio directory**
+```bash
+cd sandbox-portfolio
+```
+
+2. **Install dependencies**
+```bash
+npm install
+```
+
+3. **Run development server**
+```bash
+npm run dev
+# Open http://localhost:5173
+```
+
+4. **Build for production**
+```bash
+npm run build
+# Generates optimized assets in dist/
+```
+
+5. **Preview production build**
+```bash
+npm run preview
+# Preview the production build locally
+```
 
 ### Portfolio Setup
 1. **Clone the repository**  
@@ -225,6 +275,7 @@ python3 -m http.server 8080
 
 ✅ **Already Deployed!** All applications are live:
 - **Main Portfolio**: [jesserodriguez.me](https://jesserodriguez.me)
+- **React Portfolio**: [jesserodriguez.me/sandbox-portfolio](https://jesserodriguez.me/sandbox-portfolio)
 - **iOS Mobile Experience**: [jesserodriguez.me/ios](https://jesserodriguez.me/ios)
 - **Circular Daily Planner**: [jesserodriguez.me/planner](https://jesserodriguez.me/planner)
 - **Fashion Palette Generator**: [jesserodriguez.me/fashion-palette](https://jesserodriguez.me/fashion-palette)
@@ -296,6 +347,14 @@ This site follows enterprise-level security best practices for static GitHub Pag
 ---
 
 ## Performance
+
+### React Portfolio Performance
+- **Bundle Size**: Optimized with Vite build system and code splitting
+- **Load Time**: <2s first contentful paint with lazy loading
+- **Animations**: Smooth 60fps with Framer Motion and Three.js
+- **Mobile Optimized**: Responsive design with touch-friendly interactions
+- **Modern Stack**: React 19 with TypeScript for optimal performance
+- **CDN Delivery**: Fastly global delivery network for static assets
 
 ### Portfolio Performance
 - **Size:** 6.6KB total (highly optimized)
@@ -372,6 +431,7 @@ This project is licensed under the MIT License.
 **Jesse Rodriguez**  
 📧 [jesse@jesserodriguez.me](mailto:jesse@jesserodriguez.me)  
 🌐 [jesserodriguez.me](https://jesserodriguez.me)  
+⚛️ [React Portfolio](https://jesserodriguez.me/sandbox-portfolio)  
 📱 [iOS Mobile Experience](https://jesserodriguez.me/ios)  
 🎯 [Circular Daily Planner](https://jesserodriguez.me/planner)  
 🎨 [Fashion Palette Generator](https://jesserodriguez.me/fashion-palette)  
