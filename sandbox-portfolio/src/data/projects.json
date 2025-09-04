@@ -2,73 +2,43 @@
   {
     "slug": "portfolio-animation-system",
     "title": "Portfolio Animation System",
-    "date": "2025-09-01",
+    "date": "2025-08",
     "roles": ["Frontend"],
-    "collab": "Jesse R.",
-    "thumb": "/assets/placeholder1.jpg",
-    "gallery": ["/assets/placeholder1.jpg","/assets/placeholder2.jpg"],
-    "summary": "Three rotating circles, dynamic visual display, responsive.",
-    "stack": ["HTML", "CSS", "JS"],
-    "links": { "repo": "", "live": "" }
+    "collab": "Jesse R."
   },
   {
-    "slug": "ios-pwa",
+    "slug": "ios-mobile-experience",
     "title": "iOS Mobile Experience",
-    "date": "2025-09-01",
+    "date": "2025-08",
     "roles": ["PWA Dev"],
-    "collab": "Jesse R.",
-    "thumb": "/assets/placeholder3.jpg",
-    "gallery": ["/assets/placeholder3.jpg","/assets/placeholder4.jpg"],
-    "summary": "Installable web app with offline caching and touch gestures.",
-    "stack": ["PWA", "JS", "Node.js"],
-    "links": { "repo": "", "live": "" }
+    "collab": "Jesse R."
   },
   {
     "slug": "circular-planner",
     "title": "Circular Planner",
-    "date": "2025-08-15",
+    "date": "2025-08",
     "roles": ["UI/UX", "Frontend"],
-    "collab": "Jesse R.",
-    "thumb": "/assets/placeholder5.jpg",
-    "gallery": ["/assets/placeholder5.jpg","/assets/placeholder6.jpg"],
-    "summary": "24-hour Canvas interface with export functionality and intuitive time management.",
-    "stack": ["Canvas", "React", "TypeScript"],
-    "links": { "repo": "", "live": "" }
+    "collab": "Jesse R."
   },
   {
-    "slug": "fashion-palette",
+    "slug": "fashion-palette-generator",
     "title": "Fashion Palette Generator",
-    "date": "2025-08-01",
+    "date": "2025-07",
     "roles": ["Frontend", "Design"],
-    "collab": "Jesse R.",
-    "thumb": "/assets/placeholder7.jpg",
-    "gallery": ["/assets/placeholder7.jpg"],
-    "summary": "React component for local image processing with advanced color theory algorithms.",
-    "stack": ["React", "Canvas", "Color Theory"],
-    "links": { "repo": "", "live": "" }
+    "collab": "Jesse R."
   },
   {
     "slug": "brainwave-simulator",
     "title": "Brainwave Simulator",
-    "date": "2025-07-20",
+    "date": "2025-07",
     "roles": ["Frontend", "Data Viz"],
-    "collab": "Jesse R.",
-    "thumb": "/assets/placeholder1.jpg",
-    "gallery": ["/assets/placeholder1.jpg","/assets/placeholder2.jpg"],
-    "summary": "Canvas visualization of EEG bands with real-time data processing and interactive controls.",
-    "stack": ["Canvas", "WebGL", "Data Viz"],
-    "links": { "repo": "", "live": "" }
+    "collab": "Jesse R."
   },
   {
     "slug": "security-dashboard",
     "title": "Security Dashboard",
-    "date": "2025-07-01",
+    "date": "2025-06",
     "roles": ["Full Stack", "Security"],
-    "collab": "Jesse R.",
-    "thumb": "/assets/placeholder3.jpg",
-    "gallery": ["/assets/placeholder3.jpg","/assets/placeholder4.jpg"],
-    "summary": "Terminal UI with CSP/security headers visualization and real-time monitoring.",
-    "stack": ["Terminal UI", "Security", "Monitoring"],
-    "links": { "repo": "", "live": "" }
+    "collab": "Jesse R."
   }
 ]
