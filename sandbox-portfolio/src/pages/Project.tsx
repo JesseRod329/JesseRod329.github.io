@@ -33,30 +33,33 @@ export default function Project() {
         </p>
       </header>
 
-      <section className="mb-8 grid grid-cols-1 gap-4">
-        <div className="w-full h-[420px] bg-[var(--muted)]/20 rounded-md overflow-hidden flex items-center justify-center">
-          {/* gallery placeholder - show first image or placeholder */}
-          {project.gallery && project.gallery[0] ? (
-            <img 
-              src={project.gallery[0]} 
-              alt={project.title} 
-              loading="lazy" 
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-                e.currentTarget.nextElementSibling.style.display = 'flex';
-              }}
-            />
-          ) : null}
-          <div className="flex flex-col items-center justify-center text-[var(--muted)] text-center p-8" style={{ display: project.gallery && project.gallery[0] ? 'none' : 'flex' }}>
-            <div className="w-16 h-16 bg-[var(--muted)]/30 rounded-lg flex items-center justify-center mb-4">
-              <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <p className="text-sm">Project Preview</p>
-            <p className="text-xs opacity-60 mt-1">Image coming soon</p>
+      <section className="mb-8">
+        <div className="w-full h-[420px] bg-gradient-to-br from-[var(--muted)]/10 to-[var(--muted)]/5 rounded-lg border border-[var(--muted)]/20 flex flex-col items-center justify-center text-center p-8">
+          <div className="w-20 h-20 bg-[var(--fg)]/10 rounded-full flex items-center justify-center mb-6">
+            <svg className="w-10 h-10 text-[var(--fg)]" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
           </div>
+          <h2 className="text-2xl font-light text-[var(--fg)] mb-4">Ready to Launch</h2>
+          <p className="text-[var(--muted)] mb-8 max-w-md">
+            Experience this project live in your browser. Click the launch button below to open the application.
+          </p>
+          {project.links?.live && (
+            <a 
+              href={project.links.live} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-3 px-8 py-4 bg-[var(--fg)] text-[var(--bg)] rounded-lg hover:opacity-90 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+              <span className="font-medium">Launch Project</span>
+              <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </a>
+          )}
         </div>
       </section>
 
@@ -78,19 +81,12 @@ export default function Project() {
             href={project.links.repo} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="px-4 py-2 text-sm border border-[var(--muted)] rounded-md hover:bg-[var(--muted)]/10 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-[var(--muted)] rounded-md hover:bg-[var(--muted)]/10 transition-colors"
           >
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
             View Code
-          </a>
-        )}
-        {project.links?.live && (
-          <a 
-            href={project.links.live} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="px-4 py-2 text-sm bg-[var(--fg)] text-[var(--bg)] rounded-md hover:opacity-80 transition-opacity"
-          >
-            Live Demo
           </a>
         )}
       </section>
