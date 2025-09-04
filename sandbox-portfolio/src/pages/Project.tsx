@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import projects from "../data/projects.json";
 import { motion } from "framer-motion";
@@ -12,11 +12,13 @@ export default function Project() {
     // prefetch next project
     if (projects[index + 1]) {
       const next = projects[index + 1];
-      // simple image prefetch
-      next.gallery?.forEach(src => {
-        const img = new Image();
-        img.src = src;
-      });
+      // simple image prefetch - check if gallery exists
+      if ('gallery' in next && Array.isArray(next.gallery)) {
+        next.gallery.forEach((src: string) => {
+          const img = new Image();
+          img.src = src;
+        });
+      }
     }
   }, [index]);
 
