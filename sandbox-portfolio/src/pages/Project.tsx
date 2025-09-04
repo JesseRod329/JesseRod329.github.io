@@ -25,8 +25,10 @@ export default function Project() {
   return (
     <motion.article initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
       <header className="mb-8">
-        <h1 className="text-5xl font-extralight">{project.title}</h1>
-        <p className="mt-2 text-sm text-[var(--muted)]">
+        <h1 className="text-[clamp(36px,6.2vw,64px)] font-light tracking-[-0.02em] leading-[0.9] text-fg mb-4">
+          {project.title}
+        </h1>
+        <p className="text-muted text-sm">
           {new Date(project.date).toLocaleString("en-US", { month: "short", year: "numeric" })} • {project.roles.join(", ")} • {project.collab}
         </p>
       </header>
@@ -68,6 +70,29 @@ export default function Project() {
             {s}
           </span>
         ))}
+      </section>
+
+      <section className="mb-8 flex gap-4">
+        {project.links?.repo && (
+          <a 
+            href={project.links.repo} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="px-4 py-2 text-sm border border-[var(--muted)] rounded-md hover:bg-[var(--muted)]/10 transition-colors"
+          >
+            View Code
+          </a>
+        )}
+        {project.links?.live && (
+          <a 
+            href={project.links.live} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="px-4 py-2 text-sm bg-[var(--fg)] text-[var(--bg)] rounded-md hover:opacity-80 transition-opacity"
+          >
+            Live Demo
+          </a>
+        )}
       </section>
 
       <nav className="flex justify-between mt-12">
