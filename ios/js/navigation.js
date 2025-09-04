@@ -120,6 +120,7 @@ class iOSNavigation {
             transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             z-index: 200;
             overflow: hidden;
+            pointer-events: none;
         `;
         
         device.appendChild(appContainer);
@@ -249,6 +250,7 @@ class iOSNavigation {
         // Slide in animation
         requestAnimationFrame(() => {
             this.appContainer.style.transform = 'translateX(0)';
+            this.appContainer.style.pointerEvents = 'auto';
             
             setTimeout(() => {
                 this.isTransitioning = false;
@@ -533,6 +535,7 @@ class iOSNavigation {
         
         // Slide out animation
         this.appContainer.style.transform = 'translateX(100%)';
+        this.appContainer.style.pointerEvents = 'none';
         
         setTimeout(() => {
             this.currentApp = null;
@@ -548,6 +551,7 @@ class iOSNavigation {
         
         // Slide out animation
         this.appContainer.style.transform = 'translateX(100%)';
+        this.appContainer.style.pointerEvents = 'none';
         
         setTimeout(() => {
             this.currentApp = null;
