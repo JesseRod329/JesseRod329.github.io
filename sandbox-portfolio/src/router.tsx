@@ -20,7 +20,9 @@ const router = createBrowserRouter([
       { path: "faq", element: <FAQ /> },
     ],
   },
-]);
+], {
+  basename: "/sandbox-portfolio"
+});
 
 export default function Router() {
   return <RouterProvider router={router} />;
