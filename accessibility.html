@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'; media-src 'self'; child-src 'self'; form-action 'self'; base-uri 'self';">
+<title>Accessibility — Jesse Rodriguez</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html:focus-within { scroll-behavior: smooth; }
+  body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background:#fff;
+    color:#111;
+    line-height:1.6;
+  }
+  a { color: #111; }
+  .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+  header { padding: 2rem 0; }
+  header h1 { font-size: clamp(2rem, 5vw, 3rem); letter-spacing:-0.02em; }
+  nav a { text-decoration: underline; }
+  main { display: grid; gap: 2rem; }
+  section h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+  ul { padding-left: 1.25rem; }
+  li { margin: 0.5rem 0; }
+  .kbd { display:inline-block; padding: 0.2rem 0.4rem; border:1px solid #ccc; border-bottom-width:2px; border-radius: 4px; font-family: monospace; font-size: 0.9em; }
+  .notice { background:#f7f7f7; padding:1rem; border-left: 4px solid #111; }
+  footer { margin-top: 2rem; padding: 2rem 0; font-size: 0.9rem; opacity: 0.7; }
+  .skip-link { position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden; }
+  .skip-link:focus { position: static; width: auto; height:auto; padding: 0.5rem 1rem; background:#ff3; color:#111; }
+
+  @media (prefers-color-scheme: dark) {
+    body { background:#0b0b0b; color:#eaeaea; }
+    a { color:#eaeaea; }
+    .notice { background:#151515; border-left-color:#eaeaea; }
+  }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="container">
+  <header aria-labelledby="page-title">
+    <nav aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true"> / </span>
+      <span aria-current="page">Accessibility</span>
+    </nav>
+    <h1 id="page-title">Accessibility</h1>
+    <p class="notice" role="note">This site is designed to be usable with keyboard, screen readers, and high-contrast modes. If you encounter any barriers, please email <a href="mailto:jesse@jesserodriguez.me">jesse@jesserodriguez.me</a>.</p>
+  </header>
+
+  <main id="main">
+    <section aria-labelledby="commitment">
+      <h2 id="commitment">Commitment</h2>
+      <p>I aim to meet or exceed WCAG 2.2 AA where practical for a static site, while preserving performance, privacy, and security. The terminal interface is progressively enhanced and fully functional without JavaScript via the on-page navigation and classic versions.</p>
+    </section>
+
+    <section aria-labelledby="features">
+      <h2 id="features">Key Accessibility Features</h2>
+      <ul>
+        <li>Semantic HTML structure with landmarks: header, main, footer.</li>
+        <li>Logical heading hierarchy and descriptive link text.</li>
+        <li>Keyboard support with visible focus states and skip link.</li>
+        <li>Reduced motion by respecting user preferences; minimal entrance animations.</li>
+        <li>Color contrast targeting WCAG AA for text and interactive elements.</li>
+        <li>No reliance on color alone to convey meaning.</li>
+        <li>Responsive layout supporting zoom to 200% without loss of content.</li>
+        <li>Progressive enhancement: noscript fallbacks and classic/ios versions.</li>
+        <li>Privacy-first: all tools run client-side; no tracking scripts.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="keyboard">
+      <h2 id="keyboard">Keyboard Navigation</h2>
+      <ul>
+        <li>Global: use <span class="kbd">Tab</span> / <span class="kbd">Shift</span>+<span class="kbd">Tab</span> to move focus.</li>
+        <li>CLI: supports <span class="kbd">Enter</span>, history with <span class="kbd">↑</span>/<span class="kbd">↓</span>, and <span class="kbd">Tab</span> for autocomplete.</li>
+        <li>Skip link provided to bypass repeated navigation.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="compat">
+      <h2 id="compat">Compatibility and Testing</h2>
+      <ul>
+        <li>Screen readers: VoiceOver (Safari), NVDA (Firefox), Orca (Linux).</li>
+        <li>Browsers: Chrome, Safari, Firefox, and mobile equivalents.</li>
+        <li>Devices: Desktop, iOS (`/ios/`), and a classic desktop version (`/classic.html`).</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="feedback">
+      <h2 id="feedback">Feedback</h2>
+      <p>If you find accessibility issues, please email <a href="mailto:jesse@jesserodriguez.me">jesse@jesserodriguez.me</a> with details. I aim to respond within 5 business days.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p><a href="/">Return to Home</a> · <a href="/security.html">Security</a></p>
+  </footer>
+</div>
+</body>
+</html>
+
