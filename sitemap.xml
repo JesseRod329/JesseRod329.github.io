@@ -33,6 +33,13 @@
     <priority>0.6</priority>
   </url>
   
+  <url>
+    <loc>https://jesserodriguez.me/analytics.html</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
   <!-- iOS Portfolio - Mobile Optimized -->
   <url>
     <loc>https://jesserodriguez.me/ios/</loc>

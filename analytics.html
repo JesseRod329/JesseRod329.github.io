@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'; media-src 'self'; child-src 'self'; form-action 'self'; base-uri 'self';">
+<title>Analytics Dashboard — Jesse Rodriguez</title>
+<style>
+  /* Reset & Variables */
+  * { margin:0; padding:0; box-sizing:border-box; }
+  
+  :root {
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #1a1a1a;
+    --bg-card: #222;
+    --text-primary: #fff;
+    --text-secondary: #999;
+    --accent-blue: #007AFF;
+    --accent-green: #00ff88;
+    --accent-purple: #a855f7;
+    --accent-orange: #ff6b35;
+    --gradient-blue: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-green: linear-gradient(135deg, #00ff88 0%, #00b4d8 100%);
+    --gradient-purple: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+    --gradient-orange: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+  }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  
+  /* Header */
+  .header {
+    background: var(--bg-secondary);
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #333;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    background: rgba(26, 26, 26, 0.9);
+  }
+  
+  .header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    background: var(--gradient-blue);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .date-range {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  
+  .date-range select {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid #444;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .date-range select:hover {
+    border-color: var(--accent-blue);
+  }
+  
+  /* Dashboard Grid */
+  .dashboard {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+  
+  /* Cards */
+  .card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid #333;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border-color: #444;
+  }
+  
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-blue);
+  }
+  
+  .card.green::before { background: var(--gradient-green); }
+  .card.purple::before { background: var(--gradient-purple); }
+  .card.orange::before { background: var(--gradient-orange); }
+  
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+  }
+  
+  .card-title {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+  
+  .card-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+  
+  .card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+  
+  .card.blue .card-icon { background: rgba(0, 122, 255, 0.2); color: var(--accent-blue); }
+  .card.green .card-icon { background: rgba(0, 255, 136, 0.2); color: var(--accent-green); }
+  .card.purple .card-icon { background: rgba(168, 85, 247, 0.2); color: var(--accent-purple); }
+  .card.orange .card-icon { background: rgba(255, 107, 53, 0.2); color: var(--accent-orange); }
+  
+  .card-change {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+  }
+  
+  .change-positive { color: var(--accent-green); }
+  .change-negative { color: var(--accent-orange); }
+  
+  /* Chart Card */
+  .card-large {
+    grid-column: span 2;
+  }
+  
+  .chart-container {
+    height: 300px;
+    position: relative;
+    margin-top: 1.5rem;
+  }
+  
+  /* Mini Charts */
+  .mini-chart {
+    height: 60px;
+    margin-top: 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Progress Bars */
+  .progress-list {
+    margin-top: 1.5rem;
+  }
+  
+  .progress-item {
+    margin-bottom: 1.5rem;
+  }
+  
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .progress-bar {
+    height: 8px;
+    background: #333;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease;
+    position: relative;
+  }
+  
+  .progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 2s infinite;
+  }
+  
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  
+  /* Live Activity Feed */
+  .activity-feed {
+    margin-top: 1.5rem;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  
+  .activity-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid #333;
+    transition: all 0.3s ease;
+  }
+  
+  .activity-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  
+  .activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+  }
+  
+  .activity-content {
+    flex: 1;
+  }
+  
+  .activity-title {
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .activity-time {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .dashboard {
+      grid-template-columns: 1fr;
+      padding: 0 1rem;
+    }
+    
+    .card-large {
+      grid-column: span 1;
+    }
+    
+    .header-content {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .date-range {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+  
+  /* Loading Animation */
+  .loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--accent-blue);
+    animation: spin 1s ease-in-out infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Tooltips */
+  .tooltip {
+    position: relative;
+  }
+  
+  .tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  }
+  
+  .tooltip:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-10px);
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-content">
+    <h1>Portfolio Analytics Dashboard</h1>
+    <div class="date-range">
+      <select id="timeRange" aria-label="Time range">
+        <option value="7d">Last 7 days</option>
+        <option value="30d" selected>Last 30 days</option>
+        <option value="90d">Last 90 days</option>
+        <option value="1y">Last year</option>
+      </select>
+      <button class="tooltip" data-tooltip="Refresh data" aria-label="Refresh">
+        <span class="loading"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Dashboard -->
+<main class="dashboard">
+  <!-- Key Metrics -->
+  <div class="card blue">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Total Visitors</div>
+        <div class="card-value" id="totalVisitors">12,847</div>
+        <div class="card-change change-positive">
+          <span>↑</span>
+          <span>23.5%</span>
+          <span>vs last period</span>
+        </div>
+      </div>
+      <div class="card-icon">👥</div>
+    </div>
+    <div class="mini-chart" id="visitorsChart"></div>
+  </div>
+  
+  <div class="card green">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Page Views</div>
+        <div class="card-value" id="pageViews">45,234</div>
+        <div class="card-change change-positive">
+          <span>↑</span>
+          <span>18.2%</span>
+          <span>vs last period</span>
+        </div>
+      </div>
+      <div class="card-icon">📊</div>
+    </div>
+    <div class="mini-chart" id="pageViewsChart"></div>
+  </div>
+  
+  <div class="card purple">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Avg. Session Duration</div>
+        <div class="card-value" id="avgDuration">3m 42s</div>
+        <div class="card-change change-positive">
+          <span>↑</span>
+          <span>12.1%</span>
+          <span>vs last period</span>
+        </div>
+      </div>
+      <div class="card-icon">⏱️</div>
+    </div>
+    <div class="mini-chart" id="durationChart"></div>
+  </div>
+  
+  <div class="card orange">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Contact Clicks</div>
+        <div class="card-value" id="contactClicks">892</div>
+        <div class="card-change change-positive">
+          <span>↑</span>
+          <span>34.7%</span>
+          <span>vs last period</span>
+        </div>
+      </div>
+      <div class="card-icon">✉️</div>
+    </div>
+    <div class="mini-chart" id="contactChart"></div>
+  </div>
+  
+  <!-- Traffic Sources Chart -->
+  <div class="card card-large">
+    <h2 class="card-title">Traffic Sources</h2>
+    <div class="chart-container" id="trafficChart">
+      <canvas id="trafficCanvas"></canvas>
+    </div>
+  </div>
+  
+  <!-- Popular Pages -->
+  <div class="card">
+    <h2 class="card-title">Popular Pages</h2>
+    <div class="progress-list">
+      <div class="progress-item">
+        <div class="progress-header">
+          <span>Main Portfolio</span>
+          <span>8,234 views</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 85%; background: var(--gradient-blue);"></div>
+        </div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-header">
+          <span>iOS Experience</span>
+          <span>3,892 views</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 65%; background: var(--gradient-green);"></div>
+        </div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-header">
+          <span>Daily Planner</span>
+          <span>2,456 views</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 45%; background: var(--gradient-purple);"></div>
+        </div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-header">
+          <span>Fashion Palette</span>
+          <span>1,987 views</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 35%; background: var(--gradient-orange);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Device Breakdown -->
+  <div class="card">
+    <h2 class="card-title">Device Breakdown</h2>
+    <div class="progress-list">
+      <div class="progress-item">
+        <div class="progress-header">
+          <span>Desktop</span>
+          <span>58%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 58%; background: var(--gradient-blue);"></div>
+        </div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-header">
+          <span>Mobile</span>
+          <span>35%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 35%; background: var(--gradient-green);"></div>
+        </div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-header">
+          <span>Tablet</span>
+          <span>7%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 7%; background: var(--gradient-purple);"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Live Activity Feed -->
+  <div class="card card-large">
+    <h2 class="card-title">Recent Activity</h2>
+    <div class="activity-feed" id="activityFeed">
+      <div class="activity-item">
+        <div class="activity-icon" style="background: rgba(0, 122, 255, 0.2); color: var(--accent-blue);">🏠</div>
+        <div class="activity-content">
+          <div class="activity-title">New visitor from San Francisco</div>
+          <div class="activity-time">2 minutes ago</div>
+        </div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-icon" style="background: rgba(0, 255, 136, 0.2); color: var(--accent-green);">📱</div>
+        <div class="activity-content">
+          <div class="activity-title">iOS app viewed on iPhone 15 Pro</div>
+          <div class="activity-time">5 minutes ago</div>
+        </div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-icon" style="background: rgba(168, 85, 247, 0.2); color: var(--accent-purple);">📧</div>
+        <div class="activity-content">
+          <div class="activity-title">Contact email clicked from LinkedIn</div>
+          <div class="activity-time">12 minutes ago</div>
+        </div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-icon" style="background: rgba(255, 107, 53, 0.2); color: var(--accent-orange);">🎨</div>
+        <div class="activity-content">
+          <div class="activity-title">Fashion Palette generated</div>
+          <div class="activity-time">18 minutes ago</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+// Analytics Dashboard JavaScript
+(function() {
+  'use strict';
+  
+  // Simulated data generator
+  function generateTimeSeriesData(points, variance = 100) {
+    const data = [];
+    let value = Math.floor(Math.random() * variance) + variance;
+    
+    for (let i = 0; i < points; i++) {
+      value += Math.floor(Math.random() * 40) - 20;
+      value = Math.max(0, value);
+      data.push(value);
+    }
+    
+    return data;
+  }
+  
+  // Draw mini sparkline charts
+  function drawSparkline(containerId, data, color) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    const width = container.offsetWidth;
+    const height = container.offsetHeight;
+    const max = Math.max(...data);
+    const min = Math.min(...data);
+    const range = max - min;
+    
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('width', width);
+    svg.setAttribute('height', height);
+    svg.style.width = '100%';
+    svg.style.height = '100%';
+    
+    const points = data.map((value, index) => {
+      const x = (index / (data.length - 1)) * width;
+      const y = height - ((value - min) / range) * height;
+      return `${x},${y}`;
+    }).join(' ');
+    
+    const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    polyline.setAttribute('points', points);
+    polyline.setAttribute('fill', 'none');
+    polyline.setAttribute('stroke', color);
+    polyline.setAttribute('stroke-width', '2');
+    
+    // Add gradient fill
+    const gradientId = `gradient-${containerId}`;
+    const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+    gradient.setAttribute('id', gradientId);
+    gradient.setAttribute('x1', '0%');
+    gradient.setAttribute('y1', '0%');
+    gradient.setAttribute('x2', '0%');
+    gradient.setAttribute('y2', '100%');
+    
+    const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop1.setAttribute('offset', '0%');
+    stop1.setAttribute('style', `stop-color:${color};stop-opacity:0.3`);
+    
+    const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop2.setAttribute('offset', '100%');
+    stop2.setAttribute('style', `stop-color:${color};stop-opacity:0`);
+    
+    gradient.appendChild(stop1);
+    gradient.appendChild(stop2);
+    
+    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    defs.appendChild(gradient);
+    
+    const polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    polygon.setAttribute('points', `0,${height} ${points} ${width},${height}`);
+    polygon.setAttribute('fill', `url(#${gradientId})`);
+    
+    svg.appendChild(defs);
+    svg.appendChild(polygon);
+    svg.appendChild(polyline);
+    container.appendChild(svg);
+  }
+  
+  // Draw traffic sources donut chart
+  function drawTrafficChart() {
+    const canvas = document.getElementById('trafficCanvas');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const container = canvas.parentElement;
+    canvas.width = container.offsetWidth;
+    canvas.height = container.offsetHeight;
+    
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = Math.min(centerX, centerY) - 40;
+    
+    const data = [
+      { label: 'Direct', value: 35, color: '#007AFF' },
+      { label: 'Social Media', value: 28, color: '#00ff88' },
+      { label: 'Search', value: 22, color: '#a855f7' },
+      { label: 'Referral', value: 15, color: '#ff6b35' }
+    ];
+    
+    let currentAngle = -Math.PI / 2;
+    
+    data.forEach((segment) => {
+      const sliceAngle = (segment.value / 100) * 2 * Math.PI;
+      
+      // Draw segment
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
+      ctx.arc(centerX, centerY, radius * 0.6, currentAngle + sliceAngle, currentAngle, true);
+      ctx.closePath();
+      ctx.fillStyle = segment.color;
+      ctx.fill();
+      
+      // Draw label
+      const labelAngle = currentAngle + sliceAngle / 2;
+      const labelX = centerX + Math.cos(labelAngle) * (radius * 1.3);
+      const labelY = centerY + Math.sin(labelAngle) * (radius * 1.3);
+      
+      ctx.fillStyle = '#fff';
+      ctx.font = '14px -apple-system, BlinkMacSystemFont, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(`${segment.label} ${segment.value}%`, labelX, labelY);
+      
+      currentAngle += sliceAngle;
+    });
+  }
+  
+  // Update metrics with animation
+  function animateValue(id, start, end, duration) {
+    const element = document.getElementById(id);
+    if (!element) return;
+    
+    const range = end - start;
+    const startTime = performance.now();
+    
+    function update(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const value = Math.floor(start + range * progress);
+      
+      element.textContent = value.toLocaleString();
+      
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      }
+    }
+    
+    requestAnimationFrame(update);
+  }
+  
+  // Simulate live activity updates
+  function addActivityItem() {
+    const activities = [
+      { icon: '🏠', color: 'blue', title: 'New visitor from {city}', cities: ['New York', 'London', 'Tokyo', 'Paris', 'Sydney'] },
+      { icon: '📱', color: 'green', title: 'iOS app viewed on {device}', devices: ['iPhone 15 Pro', 'iPhone 14', 'iPad Pro', 'iPhone 13'] },
+      { icon: '📧', color: 'purple', title: 'Contact email clicked from {source}', sources: ['LinkedIn', 'Twitter', 'Direct', 'Google'] },
+      { icon: '🎨', color: 'orange', title: 'Fashion Palette generated' },
+      { icon: '📅', color: 'blue', title: 'Daily Planner accessed' },
+      { icon: '🧠', color: 'green', title: 'Brainwave Simulator started' }
+    ];
+    
+    const activity = activities[Math.floor(Math.random() * activities.length)];
+    let title = activity.title;
+    
+    if (activity.cities) {
+      title = title.replace('{city}', activity.cities[Math.floor(Math.random() * activity.cities.length)]);
+    }
+    if (activity.devices) {
+      title = title.replace('{device}', activity.devices[Math.floor(Math.random() * activity.devices.length)]);
+    }
+    if (activity.sources) {
+      title = title.replace('{source}', activity.sources[Math.floor(Math.random() * activity.sources.length)]);
+    }
+    
+    const feed = document.getElementById('activityFeed');
+    const item = document.createElement('div');
+    item.className = 'activity-item';
+    item.style.opacity = '0';
+    item.innerHTML = `
+      <div class="activity-icon" style="background: rgba(${activity.color === 'blue' ? '0, 122, 255' : activity.color === 'green' ? '0, 255, 136' : activity.color === 'purple' ? '168, 85, 247' : '255, 107, 53'}, 0.2); color: var(--accent-${activity.color});">${activity.icon}</div>
+      <div class="activity-content">
+        <div class="activity-title">${title}</div>
+        <div class="activity-time">Just now</div>
+      </div>
+    `;
+    
+    feed.insertBefore(item, feed.firstChild);
+    
+    // Animate in
+    setTimeout(() => {
+      item.style.transition = 'opacity 0.5s ease';
+      item.style.opacity = '1';
+    }, 10);
+    
+    // Remove old items
+    if (feed.children.length > 10) {
+      feed.removeChild(feed.lastChild);
+    }
+    
+    // Update timestamps
+    Array.from(feed.children).forEach((child, index) => {
+      if (index > 0) {
+        const timeElement = child.querySelector('.activity-time');
+        const minutes = index * 3 + Math.floor(Math.random() * 3);
+        timeElement.textContent = `${minutes} minutes ago`;
+      }
+    });
+  }
+  
+  // Initialize dashboard
+  function initDashboard() {
+    // Draw sparklines
+    drawSparkline('visitorsChart', generateTimeSeriesData(20, 150), '#007AFF');
+    drawSparkline('pageViewsChart', generateTimeSeriesData(20, 200), '#00ff88');
+    drawSparkline('durationChart', generateTimeSeriesData(20, 100), '#a855f7');
+    drawSparkline('contactChart', generateTimeSeriesData(20, 50), '#ff6b35');
+    
+    // Draw traffic chart
+    drawTrafficChart();
+    
+    // Animate metrics
+    animateValue('totalVisitors', 0, 12847, 2000);
+    animateValue('pageViews', 0, 45234, 2000);
+    animateValue('contactClicks', 0, 892, 2000);
+    
+    // Simulate live updates
+    setInterval(addActivityItem, 5000 + Math.random() * 10000);
+    
+    // Handle time range changes
+    document.getElementById('timeRange').addEventListener('change', function() {
+      // Simulate data refresh
+      const loadingBtn = document.querySelector('.loading').parentElement;
+      loadingBtn.style.opacity = '1';
+      
+      setTimeout(() => {
+        // Clear and redraw charts
+        document.getElementById('visitorsChart').innerHTML = '';
+        document.getElementById('pageViewsChart').innerHTML = '';
+        document.getElementById('durationChart').innerHTML = '';
+        document.getElementById('contactChart').innerHTML = '';
+        
+        drawSparkline('visitorsChart', generateTimeSeriesData(20, 150), '#007AFF');
+        drawSparkline('pageViewsChart', generateTimeSeriesData(20, 200), '#00ff88');
+        drawSparkline('durationChart', generateTimeSeriesData(20, 100), '#a855f7');
+        drawSparkline('contactChart', generateTimeSeriesData(20, 50), '#ff6b35');
+        
+        loadingBtn.style.opacity = '0.5';
+      }, 1000);
+    });
+  }
+  
+  // Start when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDashboard);
+  } else {
+    initDashboard();
+  }
+})();
+</script>
+
+</body>
+</html>
