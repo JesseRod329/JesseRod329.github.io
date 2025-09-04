@@ -23,20 +23,16 @@ export default function ProjectRow({ project, index }: { project: Project; index
     >
       <Link to={`/projects/${project.slug}`} className="block no-underline">
         <motion.div
-          whileHover={{ x: -2, letterSpacing: "0.02em" }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="py-12 border-b border-muted last:border-b-0"
+          whileHover={{ y: -3 }}
+          transition={{ type: "spring", stiffness: 300, damping: 24 }}
+          className="py-12"
         >
-          <h2 className="text-[clamp(28px,4vw,48px)] font-light tracking-tight leading-[1.05] text-fg group-hover:text-fg transition-colors">
+          <h2 className="text-[clamp(28px,4vw,44px)] font-light leading-tight text-fg transition-colors group-hover:text-fg/90">
             {project.title}
           </h2>
-          <motion.p
-            className="mt-2 text-sm text-muted"
-            whileHover={{ y: -4, opacity: 0.8 }}
-            style={{ opacity: 0.6 }}
-          >
+          <p className="mt-2 text-sm text-muted/70 group-hover:text-muted transition-colors">
             {meta}
-          </motion.p>
+          </p>
         </motion.div>
       </Link>
     </motion.li>
