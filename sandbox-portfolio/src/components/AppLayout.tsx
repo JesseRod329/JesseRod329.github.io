@@ -9,7 +9,7 @@ export default function AppLayout() {
     <div className="min-h-screen bg-[var(--bg)] text-[var(--fg)]">
       {/* Mobile menu button */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white/10 backdrop-blur-sm rounded-lg border border-black/10"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white/95 dark:bg-black/95 backdrop-blur-sm rounded-lg border border-black/10"
         onClick={() => setSidebarOpen(!sidebarOpen)}
         aria-label="Toggle menu"
       >

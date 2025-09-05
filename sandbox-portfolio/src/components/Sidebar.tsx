@@ -14,7 +14,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   return (
     <>
       {/* Desktop Sidebar */}
-      <div className="hidden lg:block w-[200px] p-10 bg-white/10 border-r border-black/10 fixed h-screen z-10 flex flex-col justify-between">
+      <div className="hidden lg:block w-[200px] p-10 bg-white/95 dark:bg-black/95 backdrop-blur-sm border-r border-black/10 fixed h-screen z-10 flex flex-col justify-between">
         <div>
           <div className="mb-10">
             <h1 className="text-[28px] font-light mb-2 text-fg leading-tight">
