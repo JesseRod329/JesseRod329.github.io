@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYC's Public AI Future: An Interactive Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 40vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .nav-link { transition: color 0.2s; }
+        .nav-link:hover { color: #14b8a6; }
+        .phase-tab { transition: all 0.2s; }
+        .phase-tab.active {
+            background-color: #14b8a6;
+            color: white;
+            border-color: #14b8a6;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: white;
+            border: 4px solid #0f766e;
+        }
+    </style>
+</head>
+<body class="text-slate-700">
+
+    <header class="bg-slate-800 text-white p-4 shadow-md sticky top-0 z-50">
+        <nav class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold">NYC's Public AI Future</h1>
+            <div class="hidden md:flex space-x-6">
+                <a href="#vision" class="nav-link font-medium">Vision</a>
+                <a href="#plan" class="nav-link font-medium">The Plan</a>
+                <a href="#impact" class="nav-link font-medium">Impact</a>
+                <a href="#roadmap" class="nav-link font-medium">Roadmap</a>
+                <a href="#governance" class="nav-link font-medium">Governance</a>
+            </div>
+             <button id="mobile-menu-button" class="md:hidden p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-label="Toggle menu">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden mt-4">
+            <a href="#vision" class="block py-2 px-3 rounded-md text-base font-medium nav-link">Vision</a>
+            <a href="#plan" class="block py-2 px-3 rounded-md text-base font-medium nav-link">The Plan</a>
+            <a href="#impact" class="block py-2 px-3 rounded-md text-base font-medium nav-link">Impact</a>
+            <a href="#roadmap" class="block py-2 px-3 rounded-md text-base font-medium nav-link">Roadmap</a>
+            <a href="#governance" class="block py-2 px-3 rounded-md text-base font-medium nav-link">Governance</a>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        <section id="home" class="text-center py-16 md:py-24">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900">Building a Publicly Owned AI for All New Yorkers</h2>
+            <p class="mt-4 max-w-3xl mx-auto text-lg md:text-xl text-slate-600">
+                This plan outlines New York City's initiative to build, own, and operate an open-source large language model (NYC-LLM). It is a strategic investment in public infrastructure, designed to reduce educational inequality, prepare our workforce for the future, and ensure NYC leads in the development of ethical, civic AI.
+            </p>
+        </section>
+
+        <section id="vision" class="py-16 md:py-20 bg-white rounded-2xl shadow-sm p-8">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-slate-900">Why This Matters: Core Principles</h3>
+                <p class="mt-3 max-w-2xl mx-auto text-lg text-slate-600">The NYC-LLM is founded on four key pillars that ensure it serves the public good, fostering a more equitable and prosperous city for generations to come.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-slate-50 p-6 rounded-lg border border-slate-200">
+                    <h4 class="text-xl font-semibold text-teal-700">Equity</h4>
+                    <p class="mt-2 text-slate-600">Provide free, high-quality AI educational tools for all students, especially benefiting low-income and non-native English speaking communities.</p>
+                </div>
+                <div class="bg-slate-50 p-6 rounded-lg border border-slate-200">
+                    <h4 class="text-xl font-semibold text-teal-700">Sovereignty</h4>
+                    <p class="mt-2 text-slate-600">Maintain city control over our model and data, avoiding vendor lock-in and ensuring resident data is protected, not exploited.</p>
+                </div>
+                <div class="bg-slate-50 p-6 rounded-lg border border-slate-200">
+                    <h4 class="text-xl font-semibold text-teal-700">Workforce Readiness</h4>
+                    <p class="mt-2 text-slate-600">Offer fine-tuned modules to prepare residents for city jobs, civil service exams, and high-growth technology careers.</p>
+                </div>
+                <div class="bg-slate-50 p-6 rounded-lg border border-slate-200">
+                    <h4 class="text-xl font-semibold text-teal-700">Economic Multiplier</h4>
+                    <p class="mt-2 text-slate-600">Stimulate the local economy by creating new AI jobs, fostering university partnerships, and seeding civic tech innovation.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="plan" class="py-16 md:py-20">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-slate-900">The Plan: A Phased Approach</h3>
+                <p class="mt-3 max-w-2xl mx-auto text-lg text-slate-600">The rollout is structured in three strategic phases, from a focused pilot to a full-scale, sustainable citywide system. Click each phase to explore its objectives and funding.</p>
+            </div>
+            
+            <div class="flex justify-center mb-8 border-b border-slate-200">
+                <button data-phase="1" class="phase-tab active py-3 px-6 font-semibold border-b-2 border-transparent">Phase 1: Pilot</button>
+                <button data-phase="2" class="phase-tab py-3 px-6 font-semibold border-b-2 border-transparent">Phase 2: Scale</button>
+                <button data-phase="3" class="phase-tab py-3 px-6 font-semibold border-b-2 border-transparent">Phase 3: Long-Term</button>
+            </div>
+
+            <div id="phase-content-container" class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+                <div id="phase-details" class="lg:col-span-2 bg-white p-6 rounded-lg shadow-sm">
+                </div>
+                <div class="lg:col-span-3">
+                    <h4 class="text-center text-xl font-semibold text-slate-800 mb-4">Estimated Funding by Phase (Millions USD)</h4>
+                    <div class="chart-container">
+                        <canvas id="budgetChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="impact" class="py-16 md:py-20 bg-white rounded-2xl shadow-sm p-8">
+             <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-slate-900">Scope & Measured Impact</h3>
+                <p class="mt-3 max-w-2xl mx-auto text-lg text-slate-600">The NYC-LLM will deliver a wide range of capabilities for residents, with success measured by clear, transparent Key Performance Indicators (KPIs).</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div>
+                    <h4 class="text-2xl font-semibold text-slate-800 mb-6">Core Capabilities</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-start"><span class="text-teal-500 font-bold mr-3 mt-1">&#10003;</span><div><strong class="text-slate-900">Multilingual Study Help:</strong> Support for homework, test prep, and reading comprehension for students at all levels.</div></li>
+                        <li class="flex items-start"><span class="text-teal-500 font-bold mr-3 mt-1">&#10003;</span><div><strong class="text-slate-900">Workforce Training Modules:</strong> Specialized prep for civil service exams, municipal jobs, and trade certifications.</div></li>
+                        <li class="flex items-start"><span class="text-teal-500 font-bold mr-3 mt-1">&#10003;</span><div><strong class="text-slate-900">Tools for Teachers:</strong> Privacy-preserving resources for lesson plan generation and student progress tracking.</div></li>
+                        <li class="flex items-start"><span class="text-teal-500 font-bold mr-3 mt-1">&#10003;</span><div><strong class="text-slate-900">Public & Developer Access:</strong> User-friendly apps for the public and a governed API for vetted civic partners.</div></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-2xl font-semibold text-slate-800 mb-6">Success Metrics (KPIs)</h4>
+                    <ul class="space-y-4">
+                         <li class="flex items-start"><span class="text-amber-500 font-bold mr-3 mt-1">&#9733;</span><div><strong class="text-slate-900">Access & Adoption:</strong> Track usage across DOE schools, libraries, and student populations.</div></li>
+                        <li class="flex items-start"><span class="text-amber-500 font-bold mr-3 mt-1">&#9733;</span><div><strong class="text-slate-900">Educational Outcomes:</strong> Measure improvements in test scores and skill assessments versus control groups.</div></li>
+                        <li class="flex items-start"><span class="text-amber-500 font-bold mr-3 mt-1">&#9733;</span><div><strong class="text-slate-900">Workforce Placement:</strong> Monitor pass rates for civil service exams and placement into city jobs.</div></li>
+                        <li class="flex items-start"><span class="text-amber-500 font-bold mr-3 mt-1">&#9733;</span><div><strong class="text-slate-900">Equity & Safety:</strong> Report on usage by demographic and maintain a zero-incident privacy breach record.</div></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="roadmap" class="py-16 md:py-20">
+             <div class="text-center mb-16">
+                <h3 class="text-3xl font-bold text-slate-900">Implementation Roadmap</h3>
+                <p class="mt-3 max-w-2xl mx-auto text-lg text-slate-600">This timeline outlines the key milestones from initial setup to achieving global leadership in civic AI, culminating in the immediate actions required from City Council.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                <div class="relative pl-8 border-l-4 border-slate-200">
+                    <div class="space-y-12">
+                        <div class="timeline-item relative">
+                            <h4 class="text-lg font-semibold text-teal-800">0–18 Months: The Pilot</h4>
+                            <p class="text-slate-600">Convene stakeholders, form the NYC AI Board, secure pilot funding, and run the pilot in 25 schools, 10 CUNY labs, and 10 libraries. Monitor, evaluate, and adjust.</p>
+                        </div>
+                        <div class="timeline-item relative">
+                            <h4 class="text-lg font-semibold text-teal-800">18 Months–5 Years: Scaling Up</h4>
+                            <p class="text-slate-600">Roll out citywide across the DOE, integrate with workforce centers, launch the NYC AI Academy, and secure long-term funding for infrastructure and operations.</p>
+                        </div>
+                         <div class="timeline-item relative">
+                            <h4 class="text-lg font-semibold text-teal-800">5–25 Years: Sustained Leadership</h4>
+                            <p class="text-slate-600">Pursue continuous model modernization, build a permanent local talent pipeline, and establish NYC as a global leader in collaborative, civic-AI development.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-amber-50 border-l-4 border-amber-400 p-6 rounded-r-lg">
+                    <h4 class="text-2xl font-bold text-slate-800">Immediate Asks for City Council</h4>
+                    <p class="mt-2 mb-6 text-slate-700">To begin this transformative project, we request immediate authorization for the following:</p>
+                    <ol class="list-decimal list-inside space-y-3 font-medium text-slate-800">
+                        <li>Approve pilot budget of <strong class="text-teal-700">$25M</strong>.</li>
+                        <li>Authorize a secure data-sharing framework.</li>
+                        <li>Form the independent NYC AI Board.</li>
+                        <li>Authorize partnerships with CUNY and others.</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+        
+        <section id="governance" class="py-16 md:py-20 bg-white rounded-2xl shadow-sm p-8">
+             <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-slate-900">Governance & Partnerships</h3>
+                <p class="mt-3 max-w-2xl mx-auto text-lg text-slate-600">A robust ecosystem of oversight and collaboration is essential to the project's success, ensuring it remains transparent, ethical, and aligned with community needs.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div>
+                    <h4 class="text-2xl font-semibold text-slate-800 mb-6">Independent Oversight</h4>
+                    <div class="bg-slate-50 p-6 rounded-lg border border-slate-200">
+                        <h5 class="text-xl font-bold text-teal-700">NYC AI Board</h5>
+                        <p class="mt-2 text-slate-600">An independent body of educators, civil-rights lawyers, technologists, and community representatives will be empowered to conduct model audits, approve datasets, and ensure public transparency.</p>
+                    </div>
+                     <div class="mt-6">
+                        <h5 class="text-xl font-semibold text-slate-800">Core Principles</h5>
+                        <ul class="mt-2 space-y-1 text-slate-600">
+                            <li>&#x2713; Annual Transparency Reports</li>
+                            <li>&#x2713; Community Co-Design Councils</li>
+                            <li>&#x2713; Strict Privacy-First Policies</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-2xl font-semibold text-slate-800 mb-6">Partnership Ecosystem</h4>
+                    <div class="space-y-4">
+                        <div class="p-4 bg-slate-50 rounded-lg border border-slate-200"><strong class="text-slate-900">Lead Agencies:</strong> NYC DOE, Mayor’s Office of Technology & Innovation, CUNY.</div>
+                        <div class="p-4 bg-slate-50 rounded-lg border border-slate-200"><strong class="text-slate-900">Academic Partners:</strong> CUNY, NYU, and Columbia for R&D and evaluation.</div>
+                        <div class="p-4 bg-slate-50 rounded-lg border border-slate-200"><strong class="text-slate-900">Community Stakeholders:</strong> Parent groups, unions, and civil-rights NGOs.</div>
+                        <div class="p-4 bg-slate-50 rounded-lg border border-slate-200"><strong class="text-slate-900">Industry & Open Source:</strong> Cloud providers, device vendors, and research groups.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-800 text-slate-300 mt-16">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-sm">
+            <p>&copy; 2025 City of New York. An initiative by the Mayor’s Office of Technology & Innovation.</p>
+            <p class="mt-1">Building a more equitable future through public AI.</p>
+        </div>
+    </footer>
+
+    <script>
+        const phaseData = {
+            1: {
+                title: "Phase 1: Pilot (0–18 months)",
+                objective: "Validate utility, test governance, and demonstrate measurable outcomes in a controlled environment.",
+                components: [
+                    "Fine-tune a Tier A model for K-8 homework help & civil-service prep.",
+                    "Deploy to 25 public schools, 10 CUNY labs, and 10 public libraries.",
+                    "Train a cohort of 100 teachers and onboard 5,000 students.",
+                    "Evaluate learning gains, user satisfaction, and equity metrics."
+                ]
+            },
+            2: {
+                title: "Phase 2: Scale (18 months–5 years)",
+                objective: "Achieve citywide rollout across DOE, CUNY, workforce centers, and public libraries.",
+                components: [
+                    "Expand to all DOE schools with scaled hosting and offline clients.",
+                    "Integrate job-training modules into Workforce1 centers.",
+                    "Establish the NYC AI Academy for training educators and technicians.",
+                    "Launch a developer program for vetted civic and non-profit partners."
+                ]
+            },
+            3: {
+                title: "Phase 3 & 4: Long-Term (5–25 years)",
+                objective: "Ensure continuous improvement, foster R&D, and establish NYC as an exportable model for civic AI.",
+                components: [
+                    "Perform iterative model upgrades and major annual fine-tunes.",
+                    "Create residency and apprenticeship programs with CUNY.",
+                    "Support local startups building on the NYC-LLM platform.",
+                    "Maintain a civic model commons for inter-city collaboration."
+                ]
+            }
+        };
+
+        const budgetData = {
+            labels: ['Phase 1: Pilot', 'Phase 2: Scale', 'Phase 3: Long-Term'],
+            datasets: [{
+                label: 'Max Estimated Budget (USD Millions)',
+                data: [25, 300, 1500],
+                backgroundColor: ['#5eead4', '#2dd4bf', '#14b8a6'],
+                borderColor: ['#0f766e', '#0f766e', '#0f766e'],
+                borderWidth: 1
+            },
+            {
+                label: 'Min Estimated Budget (USD Millions)',
+                data: [25, 150, 500],
+                backgroundColor: ['#a7f3d0', '#6ee7b7', '#34d399'],
+                borderColor: ['#065f46', '#065f46', '#065f46'],
+                borderWidth: 1
+            }]
+        };
+        
+        let budgetChart;
+
+        function updatePhaseContent(phase) {
+            const data = phaseData[phase];
+            const container = document.getElementById('phase-details');
+            
+            let componentsHTML = data.components.map(item => `<li class="flex items-start"><span class="text-teal-500 font-bold mr-3 mt-1">&#10003;</span>${item}</li>`).join('');
+
+            container.innerHTML = `
+                <h4 class="text-2xl font-bold text-slate-800">${data.title}</h4>
+                <p class="mt-2 mb-4 text-slate-600 font-medium">${data.objective}</p>
+                <h5 class="font-semibold text-slate-700 mb-2">Key Components:</h5>
+                <ul class="space-y-2 text-slate-600">${componentsHTML}</ul>
+            `;
+
+            document.querySelectorAll('.phase-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.phase == phase);
+            });
+            
+            updateChartHighlight(phase);
+        }
+
+        function updateChartHighlight(phase) {
+            if (!budgetChart) return;
+            const phaseIndex = parseInt(phase) - 1;
+
+            budgetChart.data.datasets.forEach((dataset) => {
+                dataset.backgroundColor = dataset.backgroundColor.map((color, index) => {
+                    return index === phaseIndex ? color : color;
+                });
+                dataset.borderColor = dataset.borderColor.map((color, index) => {
+                    return index === phaseIndex ? color : color;
+                });
+            });
+            budgetChart.update();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctx = document.getElementById('budgetChart').getContext('2d');
+            budgetChart = new Chart(ctx, {
+                type: 'bar',
+                data: budgetData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Budget in Millions (USD)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value;
+                                }
+                            }
+                        },
+                         x: {
+                            ticks: {
+                                autoSkip: false,
+                                maxRotation: 0,
+                                minRotation: 0
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) { label += ': '; }
+                                    if (context.parsed.y !== null) {
+                                        label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y * 1000000);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const chartElement = elements[0];
+                            const index = chartElement.index;
+                            const newPhase = index + 1;
+                            updatePhaseContent(newPhase);
+                        }
+                    }
+                }
+            });
+
+            document.querySelectorAll('.phase-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    updatePhaseContent(tab.dataset.phase);
+                });
+            });
+
+            updatePhaseContent('1');
+            
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            document.querySelectorAll('#mobile-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
+
