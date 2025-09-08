@@ -26,7 +26,6 @@ class PortfolioCLI {
       palette: this.showPalette.bind(this),
       brainwave: this.showBrainwave.bind(this),
       planner: this.showPlanner.bind(this),
-      nycai: this.showNYCPublicAI.bind(this),
       clear: this.clearTerminal.bind(this)
     };
 
@@ -238,7 +237,6 @@ class PortfolioCLI {
       '  palette   - Fashion color palette generator',
       '  brainwave - AI neural activity simulator',
       '  planner   - Circular daily planner',
-      '  nycai    - NYC\'s Public AI Initiative page',
       '  clear     - Clear terminal output',
       '',
       'Use TAB for autocomplete, ↑/↓ for command history.',
@@ -551,35 +549,6 @@ class PortfolioCLI {
     outputLine.appendChild(linkText);
     outputLine.appendChild(link);
     
-    this.outputContainer.appendChild(outputLine);
-    this.scrollToBottom();
-  }
-
-  showNYCPublicAI() {
-    this.addMultilineOutput([
-      '🏙️ NYC\'s Public AI Future',
-      '',
-      'An interactive plan to build a publicly owned, ethical AI for New Yorkers.',
-      'Explore phases, budget, roadmap, and governance.',
-      ''
-    ], 'info');
-    this.addNYCPublicAILink();
-  }
-
-  addNYCPublicAILink() {
-    const outputLine = document.createElement('div');
-    outputLine.className = 'cli-output-line info';
-
-    const linkText = document.createTextNode('🚀 ');
-    const link = document.createElement('a');
-    link.href = '/nyc-public-ai.html';
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    link.textContent = 'Open NYC\'s Public AI Initiative';
-
-    outputLine.appendChild(linkText);
-    outputLine.appendChild(link);
-
     this.outputContainer.appendChild(outputLine);
     this.scrollToBottom();
   }
