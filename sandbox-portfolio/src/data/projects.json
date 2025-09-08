@@ -1,5 +1,18 @@
 [
   {
+    "slug": "nyc-public-ai",
+    "title": "NYC's Public AI Future",
+    "date": "2025-09",
+    "roles": ["Product", "Data Viz"],
+    "collab": "Jesse R.",
+    "summary": "Single-page interactive plan: phases, budget visualization, roadmap, and governance built with Tailwind and Chart.js.",
+    "stack": ["HTML", "Tailwind CSS", "Chart.js", "Vanilla JS"],
+    "links": {
+      "repo": "https://github.com/JesseRod329/JesseRod329.github.io",
+      "live": "https://jesserodriguez.me/nyc-public-ai.html"
+    }
+  },
+  {
     "slug": "portfolio-animation-system",
     "title": "Portfolio Animation System",
     "date": "2025-08",
