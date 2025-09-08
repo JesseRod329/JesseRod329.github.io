@@ -6,7 +6,8 @@
 **Circular Daily Planner:** [https://jesserodriguez.me/planner](https://jesserodriguez.me/planner)  
 **Fashion Palette Generator:** [https://jesserodriguez.me/fashion-palette](https://jesserodriguez.me/fashion-palette)  
 **AI Brainwave Simulator:** [https://jesserodriguez.me/brainwave-simulator.html](https://jesserodriguez.me/brainwave-simulator.html)  
-**Security Dashboard:** [https://jesserodriguez.me/security.html](https://jesserodriguez.me/security.html)
+**Security Dashboard:** [https://jesserodriguez.me/security.html](https://jesserodriguez.me/security.html)  
+**NYC's Public AI Future (Interactive Plan):** [https://jesserodriguez.me/nyc-public-ai.html](https://jesserodriguez.me/nyc-public-ai.html)
 
 **Description:**  
 A comprehensive multi-application portfolio showcasing the intersection of AI, design, and fashion. Features include a main portfolio with dynamic animations, an iOS-style mobile experience, a circular daily planner, a privacy-first fashion color palette generator, an AI brainwave simulator, and enterprise-level security implementations. All applications demonstrate cutting-edge web technologies with zero external dependencies and maximum performance.
@@ -34,6 +35,16 @@ A comprehensive multi-application portfolio showcasing the intersection of AI, d
 - **Professional contact integration** - Direct mailto link to jesse@jesserodriguez.me
 - **Zero external dependencies** - Fully self-contained with no third-party scripts
 - **Lightning fast performance** - Optimized static HTML/CSS only
+- **Interactive CLI terminal** - Type commands like `help`, `projects`, `palette`, `planner`, `brainwave`, `security`, `nycai` to navigate and launch apps
+### 🏙️ NYC's Public AI Future (Interactive Plan)
+- **Single-page interactive dashboard** - Explore Vision, Plan, Impact, Roadmap, Governance
+- **Phased rollout tabs** - Clickable phases dynamically update details and visuals
+- **Budget visualization** - Chart.js bar chart with tooltips and click-to-focus interactivity
+- **Vertical roadmap timeline** - Milestones across Pilot, Scale, and Long-Term
+- **Governance & partnerships** - Oversight principles and ecosystem mapping
+- **Accessible & responsive** - Tailwind CSS, mobile-first layout, keyboard-friendly
+- **Privacy & performance** - Pure client-side app with lightweight CDN assets
+- **Live demo** - [nyc-public-ai.html](https://jesserodriguez.me/nyc-public-ai.html)
 
 ### 📱 iOS Mobile Experience
 - **Native iOS interface** - Authentic iPhone home screen design with app grid
