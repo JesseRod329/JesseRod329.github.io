@@ -27,7 +27,6 @@ class PortfolioCLI {
       brainwave: this.showBrainwave.bind(this),
       planner: this.showPlanner.bind(this),
       nycai: this.showNYCPublicAI.bind(this),
-      google: (args) => this.handleGoogle(args),
       clear: this.clearTerminal.bind(this)
     };
 
@@ -247,7 +246,6 @@ class PortfolioCLI {
       '  brainwave - AI neural activity simulator',
       '  planner   - Circular daily planner',
       '  nycai    - NYC\'s Public AI Initiative page',
-      '  google    - Google Gemini: google help | google config KEY | google <q>',
       '  clear     - Clear terminal output',
       '',
       'Use TAB for autocomplete, ↑/↓ for command history.',
