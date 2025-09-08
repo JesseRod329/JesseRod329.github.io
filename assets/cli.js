@@ -271,6 +271,7 @@ class PortfolioCLI {
       '• Circular Daily Planner - Time-based task organization',
       '• Fashion Palette Generator - Color harmony analysis',
       '• Brainwave Simulator - AI neural activity visualization',
+      '• NYC Public AI Initiative - Interactive plan',
       '',
       'Scroll down to see the full services grid.',
       ''
@@ -441,6 +442,7 @@ class PortfolioCLI {
     
     // Add link to palette generator
     this.addPaletteLink();
+    this.addNYCLink();
   }
 
   addPaletteLink() {
@@ -505,6 +507,21 @@ class PortfolioCLI {
     outputLine.appendChild(linkText);
     outputLine.appendChild(link);
     
+    this.outputContainer.appendChild(outputLine);
+    this.scrollToBottom();
+  }
+
+  addNYCLink() {
+    const outputLine = document.createElement('div');
+    outputLine.className = 'cli-output-line info';
+    const linkText = document.createTextNode('🏙️ ');
+    const link = document.createElement('a');
+    link.href = '/nyc-public-ai.html';
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = 'Open NYC Public AI Initiative';
+    outputLine.appendChild(linkText);
+    outputLine.appendChild(link);
     this.outputContainer.appendChild(outputLine);
     this.scrollToBottom();
   }
