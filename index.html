@@ -26,7 +26,7 @@ if (location.protocol !== 'https:') {
   a { color: inherit; text-decoration: none; }
   .container { min-height: 100vh; display:flex; align-items:center; justify-content:center; padding:2rem; }
   .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:2rem; max-width:1100px; width:100%; }
-  .card { position:relative; border:1px solid #333; border-radius:16px; padding:2rem; background: rgba(255,255,255,0.02); transition: transform .2s ease, border-color .2s ease, background .2s ease; }
+  .card { position:relative; border:1px solid #333; border-radius:16px; padding:2rem; background: rgba(255,255,255,0.02); transition: transform .2s ease, border-color .2s ease, background .2s ease; overflow:hidden; }
   .card:hover { transform: translateY(-2px); border-color:#ff3; background: rgba(255,255,51,0.04); }
   .title { font-size: clamp(1.75rem, 3vw, 2.25rem); font-weight: 900; letter-spacing:-0.02em; margin-bottom: .5rem; }
   .subtitle { color:#bbb; margin-bottom:1rem; }
@@ -46,6 +46,47 @@ if (location.protocol !== 'https:') {
   @keyframes r1 { from { transform:translate(-50%,-50%) rotate(0) translateX(45px) rotate(0);} to { transform:translate(-50%,-50%) rotate(360deg) translateX(45px) rotate(-360deg);} }
   @keyframes r2 { from { transform:translate(-50%,-50%) rotate(0) translateX(70px) rotate(0);} to { transform:translate(-50%,-50%) rotate(360deg) translateX(70px) rotate(-360deg);} }
   @keyframes r3 { from { transform:translate(-50%,-50%) rotate(0) translateX(95px) rotate(0);} to { transform:translate(-50%,-50%) rotate(360deg) translateX(95px) rotate(-360deg);} }
+  
+  /* Marangoni-like color flow for UI card (cursor-driven radial blends) */
+  .ui-card { --mx: 50%; --my: 50%; }
+  .ui-card::before {
+    content:""; position:absolute; inset:-20%; pointer-events:none; opacity:0.9;
+    background:
+      radial-gradient(220px 220px at var(--mx) var(--my), rgba(255,255,51,0.35) 0%, rgba(255,255,51,0.18) 28%, transparent 46%),
+      radial-gradient(200px 200px at calc(var(--mx) + 10%) calc(var(--my) - 12%), rgba(59,130,246,0.28) 0%, rgba(59,130,246,0.12) 24%, transparent 44%),
+      radial-gradient(200px 200px at calc(var(--mx) - 12%) calc(var(--my) + 10%), rgba(16,185,129,0.28) 0%, rgba(16,185,129,0.12) 24%, transparent 44%);
+    filter: blur(18px) saturate(1.15);
+    transition: opacity .2s ease;
+  }
+  .ui-card.pulse::after {
+    content:""; position:absolute; inset:0; pointer-events:none; border-radius:16px;
+    background: radial-gradient(260px 260px at var(--mx) var(--my), rgba(255,255,51,0.35), rgba(0,0,0,0) 60%);
+    animation: uiPulse .6s ease-out forwards;
+  }
+  @keyframes uiPulse { from { opacity:.6; transform: scale(0.98);} to { opacity:0; transform: scale(1.05);} }
+
+  /* CLI card: typographic ripple using text gradients and symbols */
+  .cli-card { --mx: 50%; --my: 50%; }
+  .cli-card .title, .cli-card .subtitle {
+    background: radial-gradient(220px 220px at var(--mx) var(--my), #00ff41, #aaffcc 35%, #cccccc 60%, #777777 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .cli-card::before {
+    content: ">> :: == ** ## $$ @@ && // ";
+    position:absolute; inset: 8px; pointer-events:none; opacity:.07;
+    font-family: 'Monaco','Menlo',monospace; font-size: clamp(10px, 1.4vw, 12px);
+    letter-spacing: .22em; line-height: 1.8; white-space: pre-wrap;
+    display:block;
+    background: repeating-linear-gradient( to bottom, rgba(255,255,255,0.06) 0 1px, transparent 1px 22px );
+    mix-blend-mode: lighten;
+    border-radius:12px;
+  }
+  .cli-card.pulse::after {
+    content:""; position:absolute; inset:0; pointer-events:none; border-radius:16px;
+    background: radial-gradient(260px 260px at var(--mx) var(--my), rgba(0,255,65,0.25), rgba(0,0,0,0) 60%);
+    animation: cliPulse .6s ease-out forwards;
+  }
+  @keyframes cliPulse { from { opacity:.5; transform: scale(0.98);} to { opacity:0; transform: scale(1.05);} }
 </style>
 </head>
 <body>
@@ -93,6 +134,23 @@ if (location.protocol !== 'https:') {
       if (e.key.toLowerCase() === 'c') { window.location.href = '/terminal.html'; }
       if (e.key.toLowerCase() === 'u') { window.location.href = '/sandbox-portfolio/'; }
     });
+    
+    // Cursor-driven effects for both cards
+    function attachInteractive(card){
+      if (!card) return;
+      const update = (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        card.style.setProperty('--mx', x + '%');
+        card.style.setProperty('--my', y + '%');
+      };
+      card.addEventListener('mousemove', update);
+      card.addEventListener('mouseenter', update);
+      card.addEventListener('click', (e)=>{ update(e); card.classList.add('pulse'); setTimeout(()=>card.classList.remove('pulse'), 650); });
+    }
+    attachInteractive(document.querySelector('.ui-card'));
+    attachInteractive(document.querySelector('.cli-card'));
   })();
   </script>
 </body>
