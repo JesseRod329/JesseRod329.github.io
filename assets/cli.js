@@ -27,6 +27,7 @@ class PortfolioCLI {
       brainwave: this.showBrainwave.bind(this),
       planner: this.showPlanner.bind(this),
       nycai: this.showNYCPublicAI.bind(this),
+      google: (args) => this.handleGoogle(args),
       clear: this.clearTerminal.bind(this)
     };
 
@@ -138,25 +139,32 @@ class PortfolioCLI {
     });
   }
 
-  processCommand() {
-    const command = this.currentInput.trim().toLowerCase();
-    
-    if (command) {
-      // Add to history
-      this.commandHistory.push(command);
-      this.historyIndex = this.commandHistory.length;
-      
-      // Show command echo
-      this.addOutput(`jesse@portfolio:~$ ${command}`, 'command-echo');
-      
-      // Execute command
-      if (this.commands[command]) {
-        this.commands[command]();
-      } else {
-        this.addOutput(`Command not found: ${command}. Type 'help' for available commands.`, 'error');
+  async processCommand() {
+    const raw = this.currentInput.trim();
+    if (!raw) return;
+
+    // Add to history and echo
+    this.commandHistory.push(raw);
+    this.historyIndex = this.commandHistory.length;
+    this.addOutput(`jesse@portfolio:~$ ${raw}`, 'command-echo');
+
+    // Parse command and args
+    const parts = raw.split(/\s+/);
+    const cmd = (parts[0] || '').toLowerCase();
+    const args = parts.slice(1);
+
+    // Execute
+    if (this.commands[cmd]) {
+      try {
+        const result = this.commands[cmd](args);
+        if (result instanceof Promise) await result;
+      } catch (err) {
+        this.addOutput(`Error: ${String(err && err.message || err)}`, 'error');
       }
+    } else {
+      this.addOutput(`Command not found: ${cmd}. Type 'help' for available commands.`, 'error');
     }
-    
+
     // Clear input
     this.inputLine.value = '';
     this.currentInput = '';
@@ -239,6 +247,7 @@ class PortfolioCLI {
       '  brainwave - AI neural activity simulator',
       '  planner   - Circular daily planner',
       '  nycai    - NYC\'s Public AI Initiative page',
+      '  google    - Google Gemini: google help | google config KEY | google <q>',
       '  clear     - Clear terminal output',
       '',
       'Use TAB for autocomplete, ↑/↓ for command history.',
@@ -582,6 +591,111 @@ class PortfolioCLI {
 
     this.outputContainer.appendChild(outputLine);
     this.scrollToBottom();
+  }
+
+  // Google Gemini integration (client-side; key stored locally)
+  async handleGoogle(args = []) {
+    const sub = (args[0] || '').toLowerCase();
+    const rest = args.slice(1);
+    if (sub === 'help' || args.length === 0) {
+      this.addMultilineOutput([
+        '🤖 Google Gemini — usage:',
+        '  google <your question>',
+        '  google config <API_KEY>',
+        '  google clear',
+        '  google history',
+        'Get an API key: https://makersuite.google.com/app/apikey',
+        'Your key is stored locally in your browser.',
+        ''
+      ], 'info');
+      return;
+    }
+
+    if (sub === 'config') {
+      const key = rest[0] || '';
+      if (key && key.startsWith('AIza')) {
+        try {
+          localStorage.setItem('gemini_api_key', key);
+          this.addOutput('✅ Gemini API key configured. Ask with: google your question', 'info');
+        } catch (_) {
+          this.addOutput('❌ Failed to store API key (storage blocked).', 'error');
+        }
+      } else {
+        this.addOutput('❌ Invalid key. Usage: google config AIza...KEY', 'error');
+      }
+      return;
+    }
+
+    if (sub === 'clear') {
+      try { localStorage.removeItem('gemini_history'); } catch (_) {}
+      this.addOutput('✅ Gemini conversation history cleared', 'info');
+      return;
+    }
+
+    if (sub === 'history') {
+      const hist = this.readGeminiHistory();
+      if (!hist.length) { this.addOutput('No conversation history', 'info'); return; }
+      hist.forEach((h, i) => {
+        this.addOutput(`${i+1}. Q: ${h.q}`, 'info');
+        this.addOutput(`   A: ${h.a.slice(0, 100)}${h.a.length>100?'...':''}`, 'info');
+      });
+      return;
+    }
+
+    // Query path
+    const apiKey = localStorage.getItem('gemini_api_key');
+    if (!apiKey) {
+      this.addMultilineOutput([
+        '❌ Gemini not configured.',
+        'Run: google config YOUR_API_KEY',
+        'Get a key: https://makersuite.google.com/app/apikey',
+        ''
+      ], 'error');
+      return;
+    }
+
+    const question = args.join(' ');
+    if (!question) { this.addOutput('Usage: google <your question>', 'info'); return; }
+
+    this.addOutput('🤖 Gemini is thinking...', 'info');
+    try {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: question }]}],
+          generationConfig: { temperature: 0.7, topK: 40, topP: 0.95, maxOutputTokens: 512 }
+        })
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(()=>({}));
+        throw new Error(err && err.error && err.error.message || `HTTP ${res.status}`);
+      }
+      const data = await res.json();
+      const answer = (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text) || 'No response received';
+      this.addOutput(`💡 ${answer}`, 'info');
+      this.saveGeminiHistory(question, answer);
+    } catch (e) {
+      this.addOutput(`❌ Gemini Error: ${String(e && e.message || e)}`, 'error');
+    }
+  }
+
+  readGeminiHistory() {
+    try {
+      const raw = localStorage.getItem('gemini_history');
+      if (!raw) return [];
+      return JSON.parse(raw);
+    } catch (_) { return []; }
+  }
+
+  saveGeminiHistory(q, a) {
+    try {
+      const list = this.readGeminiHistory();
+      list.push({ q, a, t: Date.now() });
+      const max = 10;
+      const trimmed = list.slice(-max);
+      localStorage.setItem('gemini_history', JSON.stringify(trimmed));
+    } catch (_) {}
   }
 
   clearTerminal() {
