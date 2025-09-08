@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <script>
+// Force HTTPS redirect
 if (location.protocol !== 'https:') {
   location.replace('https:' + window.location.href.substring(window.location.protocol.length));
 }
@@ -14,86 +15,953 @@ if (location.protocol !== 'https:') {
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'; media-src 'self'; child-src 'self'; form-action 'self'; base-uri 'self';">
-<title>Choose Interface — Jesse Rodriguez</title>
-<meta name="description" content="Choose between CLI terminal or visual UI to explore Jesse Rodriguez's portfolio.">
+<title>Jesse Rodriguez — Ideas, Technology, Design | Portfolio</title>
+<meta name="description" content="Portfolio of Jesse Rodriguez showcasing AI automation, web development, design, and innovative digital experiences. Explore cutting-edge projects and professional services.">
+<meta name="keywords" content="Jesse Rodriguez, portfolio, web developer, AI automation, design, technology, fashion tech, iOS development">
+<meta name="author" content="Jesse Rodriguez">
+<meta property="og:title" content="Jesse Rodriguez — Ideas, Technology, Design">
+<meta property="og:description" content="Explore innovative digital experiences at the intersection of AI, design, and technology.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jesserodriguez.me">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jesse Rodriguez — Portfolio">
+<meta name="twitter:description" content="AI automation, web development, and cutting-edge design solutions.">
 <style>
+  /* Reset & basic styles */
   * { margin:0; padding:0; box-sizing:border-box; }
-  html { scroll-behavior:smooth; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background: #000; color: #fff; line-height: 1.5;
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* CSS Variables for theming */
+  :root {
+    --bg-primary: #fff;
+    --bg-secondary: #f8f8f8;
+    --text-primary: #111;
+    --text-secondary: #666;
+    --border-color: #eee;
+    --shadow-color: rgba(0,0,0,0.1);
+    --accent-blue: #007AFF;
+  }
+  
+  [data-theme="dark"] {
+    --bg-primary: #111;
+    --bg-secondary: #1a1a1a;
+    --text-primary: #fff;
+    --text-secondary: #aaa;
+    --border-color: #333;
+    --shadow-color: rgba(255,255,255,0.1);
+  }
+  body { 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+    background: var(--bg-primary); 
+    color: var(--text-primary); 
+    line-height:1.5; 
+    font-weight:400;
+    overflow-x:hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
   a { color: inherit; text-decoration: none; }
-  .container { min-height: 100vh; display:flex; align-items:center; justify-content:center; padding:2rem; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:2rem; max-width:1100px; width:100%; }
-  .card { position:relative; border:1px solid #333; border-radius:16px; padding:2rem; background: rgba(255,255,255,0.02); transition: transform .2s ease, border-color .2s ease, background .2s ease; }
-  .card:hover { transform: translateY(-2px); border-color:#ff3; background: rgba(255,255,51,0.04); }
-  .title { font-size: clamp(1.75rem, 3vw, 2.25rem); font-weight: 900; letter-spacing:-0.02em; margin-bottom: .5rem; }
-  .subtitle { color:#bbb; margin-bottom:1rem; }
-  .badge { display:inline-block; font-size:.7rem; letter-spacing:.08em; border:1px solid #444; padding:4px 8px; border-radius:999px; color:#ddd; }
-  .actions { margin-top:1.25rem; display:flex; gap:.75rem; }
-  .btn { display:inline-block; padding:.75rem 1rem; border-radius:10px; border:1px solid #333; background:#111; color:#fff; font-weight:700; letter-spacing:.04em; }
-  .btn.primary { background:#ff3; color:#111; border-color:#ff3; }
-  .hint { text-align:center; color:#999; margin-top:1.5rem; font-size:.9rem; }
-  .header { position:fixed; top:0; left:0; right:0; padding:1rem 1.5rem; display:flex; justify-content:space-between; align-items:center; background: linear-gradient(180deg, rgba(0,0,0,.7), transparent); border-bottom:1px solid rgba(255,255,255,0.06); }
-  .logo { font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
-  .accent { color:#ff3; }
-  .circles { position: fixed; inset:0; pointer-events:none; opacity:.12; }
-  .circle { position:absolute; border:4px solid #fff; border-radius:50%; left:50%; top:50%; transform:translate(-50%,-50%); }
-  .c1 { width:120px; height:120px; animation: r1 12s linear infinite; }
-  .c2 { width:180px; height:180px; animation: r2 18s linear infinite reverse; }
-  .c3 { width:240px; height:240px; animation: r3 24s linear infinite; }
-  @keyframes r1 { from { transform:translate(-50%,-50%) rotate(0) translateX(45px) rotate(0);} to { transform:translate(-50%,-50%) rotate(360deg) translateX(45px) rotate(-360deg);} }
-  @keyframes r2 { from { transform:translate(-50%,-50%) rotate(0) translateX(70px) rotate(0);} to { transform:translate(-50%,-50%) rotate(360deg) translateX(70px) rotate(-360deg);} }
-  @keyframes r3 { from { transform:translate(-50%,-50%) rotate(0) translateX(95px) rotate(0);} to { transform:translate(-50%,-50%) rotate(360deg) translateX(95px) rotate(-360deg);} }
-</style>
-</head>
-<body>
-  <div class="header">
-    <div class="logo">JESSE <span class="accent">RODRIGUEZ</span></div>
-    <div class="badge">Choose Interface</div>
-  </div>
-  <div class="circles" aria-hidden="true">
-    <div class="circle c1"></div>
-    <div class="circle c2"></div>
-    <div class="circle c3"></div>
-  </div>
-  <main class="container" role="main">
-    <div class="grid">
-      <a class="card interface-card cli-card" href="/terminal.html">
-        <div class="badge">CLI</div>
-        <div class="title">Terminal Interface</div>
-        <div class="subtitle">Type commands to explore projects, docs, and tools.</div>
-        <div class="actions">
-          <span class="btn primary">Open CLI</span>
-          <span class="btn">help · projects · nycai</span>
-        </div>
-      </a>
-      <a class="card interface-card ui-card" href="/sandbox-portfolio/">
-        <div class="badge card-tag">UI</div>
-        <div class="title">Visual Interface</div>
-        <div class="subtitle">Modern React UI with animations, projects, and pages.</div>
-        <div class="actions">
-          <span class="btn primary">Open UI</span>
-          <span class="btn">React · Three.js · Tailwind</span>
-        </div>
-      </a>
-    </div>
-  </main>
-  <div class="hint">Shortcut: press “C” for CLI or “U” for UI</div>
-  <script>
-  (function(){
-    'use strict';
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    if (isMobile) {
-      const tag = document.querySelector('.ui-card .card-tag');
-      if (tag) { tag.textContent = 'RECOMMENDED'; tag.style.borderColor = '#ff3'; tag.style.color = '#ff3'; }
+  
+  /* Skip Link */
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #007AFF;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0 0 8px 0;
+    text-decoration: none;
+    z-index: 100;
+    transition: top 0.3s ease;
+  }
+  
+  .skip-link:focus {
+    top: 0;
+  }
+
+  /* Hero Section */
+  .hero {
+    display:flex; 
+    flex-direction:column;
+    justify-content:center; 
+    align-items:center; 
+    min-height:100vh;
+    text-align:center; 
+    padding:2rem;
+    gap:3rem;
+  }
+  .hero h1 {
+    font-size:clamp(2.5rem, 8vw, 5rem); 
+    font-weight:900; 
+    letter-spacing:-0.02em; 
+    text-transform:uppercase;
+    max-width:1000px; 
+    margin:0 auto;
+    line-height:0.9;
+    animation: heroFadeIn 2s ease forwards;
+    opacity:0;
+    order:2;
+  }
+
+  /* Circle Animation Container */
+  .circle-container {
+    position:relative; 
+    width:clamp(250px, 35vw, 350px); 
+    height:clamp(250px, 35vw, 350px); 
+    order:1;
+    animation: circlesFadeIn 2s ease forwards 0.5s;
+    opacity:0;
+  }
+
+  .circle {
+    position:absolute; 
+    width:clamp(50px, 8vw, 80px); 
+    height:clamp(50px, 8vw, 80px); 
+    border:4px solid #111; 
+    border-radius:50%;
+    top:50%; 
+    left:50%; 
+    transform-origin:50% 50%;
+    transform:translate(-50%, -50%);
+  }
+
+  .circle:nth-child(1) { 
+    animation: rotateCircle1 12s linear infinite;
+  }
+  .circle:nth-child(2) { 
+    animation: rotateCircle2 18s linear infinite reverse;
+  }
+  .circle:nth-child(3) { 
+    animation: rotateCircle3 24s linear infinite;
+  }
+
+  @keyframes rotateCircle1 {
+    0% { transform: translate(-50%, -50%) rotate(0deg) translateX(clamp(30px, 6vw, 45px)) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg) translateX(clamp(30px, 6vw, 45px)) rotate(-360deg); }
+  }
+
+  @keyframes rotateCircle2 {
+    0% { transform: translate(-50%, -50%) rotate(0deg) translateX(clamp(50px, 10vw, 70px)) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg) translateX(clamp(50px, 10vw, 70px)) rotate(-360deg); }
+  }
+
+  @keyframes rotateCircle3 {
+    0% { transform: translate(-50%, -50%) rotate(0deg) translateX(clamp(70px, 14vw, 95px)) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg) translateX(clamp(70px, 14vw, 95px)) rotate(-360deg); }
+  }
+
+  @keyframes heroFadeIn {
+    0% { opacity:0; transform: translateY(30px); }
+    100% { opacity:1; transform: translateY(0); }
+  }
+
+  @keyframes circlesFadeIn {
+    0% { opacity:0; transform: translateY(-10px); }
+    100% { opacity:0.15; transform: translateY(0); }
+  }
+
+  /* Bio Section */
+  .bio {
+    max-width:700px; 
+    margin:6rem auto; 
+    text-align:center; 
+    font-size:1.125rem; 
+    line-height:1.7;
+    padding:0 2rem;
+    font-weight:300;
+  }
+
+  /* Services Grid */
+  .services {
+    display:grid; 
+    grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+    gap:1px; 
+    max-width:1200px; 
+    margin:6rem auto; 
+    padding:0 2rem;
+    background:var(--bg-secondary);
+  }
+  .service-card {
+    background:var(--bg-primary);
+    padding:3rem 2rem; 
+    text-align:center; 
+    transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor:pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--text-primary);
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 0;
+  }
+  
+  .service-card:hover::before {
+    transform: translateY(0);
+  }
+  
+  .service-card:hover { 
+    color:var(--bg-primary);
+    transform: scale(1.05);
+  }
+  
+  .service-card h3,
+  .service-card p {
+    position: relative;
+    z-index: 1;
+    transition: color 0.3s ease;
+  }
+  
+  .service-card:active {
+    transform: scale(1.02);
+    transition: transform 0.1s ease;
+  }
+  .service-card h3 { 
+    font-size:1.25rem; 
+    margin-bottom:1rem; 
+    text-transform:uppercase; 
+    font-weight:700;
+    letter-spacing:0.05em;
+  }
+  .service-card p { 
+    font-size:0.95rem; 
+    opacity:0.8; 
+    font-weight:300;
+  }
+
+  /* Contact Section */
+  .contact {
+    text-align:center; 
+    margin:8rem 0; 
+    font-size:1.25rem;
+    padding:0 2rem;
+  }
+  .contact p {
+    margin-bottom:2rem;
+    font-weight:400;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+  }
+  .contact a {
+    display:inline-block; 
+    padding:1rem 2rem;
+    background:#ff3; 
+    color:#111; 
+    font-weight:700; 
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    transition:all 0.2s ease;
+    border:2px solid #ff3;
+  }
+  .contact a:hover { 
+    background:transparent; 
+    color:#ff3; 
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .services {
+      grid-template-columns: 1fr;
+      margin:4rem auto;
     }
-    document.addEventListener('keydown', function(e){
-      if (e.key.toLowerCase() === 'c') { window.location.href = '/terminal.html'; }
-      if (e.key.toLowerCase() === 'u') { window.location.href = '/sandbox-portfolio/'; }
-    });
-  })();
-  </script>
+    .service-card {
+      padding:2rem 1.5rem;
+    }
+    .bio {
+      margin:4rem auto;
+      font-size:1rem;
+    }
+    .contact {
+      margin:6rem 0;
+    }
+  }
+
+  /* Subtle animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Scroll Indicator */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 50px;
+    border: 2px solid var(--text-primary);
+    border-radius: 25px;
+    opacity: 0.8;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+  }
+  
+  .scroll-indicator::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    background: var(--text-primary);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    animation: scrollDown 2s infinite;
+  }
+  
+  @keyframes scrollDown {
+    0% {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(-50%) translateY(20px);
+      opacity: 0;
+    }
+  }
+  
+  .scroll-indicator:hover {
+    opacity: 1;
+  }
+
+  .bio, .services, .contact {
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  .bio { animation-delay: 0.4s; }
+  .services { animation-delay: 0.6s; }
+  .contact { animation-delay: 0.8s; }
+
+  /* CLI Terminal Section */
+  .cli-terminal {
+    background: #000;
+    color: #00ff00;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cli-window {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    background: #000;
+    border: 1px solid #333;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.1);
+  }
+
+  .cli-header {
+    background: #222;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .cli-dots {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .cli-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .cli-dot:nth-child(1) { background: #ff5f56; }
+  .cli-dot:nth-child(2) { background: #ffbd2e; }
+  .cli-dot:nth-child(3) { background: #27ca3f; }
+
+  .cli-title {
+    color: #999;
+    font-size: 0.875rem;
+    margin-left: 1rem;
+  }
+
+  .cli-content {
+    padding: 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .cli-line {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .cli-prompt::before {
+    content: "jesse@portfolio:~$ ";
+    color: #00ff00;
+    font-weight: bold;
+  }
+
+  .cli-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 1.2em;
+    background: #00ff00;
+    margin-left: 2px;
+    animation: cli-blink 1.5s infinite;
+  }
+
+  .cli-greeting {
+    color: #00ff00;
+    margin-bottom: 1rem;
+    animation: cli-typewriter 2s ease-out forwards;
+    opacity: 0;
+  }
+
+  .cli-hint {
+    color: #888;
+    font-style: italic;
+    animation: cli-typewriter 2s ease-out forwards 1s;
+    opacity: 0;
+  }
+
+  @keyframes cli-blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  @keyframes cli-typewriter {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  .cli-noscript {
+    display: none;
+    background: #111;
+    color: #ccc;
+    padding: 2rem;
+    border-radius: 8px;
+    margin-top: 2rem;
+  }
+
+  .cli-noscript h3 {
+    color: #00ff00;
+    margin-bottom: 1rem;
+    font-family: inherit;
+  }
+
+  .cli-noscript ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .cli-noscript li {
+    margin-bottom: 0.5rem;
+  }
+
+  .cli-noscript a {
+    color: #00ff00;
+    text-decoration: none;
+    font-family: inherit;
+  }
+
+  .cli-noscript a:hover {
+    text-decoration: underline;
+  }
+
+  .cli-noscript a::before {
+    content: "> ";
+    color: #888;
+  }
+
+  /* Show noscript content when JS is disabled */
+  noscript .cli-noscript {
+    display: block;
+  }
+
+  /* Make original hero secondary */
+  .hero-secondary {
+    margin-top: 4rem;
+  }
+
+  /* Responsive adjustments for CLI */
+  @media (max-width: 768px) {
+    .cli-terminal {
+      padding: 1rem;
+    }
+    
+    .cli-content {
+      padding: 1rem;
+      font-size: 0.875rem;
+    }
+  }
+
+  /* Hidden sections for anchor navigation */
+  .hidden-section {
+    display: none;
+  }
+
+  /* Footer styling */
+  .footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.875rem;
+    opacity: 0.6;
+    font-weight: 300;
+  }
+
+  .footer a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  /* Interactive CLI Elements */
+  .cli-input-line {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+  }
+
+  .cli-prompt-text {
+    color: #00ff00;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  .cli-input {
+    background: transparent;
+    border: none;
+    color: #00ff00;
+    font-family: inherit;
+    font-size: inherit;
+    outline: none;
+    flex: 1;
+    margin-left: 0.5rem;
+  }
+
+  .cli-input::placeholder {
+    color: #666;
+  }
+
+  .cli-cursor-active {
+    display: inline-block;
+    width: 8px;
+    height: 1.2em;
+    background: #00ff00;
+    margin-left: 2px;
+    animation: cli-blink 1.5s infinite;
+  }
+
+  .cli-output {
+    margin-top: 1rem;
+  }
+
+  .cli-output-line {
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+  }
+
+  .cli-output-line.command-echo {
+    color: #00ff00;
+    opacity: 0.8;
+  }
+
+  .cli-output-line.error {
+    color: #ff6b6b;
+  }
+
+  .cli-output-line.info {
+    color: #64b5f6;
+  }
+
+  .cli-output-line.welcome {
+    color: #888;
+  }
+
+  .cli-output-line.help {
+    color: #ccc;
+  }
+
+  .cli-output-line.about,
+  .cli-output-line.projects,
+  .cli-output-line.resume,
+  .cli-output-line.contact {
+    color: #e0e0e0;
+  }
+
+  .cli-output-line.security {
+    color: #4caf50;
+  }
+
+  .cli-output-line.headers {
+    color: #ff9800;
+  }
+
+  /* Resume PDF link styling */
+  .cli-output-line.resume a {
+    color: #64b5f6;
+    text-decoration: underline;
+  }
+
+  .cli-output-line.resume a:hover {
+    color: #90caf9;
+  }
+
+  /* Security documentation link styling */
+  .cli-output-line.security a {
+    color: #81c784;
+    text-decoration: underline;
+  }
+
+  .cli-output-line.security a:hover {
+    color: #a5d6a7;
+  }
+
+  /* Palette generator link styling */
+  .cli-output-line.palette a {
+    color: #e91e63;
+    text-decoration: underline;
+  }
+
+  .cli-output-line.palette a:hover {
+    color: #f06292;
+  }
+
+  /* Planner link styling */
+  .cli-output-line.planner a {
+    color: #3b82f6;
+    text-decoration: underline;
+  }
+
+  .cli-output-line.planner a:hover {
+    color: #60a5fa;
+  }
+
+  /* Enhanced scrolling for terminal */
+  .cli-terminal {
+    max-height: 100vh;
+    overflow-y: auto;
+  }
+  
+  /* Dark Mode Toggle */
+  .theme-toggle {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 12px var(--shadow-color);
+    transition: all 0.3s ease;
+    z-index: 100;
+  }
+  
+  .theme-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px var(--shadow-color);
+  }
+  
+  .theme-toggle:active {
+    transform: scale(0.95);
+  }
+</style>
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Jesse Rodriguez",
+  "url": "https://jesserodriguez.me",
+  "email": "jesse@jesserodriguez.me",
+  "jobTitle": "Full Stack Developer & Designer",
+  "description": "AI automation specialist, web developer, and designer creating innovative digital experiences at the intersection of technology and design.",
+  "sameAs": [
+    "https://jesserodriguez.me/ios",
+    "https://jesserodriguez.me/planner",
+    "https://jesserodriguez.me/fashion-palette"
+  ],
+  "knowsAbout": ["AI", "Web Development", "Design", "Fashion Technology", "iOS Development", "User Experience"],
+  "offers": {
+    "@type": "Offer",
+    "itemOffered": {
+      "@type": "Service",
+      "name": "Professional Development Services",
+      "description": "AI automation, web development, design, and consulting services"
+    }
+  }
+}
+</script>
+</head>
+<body role="document">
+<!-- Skip Navigation -->
+<a href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to content</a>
+
+<!-- Dark Mode Toggle -->
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+  <span id="themeIcon">🌙</span>
+</button>
+
+<!-- Terminal Hero -->
+<section class="cli-terminal" id="terminal">
+  <div class="cli-window">
+    <div class="cli-header">
+      <div class="cli-dots">
+        <div class="cli-dot"></div>
+        <div class="cli-dot"></div>
+        <div class="cli-dot"></div>
+      </div>
+      <div class="cli-title">jesse@portfolio — Terminal</div>
+    </div>
+    <div class="cli-content">
+      <div class="cli-greeting">
+        Welcome to Jesse Rodriguez's portfolio interface.
+      </div>
+      <div class="cli-hint">
+        Type "help" to see available commands.
+      </div>
+      <div class="cli-line cli-prompt">
+        <span class="cli-cursor"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Accessible navigation fallback -->
+  <noscript>
+    <div class="cli-noscript">
+      <h3>Available Commands</h3>
+      <ul>
+        <li><a href="#about">about</a> — Learn about Jesse's background and philosophy</li>
+        <li><a href="#projects">projects</a> — View portfolio and recent work</li>
+        <li><a href="#resume">resume</a> — Professional experience and skills</li>
+        <li><a href="#contact">contact</a> — Get in touch for collaborations</li>
+        <li><a href="#security">security</a> — Technical security implementation</li>
+        <li><a href="#headers">headers</a> — View HTTP security headers</li>
+      </ul>
+    </div>
+  </noscript>
+</section>
+
+<!-- Main Content -->
+<main id="main-content" role="main">
+
+<!-- Original Hero (Secondary) -->
+<section class="hero hero-secondary" id="about" role="banner" aria-label="Welcome section">
+  <div class="circle-container" role="img" aria-label="Animated geometric design with rotating circles">
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+  </div>
+  <h1>Ideas, Technology, and Design — Curated by Jesse</h1>
+  <a href="#projects" class="scroll-indicator" aria-label="Scroll down to see projects"></a>
+</section>
+
+<!-- Bio -->
+<section class="bio" role="region" aria-label="About section">
+  <p>I move between AI, design, and fashion with one goal: to create work that feels timeless and useful. From building tools to designing visuals, my work connects culture with clarity.</p>
+</section>
+
+<!-- Services Grid -->
+<section class="services" id="projects" role="region" aria-label="Services offered">
+  <div class="service-card" role="article" tabindex="0" aria-label="AI and Automation service">
+    <h3>AI / Automation</h3>
+    <p>Tools that think with you.</p>
+  </div>
+  <div class="service-card" role="article" tabindex="0" aria-label="Website development service">
+    <h3>Websites</h3>
+    <p>Digital spaces with purpose.</p>
+  </div>
+  <div class="service-card" role="article" tabindex="0" aria-label="Logo and design service">
+    <h3>Logos / Design</h3>
+    <p>Identity you can wear.</p>
+  </div>
+  <div class="service-card" id="resume" role="article" tabindex="0" aria-label="Resume and career service">
+    <h3>Resumes / Careers</h3>
+    <p>Documents that open doors.</p>
+  </div>
+  <div class="service-card" role="article" tabindex="0" aria-label="Fashion consulting service">
+    <h3>Fashion</h3>
+    <p>Clarity in the numbers.</p>
+  </div>
+</section>
+
+<!-- Contact -->
+<section class="contact" id="contact" role="contentinfo" aria-label="Contact information">
+  <p>Let's Build Something Together.</p>
+  <a href="mailto:jesse@jesserodriguez.me" aria-label="Send email to Jesse Rodriguez">jesse@jesserodriguez.me</a>
+</section>
+
+<!-- Security Section (Hidden, for anchor links) -->
+<section id="security" class="hidden-section">
+  <h2>Security Implementation</h2>
+  <p>Enterprise-level security headers and CSP policy implemented.</p>
+</section>
+
+<!-- Headers Section (Hidden, for anchor links) -->
+<section id="headers" class="hidden-section">
+  <h2>HTTP Security Headers</h2>
+  <p>X-Frame-Options, X-Content-Type-Options, CSP, and Referrer-Policy configured.</p>
+</section>
+
+</main>
+
+<!-- Footer -->
+<footer class="footer" role="contentinfo" aria-label="Site navigation links">
+  <a href="/classic.html">View classic version</a> | 
+  <a href="/desktop.html">Desktop version</a> | 
+  <a href="/ios/">Mobile version</a> | 
+  <a href="/analytics.html">Analytics Dashboard</a> | 
+  <a href="/nyc-public-ai.html">NYC Public AI Initiative</a>
+</footer>
+
+<!-- Mobile Detection (JavaScript) -->
+<script src="/assets/mobile-detect.js" defer></script>
+
+<!-- Backup Mobile Detection (Inline) -->
+<script>
+(function() {
+    'use strict';
+    
+    // Backup mobile detection that runs immediately
+    function isDefinitelyMobile() {
+        const ua = navigator.userAgent;
+        
+        // Very specific iPhone/iOS detection
+        if (/iPhone|iPad|iPod/i.test(ua)) {
+            return true;
+        }
+        
+        // Android detection
+        if (/Android/i.test(ua)) {
+            return true;
+        }
+        
+        // Mobile in user agent
+        if (/Mobile/i.test(ua)) {
+            return true;
+        }
+        
+        // Small screen + touch
+        if (window.innerWidth <= 480 && 'ontouchstart' in window) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    // Immediate check and redirect
+    if (isDefinitelyMobile() && !window.location.pathname.includes('/ios/')) {
+        console.log('Backup mobile detection triggered');
+        window.location.replace('/ios/');
+    }
+})();
+</script>
+
+<!-- Mobile Detection Fallback (No JavaScript) -->
+<noscript>
+  <div style="display: none;">
+    <meta http-equiv="refresh" content="0; url=/ios/">
+  </div>
+  <style>
+    @media (max-width: 767px) {
+      .mobile-redirect-notice {
+        display: block !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #007AFF;
+        color: white;
+        text-align: center;
+        padding: 1rem;
+        z-index: 10000;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+      .mobile-redirect-notice a {
+        color: white;
+        text-decoration: underline;
+        font-weight: bold;
+      }
+    }
+  </style>
+  <div class="mobile-redirect-notice" style="display: none;">
+    📱 <a href="/ios/">Tap here for mobile-optimized version</a>
+  </div>
+</noscript>
+
+<script src="/assets/cli.js" defer></script>
+
+<!-- Dark Mode Script -->
+<script>
+(function() {
+  'use strict';
+  
+  // Check for saved theme preference or default to light mode
+  const currentTheme = localStorage.getItem('theme') || 'light';
+  const root = document.documentElement;
+  const themeToggle = document.getElementById('themeToggle');
+  const themeIcon = document.getElementById('themeIcon');
+  
+  // Apply saved theme on load
+  if (currentTheme === 'dark') {
+    root.setAttribute('data-theme', 'dark');
+    themeIcon.textContent = '☀️';
+  }
+  
+  // Theme toggle function
+  function toggleTheme() {
+    const isDark = root.getAttribute('data-theme') === 'dark';
+    
+    if (isDark) {
+      root.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+      themeIcon.textContent = '🌙';
+    } else {
+      root.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+      themeIcon.textContent = '☀️';
+    }
+  }
+  
+  // Add click event listener
+  themeToggle.addEventListener('click', toggleTheme);
+  
+  // Add keyboard shortcut (Ctrl/Cmd + D)
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+      e.preventDefault();
+      toggleTheme();
+    }
+  });
+})();
+</script>
 </body>
 </html>
