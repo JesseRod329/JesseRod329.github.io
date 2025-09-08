@@ -13,6 +13,19 @@
     }
   },
   {
+    "slug": "portfolio-animation-system",
+    "title": "Portfolio Animation System",
+    "date": "2025-08",
+    "roles": ["Frontend"],
+    "collab": "Jesse R.",
+    "summary": "A dynamic portfolio website featuring smooth animations, Three.js background effects, and responsive design. Built with React, TypeScript, and Framer Motion for seamless user interactions.",
+    "stack": ["React", "TypeScript", "Three.js", "Framer Motion", "Tailwind CSS"],
+    "links": {
+      "repo": "https://github.com/JesseRod329/JesseRod329.github.io",
+      "live": "https://jesserod329.github.io/sandbox-portfolio"
+    }
+  },
+  {
     "slug": "ios-mobile-experience",
     "title": "iOS Mobile Experience",
     "date": "2025-08",
