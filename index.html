@@ -284,6 +284,21 @@ if (location.protocol !== 'https:') {
     .contact {
       margin:6rem 0;
     }
+
+    /* Adjust toggle button positions for mobile */
+    .interface-toggle {
+      right: 5rem;
+      width: 45px;
+      height: 45px;
+      font-size: 1.25rem;
+    }
+
+    .theme-toggle {
+      right: 1rem;
+      width: 45px;
+      height: 45px;
+      font-size: 1.25rem;
+    }
   }
 
   /* Subtle animations */
@@ -663,6 +678,36 @@ if (location.protocol !== 'https:') {
     overflow-y: auto;
   }
   
+  /* Interface Toggle */
+  .interface-toggle {
+    position: fixed;
+    bottom: 2rem;
+    right: 5rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 12px var(--shadow-color);
+    transition: all 0.3s ease;
+    z-index: 100;
+  }
+
+  .interface-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px var(--shadow-color);
+  }
+
+  .interface-toggle:active {
+    transform: scale(0.95);
+  }
+
   /* Dark Mode Toggle */
   .theme-toggle {
     position: fixed;
@@ -683,14 +728,33 @@ if (location.protocol !== 'https:') {
     transition: all 0.3s ease;
     z-index: 100;
   }
-  
+
   .theme-toggle:hover {
     transform: scale(1.1);
     box-shadow: 0 6px 20px var(--shadow-color);
   }
-  
+
   .theme-toggle:active {
     transform: scale(0.95);
+  }
+
+  /* Interface Mode Styles */
+  .interface-mode-cli .traditional-ui {
+    display: none;
+  }
+
+  .interface-mode-ui .cli-terminal {
+    display: none;
+  }
+
+  .interface-mode-cli .hero-secondary {
+    display: none;
+  }
+
+  .interface-mode-cli .bio,
+  .interface-mode-cli .services,
+  .interface-mode-cli .contact {
+    display: none;
   }
 </style>
 
@@ -724,6 +788,11 @@ if (location.protocol !== 'https:') {
 <body role="document">
 <!-- Skip Navigation -->
 <a href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to content</a>
+
+<!-- Interface Toggle -->
+<button class="interface-toggle" id="interfaceToggle" aria-label="Toggle between CLI and UI modes">
+  <span id="interfaceIcon">💻</span>
+</button>
 
 <!-- Dark Mode Toggle -->
 <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
@@ -771,7 +840,7 @@ if (location.protocol !== 'https:') {
 </section>
 
 <!-- Main Content -->
-<main id="main-content" role="main">
+<main id="main-content" role="main" class="traditional-ui">
 
 <!-- Original Hero (Secondary) -->
 <section class="hero hero-secondary" id="about" role="banner" aria-label="Welcome section">
@@ -923,23 +992,39 @@ if (location.protocol !== 'https:') {
 <script>
 (function() {
   'use strict';
-  
+
   // Check for saved theme preference or default to light mode
   const currentTheme = localStorage.getItem('theme') || 'light';
   const root = document.documentElement;
   const themeToggle = document.getElementById('themeToggle');
   const themeIcon = document.getElementById('themeIcon');
-  
+
+  // Check for saved interface preference or default to CLI mode
+  const currentInterface = localStorage.getItem('interface') || 'cli';
+  const interfaceToggle = document.getElementById('interfaceToggle');
+  const interfaceIcon = document.getElementById('interfaceIcon');
+
   // Apply saved theme on load
   if (currentTheme === 'dark') {
     root.setAttribute('data-theme', 'dark');
     themeIcon.textContent = '☀️';
   }
-  
+
+  // Apply saved interface on load
+  if (currentInterface === 'ui') {
+    root.classList.add('interface-mode-ui');
+    root.classList.remove('interface-mode-cli');
+    interfaceIcon.textContent = '🖥️';
+  } else {
+    root.classList.add('interface-mode-cli');
+    root.classList.remove('interface-mode-ui');
+    interfaceIcon.textContent = '💻';
+  }
+
   // Theme toggle function
   function toggleTheme() {
     const isDark = root.getAttribute('data-theme') === 'dark';
-    
+
     if (isDark) {
       root.removeAttribute('data-theme');
       localStorage.setItem('theme', 'light');
@@ -950,15 +1035,39 @@ if (location.protocol !== 'https:') {
       themeIcon.textContent = '☀️';
     }
   }
-  
-  // Add click event listener
+
+  // Interface toggle function
+  function toggleInterface() {
+    const isUI = root.classList.contains('interface-mode-ui');
+
+    if (isUI) {
+      // Switch to CLI mode
+      root.classList.remove('interface-mode-ui');
+      root.classList.add('interface-mode-cli');
+      localStorage.setItem('interface', 'cli');
+      interfaceIcon.textContent = '💻';
+    } else {
+      // Switch to UI mode
+      root.classList.remove('interface-mode-cli');
+      root.classList.add('interface-mode-ui');
+      localStorage.setItem('interface', 'ui');
+      interfaceIcon.textContent = '🖥️';
+    }
+  }
+
+  // Add click event listeners
   themeToggle.addEventListener('click', toggleTheme);
-  
-  // Add keyboard shortcut (Ctrl/Cmd + D)
+  interfaceToggle.addEventListener('click', toggleInterface);
+
+  // Add keyboard shortcuts
   document.addEventListener('keydown', function(e) {
     if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
       e.preventDefault();
       toggleTheme();
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'i') {
+      e.preventDefault();
+      toggleInterface();
     }
   });
 })();
