@@ -15,85 +15,352 @@ if (location.protocol !== 'https:') {
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'; media-src 'self'; child-src 'self'; form-action 'self'; base-uri 'self';">
-<title>Choose Interface — Jesse Rodriguez</title>
-<meta name="description" content="Choose between CLI terminal or visual UI to explore Jesse Rodriguez's portfolio.">
+<title>Jesse Rodriguez — Ideas, Technology, Design | Portfolio</title>
+<meta name="description" content="Portfolio of Jesse Rodriguez showcasing AI automation, web development, design, and innovative digital experiences. Explore cutting-edge projects and professional services.">
+<meta name="keywords" content="Jesse Rodriguez, portfolio, web developer, AI automation, design, fashion tech, iOS development">
+<meta name="author" content="Jesse Rodriguez">
+<meta property="og:title" content="Jesse Rodriguez — Ideas, Technology, Design">
+<meta property="og:description" content="Explore innovative digital experiences at the intersection of AI, design, and technology.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jesserodriguez.me">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jesse Rodriguez — Portfolio">
+<meta name="twitter:description" content="AI automation, web development, and cutting-edge design solutions.">
 <style>
+  /* Reset & basic styles */
   * { margin:0; padding:0; box-sizing:border-box; }
-  html { scroll-behavior:smooth; }
+  html { scroll-behavior: smooth; }
+
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background: #000; color: #fff; line-height: 1.5;
+    background: #000;
+    color: #fff;
+    line-height:1.5;
+    font-weight:400;
+    overflow-x:hidden;
   }
   a { color: inherit; text-decoration: none; }
-  .container { min-height: 100vh; display:flex; align-items:center; justify-content:center; padding:2rem; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:2rem; max-width:1100px; width:100%; }
-  .card { position:relative; border:1px solid #333; border-radius:16px; padding:2rem; background: rgba(255,255,255,0.02); transition: transform .2s ease, border-color .2s ease, background .2s ease; overflow:hidden; }
-  .card:hover { transform: translateY(-2px); border-color:#ff3; background: rgba(255,255,51,0.04); }
-  .title { font-size: clamp(1.75rem, 3vw, 2.25rem); font-weight: 900; letter-spacing:-0.02em; margin-bottom: .5rem; }
-  .subtitle { color:#bbb; margin-bottom:1rem; }
-  .badge { display:inline-block; font-size:.7rem; letter-spacing:.08em; border:1px solid #444; padding:4px 8px; border-radius:999px; color:#ddd; }
-  .actions { margin-top:1.25rem; display:flex; gap:.75rem; }
-  .btn { display:inline-block; padding:.75rem 1rem; border-radius:10px; border:1px solid #333; background:#111; color:#fff; font-weight:700; letter-spacing:.04em; }
-  .btn.primary { background:#ff3; color:#111; border-color:#ff3; }
-  .hint { text-align:center; color:#999; margin-top:1.5rem; font-size:.9rem; }
-  .header { position:fixed; top:0; left:0; right:0; padding:1rem 1.5rem; display:flex; justify-content:space-between; align-items:center; background: linear-gradient(180deg, rgba(0,0,0,.7), transparent); border-bottom:1px solid rgba(255,255,255,0.06); }
-  .logo { font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
-  .accent { color:#ff3; }
-  .circles { position: fixed; inset:0; pointer-events:none; opacity:.12; }
-  .circle { position:absolute; border:4px solid #fff; border-radius:50%; left:50%; top:50%; transform:translate(-50%,-50%); }
-  .c1 { width:120px; height:120px; animation: r1 12s linear infinite; }
-  .c2 { width:180px; height:180px; animation: r2 18s linear infinite reverse; }
-  .c3 { width:240px; height:240px; animation: r3 24s linear infinite; }
-  @keyframes r1 { from { transform:translate(-50%,-50%) rotate(0) translateX(45px) rotate(0);} to { transform:translate(-50%,-50%) rotate(360deg) translateX(45px) rotate(-360deg);} }
-  @keyframes r2 { from { transform:translate(-50%,-50%) rotate(0) translateX(70px) rotate(0);} to { transform:translate(-50%,-50%) rotate(360deg) translateX(70px) rotate(-360deg);} }
-  @keyframes r3 { from { transform:translate(-50%,-50%) rotate(0) translateX(95px) rotate(0);} to { transform:translate(-50%,-50%) rotate(360deg) translateX(95px) rotate(-360deg);} }
 
-  /* Marangoni-like color flow for UI card (cursor-driven radial blends) */
-  .ui-card { --mx: 50%; --my: 50%; }
-  .ui-card::before {
-    content:""; position:absolute; inset:-20%; pointer-events:none; opacity:0.9;
-    background:
-      radial-gradient(220px 220px at var(--mx) var(--my), rgba(255,255,51,0.35) 0%, rgba(255,255,51,0.18) 28%, transparent 46%),
-      radial-gradient(200px 200px at calc(var(--mx) + 10%) calc(var(--my) - 12%), rgba(59,130,246,0.28) 0%, rgba(59,130,246,0.12) 24%, transparent 44%),
-      radial-gradient(200px 200px at calc(var(--mx) - 12%) calc(var(--my) + 10%), rgba(16,185,129,0.28) 0%, rgba(16,185,129,0.12) 24%, transparent 44%);
-    filter: blur(18px) saturate(1.15);
-    transition: opacity .2s ease;
+  /* CLI Terminal Section */
+  .cli-terminal {
+    background: #000;
+    color: #00ff00;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
   }
-  .ui-card.pulse::after {
-    content:""; position:absolute; inset:0; pointer-events:none; border-radius:16px;
-    background: radial-gradient(260px 260px at var(--mx) var(--my), rgba(255,255,51,0.35), rgba(0,0,0,0) 60%);
-    animation: uiPulse .6s ease-out forwards;
-  }
-  @keyframes uiPulse { from { opacity:.6; transform: scale(0.98);} to { opacity:0; transform: scale(1.05);} }
 
-  /* CLI card: typographic ripple using text gradients and symbols */
-  .cli-card { --mx: 50%; --my: 50%; }
-  .cli-card .title, .cli-card .subtitle {
-    background: radial-gradient(220px 220px at var(--mx) var(--my), #00ff41, #aaffcc 35%, #cccccc 60%, #777777 100%);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
+  .cli-window {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    background: #000;
+    border: 1px solid #333;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.1);
   }
-  .cli-card::before {
-    content: ">> :: == ** ## $$ @@ && // ";
-    position:absolute; inset: 8px; pointer-events:none; opacity:.07;
-    font-family: 'Monaco','Menlo',monospace; font-size: clamp(10px, 1.4vw, 12px);
-    letter-spacing: .22em; line-height: 1.8; white-space: pre-wrap;
-    display:block;
-    background: repeating-linear-gradient( to bottom, rgba(255,255,255,0.06) 0 1px, transparent 1px 22px );
-    mix-blend-mode: lighten;
-    border-radius:12px;
-  }
-  .cli-card.pulse::after {
-    content:""; position:absolute; inset:0; pointer-events:none; border-radius:16px;
-    background: radial-gradient(260px 260px at var(--mx) var(--my), rgba(0,255,65,0.25), rgba(0,0,0,0) 60%);
-    animation: cliPulse .6s ease-out forwards;
-  }
-  @keyframes cliPulse { from { opacity:.5; transform: scale(0.98);} to { opacity:0; transform: scale(1.05);} }
 
+  .cli-header {
+    background: #222;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .cli-dots {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .cli-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .cli-dot:nth-child(1) { background: #ff5f56; }
+  .cli-dot:nth-child(2) { background: #ffbd2e; }
+  .cli-dot:nth-child(3) { background: #27ca3f; }
+
+  .cli-title {
+    color: #999;
+    font-size: 0.875rem;
+    margin-left: 1rem;
+  }
+
+  .cli-content {
+    padding: 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .cli-line {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .cli-prompt::before {
+    content: "jesse@portfolio:~$ ";
+    color: #00ff00;
+    font-weight: bold;
+  }
+
+  .cli-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 1.2em;
+    background: #00ff00;
+    margin-left: 2px;
+    animation: cli-blink 1.5s infinite;
+  }
+
+  .cli-greeting {
+    color: #00ff00;
+    margin-bottom: 1rem;
+    animation: cli-typewriter 2s ease-out forwards;
+    opacity: 0;
+  }
+
+  .cli-hint {
+    color: #888;
+    font-style: italic;
+    animation: cli-typewriter 2s ease-out forwards 1s;
+    opacity: 0;
+  }
+
+  @keyframes cli-blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  @keyframes cli-typewriter {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  .cli-noscript {
+    display: none;
+    background: #111;
+    color: #ccc;
+    padding: 2rem;
+    border-radius: 8px;
+    margin-top: 2rem;
+  }
+
+  .cli-noscript h3 {
+    color: #00ff00;
+    margin-bottom: 1rem;
+    font-family: inherit;
+  }
+
+  .cli-noscript ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .cli-noscript li {
+    margin-bottom: 0.5rem;
+  }
+
+  .cli-noscript a {
+    color: #00ff00;
+    text-decoration: none;
+    font-family: inherit;
+  }
+
+  .cli-noscript a:hover {
+    text-decoration: underline;
+  }
+
+  .cli-noscript a::before {
+    content: "> ";
+    color: #888;
+  }
+
+  /* Show noscript content when JS is disabled */
+  noscript .cli-noscript {
+    display: block;
+  }
+
+  /* Interactive CLI Elements */
+  .cli-input-line {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+  }
+
+  .cli-prompt-text {
+    color: #00ff00;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  .cli-input {
+    background: transparent;
+    border: none;
+    color: #00ff00;
+    font-family: inherit;
+    font-size: inherit;
+    outline: none;
+    flex: 1;
+    margin-left: 0.5rem;
+  }
+
+  .cli-input::placeholder {
+    color: #666;
+  }
+
+  .cli-cursor-active {
+    display: inline-block;
+    width: 8px;
+    height: 1.2em;
+    background: #00ff00;
+    margin-left: 2px;
+    animation: cli-blink 1.5s infinite;
+  }
+
+  .cli-output {
+    margin-top: 1rem;
+  }
+
+  .cli-output-line {
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+  }
+
+  .cli-output-line.command-echo {
+    color: #00ff00;
+    opacity: 0.8;
+  }
+
+  .cli-output-line.error {
+    color: #ff6b6b;
+  }
+
+  .cli-output-line.info {
+    color: #64b5f6;
+  }
+
+  .cli-output-line.welcome {
+    color: #888;
+  }
+
+  .cli-output-line.help {
+    color: #ccc;
+  }
+
+  .cli-output-line.about,
+  .cli-output-line.projects,
+  .cli-output-line.resume,
+  .cli-output-line.contact {
+    color: #e0e0e0;
+  }
+
+  .cli-output-line.security {
+    color: #4caf50;
+  }
+
+  .cli-output-line.headers {
+    color: #ff9800;
+  }
+
+  /* Resume PDF link styling */
+  .cli-output-line.resume a {
+    color: #64b5f6;
+    text-decoration: underline;
+  }
+
+  .cli-output-line.resume a:hover {
+    color: #90caf9;
+  }
+
+  /* Security documentation link styling */
+  .cli-output-line.security a {
+    color: #81c784;
+    text-decoration: underline;
+  }
+
+  .cli-output-line.security a:hover {
+    color: #a5d6a7;
+  }
+
+  /* Palette generator link styling */
+  .cli-output-line.palette a {
+    color: #e91e63;
+    text-decoration: underline;
+  }
+
+  .cli-output-line.palette a:hover {
+    color: #f06292;
+  }
+
+  /* Planner link styling */
+  .cli-output-line.planner a {
+    color: #3b82f6;
+    text-decoration: underline;
+  }
+
+  .cli-output-line.planner a:hover {
+    color: #60a5fa;
+  }
+
+  /* Enhanced scrolling for terminal */
+  .cli-terminal {
+    max-height: 100vh;
+    overflow-y: auto;
+  }
+
+  /* Interface Toggle */
+  .interface-toggle {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #333;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+    z-index: 100;
+    opacity: 0.7;
+  }
+
+  .interface-toggle:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  }
+
+  .interface-toggle:active {
+    transform: scale(0.95);
+  }
+
+  /* Responsive adjustments for CLI */
   @media (max-width: 768px) {
-    .container { padding:1rem; }
-    .grid { grid-template-columns:1fr; gap:1.5rem; }
-    .card { padding:1.5rem; }
-    .title { font-size:1.75rem; }
+    .cli-terminal {
+      padding: 1rem;
+    }
+
+    .cli-content {
+      padding: 1rem;
+      font-size: 0.875rem;
+    }
   }
 </style>
 </head>
@@ -997,83 +1264,51 @@ if (location.protocol !== 'https:') {
 </script>
 </head>
 <body>
-  <div class="header">
-    <div class="logo">JESSE <span class="accent">RODRIGUEZ</span></div>
-    <div class="badge">Choose Interface</div>
-  </div>
-  <div class="circles" aria-hidden="true">
-    <div class="circle c1"></div>
-    <div class="circle c2"></div>
-    <div class="circle c3"></div>
-  </div>
-  <main class="container" role="main">
-    <div class="grid">
-      <a class="card interface-card cli-card" href="./terminal.html">
-        <div class="badge">CLI</div>
-        <div class="title">Terminal Interface</div>
-        <div class="subtitle">Type commands to explore projects, docs, and tools.</div>
-        <div class="actions">
-          <span class="btn primary">Open CLI</span>
-          <span class="btn">help · projects · nycai</span>
+  <!-- Interface Toggle -->
+  <button class="interface-toggle" onclick="window.location.href='./'" title="Back to Interface Selector">
+    🏠
+  </button>
+
+  <!-- Terminal Hero -->
+  <section class="cli-terminal" id="terminal">
+    <div class="cli-window">
+      <div class="cli-header">
+        <div class="cli-dots">
+          <div class="cli-dot"></div>
+          <div class="cli-dot"></div>
+          <div class="cli-dot"></div>
         </div>
-      </a>
-      <a class="card interface-card ui-card" href="/sandbox-portfolio/">
-        <div class="badge">UI</div>
-        <div class="title">Visual Interface</div>
-        <div class="subtitle">Modern React UI with animations, projects, and pages.</div>
-        <div class="actions">
-          <span class="btn primary">Open UI</span>
-          <span class="btn">React · Three.js · Tailwind</span>
+        <div class="cli-title">jesse@portfolio — Terminal</div>
+      </div>
+      <div class="cli-content">
+        <div class="cli-greeting">
+          Welcome to Jesse Rodriguez's portfolio interface.
         </div>
-      </a>
+        <div class="cli-hint">
+          Type "help" to see available commands.
+        </div>
+        <div class="cli-line cli-prompt">
+          <span class="cli-cursor"></span>
+        </div>
+      </div>
     </div>
-  </main>
-  <div class="hint">Shortcut: press "C" for CLI or "U" for UI</div>
-  <script>
-  (function(){
-    'use strict';
 
-    // Mouse tracking for Marangoni effects
-    document.addEventListener('mousemove', function(e){
-      const cards = document.querySelectorAll('.interface-card');
-      cards.forEach(card => {
-        const rect = card.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        card.style.setProperty('--mx', x + '%');
-        card.style.setProperty('--my', y + '%');
-      });
-    });
+    <!-- Accessible navigation fallback -->
+    <noscript>
+      <div class="cli-noscript">
+        <h3>Available Commands</h3>
+        <ul>
+          <li><a href="#about">about</a> — Learn about Jesse's background and philosophy</li>
+          <li><a href="#projects">projects</a> — View portfolio and recent work</li>
+          <li><a href="#resume">resume</a> — Professional experience and skills</li>
+          <li><a href="#contact">contact</a> — Get in touch for collaborations</li>
+          <li><a href="#security">security</a> — Technical security implementation</li>
+          <li><a href="#headers">headers</a> — View HTTP security headers</li>
+        </ul>
+      </div>
+    </noscript>
+  </section>
 
-    // Pulse effect on click
-    document.addEventListener('click', function(e){
-      const card = e.target.closest('.interface-card');
-      if (card) {
-        card.classList.add('pulse');
-        setTimeout(() => card.classList.remove('pulse'), 600);
-      }
-    });
-
-    // Mobile detection and UI recommendation
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    if (isMobile) {
-      const uiCard = document.querySelector('.ui-card');
-      const badge = uiCard.querySelector('.badge');
-      badge.textContent = 'RECOMMENDED';
-      badge.style.borderColor = '#ff3';
-      badge.style.color = '#ff3';
-    }
-
-    // Keyboard shortcuts
-    document.addEventListener('keydown', function(e){
-      if (e.key.toLowerCase() === 'c') {
-        window.location.href = './terminal.html';
-      }
-      if (e.key.toLowerCase() === 'u') {
-        window.location.href = '/sandbox-portfolio/';
-      }
-    });
-  })();
-  </script>
+  <script src="/assets/cli.js" defer></script>
 </body>
 </html>
