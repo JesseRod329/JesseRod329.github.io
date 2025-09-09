@@ -756,6 +756,146 @@ if (location.protocol !== 'https:') {
   .interface-mode-cli .contact {
     display: none;
   }
+
+  /* Interface Choice Modal */
+  #interface-choice-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  .modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .modal-content {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border-radius: 16px;
+    padding: 2.5rem;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    animation: modalFadeIn 0.3s ease-out;
+  }
+
+  @keyframes modalFadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9) translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  .modal-content h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    text-align: center;
+    color: var(--text-primary);
+  }
+
+  .modal-content p {
+    font-size: 1.125rem;
+    text-align: center;
+    margin: 0 0 2rem 0;
+    color: var(--text-secondary);
+    font-weight: 300;
+  }
+
+  .interface-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .interface-option {
+    background: var(--bg-secondary);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 2rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .interface-option:hover {
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .interface-option:active {
+    transform: translateY(-2px);
+  }
+
+  .option-icon {
+    font-size: 3rem;
+  }
+
+  .option-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .option-description {
+    font-size: 0.875rem;
+    line-height: 1.4;
+    opacity: 0.8;
+    font-weight: 300;
+  }
+
+  /* Modal Responsive */
+  @media (max-width: 768px) {
+    .modal-content {
+      padding: 2rem 1.5rem;
+      margin: 1rem;
+    }
+
+    .modal-content h2 {
+      font-size: 1.75rem;
+    }
+
+    .interface-options {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .interface-option {
+      padding: 1.5rem 1rem;
+    }
+
+    .option-icon {
+      font-size: 2.5rem;
+    }
+
+    .option-title {
+      font-size: 1.125rem;
+    }
+  }
 </style>
 
 <!-- Structured Data -->
@@ -999,8 +1139,6 @@ if (location.protocol !== 'https:') {
   const themeToggle = document.getElementById('themeToggle');
   const themeIcon = document.getElementById('themeIcon');
 
-  // Check for saved interface preference or default to CLI mode
-  const currentInterface = localStorage.getItem('interface') || 'cli';
   const interfaceToggle = document.getElementById('interfaceToggle');
   const interfaceIcon = document.getElementById('interfaceIcon');
 
@@ -1010,16 +1148,8 @@ if (location.protocol !== 'https:') {
     themeIcon.textContent = '☀️';
   }
 
-  // Apply saved interface on load
-  if (currentInterface === 'ui') {
-    root.classList.add('interface-mode-ui');
-    root.classList.remove('interface-mode-cli');
-    interfaceIcon.textContent = '🖥️';
-  } else {
-    root.classList.add('interface-mode-cli');
-    root.classList.remove('interface-mode-ui');
-    interfaceIcon.textContent = '💻';
-  }
+  // Show interface choice modal on each visit
+  showInterfaceChoice();
 
   // Theme toggle function
   function toggleTheme() {
@@ -1036,7 +1166,7 @@ if (location.protocol !== 'https:') {
     }
   }
 
-  // Interface toggle function
+  // Interface toggle function (for during session)
   function toggleInterface() {
     const isUI = root.classList.contains('interface-mode-ui');
 
@@ -1044,13 +1174,66 @@ if (location.protocol !== 'https:') {
       // Switch to CLI mode
       root.classList.remove('interface-mode-ui');
       root.classList.add('interface-mode-cli');
-      localStorage.setItem('interface', 'cli');
       interfaceIcon.textContent = '💻';
     } else {
       // Switch to UI mode
       root.classList.remove('interface-mode-cli');
       root.classList.add('interface-mode-ui');
-      localStorage.setItem('interface', 'ui');
+      interfaceIcon.textContent = '🖥️';
+    }
+  }
+
+  // Interface choice modal function
+  function showInterfaceChoice() {
+    // Create modal overlay
+    const modal = document.createElement('div');
+    modal.id = 'interface-choice-modal';
+    modal.innerHTML = `
+      <div class="modal-overlay">
+        <div class="modal-content">
+          <h2>Choose Your Interface</h2>
+          <p>How would you like to experience Jesse Rodriguez's portfolio?</p>
+          <div class="interface-options">
+            <button class="interface-option cli-option" data-interface="cli">
+              <div class="option-icon">💻</div>
+              <div class="option-title">Terminal Interface</div>
+              <div class="option-description">Interactive command-line experience with authentic terminal aesthetics</div>
+            </button>
+            <button class="interface-option ui-option" data-interface="ui">
+              <div class="option-icon">🖥️</div>
+              <div class="option-title">Web Interface</div>
+              <div class="option-description">Traditional website layout with modern design and smooth animations</div>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Add event listeners for interface choices
+    const cliOption = modal.querySelector('.cli-option');
+    const uiOption = modal.querySelector('.ui-option');
+
+    cliOption.addEventListener('click', () => {
+      selectInterface('cli');
+      modal.remove();
+    });
+
+    uiOption.addEventListener('click', () => {
+      selectInterface('ui');
+      modal.remove();
+    });
+  }
+
+  function selectInterface(choice) {
+    if (choice === 'cli') {
+      root.classList.add('interface-mode-cli');
+      root.classList.remove('interface-mode-ui');
+      interfaceIcon.textContent = '💻';
+    } else {
+      root.classList.add('interface-mode-ui');
+      root.classList.remove('interface-mode-cli');
       interfaceIcon.textContent = '🖥️';
     }
   }
