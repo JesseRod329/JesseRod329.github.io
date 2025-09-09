@@ -9,7 +9,40 @@
 **Security Dashboard:** [https://jesserodriguez.me/security.html](https://jesserodriguez.me/security.html)
 
 **Description:**  
-A comprehensive multi-application portfolio showcasing the intersection of AI, design, and fashion. Features include a main portfolio with dynamic animations, an iOS-style mobile experience, a circular daily planner, a privacy-first fashion color palette generator, an AI brainwave simulator, and enterprise-level security implementations. All applications demonstrate cutting-edge web technologies with zero external dependencies and maximum performance.
+A comprehensive multi-application portfolio showcasing the intersection of AI, design, and fashion. Features a unique interface choice experience where visitors can choose between a CLI terminal interface or a modern React UI, plus an iOS-style mobile experience, a circular daily planner, a privacy-first fashion color palette generator, an AI brainwave simulator, and enterprise-level security implementations. All applications demonstrate cutting-edge web technologies with zero external dependencies and maximum performance.
+
+## 🎯 Interface Choice Experience
+
+**Choose Your Adventure:** The portfolio opens with a beautiful interface selector that lets you choose between two distinct experiences:
+
+### 💻 CLI Terminal Interface
+- **Authentic terminal experience** - Type commands to explore projects, docs, and tools
+- **Interactive command system** - Real terminal commands with live responses
+- **Project navigation** - Browse through all portfolio applications via command line
+- **Help system** - Built-in help commands and documentation
+- **Keyboard shortcuts** - Press 'C' to quickly access CLI mode
+- **Professional aesthetic** - Dark theme with terminal-style typography
+
+### 🖥️ Visual UI Interface  
+- **Modern React experience** - Full React 19 application with TypeScript
+- **Interactive animations** - Three.js backgrounds and Framer Motion transitions
+- **Project showcase** - Beautiful project cards with live demos and descriptions
+- **Responsive design** - Optimized for all devices with Tailwind CSS
+- **Keyboard shortcuts** - Press 'U' to quickly access UI mode
+- **Mobile recommended** - Optimized touch experience for mobile devices
+
+**Visual Effects:**
+- **Marangoni-like hover effects** - Beautiful radial gradients that follow your mouse
+- **Typographic ripple animations** - Dynamic text effects on CLI card
+- **Pulse animations** - Satisfying click feedback with smooth transitions
+- **Dark theme** - Professional black background with high contrast text
+- **Smooth transitions** - 60fps animations with hardware acceleration
+
+**Accessibility:**
+- **Keyboard navigation** - Full keyboard support for both interfaces
+- **Screen reader friendly** - Proper ARIA labels and semantic HTML
+- **High contrast** - Excellent readability with white text on black background
+- **Mobile optimized** - Touch-friendly interface with responsive design
 
 ---
 
