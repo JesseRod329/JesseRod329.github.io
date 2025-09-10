@@ -26,6 +26,7 @@ class PortfolioCLI {
       palette: this.showPalette.bind(this),
       brainwave: this.showBrainwave.bind(this),
       planner: this.showPlanner.bind(this),
+      nycai: this.showNYC.bind(this),
       clear: this.clearTerminal.bind(this)
     };
 
@@ -237,6 +238,7 @@ class PortfolioCLI {
       '  palette   - Fashion color palette generator',
       '  brainwave - AI neural activity simulator',
       '  planner   - Circular daily planner',
+      '  nycai     - NYC Public AI Initiative interactive plan',
       '  clear     - Clear terminal output',
       '',
       'Use TAB for autocomplete, ↑/↓ for command history.',
@@ -568,6 +570,32 @@ class PortfolioCLI {
     
     this.outputContainer.appendChild(outputLine);
     this.scrollToBottom();
+  }
+
+  showNYC() {
+    this.addMultilineOutput([
+      '🏙️ NYC Public AI Initiative',
+      '',
+      'Interactive plan for NYC-owned AI: phases, budget visualization, roadmap, and governance.',
+      '',
+      'Features:',
+      '• Comprehensive 3-phase implementation roadmap',
+      '• Interactive budget visualization with Chart.js',
+      '• Detailed governance framework and oversight structure',
+      '• Public engagement and transparency measures',
+      '• Technical architecture and infrastructure planning',
+      '• Risk assessment and mitigation strategies',
+      '',
+      'Technology Stack:',
+      '• HTML5 and Tailwind CSS for responsive design',
+      '• Chart.js for interactive data visualization',
+      '• Vanilla JavaScript for dynamic interactions',
+      '• Mobile-first responsive design',
+      ''
+    ], 'nycai');
+    
+    // Add link to NYC Public AI Initiative
+    this.addNYCLink();
   }
 
   clearTerminal() {
