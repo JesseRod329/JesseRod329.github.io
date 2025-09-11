@@ -97,6 +97,14 @@
             backdrop-filter: blur(12px) saturate(150%);
             -webkit-backdrop-filter: blur(12px) saturate(150%);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-right: 20px; /* Add margin to prevent overlap */
+        }
+        
+        /* Ensure content doesn't overlap with sidebar on larger screens */
+        @media (min-width: 1024px) {
+            .content-panel {
+                margin-right: 40px;
+            }
         }
 
         .prose-custom { color: #d1d5db; }
@@ -110,21 +118,22 @@
         #toc-nav {
             position: fixed;
             top: 50%;
-            right: -250px;
+            right: -280px; /* Move further off-screen initially */
             transform: translateY(-50%);
             width: 250px;
             max-height: 80vh;
-            background: rgba(15, 15, 15, 0.8);
-            backdrop-filter: blur(10px);
+            background: rgba(15, 15, 15, 0.9);
+            backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 10px 0 0 10px;
             z-index: 5000;
             transition: right 0.5s cubic-bezier(0.25, 1, 0.5, 1);
             opacity: 0;
             pointer-events: none;
+            box-shadow: -5px 0 20px rgba(0, 0, 0, 0.5);
         }
         #toc-nav.visible {
-            right: 0;
+            right: 20px; /* Keep some margin from edge */
             opacity: 1;
             pointer-events: auto;
         }
@@ -137,16 +146,36 @@
             transform: scale(1.05);
             text-shadow: 0 0 8px var(--glow-color);
         }
+        
+        #toc-toggle {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
     </style>
 </head>
 <body class="antialiased">
     <div id="custom-cursor"></div>
     <div id="progress-bar"></div>
 
+    <!-- Toggle Button for Table of Contents -->
+    <button id="toc-toggle" class="fixed top-1/2 right-4 transform -translate-y-1/2 z-6000 bg-black bg-opacity-70 text-white p-3 rounded-l-lg border border-white border-opacity-20 hover:bg-opacity-90 transition-all duration-300">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+    </button>
+
     <!-- Floating Table of Contents -->
     <nav id="toc-nav" class="p-4">
-        <h3 class="font-serif text-lg text-white mb-4">Table of Contents</h3>
-        <div id="toc-list" class="overflow-y-auto max-h-[calc(80vh-50px)] pr-2">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="font-serif text-lg text-white">Table of Contents</h3>
+            <button id="toc-close" class="text-gray-400 hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <div id="toc-list" class="overflow-y-auto max-h-[calc(80vh-80px)] pr-2">
             <!-- Links will be injected here -->
         </div>
     </nav>
@@ -433,16 +462,39 @@ Questions: Is Quality metaphysical or psychological? How persuasive is Pirsig's 
             
             // Progress bar & ToC visibility
             const tocNav = document.getElementById('toc-nav');
+            const tocToggle = document.getElementById('toc-toggle');
+            const tocClose = document.getElementById('toc-close');
             const heroSection = document.querySelector('.hero');
+            
+            // Toggle sidebar manually
+            tocToggle.addEventListener('click', () => {
+                tocNav.classList.toggle('visible');
+            });
+            
+            // Close sidebar when close button is clicked
+            tocClose.addEventListener('click', () => {
+                tocNav.classList.remove('visible');
+            });
+            
+            // Close sidebar when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!tocNav.contains(e.target) && !tocToggle.contains(e.target)) {
+                    tocNav.classList.remove('visible');
+                }
+            });
+            
             window.addEventListener('scroll', () => {
                 const totalHeight = document.body.scrollHeight - window.innerHeight;
                 const progress = (window.scrollY / totalHeight) * 100;
                 document.getElementById('progress-bar').style.width = `${progress}%`;
 
+                // Auto-show toggle button after hero section
                 if(window.scrollY > heroSection.offsetHeight) {
-                    tocNav.classList.add('visible');
+                    tocToggle.style.opacity = '1';
+                    tocToggle.style.pointerEvents = 'auto';
                 } else {
-                    tocNav.classList.remove('visible');
+                    tocToggle.style.opacity = '0';
+                    tocToggle.style.pointerEvents = 'none';
                 }
             });
         });
