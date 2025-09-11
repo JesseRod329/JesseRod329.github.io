@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wrestling News Hub - Debug</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="background">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-wrestling"></i>
+                <h1>Wrestling News Hub</h1>
+            </div>
+            <nav class="nav">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#wwe" class="nav-link">WWE</a>
+                <a href="#aew" class="nav-link">AEW</a>
+                <a href="#indies" class="nav-link">Indies</a>
+            </nav>
+            <button class="refresh-btn" id="refreshBtn">
+                <i class="fas fa-sync-alt"></i>
+                Refresh
+            </button>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <section class="hero">
+                <div class="hero-content glass-card">
+                    <h2>Latest Wrestling News</h2>
+                    <p>Stay updated with the biggest stories from WWE, AEW, and the wrestling world</p>
+                </div>
+            </section>
+
+            <section class="news-grid" id="newsGrid">
+                <div class="loading glass-card">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading wrestling news...</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Wrestling News Hub. All rights reserved.</p>
+            <p>Data sourced from various wrestling news RSS feeds</p>
+        </div>
+    </footer>
+
+    <script src="debug.js"></script>
+</body>
+</html>

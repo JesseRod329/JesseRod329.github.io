@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wrestling News Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .news-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Wrestling News Test</h1>
+        <div id="newsGrid">
+            <div class="loading">
+                <p>Loading...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        console.log('Test script starting...');
+        
+        function loadNews() {
+            console.log('Loading news...');
+            const newsGrid = document.getElementById('newsGrid');
+            
+            const news = [
+                {
+                    title: "Roman Reigns Retains Universal Championship",
+                    excerpt: "The Tribal Chief successfully defended his title at WrestleMania 40.",
+                    source: "WWE"
+                },
+                {
+                    title: "AEW Dynamite Draws Record Viewership",
+                    excerpt: "The latest episode of AEW Dynamite drew the highest ratings in company history.",
+                    source: "AEW"
+                }
+            ];
+            
+            newsGrid.innerHTML = news.map(article => `
+                <div class="news-card">
+                    <h3>${article.title}</h3>
+                    <p>${article.excerpt}</p>
+                    <small>Source: ${article.source}</small>
+                </div>
+            `).join('');
+            
+            console.log('News loaded successfully');
+        }
+        
+        // Load news after 1 second
+        setTimeout(loadNews, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wrestling News Hub</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="background">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-wrestling"></i>
+                <h1>Wrestling News Hub</h1>
+            </div>
+            <button class="refresh-btn" id="refreshBtn">
+                <i class="fas fa-sync-alt"></i>
+                Refresh
+            </button>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <section class="hero">
+                <div class="hero-content glass-card">
+                    <h2>Latest Wrestling News</h2>
+                    <p>Stay updated with the biggest stories from WWE, AEW, and the wrestling world</p>
+                </div>
+            </section>
+
+            <section class="news-grid" id="newsGrid">
+                <div class="loading glass-card">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading wrestling news...</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        console.log('Minimal script starting...');
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded in minimal version');
+            
+            const newsGrid = document.getElementById('newsGrid');
+            if (!newsGrid) {
+                console.error('newsGrid not found!');
+                return;
+            }
+            
+            // Simple news data
+            const news = [
+                {
+                    title: "Roman Reigns Retains Universal Championship at WrestleMania 40",
+                    excerpt: "The Tribal Chief successfully defended his title against Cody Rhodes in a thrilling main event that had fans on the edge of their seats.",
+                    source: "WWE",
+                    date: "2024-04-08",
+                    tags: ["WWE", "WrestleMania", "Championship", "Roman Reigns"],
+                    isBreaking: true
+                },
+                {
+                    title: "AEW Dynamite Draws Record Viewership for Championship Match",
+                    excerpt: "The latest episode of AEW Dynamite featuring a world championship bout drew the highest ratings in company history.",
+                    source: "AEW",
+                    date: "2024-04-07",
+                    tags: ["AEW", "Dynamite", "Championship", "Ratings"],
+                    isBreaking: false
+                },
+                {
+                    title: "CM Punk Returns to WWE After 10 Years",
+                    excerpt: "In a shocking turn of events, CM Punk made his surprise return to WWE during the latest episode of Raw.",
+                    source: "WWE",
+                    date: "2024-04-06",
+                    tags: ["WWE", "CM Punk", "Return", "Raw"],
+                    isBreaking: true
+                }
+            ];
+            
+            // Create news cards
+            newsGrid.innerHTML = news.map(article => `
+                <article class="news-card">
+                    <div class="news-meta">
+                        <span class="news-source">${article.source}</span>
+                        <span class="news-date">${article.date}</span>
+                    </div>
+                    <h3 class="news-title">${article.title}</h3>
+                    <p class="news-excerpt">${article.excerpt}</p>
+                    <div class="news-tags">
+                        ${article.tags.map(tag => `<span class="news-tag">${tag}</span>`).join('')}
+                        ${article.isBreaking ? '<span class="news-tag" style="background: rgba(255, 107, 107, 0.3); color: #ff6b6b;">BREAKING</span>' : ''}
+                    </div>
+                </article>
+            `).join('');
+            
+            console.log('News rendered successfully');
+        });
+        
+        // Add refresh functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const refreshBtn = document.getElementById('refreshBtn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', function() {
+                    console.log('Refresh clicked');
+                    location.reload();
+                });
+            }
+        });
+    </script>
+</body>
+</html>
