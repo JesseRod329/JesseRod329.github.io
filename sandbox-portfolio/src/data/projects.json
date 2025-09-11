@@ -23,7 +23,8 @@
     "links": {
       "repo": "https://github.com/JesseRod329/JesseRod329.github.io",
       "live": "https://jesserod329.github.io/sandbox-portfolio"
-    }
+    },
+    "hidden": true
   },
   {
     "slug": "ios-mobile-experience",

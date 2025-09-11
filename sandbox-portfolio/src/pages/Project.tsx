@@ -5,13 +5,15 @@ import { motion } from "framer-motion";
 
 export default function Project() {
   const { slug } = useParams();
-  const index = projects.findIndex(p => p.slug === slug);
-  const project = projects[index];
+  // Filter out hidden projects for navigation
+  const visibleProjects = projects.filter((p: any) => !p.hidden);
+  const index = visibleProjects.findIndex(p => p.slug === slug);
+  const project = visibleProjects[index];
 
   useEffect(() => {
     // prefetch next project
-    if (projects[index + 1]) {
-      const next = projects[index + 1];
+    if (visibleProjects[index + 1]) {
+      const next = visibleProjects[index + 1];
       // simple image prefetch - check if gallery exists
       if ('gallery' in next && Array.isArray(next.gallery)) {
         next.gallery.forEach((src: string) => {
@@ -20,7 +22,7 @@ export default function Project() {
         });
       }
     }
-  }, [index]);
+  }, [index, visibleProjects]);
 
   if (!project) return <div>Project not found</div>;
 
@@ -94,8 +96,8 @@ export default function Project() {
       </section>
 
       <nav className="flex justify-between mt-12">
-        {index > 0 ? <Link to={`/projects/${projects[index - 1].slug}`} className="text-sm">← Prev</Link> : <div />}
-        {index < projects.length - 1 ? <Link to={`/projects/${projects[index + 1].slug}`} className="text-sm">Next →</Link> : <div />}
+        {index > 0 ? <Link to={`/projects/${visibleProjects[index - 1].slug}`} className="text-sm">← Prev</Link> : <div />}
+        {index < visibleProjects.length - 1 ? <Link to={`/projects/${visibleProjects[index + 1].slug}`} className="text-sm">Next →</Link> : <div />}
       </nav>
     </motion.article>
   );
