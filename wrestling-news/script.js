@@ -129,36 +129,52 @@ class WrestlingNewsHub {
 
     async fetchRedditNews() {
         try {
-            // Use a CORS proxy to fetch Reddit RSS
-            const proxyUrl = 'https://api.allorigins.win/raw?url=';
+            // Try multiple CORS proxies for better reliability
+            const proxies = [
+                'https://api.allorigins.win/raw?url=',
+                'https://cors-anywhere.herokuapp.com/',
+                'https://api.codetabs.com/v1/proxy?quest='
+            ];
+            
             const redditRSS = 'https://www.reddit.com/r/SquaredCircle/.rss';
             
-            const response = await fetch(proxyUrl + encodeURIComponent(redditRSS));
-            if (!response.ok) throw new Error('Reddit RSS fetch failed');
+            for (const proxyUrl of proxies) {
+                try {
+                    const response = await fetch(proxyUrl + encodeURIComponent(redditRSS));
+                    if (!response.ok) continue;
+                    
+                    const text = await response.text();
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(text, 'text/xml');
+                    const items = xmlDoc.querySelectorAll('item');
+                    
+                    if (items.length > 0) {
+                        return Array.from(items).slice(0, 5).map((item, index) => {
+                            const title = item.querySelector('title')?.textContent || 'Reddit Post';
+                            const link = item.querySelector('link')?.textContent || '#';
+                            const pubDate = item.querySelector('pubDate')?.textContent || new Date().toISOString();
+                            const description = item.querySelector('description')?.textContent || '';
+                            
+                            return {
+                                id: `reddit_${Date.now()}_${index}`,
+                                title: this.cleanRedditTitle(title),
+                                excerpt: this.extractExcerpt(description),
+                                source: 'Reddit',
+                                date: this.parseRSSDate(pubDate),
+                                tags: ['Reddit', 'Community', 'Discussion'],
+                                category: 'community',
+                                url: link,
+                                isBreaking: false
+                            };
+                        });
+                    }
+                } catch (proxyError) {
+                    console.warn(`Proxy ${proxyUrl} failed:`, proxyError);
+                    continue;
+                }
+            }
             
-            const text = await response.text();
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(text, 'text/xml');
-            const items = xmlDoc.querySelectorAll('item');
-            
-            return Array.from(items).slice(0, 5).map((item, index) => {
-                const title = item.querySelector('title')?.textContent || 'Reddit Post';
-                const link = item.querySelector('link')?.textContent || '#';
-                const pubDate = item.querySelector('pubDate')?.textContent || new Date().toISOString();
-                const description = item.querySelector('description')?.textContent || '';
-                
-                return {
-                    id: `reddit_${Date.now()}_${index}`,
-                    title: this.cleanRedditTitle(title),
-                    excerpt: this.extractExcerpt(description),
-                    source: 'Reddit',
-                    date: this.parseRSSDate(pubDate),
-                    tags: ['Reddit', 'Community', 'Discussion'],
-                    category: 'community',
-                    url: link,
-                    isBreaking: false
-                };
-            });
+            throw new Error('All Reddit proxies failed');
         } catch (error) {
             console.warn('Reddit news failed:', error);
             return [];
@@ -374,68 +390,88 @@ class WrestlingNewsHub {
     }
 
     getMockWrestlingNews() {
+        const today = new Date();
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        const twoDaysAgo = new Date(today);
+        twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+        const threeDaysAgo = new Date(today);
+        threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+        const fourDaysAgo = new Date(today);
+        fourDaysAgo.setDate(fourDaysAgo.getDate() - 4);
+        const fiveDaysAgo = new Date(today);
+        fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
+        const sixDaysAgo = new Date(today);
+        sixDaysAgo.setDate(sixDaysAgo.getDate() - 6);
+        const weekAgo = new Date(today);
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        const twoWeeksAgo = new Date(today);
+        twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+        const threeWeeksAgo = new Date(today);
+        threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
+
         return [
             {
                 id: 1,
-                title: "Roman Reigns Retains Universal Championship at WrestleMania 40",
-                excerpt: "The Tribal Chief successfully defended his title against Cody Rhodes in a thrilling main event that had fans on the edge of their seats.",
+                title: "WWE Raw Delivers Shocking Return and Championship Change",
+                excerpt: "Monday Night Raw featured a surprise return and a major championship change that left fans buzzing about the future of WWE.",
                 source: "WWE",
-                date: "2024-04-08",
-                tags: ["WWE", "WrestleMania", "Championship", "Roman Reigns"],
+                date: today.toISOString().split('T')[0],
+                tags: ["WWE", "Raw", "Championship", "Return"],
                 category: "wwe",
                 url: "#",
                 isBreaking: true
             },
             {
                 id: 2,
-                title: "AEW Dynamite Draws Record Viewership for Championship Match",
-                excerpt: "The latest episode of AEW Dynamite featuring a world championship bout drew the highest ratings in company history.",
+                title: "AEW Dynamite Sets New Attendance Record",
+                excerpt: "All Elite Wrestling's latest Dynamite episode drew the largest crowd in company history, marking a major milestone for the promotion.",
                 source: "AEW",
-                date: "2024-04-07",
-                tags: ["AEW", "Dynamite", "Championship", "Ratings"],
+                date: yesterday.toISOString().split('T')[0],
+                tags: ["AEW", "Dynamite", "Attendance", "Record"],
                 category: "aew",
                 url: "#",
                 isBreaking: false
             },
             {
                 id: 3,
-                title: "CM Punk Returns to WWE After 10 Years",
-                excerpt: "In a shocking turn of events, CM Punk made his surprise return to WWE during the latest episode of Raw.",
+                title: "Major WWE Superstar Announces Departure",
+                excerpt: "A longtime WWE superstar has announced their departure from the company, sending shockwaves through the wrestling world.",
                 source: "WWE",
-                date: "2024-04-06",
-                tags: ["WWE", "CM Punk", "Return", "Raw"],
+                date: twoDaysAgo.toISOString().split('T')[0],
+                tags: ["WWE", "Departure", "Superstar", "Breaking"],
                 category: "wwe",
                 url: "#",
                 isBreaking: true
             },
             {
                 id: 4,
-                title: "Kenny Omega Announces New Championship Tournament",
-                excerpt: "The Cleaner revealed plans for an international championship tournament featuring wrestlers from around the world.",
+                title: "AEW Revolution 2025 Card Takes Shape",
+                excerpt: "Several major matches have been announced for AEW Revolution 2025, including a highly anticipated championship bout.",
                 source: "AEW",
-                date: "2024-04-05",
-                tags: ["AEW", "Kenny Omega", "Tournament", "International"],
+                date: threeDaysAgo.toISOString().split('T')[0],
+                tags: ["AEW", "Revolution", "PPV", "Championship"],
                 category: "aew",
                 url: "#",
                 isBreaking: false
             },
             {
                 id: 5,
-                title: "Independent Wrestling Scene Sees Major Growth",
-                excerpt: "Local wrestling promotions across the country are reporting record attendance and increased fan engagement.",
+                title: "Independent Wrestling Scene Sees Major Growth in 2025",
+                excerpt: "Local wrestling promotions across the country are reporting record attendance and increased fan engagement in the new year.",
                 source: "Indie",
-                date: "2024-04-04",
-                tags: ["Independent", "Growth", "Attendance", "Local"],
+                date: fourDaysAgo.toISOString().split('T')[0],
+                tags: ["Independent", "Growth", "Attendance", "2025"],
                 category: "indies",
                 url: "#",
                 isBreaking: false
             },
             {
                 id: 6,
-                title: "WWE NXT Announces New Signings",
-                excerpt: "The developmental brand revealed several new talents joining the roster from the independent circuit.",
+                title: "WWE NXT Announces New Signings for 2025",
+                excerpt: "The developmental brand revealed several new talents joining the roster from the independent circuit and international promotions.",
                 source: "WWE",
-                date: "2024-04-03",
+                date: fiveDaysAgo.toISOString().split('T')[0],
                 tags: ["WWE", "NXT", "Signings", "Talent"],
                 category: "wwe",
                 url: "#",
@@ -444,9 +480,9 @@ class WrestlingNewsHub {
             {
                 id: 7,
                 title: "AEW Collision Features Stunning Debut",
-                excerpt: "A mysterious new wrestler made their debut on AEW Collision, leaving fans speculating about their identity.",
+                excerpt: "A mysterious new wrestler made their debut on AEW Collision, leaving fans speculating about their identity and future plans.",
                 source: "AEW",
-                date: "2024-04-02",
+                date: sixDaysAgo.toISOString().split('T')[0],
                 tags: ["AEW", "Collision", "Debut", "Mystery"],
                 category: "aew",
                 url: "#",
@@ -454,11 +490,11 @@ class WrestlingNewsHub {
             },
             {
                 id: 8,
-                title: "Wrestling Hall of Fame Announces 2024 Inductees",
-                excerpt: "The prestigious hall of fame revealed this year's inductees, including several legendary performers.",
+                title: "Wrestling Hall of Fame Announces 2025 Inductees",
+                excerpt: "The prestigious hall of fame revealed this year's inductees, including several legendary performers from various eras.",
                 source: "General",
-                date: "2024-04-01",
-                tags: ["Hall of Fame", "Inductees", "Legends", "Honor"],
+                date: weekAgo.toISOString().split('T')[0],
+                tags: ["Hall of Fame", "Inductees", "Legends", "2025"],
                 category: "general",
                 url: "#",
                 isBreaking: false
@@ -468,7 +504,7 @@ class WrestlingNewsHub {
                 title: "Reddit Community Discusses Latest WWE Raw",
                 excerpt: "Fans on r/SquaredCircle are buzzing about the latest episode of Monday Night Raw and its implications for upcoming storylines.",
                 source: "Reddit",
-                date: "2024-04-01",
+                date: twoWeeksAgo.toISOString().split('T')[0],
                 tags: ["Reddit", "Community", "Discussion", "Raw"],
                 category: "community",
                 url: "#",
@@ -476,11 +512,11 @@ class WrestlingNewsHub {
             },
             {
                 id: 10,
-                title: "Wikipedia Updates WrestleMania 40 Event Page",
-                excerpt: "The comprehensive Wikipedia page for WrestleMania 40 has been updated with latest match results and attendance figures.",
+                title: "Wikipedia Updates Major Wrestling Event Pages",
+                excerpt: "The comprehensive Wikipedia pages for major wrestling events have been updated with latest match results and attendance figures.",
                 source: "Wikipedia",
-                date: "2024-03-31",
-                tags: ["Wikipedia", "WrestleMania", "Updates", "Information"],
+                date: threeWeeksAgo.toISOString().split('T')[0],
+                tags: ["Wikipedia", "Updates", "Information", "Events"],
                 category: "general",
                 url: "#",
                 isBreaking: false
