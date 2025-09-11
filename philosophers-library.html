@@ -148,9 +148,13 @@
         }
         
         #toc-toggle {
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
+            opacity: 1;
+            pointer-events: auto;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        
+        #toc-toggle:hover {
+            transform: translateY(-50%) scale(1.05);
         }
     </style>
 </head>
@@ -159,10 +163,11 @@
     <div id="progress-bar"></div>
 
     <!-- Toggle Button for Table of Contents -->
-    <button id="toc-toggle" class="fixed top-1/2 right-4 transform -translate-y-1/2 z-6000 bg-black bg-opacity-70 text-white p-3 rounded-l-lg border border-white border-opacity-20 hover:bg-opacity-90 transition-all duration-300">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <button id="toc-toggle" class="fixed top-1/2 right-4 transform -translate-y-1/2 z-[6000] bg-indigo-600 bg-opacity-90 text-white p-4 rounded-l-lg border border-indigo-400 border-opacity-30 hover:bg-opacity-100 hover:border-opacity-50 transition-all duration-300 shadow-lg hover:shadow-xl">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
+        <span class="text-xs mt-1 block opacity-70">MENU</span>
     </button>
 
     <!-- Floating Table of Contents -->
@@ -483,19 +488,20 @@ Questions: Is Quality metaphysical or psychological? How persuasive is Pirsig's 
                 }
             });
             
+            // Keyboard shortcut (M key) to toggle menu
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'm' || e.key === 'M') {
+                    tocNav.classList.toggle('visible');
+                }
+                if (e.key === 'Escape') {
+                    tocNav.classList.remove('visible');
+                }
+            });
+            
             window.addEventListener('scroll', () => {
                 const totalHeight = document.body.scrollHeight - window.innerHeight;
                 const progress = (window.scrollY / totalHeight) * 100;
                 document.getElementById('progress-bar').style.width = `${progress}%`;
-
-                // Auto-show toggle button after hero section
-                if(window.scrollY > heroSection.offsetHeight) {
-                    tocToggle.style.opacity = '1';
-                    tocToggle.style.pointerEvents = 'auto';
-                } else {
-                    tocToggle.style.opacity = '0';
-                    tocToggle.style.pointerEvents = 'none';
-                }
             });
         });
 
