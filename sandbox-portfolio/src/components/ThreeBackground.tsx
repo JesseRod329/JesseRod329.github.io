@@ -9,6 +9,7 @@ export default function ThreeBackground() {
 
   useEffect(() => {
     if (!mountRef.current) return
+    const mount = mountRef.current
 
     // Scene setup
     const scene = new THREE.Scene()
@@ -27,7 +28,7 @@ export default function ThreeBackground() {
     renderer.setSize(window.innerWidth, window.innerHeight)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     rendererRef.current = renderer
-    mountRef.current.appendChild(renderer.domElement)
+    mount.appendChild(renderer.domElement)
 
     // Create floating particles
     const particleCount = 100
@@ -116,8 +117,8 @@ export default function ThreeBackground() {
       }
       window.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('resize', handleResize)
-      if (mountRef.current && renderer.domElement) {
-        mountRef.current.removeChild(renderer.domElement)
+      if (mount && renderer.domElement) {
+        mount.removeChild(renderer.domElement)
       }
       renderer.dispose()
     }

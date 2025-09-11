@@ -150,33 +150,41 @@ class PlannerFormHandler {
   }
 
   createTaskElement(taskId, taskData) {
-    const taskDiv = document.createElement('div');
-    taskDiv.className = 'task-item';
-    taskDiv.dataset.taskId = taskId;
-    
-    const priorityClass = `priority-${taskData.priority}`;
-    const priorityIcon = this.getPriorityIcon(taskData.priority);
-    
-    taskDiv.innerHTML = `
-      <div class="task-time">${taskData.time}</div>
+    const taskElement = document.createElement('div');
+    taskElement.className = 'task-item';
+    taskElement.dataset.taskId = taskId;
+    taskElement.setAttribute('role', 'listitem');
+    taskElement.setAttribute('aria-label', `Task: ${taskData.description} at ${taskData.time}, ${taskData.priority} priority`);
+
+    taskElement.innerHTML = `
+      <div class="task-time" aria-label="Time: ${taskData.time}">${taskData.time}</div>
       <div class="task-content">
-        <div class="task-description">${this.escapeHtml(taskData.description)}</div>
-        <div class="task-priority ${priorityClass}">
-          <span class="priority-icon">${priorityIcon}</span>
-          <span class="priority-text">${taskData.priority}</span>
+        <div class="task-description" aria-label="Description: ${this.escapeHtml(taskData.description)}">${this.escapeHtml(taskData.description)}</div>
+        <div class="task-priority priority-${taskData.priority}" aria-label="Priority: ${taskData.priority}">
+          ${this.getPriorityIcon(taskData.priority)}
         </div>
       </div>
-      <div class="task-actions">
-        <button type="button" class="btn btn-sm btn-edit" onclick="plannerFormHandler.editTask('${taskId}')" aria-label="Edit task">
-          <span class="btn-icon">✏️</span>
+      <div class="task-actions" role="group" aria-label="Task actions">
+        <button class="task-btn btn-edit" aria-label="Edit task: ${this.escapeHtml(taskData.description)}" title="Edit this task">
+          <span class="btn-icon" aria-hidden="true">✏️</span>
         </button>
-        <button type="button" class="btn btn-sm btn-delete" onclick="plannerFormHandler.removeTask('${taskId}')" aria-label="Remove task">
-          <span class="btn-icon">🗑️</span>
+        <button class="task-btn btn-delete" aria-label="Delete task: ${this.escapeHtml(taskData.description)}" title="Delete this task">
+          <span class="btn-icon" aria-hidden="true">🗑️</span>
         </button>
       </div>
     `;
 
-    return taskDiv;
+    const editBtn = taskElement.querySelector('.btn-edit');
+    if(editBtn) {
+        editBtn.addEventListener('click', () => this.editTask(taskId));
+    }
+
+    const deleteBtn = taskElement.querySelector('.btn-delete');
+    if(deleteBtn) {
+        deleteBtn.addEventListener('click', () => this.removeTask(taskId));
+    }
+
+    return taskElement;
   }
 
   getPriorityIcon(priority) {

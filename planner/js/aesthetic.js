@@ -64,75 +64,123 @@
     renderTasks();
   }
 
-  window.removeTask = function(id){
-    if (state.tasks.length > 1){
-      state.tasks = state.tasks.filter(t=>t.id!==id);
+  function removeTask(id) {
+    if (state.tasks.length > 1) {
+      state.tasks = state.tasks.filter(t => t.id !== id);
       renderTasks();
     }
   }
 
-  window.updateTask = function(id, field, value){
-    const t = state.tasks.find(x=>x.id===id);
+  function updateTask(id, field, value) {
+    const t = state.tasks.find(x => x.id === id);
     if (!t) return;
     t[field] = value;
     if (field === 'timeLabel') t.color = value.toLowerCase();
   }
 
-  function addNote(){ state.notes.push(''); renderNotes(); }
-  window.updateNote = function(idx, val){ state.notes[idx] = val; }
-  window.removeNote = function(idx){ if (state.notes.length>1){ state.notes.splice(idx,1); renderNotes(); } }
+  function addNote() {
+    state.notes.push('');
+    renderNotes();
+  }
 
-  function renderTasks(){
-    const c = byId('tasks-container'); if (!c) return; c.innerHTML = '';
-    state.tasks.forEach((task, i)=>{
+  function updateNote(idx, val) {
+    state.notes[idx] = val;
+  }
+
+  function removeNote(idx) {
+    if (state.notes.length > 1) {
+      state.notes.splice(idx, 1);
+      renderNotes();
+    }
+  }
+
+  function renderTasks() {
+    const c = byId('tasks-container');
+    if (!c) return;
+    c.innerHTML = '';
+    state.tasks.forEach((task, i) => {
       const card = document.createElement('div');
       card.className = 'task-card';
       card.innerHTML = `
-        <h3>Task ${i+1}</h3>
-        ${state.tasks.length>1?`<button type="button" class="btn btn-remove" onclick="removeTask(${task.id})">×</button>`:''}
+        <h3>Task ${i + 1}</h3>
+        ${state.tasks.length > 1 ? `<button type="button" class="btn btn-remove" data-task-id="${task.id}">×</button>` : ''}
         <div class="task-card-grid">
           <div class="form-group">
             <label class="form-label">Task Title *</label>
-            <input type="text" class="form-input" value="${escapeHtml(task.title)}" placeholder="e.g., Website Work" onchange="updateTask(${task.id}, 'title', this.value)">
+            <input type="text" class="form-input" value="${escapeHtml(task.title)}" placeholder="e.g., Website Work" data-task-id="${task.id}" data-field="title">
           </div>
           <div class="form-group">
             <label class="form-label">Time</label>
-            <input type="text" class="form-input" value="${escapeHtml(task.time)}" placeholder="e.g., 9:00 AM - 10:00 AM" onchange="updateTask(${task.id}, 'time', this.value)">
+            <input type="text" class="form-input" value="${escapeHtml(task.time)}" placeholder="e.g., 9:00 AM - 10:00 AM" data-task-id="${task.id}" data-field="time">
           </div>
         </div>
         <div class="form-group">
           <label class="form-label">Description</label>
-          <textarea class="form-textarea" placeholder="Describe what you need to do..." onchange="updateTask(${task.id}, 'description', this.value)">${escapeHtml(task.description)}</textarea>
+          <textarea class="form-textarea" placeholder="Describe what you need to do..." data-task-id="${task.id}" data-field="description">${escapeHtml(task.description)}</textarea>
         </div>
         <div class="task-card-grid">
           <div class="form-group">
             <label class="form-label">Time Period</label>
-            <select class="form-select" onchange="updateTask(${task.id}, 'timeLabel', this.value)">
-              ${['Morning','Afternoon','Evening'].map(p=>`<option ${task.timeLabel===p?'selected':''}>${p}</option>`).join('')}
+            <select class="form-select" data-task-id="${task.id}" data-field="timeLabel">
+              ${['Morning', 'Afternoon', 'Evening'].map(p => `<option ${task.timeLabel === p ? 'selected' : ''}>${p}</option>`).join('')}
             </select>
           </div>
           <div class="form-group">
             <label class="form-label">Priority</label>
-            <select class="form-select" onchange="updateTask(${task.id}, 'priority', this.value)">
-              ${['High','Medium','Low'].map(p=>`<option ${task.priority===p?'selected':''}>${p}</option>`).join('')}
+            <select class="form-select" data-task-id="${task.id}" data-field="priority">
+              ${['High', 'Medium', 'Low'].map(p => `<option ${task.priority === p ? 'selected' : ''}>${p}</option>`).join('')}
             </select>
           </div>
         </div>`;
       c.appendChild(card);
+
+      const removeButton = card.querySelector('.btn-remove');
+      if (removeButton) {
+        removeButton.addEventListener('click', (e) => {
+            const taskId = parseInt(e.currentTarget.dataset.taskId, 10);
+            removeTask(taskId);
+        });
+      }
+
+      card.querySelectorAll('input, textarea, select').forEach(input => {
+        input.addEventListener('change', (e) => {
+          const taskId = parseInt(e.target.dataset.taskId, 10);
+          const field = e.target.dataset.field;
+          const value = e.target.value;
+          updateTask(taskId, field, value);
+        });
+      });
     });
   }
 
-  function renderNotes(){
-    const container = byId('notes-container'); if (!container) return; container.innerHTML = '';
-    state.notes.forEach((note, idx)=>{
+  function renderNotes() {
+    const container = byId('notes-container');
+    if (!container) return;
+    container.innerHTML = '';
+    state.notes.forEach((note, idx) => {
       const row = document.createElement('div');
       row.className = 'note-row';
       row.innerHTML = `
         <span class="note-emoji">💡</span>
-        <input type="text" class="form-input note-input" value="${escapeHtml(note)}" placeholder="Add a helpful reminder..." onchange="updateNote(${idx}, this.value)">
-        ${state.notes.length>1?`<button type="button" class="btn-note-remove" onclick="removeNote(${idx})">×</button>`:''}
+        <input type="text" class="form-input note-input" value="${escapeHtml(note)}" placeholder="Add a helpful reminder..." data-note-idx="${idx}">
+        ${state.notes.length > 1 ? `<button type="button" class="btn-note-remove" data-note-idx="${idx}">×</button>` : ''}
       `;
       container.appendChild(row);
+
+      const removeButton = row.querySelector('.btn-note-remove');
+      if (removeButton) {
+        removeButton.addEventListener('click', (e) => {
+            const noteIdx = parseInt(e.currentTarget.dataset.noteIdx, 10);
+            removeNote(noteIdx);
+        });
+      }
+
+      const input = row.querySelector('input');
+      input.addEventListener('change', (e) => {
+        const noteIdx = parseInt(e.target.dataset.noteIdx, 10);
+        const value = e.target.value;
+        updateNote(noteIdx, value);
+      });
     });
   }
 

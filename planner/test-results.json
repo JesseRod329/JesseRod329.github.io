@@ -1,10 +1,13 @@
 {
-  "timestamp": "2025-09-02T06:23:42.633Z",
+  "timestamp": "2025-09-11T08:10:47.373Z",
   "duration": 0,
   "results": {
-    "passed": 48,
-    "failed": 0,
+    "passed": 46,
+    "failed": 2,
     "total": 48,
-    "issues": []
+    "issues": [
+      "Unsafe CSP directives found in index.html",
+      "Unsafe CSP directives found in index.prod.html"
+    ]
   }
 }

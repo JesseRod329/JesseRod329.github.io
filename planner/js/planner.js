@@ -431,7 +431,7 @@ class CircularPlannerGenerator {
     // Sort tasks by time
     const sortedTasks = [...tasks].sort((a, b) => a.time.localeCompare(b.time));
 
-    return sortedTasks.map((task, index) => `
+    const tasksHtml = sortedTasks.map((task, index) => `
       <div class="task-item" data-task-index="${index}">
         <div class="task-time">${task.time}</div>
         <div class="task-content">
@@ -447,6 +447,22 @@ class CircularPlannerGenerator {
         </div>
       </div>
     `).join('');
+
+    // Add event listeners after the HTML is created
+    setTimeout(() => {
+        const taskItems = document.querySelectorAll('.task-item');
+        taskItems.forEach(item => {
+            const completeBtn = item.querySelector('.task-btn.complete');
+            if (completeBtn) {
+                completeBtn.addEventListener('click', (e) => {
+                    const taskIndex = parseInt(e.currentTarget.dataset.taskIndex);
+                    this.toggleTaskCompletion(taskIndex);
+                });
+            }
+        });
+    }, 0);
+
+    return tasksHtml;
   }
 
   setupPlannerInteractions() {
