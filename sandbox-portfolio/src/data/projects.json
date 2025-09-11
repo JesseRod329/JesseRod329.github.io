@@ -1,5 +1,18 @@
 [
   {
+    "slug": "philosophers-library",
+    "title": "The Philosopher's Library",
+    "date": "2025-01",
+    "roles": ["Frontend", "Design"],
+    "collab": "Jesse R.",
+    "summary": "An immersive digital library featuring 100 essential philosophical texts with generative Three.js art backgrounds, interactive navigation, and contemplative reading experience.",
+    "stack": ["HTML", "CSS", "JavaScript", "Three.js", "Tailwind CSS"],
+    "links": {
+      "repo": "https://github.com/JesseRod329/JesseRod329.github.io",
+      "live": "https://jesserodriguez.me/philosophers-library.html"
+    }
+  },
+  {
     "slug": "nyc-public-ai",
     "title": "NYC's Public AI Future",
     "date": "2025-09",
