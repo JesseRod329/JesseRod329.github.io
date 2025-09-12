@@ -1,0 +1,42 @@
+name: Update Wrestling News
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Allow manual trigger
+  push:
+    paths:
+      - 'wrestling-news/scripts/update-news.py'
+
+jobs:
+  update-news:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        pip install feedparser requests beautifulsoup4 lxml
+    
+    - name: Run news updater
+      run: |
+        cd wrestling-news
+        python scripts/update-news.py
+    
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add wrestling-news/data/
+        git diff --staged --quiet || git commit -m "Update wrestling news - $(date)"
+        git push

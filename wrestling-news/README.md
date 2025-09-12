@@ -1,142 +1,120 @@
-# Wrestling News Hub
+# 🏆 Wrestling News Hub
 
-A beautiful, modern wrestling news website featuring a clean glassmorphic UI design. Stay updated with the latest news from WWE, AEW, and the wrestling world.
+A beautiful, glass-morphism styled wrestling news aggregator that displays Raw and SmackDown news in a split-screen layout. Built as a static site that can be deployed to GitHub Pages.
 
-## Features
+## ✨ Features
 
-- 🎨 **Glassmorphic Design** - Modern frosted glass UI with beautiful animations
-- 📱 **Responsive Layout** - Works perfectly on desktop, tablet, and mobile devices
-- 🔍 **Smart Filtering** - Filter news by WWE, AEW, Indies, or Breaking news
-- ⚡ **Fast Loading** - Optimized performance with smooth animations
-- 🎯 **Clean Interface** - Simple, intuitive design focused on content
+- **Glass UI Design**: Modern frosted glass effects with beautiful animations
+- **Raw vs SmackDown Theme**: Red theme for Raw, blue theme for SmackDown
+- **Responsive Layout**: Works perfectly on desktop, tablet, and mobile
+- **External Links**: Click any article to read the full story on the original site
+- **Auto-refresh**: Automatically updates every 30 minutes
+- **No Backend Required**: Pure HTML/CSS/JavaScript - perfect for GitHub Pages
 
-## Technologies Used
+## 🎨 Design Highlights
 
-- **HTML5** - Semantic markup structure
-- **CSS3** - Glassmorphic styling with backdrop filters and animations
-- **Vanilla JavaScript** - No frameworks, pure JS for maximum performance
-- **Font Awesome** - Icons for enhanced visual appeal
-- **Google Fonts** - Inter font family for modern typography
+- **Split-screen layout** with Raw (red) on the left, SmackDown (blue) on the right
+- **Glass morphism effects** with backdrop blur and transparency
+- **Animated particles** in the background
+- **Smooth hover effects** and transitions
+- **Wrestling-inspired typography** using Orbitron and Roboto fonts
 
-## Design Features
+## 🚀 Getting Started
 
-### Glassmorphism Effects
-- Semi-transparent backgrounds with backdrop blur
-- Subtle borders and shadows for depth
-- Smooth hover animations and transitions
-- Gradient orbs for dynamic background effects
+1. **Clone or download** this repository
+2. **Open `index.html`** in your web browser
+3. **Customize the news sources** by editing the JSON files in the `data/` folder
+4. **Deploy to GitHub Pages** for live hosting
 
-### Responsive Design
-- Mobile-first approach
-- Flexible grid layout that adapts to screen size
-- Touch-friendly interface elements
-- Optimized typography scaling
-
-### User Experience
-- Intuitive navigation with active states
-- Smooth scrolling and transitions
-- Loading states and error handling
-- Keyboard navigation support (Ctrl/Cmd + R to refresh)
-
-## File Structure
+## 📁 Project Structure
 
 ```
 wrestling-news/
-├── index.html          # Main HTML structure
-├── styles.css          # Glassmorphic CSS styling
-├── script.js           # JavaScript functionality
-└── README.md           # Project documentation
+├── index.html              # Main HTML file
+├── css/
+│   └── style.css          # All styling and glass UI effects
+├── js/
+│   └── main.js            # JavaScript functionality
+├── data/
+│   ├── raw-news.json      # Raw news articles
+│   └── smackdown-news.json # SmackDown news articles
+└── README.md              # This file
 ```
 
-## Getting Started
+## 🔧 Customization
 
-1. **Clone or Download** the project files
-2. **Open** `index.html` in your web browser
-3. **Enjoy** the wrestling news with beautiful glass UI!
+### Adding News Sources
 
-No build process or dependencies required - it's a pure HTML/CSS/JS website.
+Edit the JSON files in the `data/` folder to add your own news articles:
 
-## Data Sources
-
-The site integrates with multiple real data sources to provide comprehensive wrestling news:
-
-### ✅ **Active Data Sources**
-- **Reddit r/SquaredCircle** - Community discussions and news via RSS feed
-- **Wrestling News RSS Feeds** - Multiple sources including:
-  - Wrestling Inc. RSS Feed
-  - Cageside Seats RSS Feed  
-  - Wrestling News RSS Feed
-  - Fightful RSS Feed
-- **Wikipedia API** - Event information and wrestler biographies
-- **Cagematch.net** - Wrestling database integration (simulated)
-
-### 🔧 **Technical Implementation**
-- **CORS Proxy** - Uses `api.allorigins.win` to bypass CORS restrictions
-- **RSS Parsing** - Native JavaScript DOMParser for XML parsing
-- **API Integration** - Direct Wikipedia API calls for structured data
-- **Fallback System** - Graceful degradation to mock data if sources fail
-
-### 📊 **Data Processing**
-- **Smart Categorization** - Automatic WWE/AEW/Indies classification
-- **Tag Generation** - Dynamic tags based on content analysis
-- **Breaking News Detection** - Identifies urgent news items
-- **Source Attribution** - Clear indication of data origin
-
-## Customization
-
-### Colors
-The color scheme can be easily customized by modifying the CSS variables in `styles.css`:
-
-```css
-/* Main gradient background */
-background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-
-/* Accent colors */
---primary-color: #ff6b6b;
---secondary-color: #4ecdc4;
---tertiary-color: #f093fb;
+```json
+{
+  "title": "Your Article Title",
+  "summary": "Brief description of the article",
+  "source": "News Source Name",
+  "url": "https://example.com/article",
+  "publishedAt": "2024-01-15T20:00:00Z"
+}
 ```
-
-### Content
-To add real data sources, modify the `fetchWrestlingNews()` function in `script.js` to integrate with actual RSS feeds or APIs.
 
 ### Styling
-The glassmorphic effects can be adjusted by modifying the backdrop-filter and background properties in the `.glass-card` class.
 
-## Browser Support
+The CSS is organized with clear sections:
+- `:root` - Color variables and design tokens
+- `.background` - Background effects and particles
+- `.news-section` - Main content areas
+- `.glass-ui` - Glass morphism effects
+- `@media` - Responsive design breakpoints
 
-- ✅ Chrome 76+
-- ✅ Firefox 78+
-- ✅ Safari 13+
-- ✅ Edge 79+
+## 🌐 Deployment
 
-*Note: Glassmorphic effects require backdrop-filter support*
+### GitHub Pages
 
-## Performance
+1. Push your code to a GitHub repository
+2. Go to Settings > Pages
+3. Select "Deploy from a branch"
+4. Choose "main" branch and "/ (root)" folder
+5. Your site will be live at `https://yourusername.github.io/repository-name`
 
-- **Lightweight** - No external dependencies
-- **Fast Loading** - Optimized CSS and JavaScript
-- **Smooth Animations** - Hardware-accelerated transitions
-- **Mobile Optimized** - Touch-friendly interactions
+### Other Static Hosts
 
-## Future Enhancements
+This site works with any static hosting service:
+- Netlify
+- Vercel
+- Surge.sh
+- Firebase Hosting
 
-- [ ] Real-time RSS feed integration
-- [ ] Search functionality
-- [ ] Article bookmarking
-- [ ] Dark/light theme toggle
-- [ ] Push notifications for breaking news
-- [ ] Social media sharing
-- [ ] Comments system
-- [ ] User preferences
+## 🎯 Future Enhancements
 
-## License
+- RSS feed integration for automatic news updates
+- Search and filtering functionality
+- Dark/light mode toggle
+- Push notifications for breaking news
+- Social media integration
+- News categories and tags
+
+## 🛠️ Technical Details
+
+- **No Dependencies**: Pure vanilla HTML, CSS, and JavaScript
+- **Mobile-First**: Responsive design that works on all devices
+- **Performance**: Optimized for fast loading and smooth animations
+- **Accessibility**: Semantic HTML and keyboard navigation support
+
+## 📱 Browser Support
+
+- Chrome (recommended)
+- Firefox
+- Safari
+- Edge
+- Mobile browsers
+
+## 🤝 Contributing
+
+Feel free to submit issues, fork the repository, and create pull requests for any improvements.
+
+## 📄 License
 
 This project is open source and available under the MIT License.
-
-## Contributing
-
-Feel free to submit issues, feature requests, or pull requests to improve the wrestling news hub!
 
 ---
 

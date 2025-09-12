@@ -49,15 +49,16 @@ class WrestlingNewsHub {
 
         try {
             // Try to fetch real news first with a shorter timeout
-            const realNews = await this.fetchWithTimeout(this.fetchRealTimeNews(), 15000);
+            console.log('Attempting to fetch real-time news...');
+            const realNews = await this.fetchWithTimeout(this.fetchRealTimeNews(), 10000);
             
             if (realNews && realNews.length > 0) {
-                console.log('Real news loaded:', realNews.length, 'items');
+                console.log('✅ Real news loaded:', realNews.length, 'items');
                 this.newsData = realNews;
                 this.filteredData = [...realNews];
             } else {
-                console.log('No real news available, using fallback data');
-                const fallbackData = this.getMockWrestlingNews();
+                console.log('⚠️ No real news available, using enhanced fallback data');
+                const fallbackData = this.getEnhancedMockWrestlingNews();
                 this.newsData = fallbackData;
                 this.filteredData = [...fallbackData];
             }
@@ -68,9 +69,9 @@ class WrestlingNewsHub {
             this.updateNewsStats();
             
         } catch (error) {
-            console.error('Error loading news:', error);
-            console.log('Falling back to mock data');
-            const fallbackData = this.getMockWrestlingNews();
+            console.error('❌ Error loading news:', error);
+            console.log('🔄 Falling back to enhanced mock data');
+            const fallbackData = this.getEnhancedMockWrestlingNews();
             this.newsData = fallbackData;
             this.filteredData = [...fallbackData];
             this.renderNews();
@@ -78,7 +79,7 @@ class WrestlingNewsHub {
             this.updateNewsStats();
         } finally {
             this.isLoading = false;
-            console.log('Loading completed');
+            console.log('✅ Loading completed');
         }
     }
 
@@ -86,22 +87,41 @@ class WrestlingNewsHub {
         const allNews = [];
         
         try {
-            console.log('Fetching real-time wrestling news...');
+            console.log('🔍 Fetching real-time wrestling news...');
+            
+            // Test basic connectivity first
+            console.log('🧪 Testing basic connectivity...');
+            try {
+                const testResponse = await fetch('https://httpbin.org/get', { 
+                    method: 'GET',
+                    mode: 'cors',
+                    headers: { 'Accept': 'application/json' }
+                });
+                if (testResponse.ok) {
+                    console.log('✅ Basic connectivity test passed');
+                } else {
+                    console.warn('⚠️ Basic connectivity test failed');
+                }
+            } catch (testError) {
+                console.warn('⚠️ Basic connectivity test failed:', testError);
+            }
             
             // Try multiple sources in parallel with timeout
+            console.log('📡 Attempting to fetch from multiple sources...');
             const sources = await Promise.allSettled([
-                this.fetchWithTimeout(this.fetchRedditNews(), 10000),
-                this.fetchWithTimeout(this.fetchWrestlingRSSFeeds(), 10000),
-                this.fetchWithTimeout(this.fetchWikipediaWrestlingData(), 10000)
+                this.fetchWithTimeout(this.fetchRedditNews(), 8000),
+                this.fetchWithTimeout(this.fetchWrestlingRSSFeeds(), 8000),
+                this.fetchWithTimeout(this.fetchWikipediaWrestlingData(), 8000),
+                this.fetchWithTimeout(this.fetchSimpleTestData(), 5000)
             ]);
             
             // Combine results from all sources
             sources.forEach((result, index) => {
                 if (result.status === 'fulfilled' && result.value && result.value.length > 0) {
                     allNews.push(...result.value);
-                    console.log(`Source ${index + 1} provided ${result.value.length} articles`);
+                    console.log(`✅ Source ${index + 1} provided ${result.value.length} articles`);
                 } else {
-                    console.warn(`Source ${index + 1} failed:`, result.reason);
+                    console.warn(`❌ Source ${index + 1} failed:`, result.reason?.message || 'Unknown error');
                 }
             });
             
@@ -110,11 +130,11 @@ class WrestlingNewsHub {
                 .sort((a, b) => new Date(b.date) - new Date(a.date))
                 .slice(0, 20);
                 
-            console.log(`Total real-time news: ${sortedNews.length} articles`);
+            console.log(`📊 Total real-time news: ${sortedNews.length} articles`);
             return sortedNews;
             
         } catch (error) {
-            console.error('Error fetching real-time news:', error);
+            console.error('❌ Error fetching real-time news:', error);
             return [];
         }
     }
@@ -132,8 +152,9 @@ class WrestlingNewsHub {
             // Try multiple CORS proxies for better reliability
             const proxies = [
                 'https://api.allorigins.win/raw?url=',
-                'https://cors-anywhere.herokuapp.com/',
-                'https://api.codetabs.com/v1/proxy?quest='
+                'https://corsproxy.io/?',
+                'https://api.codetabs.com/v1/proxy?quest=',
+                'https://thingproxy.freeboard.io/fetch/'
             ];
             
             const redditRSS = 'https://www.reddit.com/r/SquaredCircle/.rss';
@@ -186,45 +207,64 @@ class WrestlingNewsHub {
             const rssFeeds = [
                 'https://www.wrestlinginc.com/feed/',
                 'https://www.cagesideseats.com/rss',
-                'https://www.wrestlingnews.co/feed/'
+                'https://www.wrestlingnews.co/feed/',
+                'https://www.fightful.com/feed',
+                'https://www.pwinsider.com/feed/'
             ];
 
-            const proxyUrl = 'https://api.allorigins.win/raw?url=';
+            const proxies = [
+                'https://api.allorigins.win/raw?url=',
+                'https://corsproxy.io/?',
+                'https://api.codetabs.com/v1/proxy?quest='
+            ];
+            
             const allNews = [];
 
             for (const feedUrl of rssFeeds) {
-                try {
-                    const response = await fetch(proxyUrl + encodeURIComponent(feedUrl));
-                    if (!response.ok) continue;
-                    
-                    const text = await response.text();
-                    const parser = new DOMParser();
-                    const xmlDoc = parser.parseFromString(text, 'text/xml');
-                    const items = xmlDoc.querySelectorAll('item');
-                    
-                    const feedNews = Array.from(items).slice(0, 3).map((item, index) => {
-                        const title = item.querySelector('title')?.textContent || 'Wrestling News';
-                        const link = item.querySelector('link')?.textContent || '#';
-                        const pubDate = item.querySelector('pubDate')?.textContent || new Date().toISOString();
-                        const description = item.querySelector('description')?.textContent || '';
-                        const source = this.extractSourceFromFeed(feedUrl);
+                let success = false;
+                for (const proxyUrl of proxies) {
+                    try {
+                        const response = await fetch(proxyUrl + encodeURIComponent(feedUrl));
+                        if (!response.ok) continue;
                         
-                        return {
-                            id: `${source.toLowerCase()}_${Date.now()}_${index}`,
-                            title: this.cleanTitle(title),
-                            excerpt: this.extractExcerpt(description),
-                            source: source,
-                            date: this.parseRSSDate(pubDate),
-                            tags: this.generateTags(title, description),
-                            category: this.categorizeNews(title, source),
-                            url: link,
-                            isBreaking: this.isBreakingNews(title)
-                        };
-                    });
-                    
-                    allNews.push(...feedNews);
-                } catch (feedError) {
-                    console.warn(`Failed to fetch from ${feedUrl}:`, feedError);
+                        const text = await response.text();
+                        const parser = new DOMParser();
+                        const xmlDoc = parser.parseFromString(text, 'text/xml');
+                        const items = xmlDoc.querySelectorAll('item');
+                        
+                        if (items.length > 0) {
+                            const feedNews = Array.from(items).slice(0, 3).map((item, index) => {
+                                const title = item.querySelector('title')?.textContent || 'Wrestling News';
+                                const link = item.querySelector('link')?.textContent || '#';
+                                const pubDate = item.querySelector('pubDate')?.textContent || new Date().toISOString();
+                                const description = item.querySelector('description')?.textContent || '';
+                                const source = this.extractSourceFromFeed(feedUrl);
+                                
+                                return {
+                                    id: `${source.toLowerCase()}_${Date.now()}_${index}`,
+                                    title: this.cleanTitle(title),
+                                    excerpt: this.extractExcerpt(description),
+                                    source: source,
+                                    date: this.parseRSSDate(pubDate),
+                                    tags: this.generateTags(title, description),
+                                    category: this.categorizeNews(title, source),
+                                    url: link,
+                                    isBreaking: this.isBreakingNews(title)
+                                };
+                            });
+                            
+                            allNews.push(...feedNews);
+                            success = true;
+                            break; // Success with this proxy, move to next feed
+                        }
+                    } catch (proxyError) {
+                        console.warn(`Proxy ${proxyUrl} failed for ${feedUrl}:`, proxyError);
+                        continue;
+                    }
+                }
+                
+                if (!success) {
+                    console.warn(`All proxies failed for ${feedUrl}`);
                 }
             }
 
@@ -273,6 +313,38 @@ class WrestlingNewsHub {
             return wikipediaNews;
         } catch (error) {
             console.warn('Wikipedia data failed:', error);
+            return [];
+        }
+    }
+
+    async fetchSimpleTestData() {
+        try {
+            console.log('🧪 Testing simple data fetch...');
+            
+            // Try to fetch from a simple, reliable API
+            const response = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=3');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log('✅ Simple test data fetch successful');
+            
+            // Convert to wrestling news format
+            return data.map((post, index) => ({
+                id: `test_${Date.now()}_${index}`,
+                title: `Test Wrestling News: ${post.title}`,
+                excerpt: post.body.substring(0, 150) + '...',
+                source: 'Test API',
+                date: new Date().toISOString().split('T')[0],
+                tags: ['Test', 'API', 'Connectivity'],
+                category: 'general',
+                url: '#',
+                isBreaking: false
+            }));
+            
+        } catch (error) {
+            console.warn('❌ Simple test data fetch failed:', error);
             return [];
         }
     }
@@ -387,6 +459,141 @@ class WrestlingNewsHub {
                 this.loadNews();
             }
         });
+    }
+
+    getEnhancedMockWrestlingNews() {
+        const today = new Date();
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        const twoDaysAgo = new Date(today);
+        twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+        const threeDaysAgo = new Date(today);
+        threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+        const fourDaysAgo = new Date(today);
+        fourDaysAgo.setDate(fourDaysAgo.getDate() - 4);
+        const fiveDaysAgo = new Date(today);
+        fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
+        const sixDaysAgo = new Date(today);
+        sixDaysAgo.setDate(sixDaysAgo.getDate() - 6);
+        const weekAgo = new Date(today);
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        const twoWeeksAgo = new Date(today);
+        twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+        const threeWeeksAgo = new Date(today);
+        threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
+
+        return [
+            {
+                id: 1,
+                title: "WWE Raw Delivers Shocking Return and Championship Change",
+                excerpt: "Monday Night Raw featured a surprise return and a major championship change that left fans buzzing about the future of WWE.",
+                source: "WWE",
+                date: today.toISOString().split('T')[0],
+                tags: ["WWE", "Raw", "Championship", "Return"],
+                category: "wwe",
+                url: "#",
+                isBreaking: true
+            },
+            {
+                id: 2,
+                title: "AEW Dynamite Sets New Attendance Record",
+                excerpt: "All Elite Wrestling's latest Dynamite episode drew the largest crowd in company history, marking a major milestone for the promotion.",
+                source: "AEW",
+                date: yesterday.toISOString().split('T')[0],
+                tags: ["AEW", "Dynamite", "Attendance", "Record"],
+                category: "aew",
+                url: "#",
+                isBreaking: false
+            },
+            {
+                id: 3,
+                title: "Major WWE Superstar Announces Departure",
+                excerpt: "A longtime WWE superstar has announced their departure from the company, sending shockwaves through the wrestling world.",
+                source: "WWE",
+                date: twoDaysAgo.toISOString().split('T')[0],
+                tags: ["WWE", "Departure", "Superstar", "Breaking"],
+                category: "wwe",
+                url: "#",
+                isBreaking: true
+            },
+            {
+                id: 4,
+                title: "AEW Revolution 2025 Card Takes Shape",
+                excerpt: "Several major matches have been announced for AEW Revolution 2025, including a highly anticipated championship bout.",
+                source: "AEW",
+                date: threeDaysAgo.toISOString().split('T')[0],
+                tags: ["AEW", "Revolution", "PPV", "Championship"],
+                category: "aew",
+                url: "#",
+                isBreaking: false
+            },
+            {
+                id: 5,
+                title: "Independent Wrestling Scene Sees Major Growth in 2025",
+                excerpt: "Local wrestling promotions across the country are reporting record attendance and increased fan engagement in the new year.",
+                source: "Indie",
+                date: fourDaysAgo.toISOString().split('T')[0],
+                tags: ["Independent", "Growth", "Attendance", "2025"],
+                category: "indies",
+                url: "#",
+                isBreaking: false
+            },
+            {
+                id: 6,
+                title: "WWE NXT Announces New Signings for 2025",
+                excerpt: "The developmental brand revealed several new talents joining the roster from the independent circuit and international promotions.",
+                source: "WWE",
+                date: fiveDaysAgo.toISOString().split('T')[0],
+                tags: ["WWE", "NXT", "Signings", "Talent"],
+                category: "wwe",
+                url: "#",
+                isBreaking: false
+            },
+            {
+                id: 7,
+                title: "AEW Collision Features Stunning Debut",
+                excerpt: "A mysterious new wrestler made their debut on AEW Collision, leaving fans speculating about their identity and future plans.",
+                source: "AEW",
+                date: sixDaysAgo.toISOString().split('T')[0],
+                tags: ["AEW", "Collision", "Debut", "Mystery"],
+                category: "aew",
+                url: "#",
+                isBreaking: true
+            },
+            {
+                id: 8,
+                title: "Wrestling Hall of Fame Announces 2025 Inductees",
+                excerpt: "The prestigious hall of fame revealed this year's inductees, including several legendary performers from various eras.",
+                source: "General",
+                date: weekAgo.toISOString().split('T')[0],
+                tags: ["Hall of Fame", "Inductees", "Legends", "2025"],
+                category: "general",
+                url: "#",
+                isBreaking: false
+            },
+            {
+                id: 9,
+                title: "Reddit Community Discusses Latest WWE Raw",
+                excerpt: "Fans on r/SquaredCircle are buzzing about the latest episode of Monday Night Raw and its implications for upcoming storylines.",
+                source: "Reddit",
+                date: twoWeeksAgo.toISOString().split('T')[0],
+                tags: ["Reddit", "Community", "Discussion", "Raw"],
+                category: "community",
+                url: "#",
+                isBreaking: false
+            },
+            {
+                id: 10,
+                title: "Wikipedia Updates Major Wrestling Event Pages",
+                excerpt: "The comprehensive Wikipedia pages for major wrestling events have been updated with latest match results and attendance figures.",
+                source: "Wikipedia",
+                date: threeWeeksAgo.toISOString().split('T')[0],
+                tags: ["Wikipedia", "Updates", "Information", "Events"],
+                category: "general",
+                url: "#",
+                isBreaking: false
+            }
+        ];
     }
 
     getMockWrestlingNews() {

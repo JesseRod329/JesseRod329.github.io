@@ -3,78 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wrestling News Hub</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Wrestling News Hub - Raw vs SmackDown | Jesse Rodriguez</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="background">
-        <div class="gradient-orb orb-1"></div>
-        <div class="gradient-orb orb-2"></div>
-        <div class="gradient-orb orb-3"></div>
+        <div class="background-gradient"></div>
+        <div class="particles"></div>
     </div>
 
     <header class="header">
-        <div class="container">
-            <div class="logo">
-                <i class="fas fa-wrestling"></i>
-                <h1>Wrestling News Hub</h1>
-            </div>
-            <nav class="nav">
-                <a href="#home" class="nav-link active">Home</a>
-                <a href="#wwe" class="nav-link">WWE</a>
-                <a href="#aew" class="nav-link">AEW</a>
-                <a href="#indies" class="nav-link">Indies</a>
-                <a href="#community" class="nav-link">Reddit</a>
-                <a href="#general" class="nav-link">Events</a>
-            </nav>
-            <button class="refresh-btn" id="refreshBtn">
-                <i class="fas fa-sync-alt"></i>
-                Loading Latest News...
-            </button>
+        <div class="header-content">
+            <h1 class="main-title">
+                <span class="wrestling-text">WRESTLING</span>
+                <span class="news-text">NEWS HUB</span>
+            </h1>
+            <p class="subtitle">Raw vs SmackDown - Latest Wrestling News</p>
         </div>
     </header>
 
-    <main class="main">
-        <div class="container">
-            <section class="hero">
-                <div class="hero-content glass-card">
-                    <h2>Latest Wrestling News</h2>
-                    <p>Stay updated with the biggest stories from WWE, AEW, and the wrestling world</p>
-                    <div class="news-stats" id="newsStats">
-                        <span class="news-count">Loading latest news...</span>
-                    </div>
+    <main class="main-container">
+        <!-- Raw News Section (Red) -->
+        <section class="news-section raw-section">
+            <div class="section-header">
+                <div class="brand-logo raw-logo">
+                    <h2>RAW</h2>
+                    <div class="brand-accent"></div>
                 </div>
-            </section>
+                <div class="section-stats">
+                    <span class="news-count" id="raw-count">0</span>
+                    <span class="news-label">Articles</span>
+                </div>
+            </div>
+            
+            <div class="news-container" id="raw-news">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Loading Raw news...</p>
+                </div>
+            </div>
+        </section>
 
-            <section class="filters">
-                <div class="filter-buttons">
-                    <button class="filter-btn active" data-filter="all">All News</button>
-                    <button class="filter-btn" data-filter="wwe">WWE</button>
-                    <button class="filter-btn" data-filter="aew">AEW</button>
-                    <button class="filter-btn" data-filter="breaking">Breaking</button>
-                    <button class="filter-btn" data-filter="community">Reddit</button>
-                    <button class="filter-btn" data-filter="general">Events</button>
-                </div>
-            </section>
-
-            <section class="news-grid" id="newsGrid">
-                <div class="loading glass-card">
-                    <i class="fas fa-spinner fa-spin"></i>
-                    <p>Loading wrestling news...</p>
-                </div>
-            </section>
+        <!-- Divider -->
+        <div class="divider">
+            <div class="divider-line"></div>
+            <div class="vs-badge">VS</div>
+            <div class="divider-line"></div>
         </div>
+
+        <!-- SmackDown News Section (Blue) -->
+        <section class="news-section smackdown-section">
+            <div class="section-header">
+                <div class="brand-logo smackdown-logo">
+                    <h2>SMACKDOWN</h2>
+                    <div class="brand-accent"></div>
+                </div>
+                <div class="section-stats">
+                    <span class="news-count" id="smackdown-count">0</span>
+                    <span class="news-label">Articles</span>
+                </div>
+            </div>
+            
+            <div class="news-container" id="smackdown-news">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Loading SmackDown news...</p>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="footer">
-        <div class="container">
-            <p>&copy; 2024 Wrestling News Hub. All rights reserved.</p>
-            <p>Data sourced from various wrestling news RSS feeds</p>
+        <div class="footer-content">
+            <p>Powered by wrestling passion • Updated automatically</p>
+            <div class="social-links">
+                <a href="https://github.com/JesseRod329" class="social-link">GitHub</a>
+                <a href="https://jesserodriguez.me" class="social-link">Portfolio</a>
+            </div>
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
