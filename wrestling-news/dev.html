@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wrestling News Hub - DEV MODE | Jesse Rodriguez</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Dev Mode Styles -->
+    <style>
+        .dev-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            z-index: 1000;
+            animation: devPulse 2s infinite;
+        }
+        
+        @keyframes devPulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        
+        .dev-controls {
+            position: fixed;
+            top: 40px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #ff6b6b;
+            border-radius: 10px;
+            padding: 15px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            z-index: 999;
+            min-width: 200px;
+        }
+        
+        .dev-controls h3 {
+            margin: 0 0 10px 0;
+            color: #ff6b6b;
+            font-size: 14px;
+        }
+        
+        .dev-controls button {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            margin: 2px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        
+        .dev-controls button:hover {
+            background: #ff5252;
+        }
+        
+        .dev-controls input, .dev-controls select {
+            width: 100%;
+            padding: 5px;
+            margin: 2px 0;
+            border: 1px solid #333;
+            background: #222;
+            color: white;
+            border-radius: 3px;
+            font-size: 11px;
+        }
+        
+        .dev-stats {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #4ecdc4;
+            border-radius: 10px;
+            padding: 15px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            z-index: 999;
+            min-width: 200px;
+        }
+        
+        .dev-stats h3 {
+            margin: 0 0 10px 0;
+            color: #4ecdc4;
+            font-size: 14px;
+        }
+        
+        .dev-stats .stat {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+        
+        .dev-stats .stat-value {
+            color: #4ecdc4;
+            font-weight: bold;
+        }
+        
+        /* Override main styles for dev mode */
+        .header {
+            margin-top: 40px; /* Account for dev banner */
+        }
+        
+        /* Dev mode specific animations */
+        .news-article.dev-highlight {
+            animation: devHighlight 1s ease-in-out;
+            border: 2px solid #ff6b6b !important;
+        }
+        
+        @keyframes devHighlight {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .dev-mode-indicator {
+            position: fixed;
+            top: 50px;
+            left: 20px;
+            background: #ff6b6b;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <div class="dev-banner">
+        🚧 DEVELOPMENT MODE - Testing New Features 🚧
+    </div>
+    
+    <div class="dev-mode-indicator">
+        DEV
+    </div>
+    
+    <div class="dev-controls">
+        <h3>Dev Controls</h3>
+        <button onclick="toggleDevMode()">Toggle Dev Mode</button>
+        <button onclick="addTestNews()">Add Test News</button>
+        <button onclick="clearAllNews()">Clear News</button>
+        <button onclick="simulateError()">Simulate Error</button>
+        <button onclick="changeTheme()">Change Theme</button>
+        <button onclick="exportData()">Export Data</button>
+        <button onclick="importData()">Import Data</button>
+        
+        <hr style="margin: 10px 0; border-color: #333;">
+        
+        <label>Animation Speed:</label>
+        <input type="range" id="animationSpeed" min="0.1" max="3" step="0.1" value="1" onchange="setAnimationSpeed(this.value)">
+        
+        <label>Theme:</label>
+        <select id="themeSelect" onchange="changeTheme(this.value)">
+            <option value="default">Default (Raw vs SmackDown)</option>
+            <option value="dark">Dark Mode</option>
+            <option value="neon">Neon Mode</option>
+            <option value="minimal">Minimal</option>
+        </select>
+        
+        <label>News Count:</label>
+        <input type="number" id="newsCount" min="1" max="50" value="10" onchange="setNewsCount(this.value)">
+    </div>
+    
+    <div class="dev-stats">
+        <h3>Live Stats</h3>
+        <div class="stat">
+            <span>Raw Articles:</span>
+            <span class="stat-value" id="rawCount">0</span>
+        </div>
+        <div class="stat">
+            <span>SmackDown Articles:</span>
+            <span class="stat-value" id="smackdownCount">0</span>
+        </div>
+        <div class="stat">
+            <span>Total Load Time:</span>
+            <span class="stat-value" id="loadTime">0ms</span>
+        </div>
+        <div class="stat">
+            <span>Last Update:</span>
+            <span class="stat-value" id="lastUpdate">Never</span>
+        </div>
+        <div class="stat">
+            <span>Dev Mode:</span>
+            <span class="stat-value" id="devModeStatus">ON</span>
+        </div>
+    </div>
+
+    <div class="background">
+        <div class="background-gradient"></div>
+        <div class="particles"></div>
+    </div>
+
+    <header class="header">
+        <div class="header-content">
+            <h1 class="main-title">
+                <span class="wrestling-text">WRESTLING</span>
+                <span class="news-text">NEWS HUB</span>
+                <span style="font-size: 0.5em; color: #ff6b6b; margin-left: 10px;">[DEV]</span>
+            </h1>
+            <p class="subtitle">Raw vs SmackDown - Latest Wrestling News (Development Mode)</p>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- Raw News Section (Red) -->
+        <section class="news-section raw-section">
+            <div class="section-header">
+                <div class="brand-logo raw-logo">
+                    <h2>RAW</h2>
+                    <div class="brand-accent"></div>
+                </div>
+                <div class="section-stats">
+                    <span class="news-count" id="raw-count">0</span>
+                    <span class="news-label">Articles</span>
+                </div>
+            </div>
+            
+            <div class="news-container" id="raw-news">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Loading Raw news...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Divider -->
+        <div class="divider">
+            <div class="divider-line"></div>
+            <div class="vs-badge">VS</div>
+            <div class="divider-line"></div>
+        </div>
+
+        <!-- SmackDown News Section (Blue) -->
+        <section class="news-section smackdown-section">
+            <div class="section-header">
+                <div class="brand-logo smackdown-logo">
+                    <h2>SMACKDOWN</h2>
+                    <div class="brand-accent"></div>
+                </div>
+                <div class="section-stats">
+                    <span class="news-count" id="smackdown-count">0</span>
+                    <span class="news-label">Articles</span>
+                </div>
+            </div>
+            
+            <div class="news-container" id="smackdown-news">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Loading SmackDown news...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>Powered by wrestling passion • Updated automatically • <strong>DEVELOPMENT MODE</strong></p>
+            <div class="social-links">
+                <a href="https://github.com/JesseRod329" class="social-link">GitHub</a>
+                <a href="https://jesserodriguez.me" class="social-link">Portfolio</a>
+                <a href="index.html" class="social-link">Live Version</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    
+    <!-- Dev Mode JavaScript -->
+    <script>
+        // Dev Mode Variables
+        let devMode = true;
+        let animationSpeed = 1;
+        let currentTheme = 'default';
+        let startTime = Date.now();
+        
+        // Initialize dev mode
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDevStats();
+            setInterval(updateDevStats, 1000);
+            console.log('🚧 Development Mode Activated');
+        });
+        
+        // Dev Mode Functions
+        function toggleDevMode() {
+            devMode = !devMode;
+            document.getElementById('devModeStatus').textContent = devMode ? 'ON' : 'OFF';
+            document.querySelector('.dev-banner').style.display = devMode ? 'block' : 'none';
+            console.log('Dev Mode:', devMode ? 'ON' : 'OFF');
+        }
+        
+        function addTestNews() {
+            const testNews = [
+                {
+                    title: "🔴 DEV: Test Raw News Article",
+                    summary: "This is a test article created in development mode to test new features and functionality.",
+                    source: "Dev Mode",
+                    url: "#",
+                    publishedAt: new Date().toISOString()
+                },
+                {
+                    title: "🔵 DEV: Test SmackDown News Article", 
+                    summary: "Another test article to verify the development environment is working correctly.",
+                    source: "Dev Mode",
+                    url: "#",
+                    publishedAt: new Date().toISOString()
+                }
+            ];
+            
+            // Add to both sections
+            testNews.forEach((article, index) => {
+                const section = index === 0 ? 'raw' : 'smackdown';
+                const container = document.getElementById(`${section}-news`);
+                const articleElement = createDevArticleElement(article, section);
+                container.appendChild(articleElement);
+            });
+            
+            updateDevStats();
+            console.log('✅ Test news added');
+        }
+        
+        function createDevArticleElement(article, section) {
+            const articleDiv = document.createElement('div');
+            articleDiv.className = 'news-article dev-highlight';
+            
+            const timeAgo = getTimeAgo(article.publishedAt);
+            
+            articleDiv.innerHTML = `
+                <div class="article-title">${article.title}</div>
+                <div class="article-summary">${article.summary}</div>
+                <div class="article-meta">
+                    <span class="article-source">${article.source}</span>
+                    <span class="article-time">${timeAgo}</span>
+                </div>
+            `;
+            
+            articleDiv.addEventListener('click', () => {
+                console.log('Dev: Article clicked:', article.title);
+                if (devMode) {
+                    alert(`Dev Mode: ${article.title}\n\nThis would normally open: ${article.url}`);
+                }
+            });
+            
+            return articleDiv;
+        }
+        
+        function clearAllNews() {
+            document.getElementById('raw-news').innerHTML = '<div class="no-news"><p>No news available (cleared by dev mode)</p></div>';
+            document.getElementById('smackdown-news').innerHTML = '<div class="no-news"><p>No news available (cleared by dev mode)</p></div>';
+            updateDevStats();
+            console.log('🗑️ All news cleared');
+        }
+        
+        function simulateError() {
+            console.error('🚨 Simulated error for testing');
+            alert('Dev Mode: Simulated error triggered!\n\nCheck console for details.');
+        }
+        
+        function changeTheme(theme = null) {
+            if (theme) currentTheme = theme;
+            else {
+                const themes = ['default', 'dark', 'neon', 'minimal'];
+                const currentIndex = themes.indexOf(currentTheme);
+                currentTheme = themes[(currentIndex + 1) % themes.length];
+            }
+            
+            document.body.className = `theme-${currentTheme}`;
+            console.log('🎨 Theme changed to:', currentTheme);
+        }
+        
+        function setAnimationSpeed(speed) {
+            animationSpeed = parseFloat(speed);
+            document.documentElement.style.setProperty('--animation-speed', animationSpeed + 's');
+            console.log('⚡ Animation speed set to:', animationSpeed);
+        }
+        
+        function setNewsCount(count) {
+            console.log('📊 News count set to:', count);
+            // This would be implemented to limit news display
+        }
+        
+        function exportData() {
+            const data = {
+                rawNews: window.rawNews || [],
+                smackdownNews: window.smackdownNews || [],
+                devMode: devMode,
+                theme: currentTheme,
+                timestamp: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'wrestling-news-dev-data.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            console.log('💾 Data exported');
+        }
+        
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const data = JSON.parse(e.target.result);
+                            console.log('📥 Data imported:', data);
+                            alert('Dev Mode: Data imported successfully!\n\nCheck console for details.');
+                        } catch (error) {
+                            console.error('Import error:', error);
+                            alert('Dev Mode: Import failed!\n\nCheck console for details.');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+        
+        function updateDevStats() {
+            const rawCount = document.getElementById('raw-news').children.length;
+            const smackdownCount = document.getElementById('smackdown-news').children.length;
+            const loadTime = Date.now() - startTime;
+            
+            document.getElementById('rawCount').textContent = rawCount;
+            document.getElementById('smackdownCount').textContent = smackdownCount;
+            document.getElementById('loadTime').textContent = loadTime + 'ms';
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+        }
+        
+        function getTimeAgo(dateString) {
+            const now = new Date();
+            const published = new Date(dateString);
+            const diffInMinutes = Math.floor((now - published) / (1000 * 60));
+            
+            if (diffInMinutes < 1) return 'Just now';
+            if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+            
+            const diffInHours = Math.floor(diffInMinutes / 60);
+            if (diffInHours < 24) return `${diffInHours}h ago`;
+            
+            const diffInDays = Math.floor(diffInHours / 24);
+            return `${diffInDays}d ago`;
+        }
+        
+        // Override the main app's loadNewsData function for dev mode
+        if (window.WrestlingNewsHub) {
+            const originalLoadNewsData = window.WrestlingNewsHub.prototype.loadNewsData;
+            window.WrestlingNewsHub.prototype.loadNewsData = function() {
+                console.log('🔧 Dev Mode: Overriding news loading');
+                // Call original function but add dev mode features
+                return originalLoadNewsData.call(this).then(() => {
+                    updateDevStats();
+                });
+            };
+        }
+        
+        // Add keyboard shortcuts for dev mode
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'd':
+                        e.preventDefault();
+                        toggleDevMode();
+                        break;
+                    case 't':
+                        e.preventDefault();
+                        addTestNews();
+                        break;
+                    case 'c':
+                        e.preventDefault();
+                        clearAllNews();
+                        break;
+                    case 'e':
+                        e.preventDefault();
+                        simulateError();
+                        break;
+                }
+            }
+        });
+        
+        console.log('🎮 Dev Mode Keyboard Shortcuts:');
+        console.log('Ctrl/Cmd + D: Toggle Dev Mode');
+        console.log('Ctrl/Cmd + T: Add Test News');
+        console.log('Ctrl/Cmd + C: Clear All News');
+        console.log('Ctrl/Cmd + E: Simulate Error');
+    </script>
+</body>
+</html>
