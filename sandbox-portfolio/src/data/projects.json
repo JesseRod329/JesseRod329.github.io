@@ -1,5 +1,18 @@
 [
   {
+    "slug": "knock-knock-door",
+    "title": "Knock Knock Door",
+    "date": "2025-09",
+    "roles": ["Frontend", "Audio"],
+    "collab": "Jesse R.",
+    "summary": "An interactive door experience with customizable styles and realistic knock sounds. Click to knock with different visual effects, animations, and Web Audio API-generated sound patterns.",
+    "stack": ["HTML", "CSS", "JavaScript", "Web Audio API", "Tailwind CSS"],
+    "links": {
+      "repo": "https://github.com/JesseRod329/JesseRod329.github.io",
+      "live": "https://jesserodriguez.me/knock.html"
+    }
+  },
+  {
     "slug": "philosophers-library",
     "title": "The Philosopher's Library",
     "date": "2025-01",
