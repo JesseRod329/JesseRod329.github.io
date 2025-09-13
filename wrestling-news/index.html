@@ -717,14 +717,84 @@
                 this.addInteractivity();
             }
 
-            loadCurrentNews() {
-                console.log('📺 Loading current wrestling news from September 2025...');
-                this.updateStats();
+            async loadCurrentNews() {
+                console.log('📺 Loading real wrestling news from RSS feeds...');
+                await this.fetchAndDisplayNews();
+
+            async fetchAndDisplayNews() {
+                try {
+                    const [rawResponse, smackdownResponse] = await Promise.all([
+                        fetch('data/raw-news.json'),
+                        fetch('data/smackdown-news.json')
+                    ]);
+
+                    const rawNews = await rawResponse.json();
+                    const smackdownNews = await smackdownResponse.json();
+
+                    this.displayNews(rawNews, 'raw');
+                    this.displayNews(smackdownNews, 'smackdown');
+                    
+                    document.getElementById('raw-count').textContent = rawNews.length;
+                    document.getElementById('smackdown-count').textContent = smackdownNews.length;
+                    console.log(`✅ Loaded ${rawNews.length} Raw articles and ${smackdownNews.length} SmackDown articles from RSS feeds`);
+                } catch (error) {
+                    console.error('❌ Error loading real news:, error);
+                    document.getElementById('raw-count').textContent = rawNews.length;
+                    document.getElementById('smackdown-count').textContent = smackdownNews.length;
+                }
+            }
+
+            displayNews(newsArray, category) {
+                const container = document.querySelector(`.${category}-section .news-container`);
+                if (!container) return;
+
+                container.innerHTML = '';
+
+                newsArray.forEach(article => {
+                    const newsItem = document.createElement('div');
+                    newsItem.className = 'news-item';
+                    
+                    const titleWords = article.title.split(' ').slice(0, 4);
+                    const tags = titleWords.join(' ');
+                    
+                    const isBreaking = article.title.toLowerCase().includes('breaking') || 
+                                     article.title.toLowerCase().includes('shocking') ||
+                                     article.title.toLowerCase().includes('return') ||
+                                     article.title.toLowerCase().includes('final');
+                    
+                    const date = new Date(article.publishedAt);
+                    const formattedDate = date.toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric', 
+                        year: 'numeric' 
+                    });
+                    
+                    newsItem.innerHTML = `
+                        <div class="news-meta">
+                            <span class="news-source">${article.source}</span>
+                            <span class="news-date">${formattedDate}</span>
+                        </div>
+                        <h3 class="news-title">${article.title}</h3>
+                        <p class="news-excerpt">${article.summary}</p>
+                        <div class="news-tags">
+                            ${isBreaking ? '<span class="news-tag breaking-tag">Breaking</span>' : ''}
+                            <span class="news-tag">${article.source}</span>
+                            <span class="news-tag">${tags}</span>
+                        </div>
+                    `;
+
+                    newsItem.addEventListener('click', () => {
+                        window.open(article.url, '_blank');
+                    });
+
+                    container.appendChild(newsItem);
+                });
+            }
             }
 
             updateStats() {
-                document.getElementById('raw-count').textContent = '5';
-                document.getElementById('smackdown-count').textContent = '6';
+                // Updated by fetchAndDisplayNews
+                // Updated by fetchAndDisplayNews
                 console.log('📊 Stats updated: 5 Raw articles, 6 SmackDown articles');
             }
 
@@ -808,4 +878,3 @@
     </script>
 </body>
 </html>
-    <script src="js/real-news-loader.js"></script>
