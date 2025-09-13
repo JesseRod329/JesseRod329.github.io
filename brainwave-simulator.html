@@ -8,278 +8,15 @@
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'; media-src 'self'; child-src 'self'; form-action 'self'; base-uri 'self';">
     <title>AI Brainwave Simulator - Privacy-First Neural Activity Monitor</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #16213e 100%);
-            color: #ffffff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            overflow-x: hidden;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1000px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 30px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(45deg, #00d4ff, #5865f2, #ff6b6b);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-            text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
-        }
-
-        .header p {
-            color: #a0a0a0;
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .privacy-notice {
-            background: rgba(0, 212, 255, 0.1);
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            color: #00d4ff;
-            font-size: 0.9rem;
-            max-width: 500px;
-        }
-
-        .canvas-container {
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 16px;
-            padding: 20px;
-            border: 2px solid rgba(0, 212, 255, 0.2);
-            box-shadow: 0 0 50px rgba(0, 212, 255, 0.1);
-            backdrop-filter: blur(10px);
-        }
-
-        #brainwaveCanvas {
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: radial-gradient(ellipse at center, rgba(0, 20, 40, 0.8) 0%, rgba(0, 0, 0, 0.9) 100%);
-            box-shadow: inset 0 0 50px rgba(0, 212, 255, 0.1);
-        }
-
-        .controls {
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 16px;
-            padding: 30px;
-            border: 2px solid rgba(88, 101, 242, 0.2);
-            backdrop-filter: blur(10px);
-            width: 100%;
-            max-width: 600px;
-        }
-
-        .control-group {
-            margin-bottom: 25px;
-        }
-
-        .control-group label {
-            display: block;
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #ffffff;
-        }
-
-        .slider-container {
-            position: relative;
-            margin-bottom: 15px;
-        }
-
-        .slider {
-            width: 100%;
-            height: 8px;
-            border-radius: 4px;
-            background: linear-gradient(to right, #2a2a3e, #4a4a6e);
-            outline: none;
-            -webkit-appearance: none;
-            appearance: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #00d4ff, #5865f2);
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
-            transition: all 0.3s ease;
-        }
-
-        .slider::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-            box-shadow: 0 0 30px rgba(0, 212, 255, 0.8);
-        }
-
-        .slider::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #00d4ff, #5865f2);
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
-        }
-
-        .slider-value {
-            position: absolute;
-            right: 0;
-            top: -25px;
-            font-size: 0.9rem;
-            color: #00d4ff;
-            font-weight: 600;
-        }
-
-        .focus { border-left: 4px solid #ff6b6b; }
-        .relaxation { border-left: 4px solid #4ecdc4; }
-        .creativity { border-left: 4px solid #ffe66d; }
-        .alertness { border-left: 4px solid #ff8b94; }
-
-        .reset-button {
-            background: linear-gradient(45deg, #5865f2, #00d4ff);
-            border: none;
-            border-radius: 12px;
-            padding: 15px 30px;
-            color: white;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(88, 101, 242, 0.3);
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .reset-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(88, 101, 242, 0.4);
-            background: linear-gradient(45deg, #6b73ff, #00e4ff);
-        }
-
-        .reset-button:active {
-            transform: translateY(0);
-        }
-
-        .feedback {
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 16px;
-            padding: 25px;
-            border: 2px solid rgba(255, 107, 107, 0.2);
-            backdrop-filter: blur(10px);
-            width: 100%;
-            max-width: 600px;
-            text-align: center;
-        }
-
-        .feedback h3 {
-            color: #ff6b6b;
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-        }
-
-        .mental-state {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            background: linear-gradient(45deg, #00d4ff, #ffe66d);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .suggestions {
-            color: #a0a0a0;
-            line-height: 1.6;
-            font-size: 1rem;
-        }
-
-        .values-display {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .value-item {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 10px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .value-label {
-            font-size: 0.8rem;
-            color: #a0a0a0;
-            margin-bottom: 5px;
-        }
-
-        .value-number {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #00d4ff;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            #brainwaveCanvas {
-                width: 100%;
-                max-width: 400px;
-                height: 200px;
-            }
-            
-            .controls, .feedback {
-                padding: 20px;
-            }
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
-        }
-
-        .pulsing {
-            animation: pulse 2s ease-in-out infinite;
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="ios/css/cyberpunk.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>AI Brainwave Simulator</h1>
+            <h1 class="glitch-text">AI Brainwave Simulator</h1>
             <p>Privacy-first neural activity visualization. All processing happens locally in your browser.</p>
         </div>
 
@@ -287,11 +24,11 @@
             🔒 <strong>Privacy Guaranteed:</strong> No data transmission • Client-side only • Zero tracking
         </div>
 
-        <div class="canvas-container">
+        <div class="canvas-container pulsing-border">
             <canvas id="brainwaveCanvas" width="800" height="400" aria-label="Brainwave visualization canvas showing real-time neural patterns"></canvas>
         </div>
 
-        <div class="controls">
+        <div class="controls pulsing-border">
             <div class="control-group focus">
                 <label for="focusSlider">🎯 Focus</label>
                 <div class="slider-container">
@@ -333,7 +70,7 @@
             </button>
         </div>
 
-        <div class="feedback">
+        <div class="feedback pulsing-border">
             <h3>🧠 AI Neural Analysis</h3>
             <div class="mental-state" id="mentalState">Balanced Mental State</div>
             <div class="suggestions" id="suggestions">Your brainwave patterns show a harmonious balance across all cognitive domains. This is an optimal state for general well-being and productivity.</div>
@@ -524,6 +261,22 @@
                 
                 // Draw overlay effects
                 this.drawOverlayEffects();
+                this.drawScanlines(); // Add scanline effect
+            }
+            
+            drawScanlines() {
+                const width = this.canvas.width;
+                const height = this.canvas.height;
+                
+                this.ctx.strokeStyle = 'rgba(0, 255, 255, 0.1)'; // Neon cyan scanlines
+                this.ctx.lineWidth = 0.5;
+                
+                for (let i = 0; i < height; i += 2) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(0, i);
+                    this.ctx.lineTo(width, i);
+                    this.ctx.stroke();
+                }
             }
             
             drawGrid() {
@@ -615,10 +368,10 @@
             
             drawFrequencyIndicators() {
                 const frequencies = [
-                    { name: 'β', value: this.focus, color: '#ff6b6b', x: 50 },
-                    { name: 'α', value: this.relaxation, color: '#4ecdc4', x: 150 },
-                    { name: 'θ', value: this.creativity, color: '#ffe66d', x: 250 },
-                    { name: 'γ', value: this.alertness, color: '#ff8b94', x: 350 }
+                    { name: 'β', value: this.focus, color: '#ff00ff', x: 50 }, // Magenta
+                    { name: 'α', value: this.relaxation, color: '#00ffff', x: 150 }, // Cyan
+                    { name: 'θ', value: this.creativity, color: '#ffff00', x: 250 }, // Yellow
+                    { name: 'γ', value: this.alertness, color: '#ff0000', x: 350 }  // Red
                 ];
                 
                 frequencies.forEach(freq => {
@@ -630,9 +383,12 @@
                         this.ctx.fillRect(freq.x, this.canvas.height - 40, 20, -barHeight);
                         
                         this.ctx.fillStyle = freq.color;
-                        this.ctx.font = '14px sans-serif';
+                        this.ctx.font = '16px Orbitron, sans-serif'; // Futuristic font
                         this.ctx.textAlign = 'center';
+                        this.ctx.shadowColor = freq.color;
+                        this.ctx.shadowBlur = 10;
                         this.ctx.fillText(freq.name, freq.x + 10, this.canvas.height - 45);
+                        this.ctx.shadowBlur = 0;
                     }
                 });
             }

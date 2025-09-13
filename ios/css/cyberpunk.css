@@ -1,0 +1,642 @@
+/* Base styles from brainwave-simulator.html */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Orbitron', sans-serif; /* Futuristic font */
+    background: #0a0a0a; /* Deep black background */
+    color: #00e6e6; /* Neon cyan text */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Glitch effect overlay */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 230, 230, 0.05),
+        rgba(0, 230, 230, 0.05) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+    pointer-events: none;
+    opacity: 0.1;
+    animation: glitch-bg 15s infinite linear;
+}
+
+@keyframes glitch-bg {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 -1000px; }
+}
+
+.container {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    z-index: 1; /* Ensure content is above glitch effect */
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    font-size: 3rem; /* Larger font size */
+    background: linear-gradient(45deg, #00ffff, #ff00ff, #00ff00); /* Brighter neon gradient */
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+    text-shadow: 0 0 40px rgba(0, 255, 255, 0.6), 0 0 80px rgba(255, 0, 255, 0.4); /* More intense glow */
+    letter-spacing: 3px;
+}
+
+.header p {
+    color: #00aaff; /* Lighter neon blue */
+    font-size: 1.2rem;
+    max-width: 700px;
+    margin: 0 auto;
+    text-shadow: 0 0 10px rgba(0, 170, 255, 0.3);
+}
+
+.privacy-notice {
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid rgba(0, 255, 255, 0.4);
+    border-radius: 0; /* Sharp edges */
+    padding: 15px;
+    text-align: center;
+    color: #00ffff;
+    font-size: 1rem;
+    max-width: 600px;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.canvas-container {
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 0; /* Sharp edges */
+    padding: 20px;
+    border: 2px solid #00ffff; /* Neon border */
+    box-shadow: 0 0 60px rgba(0, 255, 255, 0.4), inset 0 0 30px rgba(0, 255, 255, 0.2); /* Intense glow */
+    backdrop-filter: blur(5px);
+    position: relative;
+}
+
+#brainwaveCanvas {
+    border-radius: 0; /* Sharp edges */
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    background: radial-gradient(ellipse at center, rgba(0, 10, 20, 0.9) 0%, rgba(0, 0, 0, 1) 100%);
+    box-shadow: inset 0 0 60px rgba(0, 255, 255, 0.1);
+}
+
+.controls {
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 0; /* Sharp edges */
+    padding: 30px;
+    border: 2px solid #ff00ff; /* Neon magenta border */
+    backdrop-filter: blur(5px);
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 0 60px rgba(255, 0, 255, 0.4), inset 0 0 30px rgba(255, 0, 255, 0.2);
+}
+
+.control-group {
+    margin-bottom: 25px;
+    position: relative;
+    padding-left: 15px; /* Space for angled border */
+}
+
+.control-group::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px; /* Angled border thickness */
+    background: linear-gradient(to bottom, var(--neon-color-start), var(--neon-color-end));
+    transform: skewX(-20deg); /* Angled effect */
+    transform-origin: top left;
+}
+
+.control-group.focus { --neon-color-start: #ff00ff; --neon-color-end: #ff6b6b; } /* Magenta to Red */
+.control-group.relaxation { --neon-color-start: #00ffff; --neon-color-end: #4ecdc4; } /* Cyan to Teal */
+.control-group.creativity { --neon-color-start: #ffff00; --neon-color-end: #ffe66d; } /* Yellow to Gold */
+.control-group.alertness { --neon-color-start: #ff0000; --neon-color-end: #ff8b94; } /* Red to Pink */
+
+
+.control-group label {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #00e6e6;
+    text-shadow: 0 0 10px rgba(0, 230, 230, 0.5);
+    text-transform: uppercase;
+}
+
+.slider-container {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.slider {
+    width: 100%;
+    height: 10px; /* Thicker slider */
+    border-radius: 0; /* Sharp edges */
+    background: linear-gradient(to right, #1a1a1a, #3a3a3a);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px; /* Larger thumb */
+    height: 24px;
+    border-radius: 0; /* Sharp edges */
+    background: linear-gradient(45deg, #00ffff, #ff00ff); /* Neon gradient */
+    cursor: pointer;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.7); /* Stronger glow */
+    transition: all 0.3s ease;
+    border: 2px solid #00ffff; /* Neon border */
+}
+
+.slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 40px rgba(0, 255, 255, 1);
+}
+
+.slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 0;
+    background: linear-gradient(45deg, #00ffff, #ff00ff);
+    cursor: pointer;
+    border: 2px solid #00ffff;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.7);
+}
+
+.slider-value {
+    position: absolute;
+    right: 0;
+    top: -30px; /* Adjust position */
+    font-size: 1rem;
+    color: #00ffff;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.reset-button {
+    background: linear-gradient(45deg, #ff00ff, #00ffff); /* Neon gradient */
+    border: none;
+    border-radius: 0; /* Sharp edges */
+    padding: 15px 30px;
+    color: #0a0a0a; /* Dark text on neon button */
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 30px rgba(255, 0, 255, 0.5); /* Pulsing glow */
+    width: 100%;
+    margin-top: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+}
+
+.reset-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: skewX(-30deg);
+    transition: all 0.5s ease;
+}
+
+.reset-button:hover::before {
+    left: 100%;
+}
+
+.reset-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 50px rgba(255, 0, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.8);
+    background: linear-gradient(45deg, #ff33ff, #33ffff);
+}
+
+.reset-button:active {
+    transform: translateY(0);
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+}
+
+.feedback {
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 0; /* Sharp edges */
+    padding: 25px;
+    border: 2px solid #00ff00; /* Neon green border */
+    backdrop-filter: blur(5px);
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    box-shadow: 0 0 60px rgba(0, 255, 0, 0.4), inset 0 0 30px rgba(0, 255, 0, 0.2);
+}
+
+.feedback h3 {
+    color: #00ff00; /* Neon green */
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    text-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.mental-state {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    background: linear-gradient(45deg, #00ffff, #ff00ff); /* Neon gradient */
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+.suggestions {
+    color: #00aaff;
+    line-height: 1.6;
+    font-size: 1.1rem;
+    text-shadow: 0 0 5px rgba(0, 170, 255, 0.2);
+}
+
+.values-display {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.value-item {
+    background: rgba(0, 255, 255, 0.05);
+    border-radius: 0; /* Sharp edges */
+    padding: 10px;
+    text-align: center;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.value-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+    transform: translateX(-100%) skewX(-30deg);
+    transition: all 0.7s ease;
+}
+
+.value-item:hover::before {
+    transform: translateX(100%) skewX(-30deg);
+}
+
+.value-label {
+    font-size: 0.9rem;
+    color: #00aaff;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.value-number {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #00ffff;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+}
+
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 2.5rem;
+    }
+    
+    #brainwaveCanvas {
+        width: 100%;
+        max-width: 400px;
+        height: 200px;
+    }
+    
+    .controls, .feedback {
+        padding: 20px;
+    }
+}
+
+/* Pulsing effect for elements */
+.pulsing-border {
+    animation: pulse-border 2s infinite ease-in-out;
+}
+
+@keyframes pulse-border {
+    0% { box-shadow: 0 0 0px rgba(0, 255, 255, 0.4); }
+    50% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.8); }
+    100% { box-shadow: 0 0 0px rgba(0, 255, 255, 0.4); }
+}
+
+/* Glitch text effect (optional, can be applied to specific elements) */
+.glitch-text {
+    animation: glitch 1s linear infinite;
+}
+
+@keyframes glitch {
+    0% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    14% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    15% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    16% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    17% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    18% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    19% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    20% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    21% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    22% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    23% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    24% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    25% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    26% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    27% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    28% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    29% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    30% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    31% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    32% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    33% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    34% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    35% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    36% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    37% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    38% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    39% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    40% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    41% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    42% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    43% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    44% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    45% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    46% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    47% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    48% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    49% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    50% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    51% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    52% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    53% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    54% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    55% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    56% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    57% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    58% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    59% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    60% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    61% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    62% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    63% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    64% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    65% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    66% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    67% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    68% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    69% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    70% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    71% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    72% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    73% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    74% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    75% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    76% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    77% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    78% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    79% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    80% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    81% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    82% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    83% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    84% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    85% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    86% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    87% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    88% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    89% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    90% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    91% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    92% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    93% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    94% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    95% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    96% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    97% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    98% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+    99% {
+        text-shadow: -0.05em -0.025em 0 #00ffff, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #00ff00;
+    }
+    100% {
+        text-shadow: 0.05em 0 0 #00ffff, -0.05em -0.025em 0 #ff00ff, -0.025em 0.05em 0 #00ff00;
+    }
+}
