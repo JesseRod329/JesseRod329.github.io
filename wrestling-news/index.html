@@ -314,7 +314,12 @@
                 username: 'JesseRodPodcast',
                 refreshInterval: 15 * 60 * 1000, // 15 minutes
                 maxTweets: 5,
-                apiEndpoint: 'https://wrestling-news-api.herokuapp.com/api/tweets' // Production API endpoint
+                // Try multiple endpoints in order
+                apiEndpoints: [
+                    'http://localhost:5000/api/tweets', // Local development server
+                    'https://wrestling-news-api.herokuapp.com/api/tweets', // Production Heroku
+                    'data/tweets.json' // Static fallback file
+                ]
             };
 
             let isTickerPaused = false;
@@ -358,31 +363,47 @@
                 console.log('Initializing ticker...');
                 updateStatus('loading', 'Connecting to API...');
                 
-                try {
-                    // Try to fetch from production API
-                    console.log('Attempting to fetch from API:', CONFIG.apiEndpoint);
-                    const response = await fetch(CONFIG.apiEndpoint);
-                    console.log('API Response status:', response.status);
+                // Try each API endpoint
+                for (let i = 0; i < CONFIG.apiEndpoints.length; i++) {
+                    const endpoint = CONFIG.apiEndpoints[i];
+                    console.log(`Trying API endpoint ${i + 1}/${CONFIG.apiEndpoints.length}: ${endpoint}`);
                     
-                    if (response.ok) {
-                        const tweets = await response.json();
-                        console.log('Successfully fetched tweets:', tweets);
-                        updateTickerContent(tweets);
-                        updateStatus('success', 'Live data from API');
-                        return;
-                    } else {
-                        console.warn('API returned error status:', response.status);
-                        updateStatus('error', 'API error: ' + response.status);
+                    try {
+                        const response = await fetch(endpoint);
+                        console.log(`API Response status for ${endpoint}:`, response.status);
+                        
+                        if (response.ok) {
+                            const tweets = await response.json();
+                            console.log('Successfully fetched tweets:', tweets);
+                            updateTickerContent(tweets);
+                            
+                            // Determine status message based on endpoint
+                            let statusMessage = 'Live data loaded';
+                            if (endpoint.includes('localhost')) {
+                                statusMessage = 'Live data from local server';
+                            } else if (endpoint.includes('herokuapp.com')) {
+                                statusMessage = 'Live data from production API';
+                            } else if (endpoint.includes('tweets.json')) {
+                                statusMessage = 'Static data loaded (APIs unavailable)';
+                            }
+                            
+                            updateStatus('success', statusMessage);
+                            
+                            // Set up automatic refresh
+                            setInterval(refreshNews, CONFIG.refreshInterval);
+                            return;
+                        } else {
+                            console.warn(`API ${endpoint} returned error status:`, response.status);
+                        }
+                    } catch (error) {
+                        console.log(`API ${endpoint} not available:`, error.message);
                     }
-                } catch (error) {
-                    console.log('Production API not available, using sample data. Error:', error.message);
-                    updateStatus('error', 'API unavailable, using sample data');
                 }
 
-                // Fallback to sample data
-                console.log('Using sample data for ticker');
+                // Final fallback to sample data if all endpoints fail
+                console.log('All endpoints failed, using hardcoded sample data for ticker');
                 updateTickerContent(sampleTweets);
-                updateStatus('success', 'Sample data loaded');
+                updateStatus('success', 'Sample data loaded (all endpoints unavailable)');
                 
                 // Set up automatic refresh
                 setInterval(refreshNews, CONFIG.refreshInterval);
