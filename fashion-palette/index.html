@@ -3,292 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'; media-src 'self'; child-src 'self'; form-action 'self'; base-uri 'self';">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>Fashion Color Palette Generator</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #fdf2f8 0%, #f3e8ff 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        
-        .header h1 {
-            color: #374151;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-        
-        .header p {
-            color: #6b7280;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .nav-back {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            color: #8b5cf6;
-            padding: 8px 16px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-weight: 500;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(139, 92, 246, 0.2);
-            transition: all 0.2s ease;
-        }
-
-        .nav-back:hover {
-            background: rgba(139, 92, 246, 0.1);
-            transform: translateY(-1px);
-        }
-        
-        .privacy-notice {
-            background: #dbeafe;
-            border: 1px solid #93c5fd;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-        }
-        
-        .privacy-notice-text {
-            color: #1e40af;
-            font-size: 14px;
-        }
-        
-        .upload-area {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        
-        .upload-zone {
-            border: 2px dashed #d1d5db;
-            border-radius: 12px;
-            padding: 60px 20px;
-            cursor: pointer;
-            transition: border-color 0.2s;
-        }
-        
-        .upload-zone:hover {
-            border-color: #8b5cf6;
-        }
-        
-        .upload-zone.dragover {
-            border-color: #8b5cf6;
-            background: #faf5ff;
-        }
-        
-        .upload-button {
-            background: #8b5cf6;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 16px;
-        }
-        
-        .upload-button:hover {
-            background: #7c3aed;
-        }
-        
-        .processing {
-            text-align: center;
-            padding: 40px;
-        }
-        
-        .spinner {
-            width: 32px;
-            height: 32px;
-            border: 4px solid #8b5cf6;
-            border-top: 4px solid transparent;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 16px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .image-preview {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            padding: 24px;
-            margin-bottom: 30px;
-        }
-        
-        .preview-image {
-            max-width: 100%;
-            max-height: 300px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .palette-section {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-        
-        .palette-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 8px;
-        }
-        
-        .palette-description {
-            color: #6b7280;
-            margin-bottom: 16px;
-        }
-        
-        .color-swatches {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-        
-        .color-swatch {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        
-        .color-swatch:hover {
-            transform: scale(1.05);
-        }
-        
-        .color-circle {
-            width: 64px;
-            height: 64px;
-            border-radius: 8px;
-            border: 2px solid #e5e7eb;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 8px;
-        }
-        
-        .color-hex {
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            color: #6b7280;
-        }
-        
-        .fashion-tip {
-            background: #f9fafb;
-            border-radius: 8px;
-            padding: 12px;
-            font-size: 14px;
-            color: #374151;
-        }
-        
-        .hidden {
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            .nav-back {
-                position: static;
-                display: inline-block;
-                margin-bottom: 20px;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .upload-area {
-                padding: 20px;
-            }
-            
-            .upload-zone {
-                padding: 40px 20px;
-            }
-        }
-    </style>
+    <title>Fashion Palette</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <a href="/" class="nav-back">← Back to Portfolio</a>
-        
-        <div class="header">
-            <h1>Fashion Color Palette Generator</h1>
-            <p>Upload any fashion image to extract beautiful color palettes for outfit coordination. All processing happens locally - your images never leave your device.</p>
+        <h1>Fashion Palette Generator</h1>
+
+        <div class="upload-section" id="upload-section">
+            <input type="file" id="imageUpload" accept="image/*">
+            <p>Drag & Drop your image here or Click to Upload</p>
         </div>
-        
-        <!-- Force cache bust and show content immediately -->
-        <div style="display: none;" id="debug">v2.0 - Standalone Version Loaded</div>
-        
-        <div class="privacy-notice">
-            <div class="privacy-notice-text">
-                <strong>Privacy First:</strong> Your images are processed entirely in your browser. No data is uploaded to any server or stored anywhere.
+
+        <div class="image-display" id="imageDisplay">
+            <!-- Uploaded image will be displayed here -->
+        </div>
+
+        <button id="generatePaletteBtn">Generate Palette</button>
+
+        <div class="loading-spinner" id="loadingSpinner"></div>
+        <div class="message" id="message"></div>
+
+        <div class="palette-section">
+            <h2>Extracted Colors</h2>
+            <div class="palette-grid" id="paletteGrid">
+                <!-- Color swatches will be displayed here -->
             </div>
         </div>
-        
-        <div class="upload-area" id="uploadArea">
-            <div class="upload-zone" id="uploadZone">
-                <div style="font-size: 48px; margin-bottom: 16px;">📸</div>
-                <h3 style="margin-bottom: 8px;">Upload Your Fashion Image</h3>
-                <p style="color: #6b7280; margin-bottom: 16px;">Drag and drop or click to select an image of clothing, outfit, or inspiration</p>
-                <button class="upload-button" id="uploadButton">Choose Image</button>
-            </div>
-            <input type="file" id="fileInput" accept="image/*" class="hidden">
-        </div>
-        
-        <div class="processing hidden" id="processing">
-            <div class="spinner"></div>
-            <p>Analyzing colors...</p>
-        </div>
-        
-        <div class="image-preview hidden" id="imagePreview">
-            <h3 style="margin-bottom: 16px;">Uploaded Image</h3>
-            <img id="previewImg" class="preview-image" alt="Uploaded image">
-        </div>
-        
-        <div id="palettesContainer"></div>
-        
-        <canvas id="canvas" class="hidden"></canvas>
     </div>
 
-    <script src="palette.js" defer></script>
+    <script type="module" src="palette.js"></script>
 </body>
 </html>
