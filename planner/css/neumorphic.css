@@ -1,0 +1,157 @@
+/* Neumorphic UI styles */
+
+:root {
+  --background-color: #e0e0e0;
+  --text-color: #5a5a5a;
+  --light-shadow: #ffffff;
+  --dark-shadow: #bebebe;
+  --border-radius: 20px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+.planner-main {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.planner-aesthetic {
+  background: var(--background-color);
+  color: var(--text-color);
+  padding: 1rem;
+}
+
+.planner-aesthetic .header .date {
+  font-size: clamp(2rem, 8vw, 3.5rem);
+  font-weight: 300;
+  color: var(--text-color);
+  text-shadow: 1px 1px 2px var(--dark-shadow), -1px -1px 2px var(--light-shadow);
+}
+
+.planner-aesthetic .header .subtitle {
+  opacity: 0.9;
+  font-weight: 300;
+  color: var(--text-color);
+}
+
+.task-input-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.task-input,
+.time-input,
+.add-task-btn {
+  border: none;
+  outline: none;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  background: var(--background-color);
+  box-shadow: inset 5px 5px 10px var(--dark-shadow), inset -5px -5px 10px var(--light-shadow);
+  color: var(--text-color);
+  transition: all 0.2s ease-in-out;
+}
+
+.task-input:focus,
+.time-input:focus {
+  box-shadow: 5px 5px 10px var(--dark-shadow), -5px -5px 10px var(--light-shadow);
+}
+
+.add-task-btn {
+  cursor: pointer;
+  box-shadow: 5px 5px 10px var(--dark-shadow), -5px -5px 10px var(--light-shadow);
+}
+
+.add-task-btn:active {
+  box-shadow: inset 5px 5px 10px var(--dark-shadow), inset -5px -5px 10px var(--light-shadow);
+}
+
+.planner-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  margin: 2rem auto;
+  position: relative;
+  z-index: 1;
+}
+
+.task-circle {
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: var(--background-color);
+  box-shadow: 10px 10px 20px var(--dark-shadow), -10px -10px 20px var(--light-shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 22px;
+}
+
+.task-circle:hover {
+  transform: scale(1.04) translateY(-6px);
+  box-shadow: 15px 15px 30px var(--dark-shadow), -15px -15px 30px var(--light-shadow);
+}
+
+.task-circle.completed {
+  opacity: 0.75;
+  box-shadow: inset 10px 10px 20px var(--dark-shadow), inset -10px -10px 20px var(--light-shadow);
+}
+
+.task-circle .time-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.9;
+  color: var(--text-color);
+}
+
+.task-circle .task-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--text-color);
+}
+
+.planner-actions {
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    margin-bottom:16px;
+}
+
+.btn-primary {
+    padding:10px 16px;
+    border-radius:12px;
+    background: var(--background-color);
+    color: var(--text-color);
+    border: none;
+    box-shadow: 5px 5px 10px var(--dark-shadow), -5px -5px 10px var(--light-shadow);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:active {
+    box-shadow: inset 5px 5px 10px var(--dark-shadow), inset -5px -5px 10px var(--light-shadow);
+}
