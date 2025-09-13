@@ -311,21 +311,43 @@
             // Initialize ticker
             async function initializeTicker() {
                 try {
-                    // Try to fetch from production API
+                    // Try RSS-to-JSON fallback first (Nitter RSS)
+                    const rssResponse = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://nitter.net/JesseRodPodcast/rss');
+                    if (rssResponse.ok) {
+                        const rssData = await rssResponse.json();
+                        if (rssData.items && rssData.items.length > 0) {
+                            const tweets = rssData.items.map(item => ({
+                                text: item.title,
+                                url: item.link,
+                                created_at: item.pubDate
+                            }));
+                            updateTickerContent(tweets);
+                            console.log('✅ Using RSS feed data');
+                            setInterval(refreshNews, CONFIG.refreshInterval);
+                            return;
+                        }
+                    }
+                } catch (error) {
+                    console.log('RSS feed not available, trying other sources');
+                }
+
+                try {
+                    // Try production API as backup
                     const response = await fetch(CONFIG.apiEndpoint);
                     if (response.ok) {
                         const tweets = await response.json();
                         updateTickerContent(tweets);
+                        console.log('✅ Using production API');
+                        setInterval(refreshNews, CONFIG.refreshInterval);
                         return;
                     }
                 } catch (error) {
-                    console.log('Production API not available, using sample data');
+                    console.log('Production API not available');
                 }
 
-                // Fallback to sample data
+                // Final fallback to sample data
+                console.log('📰 Using sample data');
                 updateTickerContent(sampleTweets);
-                
-                // Set up automatic refresh
                 setInterval(refreshNews, CONFIG.refreshInterval);
             }
 
