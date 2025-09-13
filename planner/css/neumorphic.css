@@ -157,11 +157,17 @@ body {
 }
 
 .eraser {
-  background-color: transparent;
+  background: var(--background-color);
   border: none;
   cursor: pointer;
   padding: 10px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: var(--border-radius);
+  box-shadow: 5px 5px 10px var(--dark-shadow), -5px -5px 10px var(--light-shadow);
+  transition: all 0.2s ease-in-out;
+}
+
+.eraser:active {
+  box-shadow: inset 5px 5px 10px var(--dark-shadow), inset -5px -5px 10px var(--light-shadow);
 }
 
 .eraser-icon {
