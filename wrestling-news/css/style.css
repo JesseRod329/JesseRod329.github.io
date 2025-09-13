@@ -461,3 +461,76 @@ body {
         font-size: 2rem;
     }
 }
+
+/* Video Card Styles */
+.video-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px; /* Match news-section border-radius */
+    padding: var(--spacing-lg); /* Match news-section padding */
+    box-shadow: 0 8px 32px var(--glass-shadow);
+    position: relative;
+    overflow: hidden;
+    grid-column: 1 / -1; /* Make it span across the grid */
+    max-width: 900px; /* Limit its width */
+    margin: var(--spacing-lg) auto; /* Center it with vertical spacing */
+}
+
+.video-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--raw-primary), var(--smackdown-primary)); /* Blend of Raw and SmackDown colors */
+    border-radius: 20px 20px 0 0;
+}
+
+.video-card .video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    background: #000;
+    border-radius: 12px; /* Slightly smaller border-radius for inner video */
+}
+
+.video-card .video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+}
+
+.video-card .video-title {
+    font-family: var(--font-primary);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    text-align: center;
+    color: white;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.video-card .video-description {
+    font-size: 1rem;
+    opacity: 0.8;
+    text-align: center;
+    margin-bottom: var(--spacing-md);
+}
+
+@media (max-width: 768px) {
+    .video-card {
+        padding: var(--spacing-md);
+        margin: var(--spacing-md) auto;
+    }
+    .video-card .video-title {
+        font-size: 1.2rem;
+    }
+}
