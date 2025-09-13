@@ -891,6 +891,7 @@
         // Simple direct approach to load real news
         setTimeout(async () => {
             console.log('🔄 Loading real wrestling news directly...');
+                // Script running
             try {
                 const [rawResponse, smackdownResponse] = await Promise.all([
                     fetch('data/raw-news.json'),
@@ -963,6 +964,88 @@
                 console.error('❌ Error loading real news:, error);
             }
         }, 2000);
+    </script>
+    <script>
+        // Ultra-simple news loader
+        console.log('🚀 Ultra-simple news loader starting...');
+        
+        async function loadRealNews() {
+            console.log('📡 Fetching real news data...');
+            try {
+                const [rawResponse, smackdownResponse] = await Promise.all([
+                    fetch('data/raw-news.json'),
+                    fetch('data/smackdown-news.json')
+                ]);
+                
+                const rawNews = await rawResponse.json();
+                const smackdownNews = await smackdownResponse.json();
+                
+                console.log(`📊 Found ${rawNews.length} Raw articles and ${smackdownNews.length} SmackDown articles`);
+                
+                // Replace Raw content
+                const rawContainer = document.querySelector('.raw-section .news-container');
+                if (rawContainer) {
+                    console.log('✅ Found Raw container, replacing content');
+                    rawContainer.innerHTML = '';
+                    rawNews.slice(0, 5).forEach(article => {
+                        const item = document.createElement('div');
+                        item.className = 'news-item';
+                        const date = new Date(article.publishedAt).toLocaleDateString();
+                        item.innerHTML = `
+                            <div class="news-meta">
+                                <span class="news-source">${article.source}</span>
+                                <span class="news-date">${date}</span>
+                            </div>
+                            <h3 class="news-title">${article.title}</h3>
+                            <p class="news-excerpt">${article.summary}</p>
+                            <div class="news-tags">
+                                <span class="news-tag">${article.source}</span>
+                            </div>
+                        `;
+                        item.onclick = () => window.open(article.url, '_blank');
+                        rawContainer.appendChild(item);
+                    });
+                    document.getElementById('raw-count').textContent = rawNews.length;
+                } else {
+                    console.error('❌ Raw container not found!');
+                }
+                
+                // Replace SmackDown content
+                const smackdownContainer = document.querySelector('.smackdown-section .news-container');
+                if (smackdownContainer) {
+                    console.log('✅ Found SmackDown container, replacing content');
+                    smackdownContainer.innerHTML = '';
+                    smackdownNews.slice(0, 5).forEach(article => {
+                        const item = document.createElement('div');
+                        item.className = 'news-item';
+                        const date = new Date(article.publishedAt).toLocaleDateString();
+                        item.innerHTML = `
+                            <div class="news-meta">
+                                <span class="news-source">${article.source}</span>
+                                <span class="news-date">${date}</span>
+                            </div>
+                            <h3 class="news-title">${article.title}</h3>
+                            <p class="news-excerpt">${article.summary}</p>
+                            <div class="news-tags">
+                                <span class="news-tag">${article.source}</span>
+                            </div>
+                        `;
+                        item.onclick = () => window.open(article.url, '_blank');
+                        smackdownContainer.appendChild(item);
+                    });
+                    document.getElementById('smackdown-count').textContent = smackdownNews.length;
+                } else {
+                    console.error('❌ SmackDown container not found!');
+                }
+                
+                console.log('🎉 Real news loaded successfully!');
+            } catch (error) {
+                console.error('💥 Error loading real news:, error);
+            }
+        }
+        
+        // Run after 3 seconds
+        setTimeout(loadRealNews, 3000);
     </script>
 </body>
 </html>
