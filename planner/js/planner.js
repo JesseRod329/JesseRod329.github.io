@@ -11,6 +11,7 @@ class CircularPlanner {
     this.taskList = document.getElementById('task-list');
     this.dateElement = document.querySelector('.header .date');
     this.exportBtn = document.getElementById('export-planner-btn');
+    this.eraserBtn = document.getElementById('eraser-button');
     this.tasks = [];
 
     this.init();
@@ -36,6 +37,17 @@ class CircularPlanner {
       }
     });
     this.exportBtn.addEventListener('click', () => this.exportPlanner());
+    this.eraserBtn.addEventListener('click', () => this.clearAllTasks());
+  }
+
+  clearAllTasks() {
+    if (confirm('Are you sure you want to clear all tasks and start fresh?')) {
+      this.tasks = [];
+      this.saveTasks();
+      this.renderTasks();
+      this.eraserBtn.classList.add('erasing');
+      setTimeout(() => this.eraserBtn.classList.remove('erasing'), 500);
+    }
   }
 
   setDate() {

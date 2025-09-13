@@ -155,3 +155,37 @@ body {
 .btn-primary:active {
     box-shadow: inset 5px 5px 10px var(--dark-shadow), inset -5px -5px 10px var(--light-shadow);
 }
+
+.eraser {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.eraser-icon {
+  width: 24px;
+  height: 24px;
+  fill: #666;
+  transition: fill 0.3s ease;
+}
+
+.eraser:hover .eraser-icon {
+  fill: #333;
+  transform: scale(1.1);
+}
+
+.eraser.erasing .eraser-icon {
+  animation: erase 0.5s ease;
+}
+
+@keyframes erase {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.eraser-icon path {
+  filter: url(#erase-glow);
+}

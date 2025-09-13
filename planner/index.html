@@ -147,5 +147,18 @@
 <script src="js/planner.js" defer></script>
 <script src="js/canvas-export.js" defer></script>
 
+<svg style="position:absolute; width:0; height:0;">
+  <filter id="erase-glow">
+    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+    <feMerge>
+      <feMergeNode in="coloredBlur"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+</svg>
+</body>
+</html>
+defer></script>
+
 </body>
 </html>
