@@ -1,44 +1,27 @@
 {
   "name": "circular-daily-planner",
-  "version": "1.0.0",
-  "description": "A beautiful, intuitive daily planner with a circular time-based interface",
+  "version": "2.0.0",
+  "description": "A simple, aesthetic, and user-friendly daily planner designed for simplicity and focus.",
   "main": "index.html",
   "scripts": {
-    "build": "node build.js",
-    "test": "node test-suite.js",
-    "test:a11y": "echo 'Accessibility testing requires manual verification'",
-    "test:perf": "echo 'Performance testing requires Lighthouse CI'",
-    "test:browser": "echo 'Cross-browser testing requires manual verification'",
-    "dev": "python3 -m http.server 8080",
-    "generate-og": "node generate-og-image.js",
-    "lint": "echo 'Linting requires manual verification'",
-    "validate": "node test-suite.js && echo 'Validation complete'"
+    "start": "open index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JesseRod329/planner.git"
   },
   "keywords": [
     "planner",
-    "productivity",
-    "time-management",
-    "circular-interface",
     "daily-planner",
-    "web-app"
+    "circular-planner",
+    "productivity",
+    "time-management"
   ],
   "author": "Jesse Rodriguez",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/JesseRod329/JesseRod329.github.io"
+  "bugs": {
+    "url": "https://github.com/JesseRod329/planner/issues"
   },
-  "homepage": "https://jesserodriguez.me/planner",
-  "devDependencies": {
-    "clean-css": "^5.3.2",
-    "terser": "^5.24.0"
-  },
-  "engines": {
-    "node": ">=16.0.0"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+  "homepage": "https://jesserodriguez.me/planner/"
 }
