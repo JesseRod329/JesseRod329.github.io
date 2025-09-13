@@ -1,0 +1,35 @@
+name: Update X Posts
+
+on:
+  workflow_dispatch: # Allows manual triggering
+  schedule:
+    - cron: '0 * * * *' # Runs every hour
+
+jobs:
+  update-posts:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: pip install -r wrestling-news/scripts/requirements.txt
+
+    - name: Run update script
+      env:
+        X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
+      run: python wrestling-news/scripts/update_x_posts.py
+
+    - name: Commit and push changes
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "github-actions@github.com"
+        git add wrestling-news/data/tweets.json
+        git commit -m "Update X posts via GitHub Actions" || echo "No changes to commit"
+        git push
