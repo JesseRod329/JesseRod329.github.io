@@ -40,3 +40,4 @@ The profile picture is in `wrestling-news/index.html` around line 198:
 4. Your profile picture will appear in the ticker!
 
 **Need help? Just provide the image URL and I'll update it for you!**
+
