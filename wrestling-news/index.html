@@ -722,6 +722,7 @@
                 await this.fetchAndDisplayNews();
 
             async fetchAndDisplayNews() {
+                console.log('🔄 fetchAndDisplayNews called');
                 try {
                     const [rawResponse, smackdownResponse] = await Promise.all([
                         fetch('data/raw-news.json'),
@@ -746,6 +747,8 @@
 
             displayNews(newsArray, category) {
                 const container = document.querySelector(`.${category}-section .news-container`);
+                console.log(`Looking for container with selector: .${category}-section .news-container`);
+                console.log(`Found container:`, container);
                 if (!container) return;
 
                 container.style.opacity = '0.5';
@@ -882,6 +885,83 @@
                 observer.observe(item);
             });
         });
+    </script>
+    <script>
+        // Simple direct approach to load real news
+        setTimeout(async () => {
+            console.log('🔄 Loading real wrestling news directly...');
+            try {
+                const [rawResponse, smackdownResponse] = await Promise.all([
+                    fetch('data/raw-news.json'),
+                    fetch('data/smackdown-news.json')
+                ]);
+
+                const rawNews = await rawResponse.json();
+                const smackdownNews = await smackdownResponse.json();
+
+                console.log(`✅ Loaded ${rawNews.length} Raw articles and ${smackdownNews.length} SmackDown articles`);
+
+                // Update Raw section
+                const rawContainer = document.querySelector('.raw-section .news-container');
+                if (rawContainer) {
+                    console.log('Found Raw container, replacing content...');
+                    rawContainer.innerHTML = '';
+                    rawNews.slice(0, 5).forEach(article => {
+                        const newsItem = document.createElement('div');
+                        newsItem.className = 'news-item';
+                        const date = new Date(article.publishedAt);
+                        const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                        newsItem.innerHTML = `
+                            <div class="news-meta">
+                                <span class="news-source">${article.source}</span>
+                                <span class="news-date">${formattedDate}</span>
+                            </div>
+                            <h3 class="news-title">${article.title}</h3>
+                            <p class="news-excerpt">${article.summary}</p>
+                            <div class="news-tags">
+                                <span class="news-tag">${article.source}</span>
+                                <span class="news-tag">${article.title.split(' ').slice(0, 3).join(' ')}</span>
+                            </div>
+                        `;
+                        newsItem.addEventListener('click', () => window.open(article.url, '_blank'));
+                        rawContainer.appendChild(newsItem);
+                    });
+                    document.getElementById('raw-count').textContent = rawNews.length;
+                }
+
+                // Update SmackDown section
+                const smackdownContainer = document.querySelector('.smackdown-section .news-container');
+                if (smackdownContainer) {
+                    console.log('Found SmackDown container, replacing content...');
+                    smackdownContainer.innerHTML = '';
+                    smackdownNews.slice(0, 5).forEach(article => {
+                        const newsItem = document.createElement('div');
+                        newsItem.className = 'news-item';
+                        const date = new Date(article.publishedAt);
+                        const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                        newsItem.innerHTML = `
+                            <div class="news-meta">
+                                <span class="news-source">${article.source}</span>
+                                <span class="news-date">${formattedDate}</span>
+                            </div>
+                            <h3 class="news-title">${article.title}</h3>
+                            <p class="news-excerpt">${article.summary}</p>
+                            <div class="news-tags">
+                                <span class="news-tag">${article.source}</span>
+                                <span class="news-tag">${article.title.split(' ').slice(0, 3).join(' ')}</span>
+                            </div>
+                        `;
+                        newsItem.addEventListener('click', () => window.open(article.url, '_blank'));
+                        smackdownContainer.appendChild(newsItem);
+                    });
+                    document.getElementById('smackdown-count').textContent = smackdownNews.length;
+                }
+
+                console.log('✅ Real news loaded successfully!');
+            } catch (error) {
+                console.error('❌ Error loading real news:, error);
+            }
+        }, 2000);
     </script>
 </body>
 </html>
