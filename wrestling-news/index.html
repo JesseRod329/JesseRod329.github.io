@@ -311,7 +311,21 @@
             // Initialize ticker
             async function initializeTicker() {
                 try {
-                    // Try RSS-to-JSON fallback first (Nitter RSS)
+                    // Try static JSON file first (most reliable)
+                    const jsonResponse = await fetch('data/tweets.json');
+                    if (jsonResponse.ok) {
+                        const tweets = await jsonResponse.json();
+                        updateTickerContent(tweets);
+                        console.log('✅ Using static JSON data');
+                        setInterval(refreshNews, CONFIG.refreshInterval);
+                        return;
+                    }
+                } catch (error) {
+                    console.log('Static JSON not available, trying other sources');
+                }
+
+                try {
+                    // Try RSS-to-JSON fallback (Nitter RSS)
                     const rssResponse = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https://nitter.net/JesseRodPodcast/rss');
                     if (rssResponse.ok) {
                         const rssData = await rssResponse.json();
