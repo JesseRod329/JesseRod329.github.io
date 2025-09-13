@@ -169,7 +169,7 @@ class WrestlingNewsAggregator:
             
             print(f"Found {len(feed.entries)} entries in {feed_name}")
             
-            for entry in feed.entries[:10]:  # Limit to 10 entries per feed
+            for entry in feed.entries:  # Limit to 10 entries per feed
                 news_item = self.process_entry(entry, feed_name.replace('_', ' ').title())
                 if news_item:
                     if news_item['category'] == 'raw':
@@ -185,8 +185,8 @@ class WrestlingNewsAggregator:
         self.smackdown_news.sort(key=lambda x: x['publishedAt'], reverse=True)
         
         # Limit to 20 articles per category
-        self.raw_news = self.raw_news[:20]
-        self.smackdown_news = self.smackdown_news[:20]
+        self.raw_news = self.raw_news
+        self.smackdown_news = self.smackdown_news
 
     def save_news(self):
         """Save news to JSON files"""
