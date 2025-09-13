@@ -20,6 +20,13 @@ export default function ProjectRow({ project, index }: { project: Project; index
   ];
   const titleSize = titleSizes[index % titleSizes.length];
 
+  // Floating animation classes with randomization
+  const floatClasses = [
+    "float-title", "float-title-delayed-1", "float-title-delayed-2",
+    "float-title-delayed-3", "float-title-delayed-4", "float-title-delayed-5"
+  ];
+  const floatClass = floatClasses[index % floatClasses.length];
+
   return (
     <motion.li
       initial={{ opacity: 0, y: 12 }}
@@ -33,7 +40,7 @@ export default function ProjectRow({ project, index }: { project: Project; index
           transition={{ duration: 0.3, ease: "easeOut" }}
           className="relative"
         >
-          <h2 className={`${titleSize} font-light tracking-[-0.02em] mb-2 text-fg leading-[0.9]`}>
+          <h2 className={`${titleSize} ${floatClass} font-light tracking-[-0.02em] mb-2 text-fg leading-[0.9]`}>
             {project.title}
           </h2>
           <div className="text-xs text-muted font-normal text-right mt-5">

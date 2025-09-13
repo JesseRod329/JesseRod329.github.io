@@ -54,6 +54,60 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Floating Text Animation */
+@keyframes floatText {
+  0% { 
+    transform: translateY(0px) skewX(0deg); 
+  }
+  50% { 
+    transform: translateY(-8px) skewX(-1deg); 
+  }
+  100% { 
+    transform: translateY(0px) skewX(0deg); 
+  }
+}
+
+.float-title {
+  animation: floatText 4s ease-in-out infinite alternate;
+}
+
+.float-title-delayed-1 {
+  animation: floatText 4.2s ease-in-out infinite alternate;
+  animation-delay: 0.5s;
+}
+
+.float-title-delayed-2 {
+  animation: floatText 3.8s ease-in-out infinite alternate;
+  animation-delay: 1s;
+}
+
+.float-title-delayed-3 {
+  animation: floatText 4.1s ease-in-out infinite alternate;
+  animation-delay: 1.5s;
+}
+
+.float-title-delayed-4 {
+  animation: floatText 3.9s ease-in-out infinite alternate;
+  animation-delay: 2s;
+}
+
+.float-title-delayed-5 {
+  animation: floatText 4.3s ease-in-out infinite alternate;
+  animation-delay: 0.8s;
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .float-title,
+  .float-title-delayed-1,
+  .float-title-delayed-2,
+  .float-title-delayed-3,
+  .float-title-delayed-4,
+  .float-title-delayed-5 {
+    animation: none;
+  }
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
