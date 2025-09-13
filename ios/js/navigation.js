@@ -565,7 +565,7 @@ class iOSNavigation {
             case 'brainwave':
                 description.textContent = 'AI-powered neural activity visualization and analysis. Tap the button below to launch the full Brainwave Simulator app.';
                 // Create launch button for brainwave simulator
-                this.addAppLink(links, '🚀 Launch Brainwave Simulator', '/brainwave-simulator.html');
+                this.addAppLink(links, '🚀 Launch Brainwave Simulator', '/brainwave-simulator/brainwave-simulator.html');
                 break;
             case 'palettes':
                 description.textContent = 'Interactive color palettes with harmony generation and export tools. Tap the button below to launch the full Fashion Palette Generator.';

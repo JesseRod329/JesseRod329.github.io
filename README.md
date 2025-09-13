@@ -5,7 +5,7 @@
 **iOS Mobile Experience:** [https://jesserodriguez.me/ios](https://jesserodriguez.me/ios)  
 **Circular Daily Planner:** [https://jesserodriguez.me/planner](https://jesserodriguez.me/planner)  
 **Fashion Palette Generator:** [https://jesserodriguez.me/fashion-palette](https://jesserodriguez.me/fashion-palette)  
-**AI Brainwave Simulator:** [https://jesserodriguez.me/brainwave-simulator.html](https://jesserodriguez.me/brainwave-simulator.html)  
+**AI Brainwave Simulator:** [https://jesserodriguez.me/brainwave-simulator/brainwave-simulator.html](https://jesserodriguez.me/brainwave-simulator/brainwave-simulator.html)  
 **Security Dashboard:** [https://jesserodriguez.me/security.html](https://jesserodriguez.me/security.html)  
 **Knock Knock Door:** [https://jesserodriguez.me/knock.html](https://jesserodriguez.me/knock.html) **🆕**  
 **Wrestling News Hub:** [https://jesserodriguez.me/wrestling-news](https://jesserodriguez.me/wrestling-news) **🆕**  
@@ -421,7 +421,7 @@ python3 -m http.server 8080
    * Click-to-copy hex codes
 
 ### Brainwave Simulator Setup
-1. **Open brainwave-simulator.html** directly in browser
+1. **Open brainwave-simulator/brainwave-simulator.html** directly in browser
 2. **Features:**
    * Real-time neural visualization
    * Adjustable frequency controls
@@ -438,7 +438,7 @@ python3 -m http.server 8080
 - **iOS Mobile Experience**: [jesserodriguez.me/ios](https://jesserodriguez.me/ios)
 - **Circular Daily Planner**: [jesserodriguez.me/planner](https://jesserodriguez.me/planner)
 - **Fashion Palette Generator**: [jesserodriguez.me/fashion-palette](https://jesserodriguez.me/fashion-palette)
-- **AI Brainwave Simulator**: [jesserodriguez.me/brainwave-simulator.html](https://jesserodriguez.me/brainwave-simulator.html)
+- **AI Brainwave Simulator**: [jesserodriguez.me/brainwave-simulator/brainwave-simulator.html](https://jesserodriguez.me/brainwave-simulator/brainwave-simulator.html)
 - **Security Dashboard**: [jesserodriguez.me/security.html](https://jesserodriguez.me/security.html)
 - **Knock Knock Door**: [jesserodriguez.me/knock.html](https://jesserodriguez.me/knock.html) **🆕**
 - **Wrestling News Hub**: [jesserodriguez.me/wrestling-news](https://jesserodriguez.me/wrestling-news) **🆕**
@@ -671,7 +671,7 @@ This project is licensed under the MIT License.
 📱 [iOS Mobile Experience](https://jesserodriguez.me/ios)  
 🎯 [Circular Daily Planner](https://jesserodriguez.me/planner)  
 🎨 [Fashion Palette Generator](https://jesserodriguez.me/fashion-palette)  
-🧠 [AI Brainwave Simulator](https://jesserodriguez.me/brainwave-simulator.html)  
+🧠 [AI Brainwave Simulator](https://jesserodriguez.me/brainwave-simulator/brainwave-simulator.html)  
 🔒 [Security Dashboard](https://jesserodriguez.me/security.html)  
 🚪 [Knock Knock Door](https://jesserodriguez.me/knock.html) **🆕**  
 🥊 [Wrestling News Hub](https://jesserodriguez.me/wrestling-news) **🆕**  

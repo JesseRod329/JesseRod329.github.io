@@ -501,7 +501,7 @@ class PortfolioCLI {
     
     const linkText = document.createTextNode('🚀 ');
     const link = document.createElement('a');
-    link.href = '/brainwave-simulator.html';
+    link.href = '/brainwave-simulator/brainwave-simulator.html';
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
     link.textContent = 'Launch AI Brainwave Simulator';
