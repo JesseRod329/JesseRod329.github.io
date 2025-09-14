@@ -1,0 +1,34 @@
+/* Sidebar transparency fix */
+.bg-white\/95 {
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #333 !important;
+}
+
+.bg-white\/95 h1,
+.bg-white\/95 h2,
+.bg-white\/95 h3,
+.bg-white\/95 p,
+.bg-white\/95 span,
+.bg-white\/95 a,
+.bg-white\/95 div {
+  color: #333 !important;
+}
+
+.dark .bg-black\/95 {
+  background-color: rgba(0, 0, 0, 0.95);
+  color: #e6e6e6 !important;
+}
+
+.dark .bg-black\/95 h1,
+.dark .bg-black\/95 h2,
+.dark .bg-black\/95 h3,
+.dark .bg-black\/95 p,
+.dark .bg-black\/95 span,
+.dark .bg-black\/95 a,
+.dark .bg-black\/95 div {
+  color: #e6e6e6 !important;
+}
+
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+}

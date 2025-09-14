@@ -1,0 +1,120 @@
+[
+  {
+    "slug": "knock-knock-door",
+    "title": "Knock Knock Door",
+    "date": "2025-09",
+    "roles": ["Frontend", "Audio"],
+    "collab": "Jesse R.",
+    "summary": "An interactive door experience with customizable styles and realistic knock sounds. Click to knock with different visual effects, animations, and Web Audio API-generated sound patterns.",
+    "stack": ["HTML", "CSS", "JavaScript", "Web Audio API", "Tailwind CSS"],
+    "links": {
+      "repo": "https://github.com/JesseRod329/JesseRod329.github.io",
+      "live": "https://jesserodriguez.me/knock.html"
+    }
+  },
+  {
+    "slug": "philosophers-library",
+    "title": "The Philosopher's Library",
+    "date": "2025-01",
+    "roles": ["Frontend", "Design"],
+    "collab": "Jesse R.",
+    "summary": "An immersive digital library featuring 100 essential philosophical texts with generative Three.js art backgrounds, interactive navigation, and contemplative reading experience.",
+    "stack": ["HTML", "CSS", "JavaScript", "Three.js", "Tailwind CSS"],
+    "links": {
+      "repo": "https://github.com/JesseRod329/JesseRod329.github.io",
+      "live": "https://jesserodriguez.me/philosophers-library.html"
+    }
+  },
+  {
+    "slug": "nyc-public-ai",
+    "title": "NYC's Public AI Future",
+    "date": "2025-09",
+    "roles": ["Product", "Data Viz"],
+    "collab": "Jesse R.",
+    "summary": "Interactive plan for NYC-owned AI: phases, budget viz, roadmap, governance.",
+    "stack": ["HTML", "Tailwind CSS", "Chart.js", "Vanilla JS"],
+    "links": {
+      "repo": "https://github.com/JesseRod329/JesseRod329.github.io",
+      "live": "https://jesserodriguez.me/nyc-public-ai.html"
+    }
+  },
+  {
+    "slug": "portfolio-animation-system",
+    "title": "Portfolio Animation System",
+    "date": "2025-08",
+    "roles": ["Frontend"],
+    "collab": "Jesse R.",
+    "summary": "A dynamic portfolio website featuring smooth animations, Three.js background effects, and responsive design. Built with React, TypeScript, and Framer Motion for seamless user interactions.",
+    "stack": ["React", "TypeScript", "Three.js", "Framer Motion", "Tailwind CSS"],
+    "links": {
+      "repo": "https://github.com/JesseRod329/JesseRod329.github.io",
+      "live": "https://jesserod329.github.io/sandbox-portfolio"
+    },
+    "hidden": true
+  },
+  {
+    "slug": "ios-mobile-experience",
+    "title": "iOS Mobile Experience",
+    "date": "2025-08",
+    "roles": ["PWA Dev"],
+    "collab": "Jesse R.",
+    "summary": "A progressive web app designed to feel native on iOS devices. Features offline caching, touch gestures, and app-like navigation patterns optimized for mobile users.",
+    "stack": ["PWA", "Service Worker", "JavaScript", "CSS3"],
+    "links": {
+      "repo": "https://github.com/JesseRod329/JesseRod329.github.io",
+      "live": "https://jesserodriguez.me/ios"
+    }
+  },
+  {
+    "slug": "circular-planner",
+    "title": "Circular Daily Planner",
+    "date": "2025-08",
+    "roles": ["UI/UX", "Frontend"],
+    "collab": "Jesse R.",
+    "summary": "An innovative daily planning interface with circular design patterns. Features task management, time blocking, priority settings, and export capabilities for personalized productivity management.",
+    "stack": ["HTML", "CSS", "JavaScript", "Export Functionality"],
+    "links": {
+      "repo": "https://github.com/JesseRod329/circular-planner",
+      "live": "https://jesserodriguez.me/planner/index.html"
+    }
+  },
+  {
+    "slug": "fashion-palette-generator",
+    "title": "Fashion Palette Generator",
+    "date": "2025-07",
+    "roles": ["Frontend", "Design"],
+    "collab": "Jesse R.",
+    "summary": "A creative tool for generating harmonious color palettes for fashion design. Upload any fashion image to extract beautiful color palettes for outfit coordination. All processing happens locally - your images never leave your device.",
+    "stack": ["React", "Color Theory", "Canvas API", "Local Processing"],
+    "links": {
+      "repo": "https://github.com/JesseRod329/fashion-palette",
+      "live": "https://jesserodriguez.me/fashion-palette/"
+    }
+  },
+  {
+    "slug": "brainwave-simulator",
+    "title": "AI Brainwave Simulator",
+    "date": "2025-07",
+    "roles": ["Frontend", "Data Viz"],
+    "collab": "Jesse R.",
+    "summary": "Privacy-first neural activity visualization. All processing happens locally in your browser. Features real-time brainwave pattern analysis with focus, relaxation, creativity, and alertness metrics.",
+    "stack": ["JavaScript", "Canvas API", "Local Processing", "Privacy-First"],
+    "links": {
+      "repo": "https://github.com/JesseRod329/brainwave-sim",
+      "live": "https://jesserodriguez.me/brainwave-simulator/brainwave-simulator.html"
+    }
+  },
+  {
+    "slug": "security-dashboard",
+    "title": "Security Posture Dashboard",
+    "date": "2025-06",
+    "roles": ["Full Stack", "Security"],
+    "collab": "Jesse R.",
+    "summary": "Enterprise-level security implementation for static websites. Achieves 95% security score through comprehensive protection mechanisms including CSP, security headers, and zero attack surface architecture.",
+    "stack": ["Security Headers", "CSP", "HTTPS", "Static Architecture"],
+    "links": {
+      "repo": "https://github.com/JesseRod329/security-dashboard",
+      "live": "https://jesserodriguez.me/security.html"
+    }
+  }
+]
