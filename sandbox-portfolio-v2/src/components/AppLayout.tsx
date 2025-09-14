@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
 import Sidebar from "./Sidebar";
+import { Menu } from 'lucide-react';
 
 export default function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -13,9 +14,7 @@ export default function AppLayout() {
         onClick={() => setSidebarOpen(!sidebarOpen)}
         aria-label="Toggle menu"
       >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
+        <Menu className="w-6 h-6" />
       </button>
 
       {/* Mobile overlay */}
@@ -28,7 +27,7 @@ export default function AppLayout() {
 
       <div className="flex min-h-screen">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 lg:ml-[200px] py-15 px-4 sm:px-8 lg:px-20">
+        <main className="flex-1 lg:ml-[var(--sidebar-width)] py-15 px-4 sm:px-8 lg:px-20">
           <div className="max-w-[900px]">
             <Outlet />
           </div>

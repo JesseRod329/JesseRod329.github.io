@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import ThemeToggle from './ThemeToggle'
+import { X } from 'lucide-react'
 
 const linkBase = 'block py-1 text-base font-normal transition-colors duration-300 relative'
 const linkActive = 'text-fg'
@@ -14,7 +15,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   return (
     <>
       {/* Desktop Sidebar */}
-      <div className="hidden lg:block w-[200px] p-10 bg-white/95 dark:bg-black/95 backdrop-blur-sm border-r border-black/10 fixed h-screen z-10 flex flex-col justify-between">
+      <div className="hidden lg:block w-[var(--sidebar-width)] p-10 bg-white/95 dark:bg-black/95 backdrop-blur-sm border-r border-black/10 fixed h-screen z-10 flex flex-col justify-between">
         <div>
           <div className="mb-10">
             <h1 className="text-[28px] font-light mb-2 text-fg leading-tight">
@@ -93,9 +94,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 className="p-2 hover:bg-black/10 rounded-lg transition-colors"
                 aria-label="Close menu"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <X className="w-6 h-6" />
               </button>
             </div>
             <nav aria-label="Primary" className="space-y-4">

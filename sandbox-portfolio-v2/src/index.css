@@ -1,11 +1,16 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  --bg: #242424; /* Default dark mode background */
+  --fg: rgba(255, 255, 255, 0.87); /* Default dark mode foreground */
+  --muted: #888; /* Example muted color */
+  --sidebar-width: 200px; /* Width of the sidebar */
+
+  color: var(--fg);
+  background-color: var(--bg);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -110,8 +115,12 @@ button:focus-visible {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    --bg: #ffffff; /* Light mode background */
+    --fg: #213547; /* Light mode foreground */
+    /* --muted might also change in light mode if needed */
+
+    color: var(--fg);
+    background-color: var(--bg);
   }
   a:hover {
     color: #747bff;

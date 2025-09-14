@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as THREE from 'three';
 
 // Black and silver theme with different glow colors for each face
@@ -20,19 +21,32 @@ const faceRotations = [
   [Math.PI / 2, 0, 0]      // Bottom - Links
 ];
 
+// Placeholder content for each face
+const faceContentData = [
+  { type: 'text', content: 'About Me\n\nPassionate Developer', color: '#ffffff' }, // About
+  { type: 'projects' }, // Projects (handled separately)
+  { type: 'text', content: 'Skills\n\nReact, Three.js, GSAP', color: '#ffffff' }, // Skills
+  { type: 'text', content: 'Experience\n\nGoogle, Apple, Meta', color: '#ffffff' }, // Experience
+  { type: 'text', content: 'Contact\n\nEmail: hi@example.com', color: '#ffffff' }, // Contact
+  { type: 'text', content: 'Links\n\nGitHub, LinkedIn', color: '#ffffff' }  // Links
+];
+
 interface ThreeSceneProps {
   currentFace: number;
   setCurrentFace: (face: number) => void;
-  portfolioData: any;
+  portfolioData: any[]; // Added portfolioData to the interface
 }
 
-export default function ThreeScene({ currentFace, setCurrentFace }: ThreeSceneProps) {
+export default function ThreeScene({ currentFace, setCurrentFace, portfolioData }: ThreeSceneProps) {
+  const navigate = useNavigate();
   const mountRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cubeRef = useRef<THREE.Group | null>(null);
   const targetRotation = useRef([0, 0, 0]);
   const mouseRef = useRef({ x: 0, y: 0 });
   const isRotatingRef = useRef(false);
+  const projectSpritesRef = useRef<THREE.Sprite[]>([]); // To store project sprites for raycasting
+  const [currentProjectPageIndex, setCurrentProjectPageIndex] = useState(0); // For project pagination
 
   useEffect(() => {
     const currentMount = mountRef.current;
@@ -91,6 +105,35 @@ export default function ThreeScene({ currentFace, setCurrentFace }: ThreeScenePr
       [0, -1, 0]     // Bottom - Links
     ];
 
+    // Helper to create text sprites
+    const createTextSprite = (message: string, color = '#ffffff', fontSize = 60) => {
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      if (!context) return new THREE.Sprite();
+
+      const font = `${fontSize}px Arial`;
+      context.font = font;
+      const metrics = context.measureText(message);
+      const textWidth = metrics.width;
+
+      canvas.width = textWidth + 20; // Add some padding
+      canvas.height = fontSize + 20; // Add some padding
+
+      context.font = font;
+      context.fillStyle = color;
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      context.fillText(message, canvas.width / 2, canvas.height / 2);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+      const sprite = new THREE.Sprite(spriteMaterial);
+
+      // Scale sprite based on text size
+      sprite.scale.set(canvas.width * 0.005, canvas.height * 0.005, 1);
+      return sprite;
+    };
+
     facePositions.forEach((position, index) => {
       // Create face material with black base and glowing edge
       const material = new THREE.MeshPhongMaterial({
@@ -137,6 +180,68 @@ export default function ThreeScene({ currentFace, setCurrentFace }: ThreeScenePr
       cubeGroup.add(border);
       cubeGroup.add(glow);
       faces.push({ face, border, glow, index });
+
+      // Add project titles to the "Projects" face (index 1)
+      if (index === 1 && portfolioData && portfolioData.length > 0) {
+        const projectsPerPage = 4;
+        const totalProjectPages = Math.ceil(portfolioData.length / projectsPerPage);
+        const startIndex = currentProjectPageIndex * projectsPerPage;
+        const endIndex = Math.min(startIndex + projectsPerPage, portfolioData.length);
+        const projectsToDisplay = portfolioData.slice(startIndex, endIndex);
+
+        // Clear previous project sprites from the scene and ref
+        projectSpritesRef.current.forEach(sprite => {
+          cubeGroup.remove(sprite);
+          sprite.material.dispose();
+          sprite.geometry.dispose();
+        });
+        projectSpritesRef.current = []; 
+
+        const itemHeight = 0.4; // Approximate height of a project title sprite
+        const startY = (projectsToDisplay.length - 1) * itemHeight / 2; // Center vertically
+
+        projectsToDisplay.forEach((project: any, projIndex: number) => {
+          const projectSprite = createTextSprite(project.title, '#ffffff', 40);
+          projectSprite.position.copy(face.position);
+          projectSprite.position.z += 0.02; // Slightly in front of the face
+          projectSprite.position.y = face.position.y + startY - (projIndex * itemHeight); // Stack vertically
+          projectSprite.userData.project = project; // Store project data for interaction
+          cubeGroup.add(projectSprite);
+          projectSpritesRef.current.push(projectSprite);
+        });
+
+        // Add navigation buttons if more projects exist
+        if (totalProjectPages > 1) {
+          // Previous button
+          if (currentProjectPageIndex > 0) {
+            const prevButton = createTextSprite('<', '#00ff00', 50);
+            prevButton.position.set(face.position.x - 0.7, face.position.y, face.position.z + 0.02);
+            prevButton.userData.action = 'prevProjectPage';
+            cubeGroup.add(prevButton);
+            projectSpritesRef.current.push(prevButton);
+          }
+
+          // Next button
+          if (currentProjectPageIndex < totalProjectPages - 1) {
+            const nextButton = createTextSprite('>', '#00ff00', 50);
+            nextButton.position.set(face.position.x + 0.7, face.position.y, face.position.z + 0.02);
+            nextButton.userData.action = 'nextProjectPage';
+            cubeGroup.add(nextButton);
+            projectSpritesRef.current.push(nextButton);
+          }
+
+          // Page indicators
+          const indicatorSpacing = 0.1;
+          const indicatorsStartX = face.position.x - (totalProjectPages - 1) * indicatorSpacing / 2;
+          for (let i = 0; i < totalProjectPages; i++) {
+            const indicatorColor = (i === currentProjectPageIndex) ? '#00ff00' : '#666666';
+            const indicator = createTextSprite('•', indicatorColor, 30);
+            indicator.position.set(indicatorsStartX + i * indicatorSpacing, face.position.y - 0.8, face.position.z + 0.02);
+            cubeGroup.add(indicator);
+            projectSpritesRef.current.push(indicator); // Add to sprites for cleanup
+          }
+        }
+      }
     });
 
     // Add main wireframe cube with silver color
@@ -177,6 +282,8 @@ export default function ThreeScene({ currentFace, setCurrentFace }: ThreeScenePr
     // Mouse controls
     let isDragging = false;
     let previousMousePosition = { x: 0, y: 0 };
+    let hoveredSprite: THREE.Sprite | null = null; // To keep track of the currently hovered sprite
+    let hoveredFace: THREE.Mesh | null = null; // To keep track of the currently hovered face
 
     const onMouseDown = (_event: MouseEvent) => {
       isDragging = true;
@@ -191,6 +298,61 @@ export default function ThreeScene({ currentFace, setCurrentFace }: ThreeScenePr
     };
 
     const onMouseMove = (event: MouseEvent) => {
+      if (!isDragging) {
+        const rect = renderer.domElement.getBoundingClientRect();
+        const mouse = new THREE.Vector2();
+        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+        const raycaster = new THREE.Raycaster();
+        raycaster.setFromCamera(mouse, camera);
+
+        // Check for face hovers
+        const faceObjects = faces.map(f => f.face);
+        const intersectsFaces = raycaster.intersectObjects(faceObjects);
+
+        if (intersectsFaces.length > 0) {
+          const intersected = intersectsFaces[0].object as THREE.Mesh;
+          if (hoveredFace !== intersected) {
+            if (hoveredFace) {
+              // Reset previous hovered face
+              (hoveredFace.material as THREE.MeshPhongMaterial).emissiveIntensity = 0;
+            }
+            hoveredFace = intersected;
+            // Highlight new hovered face
+            (hoveredFace.material as THREE.MeshPhongMaterial).emissiveIntensity = 0.5; // Brighter emissive
+          }
+        } else {
+          if (hoveredFace) {
+            // Reset if no face is hovered
+            (hoveredFace.material as THREE.MeshPhongMaterial).emissiveIntensity = 0;
+            hoveredFace = null;
+          }
+        }
+
+        // Check for project sprite hovers
+        const intersectsSprites = raycaster.intersectObjects(projectSpritesRef.current);
+
+        if (intersectsSprites.length > 0) {
+          const intersected = intersectsSprites[0].object as THREE.Sprite;
+          if (hoveredSprite !== intersected) {
+            if (hoveredSprite) {
+              // Reset previous hovered sprite
+              (hoveredSprite.material as THREE.SpriteMaterial).color.set(0xffffff);
+            }
+            hoveredSprite = intersected;
+            // Highlight new hovered sprite
+            (hoveredSprite.material as THREE.SpriteMaterial).color.set(0x00ff00); // Green highlight
+          }
+        } else {
+          if (hoveredSprite) {
+            // Reset if no sprite is hovered
+            (hoveredSprite.material as THREE.SpriteMaterial).color.set(0xffffff);
+            hoveredSprite = null;
+          }
+        }
+      }
+
       if (!isDragging) return;
 
       const deltaMove = {
@@ -198,22 +360,24 @@ export default function ThreeScene({ currentFace, setCurrentFace }: ThreeScenePr
         y: event.offsetY - previousMousePosition.y
       };
 
-      cubeGroup.rotation.y += deltaMove.x * 0.01;
-      cubeGroup.rotation.x += deltaMove.y * 0.01;
+      // Update targetRotation based on mouse movement
+      targetRotation.current[1] += deltaMove.x * 0.005; // Reduced sensitivity
+      targetRotation.current[0] += deltaMove.y * 0.005; // Reduced sensitivity
 
       previousMousePosition = {
         x: event.offsetX,
-        y: event.offsetY
+        y: event.y
       };
     };
 
     const onWheel = (event: WheelEvent) => {
-      camera.position.z += event.deltaY * 0.01;
+      camera.position.z += event.deltaY * 0.005; // Reduced zoom sensitivity
       camera.position.z = Math.max(3, Math.min(8, camera.position.z));
     };
 
     const onClick = (event: MouseEvent) => {
-      if (isRotatingRef.current) return;
+      // Only allow click if not currently dragging or rotating from a previous drag
+      if (isDragging || isRotatingRef.current) return;
 
       // Raycasting for face detection
       const rect = renderer.domElement.getBoundingClientRect();
@@ -224,12 +388,27 @@ export default function ThreeScene({ currentFace, setCurrentFace }: ThreeScenePr
       const raycaster = new THREE.Raycaster();
       raycaster.setFromCamera(mouse, camera);
 
+      // Check for face clicks
       const faceObjects = faces.map(f => f.face);
-      const intersects = raycaster.intersectObjects(faceObjects);
-      if (intersects.length > 0) {
-        const clickedFaceData = faces.find(f => f.face === intersects[0].object);
+      const intersectsFaces = raycaster.intersectObjects(faceObjects);
+      if (intersectsFaces.length > 0) {
+        const clickedFaceData = faces.find(f => f.face === intersectsFaces[0].object);
         if (clickedFaceData) {
           setCurrentFace(clickedFaceData.index);
+          return; // Face clicked, don't check project sprites
+        }
+      }
+
+      // Check for project sprite clicks
+      const intersectsSprites = raycaster.intersectObjects(projectSpritesRef.current);
+      if (intersectsSprites.length > 0) {
+        const clickedSprite = intersectsSprites[0].object as THREE.Sprite;
+        if (clickedSprite.userData.project) {
+          navigate(`/projects/${clickedSprite.userData.project.slug}`);
+        } else if (clickedSprite.userData.action === 'prevProjectPage') {
+          setCurrentProjectPageIndex(prev => Math.max(0, prev - 1));
+        } else if (clickedSprite.userData.action === 'nextProjectPage') {
+          setCurrentProjectPageIndex(prev => prev + 1);
         }
       }
     };
@@ -241,7 +420,7 @@ export default function ThreeScene({ currentFace, setCurrentFace }: ThreeScenePr
     renderer.domElement.addEventListener('click', onClick);
 
     // Set initial rotation
-    targetRotation.current = faceRotations[currentFace];
+    targetRotation.current = [...faceRotations[currentFace]]; // Use spread to create a new array
 
     // Animation loop
     const animate = () => {
@@ -249,13 +428,13 @@ export default function ThreeScene({ currentFace, setCurrentFace }: ThreeScenePr
 
       // Smooth rotation to target
       if (targetRotation.current) {
-        cubeGroup.rotation.x += (targetRotation.current[0] - cubeGroup.rotation.x) * 0.05;
-        cubeGroup.rotation.y += (targetRotation.current[1] - cubeGroup.rotation.y) * 0.05;
-        cubeGroup.rotation.z += (targetRotation.current[2] - cubeGroup.rotation.z) * 0.05;
+        cubeGroup.rotation.x += (targetRotation.current[0] - cubeGroup.rotation.x) * 0.03; // Reduced speed
+        cubeGroup.rotation.y += (targetRotation.current[1] - cubeGroup.rotation.y) * 0.03; // Reduced speed
+        cubeGroup.rotation.z += (targetRotation.current[2] - cubeGroup.rotation.z) * 0.03; // Reduced speed
       }
 
-      // Gentle floating animation
-      cubeGroup.position.y = Math.sin(Date.now() * 0.001) * 0.1;
+      // Gentle floating animation (commented out for stability)
+      // cubeGroup.position.y = Math.sin(Date.now() * 0.001) * 0.1;
 
       // Rotate particles
       particles.rotation.y += 0.001;
@@ -324,7 +503,7 @@ export default function ThreeScene({ currentFace, setCurrentFace }: ThreeScenePr
       window.removeEventListener('resize', handleResize);
       renderer.dispose();
     };
-  }, [currentFace, setCurrentFace]);
+  }, [currentFace, setCurrentFace, portfolioData, currentProjectPageIndex]);
 
   // Update rotation when currentFace changes
   useEffect(() => {
