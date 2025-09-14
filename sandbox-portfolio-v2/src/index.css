@@ -113,6 +113,11 @@ button:focus-visible {
   }
 }
 
+/* Custom Gradient Utilities */
+.bg-gradient-radial {
+  background: radial-gradient(circle, var(--tw-gradient-stops));
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     --bg: #ffffff; /* Light mode background */

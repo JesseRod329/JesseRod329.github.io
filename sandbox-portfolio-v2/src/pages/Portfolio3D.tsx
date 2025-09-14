@@ -45,6 +45,10 @@ export default function Portfolio3D() {
   return (
     <div className="h-screen w-full bg-black relative overflow-hidden">
       <ParticleBackground />
+      
+      {/* Enhanced Background Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/40 z-10" />
+      <div className="absolute inset-0 bg-gradient-radial from-transparent via-purple-900/10 to-transparent z-10" />
      
       {/* Header */}
       <motion.header
@@ -90,43 +94,59 @@ export default function Portfolio3D() {
         />
       </div>
 
-      {/* Navigation Controls */}
+      {/* Enhanced Navigation Controls */}
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20"
       >
-        <div className="flex items-center gap-4 bg-black/60 backdrop-blur-md rounded-2xl p-2 border border-white/20">
-          <button
+        <div className="flex items-center gap-6 bg-black/70 backdrop-blur-md rounded-3xl p-4 border border-white/30 shadow-2xl">
+          <motion.button
             onClick={prevFace}
-            className="w-10 h-10 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300 flex items-center justify-center"
+            className="w-12 h-12 text-white/80 hover:text-white hover:bg-gradient-to-r hover:from-purple-500/20 hover:to-pink-500/20 rounded-xl transition-all duration-300 flex items-center justify-center border border-white/20"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
+            <ChevronLeft className="w-6 h-6" />
+          </motion.button>
 
-          <div className="flex gap-2">
-            {faceNames.map((_, index) => (
+          <div className="flex gap-3">
+            {faceNames.map((faceName, index) => (
               <motion.button
                 key={index}
                 onClick={() => setCurrentFace(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                className={`relative w-4 h-4 rounded-full transition-all duration-500 ${
                   index === currentFace
-                    ? 'bg-gradient-to-r from-gray-400 to-white shadow-lg'
-                    : 'bg-white/30 hover:bg-white/50'
+                    ? 'bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 shadow-lg'
+                    : 'bg-white/40 hover:bg-white/60'
                 }`}
-                whileHover={{ scale: 1.2 }}
+                whileHover={{ scale: 1.3 }}
                 whileTap={{ scale: 0.9 }}
-              />
+                title={faceName}
+              >
+                {index === currentFace && (
+                  <motion.div
+                    className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    style={{
+                      boxShadow: '0 0 20px rgba(147, 51, 234, 0.6), 0 0 40px rgba(147, 51, 234, 0.4)'
+                    }}
+                  />
+                )}
+              </motion.button>
             ))}
           </div>
 
-          <button
+          <motion.button
             onClick={nextFace}
-            className="w-10 h-10 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300 flex items-center justify-center"
+            className="w-12 h-12 text-white/80 hover:text-white hover:bg-gradient-to-r hover:from-purple-500/20 hover:to-pink-500/20 rounded-xl transition-all duration-300 flex items-center justify-center border border-white/20"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <ChevronRight className="w-5 h-5" />
-          </button>
+            <ChevronRight className="w-6 h-6" />
+          </motion.button>
         </div>
       </motion.div>
 
