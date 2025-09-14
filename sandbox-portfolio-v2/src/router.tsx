@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Portfolio3D from "./pages/Portfolio3D";
 import AppLayout from "./components/AppLayout";
 import Home from "./pages/Home";
 import Projects from "./pages/Projects";
@@ -10,6 +11,10 @@ import FAQ from "./pages/FAQ";
 const router = createBrowserRouter([
   {
     path: "/",
+    element: <Portfolio3D />,
+  },
+  {
+    path: "/old",
     element: <AppLayout />,
     children: [
       { index: true, element: <Home /> },
@@ -21,7 +26,7 @@ const router = createBrowserRouter([
     ],
   },
 ], {
-  basename: "/sandbox-portfolio"
+  basename: "/sandbox-portfolio-v2"
 });
 
 export default function Router() {
