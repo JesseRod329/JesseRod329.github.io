@@ -25,18 +25,18 @@ export default function Contact() {
       transition={{ duration: 0.35 }}
       className="max-w-[70ch]"
     >
-      <header className="mb-8">
-        <h1 className="text-[clamp(36px,6.2vw,64px)] font-light tracking-[-0.02em] leading-[0.9] text-fg mb-4">
+      <header className="mb-12">
+        <h1 className="text-[clamp(36px,6.2vw,64px)] font-light tracking-[-0.02em] leading-[0.9] neomorphic-text-white mb-4">
           Contact
         </h1>
-        <p className="text-muted text-sm">
+        <p className="neomorphic-text-muted text-sm">
           Let's work together • Get in touch
         </p>
       </header>
 
       <section className="space-y-8">
-        <div className="space-y-4">
-          <p className="text-fg leading-relaxed">
+        <div className="neomorphic-card p-8">
+          <p className="neomorphic-text-white leading-relaxed">
             I'm always interested in new opportunities and collaborations. 
             Whether you have a project in mind or just want to chat about design and development, 
             I'd love to hear from you.
@@ -44,31 +44,33 @@ export default function Contact() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="space-y-4">
-            <h2 className="text-xl font-light text-fg">Get in Touch</h2>
-            <div className="space-y-3 text-sm">
+          <div className="neomorphic-card p-8 space-y-6">
+            <h2 className="text-xl font-light neomorphic-text-white">Get in Touch</h2>
+            <div className="space-y-4 text-sm">
               <div>
-                <span className="text-muted">Email:</span>
-                <a href="mailto:jesse@example.com" className="text-fg hover:text-muted transition-colors ml-2">
+                <span className="neomorphic-text-muted">Email:</span>
+                <a href="mailto:jesse@example.com" className="neomorphic-text-white hover:neomorphic-text-muted transition-colors ml-2">
                   jesse@example.com
                 </a>
               </div>
               <div>
-                <span className="text-muted">GitHub:</span>
-                <a href="https://github.com/JesseRod329" target="_blank" rel="noopener noreferrer" className="text-fg hover:text-muted transition-colors ml-2">
+                <span className="neomorphic-text-muted">GitHub:</span>
+                <a href="https://github.com/JesseRod329" target="_blank" rel="noopener noreferrer" className="neomorphic-text-white hover:neomorphic-text-muted transition-colors ml-2">
                   @JesseRod329
                 </a>
               </div>
               <div>
-                <span className="text-muted">Location:</span>
-                <span className="text-fg ml-2">San Francisco, CA</span>
+                <span className="neomorphic-text-muted">Location:</span>
+                <span className="neomorphic-text-white ml-2">San Francisco, CA</span>
               </div>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4" aria-label="Contact form">
+          <form onSubmit={handleSubmit} className="neomorphic-card p-8 space-y-6" aria-label="Contact form">
+            <h2 className="text-xl font-light neomorphic-text-white mb-4">Send a Message</h2>
+            
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-fg mb-2">
+              <label htmlFor="email" className="block text-sm font-medium neomorphic-text-white mb-3">
                 Email
               </label>
               <input
@@ -77,13 +79,13 @@ export default function Contact() {
                 required
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-3 py-2 bg-transparent border border-muted rounded-md text-fg placeholder-muted focus:outline-none focus:border-fg transition-colors"
+                className="w-full px-4 py-3 neomorphic-pressed neomorphic-text-white placeholder:neomorphic-text-muted focus:outline-none focus:ring-2 focus:ring-white/20 transition-all"
                 placeholder="your@email.com"
               />
             </div>
             
             <div>
-              <label htmlFor="message" className="block text-sm font-medium text-fg mb-2">
+              <label htmlFor="message" className="block text-sm font-medium neomorphic-text-white mb-3">
                 Message
               </label>
               <textarea
@@ -92,7 +94,7 @@ export default function Contact() {
                 rows={4}
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                className="w-full px-3 py-2 bg-transparent border border-muted rounded-md text-fg placeholder-muted focus:outline-none focus:border-fg transition-colors resize-none"
+                className="w-full px-4 py-3 neomorphic-pressed neomorphic-text-white placeholder:neomorphic-text-muted focus:outline-none focus:ring-2 focus:ring-white/20 transition-all resize-none"
                 placeholder="Tell me about your project..."
               />
             </div>
@@ -100,7 +102,7 @@ export default function Contact() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-2 bg-fg text-bg rounded-md hover:opacity-80 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+              className="neomorphic-button px-8 py-3 neomorphic-text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? 'Sending...' : 'Send Message'}
             </button>

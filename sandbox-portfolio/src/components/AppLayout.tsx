@@ -6,10 +6,10 @@ export default function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[var(--bg)] text-[var(--fg)]">
+    <div className="min-h-screen bg-bg text-fg">
       {/* Mobile menu button */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white/95 dark:bg-black/95 backdrop-blur-sm rounded-lg border border-black/10"
+        className="lg:hidden fixed top-6 left-6 z-50 neomorphic-mobile-button p-3 neomorphic-text-white"
         onClick={() => setSidebarOpen(!sidebarOpen)}
         aria-label="Toggle menu"
       >
@@ -21,14 +21,14 @@ export default function AppLayout() {
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-40"
+          className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       <div className="flex min-h-screen">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 lg:ml-[200px] py-15 px-4 sm:px-8 lg:px-20">
+        <main className="flex-1 lg:ml-[200px] py-20 px-6 sm:px-8 lg:px-20">
           <div className="max-w-[900px]">
             <Outlet />
           </div>

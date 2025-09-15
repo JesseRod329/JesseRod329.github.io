@@ -27,21 +27,65 @@
 @tailwind utilities;
 
 :root {
-  --bg: #f5f5f5;
-  --fg: #333;
-  --muted: #666;
+  /* Dark Neumorphic Theme */
+  --bg: #0a0a0b;
+  --fg: #ffffff;
+  --muted: #8a8a8a;
+  
+  /* Neumorphic Colors */
+  --surface: #0f0f10;
+  --surface-elevated: #141415;
+  --surface-depressed: #060607;
+  
+  /* Shadow System */
+  --shadow-light: rgba(255, 255, 255, 0.03);
+  --shadow-dark: rgba(0, 0, 0, 0.5);
+  --shadow-inset-light: rgba(255, 255, 255, 0.02);
+  --shadow-inset-dark: rgba(0, 0, 0, 0.3);
+  
+  /* Interactive States */
+  --surface-hover: #161617;
+  --surface-active: #0d0d0e;
+  
+  /* Accent Colors */
+  --accent: #ffffff;
+  --accent-muted: #b0b0b0;
 }
 
 html.light {
+  /* Light theme preserved for compatibility */
   --bg: #f5f5f5;
   --fg: #333;
   --muted: #666;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --surface-depressed: #eeeeee;
+  --shadow-light: rgba(255, 255, 255, 0.8);
+  --shadow-dark: rgba(0, 0, 0, 0.15);
+  --shadow-inset-light: rgba(255, 255, 255, 0.9);
+  --shadow-inset-dark: rgba(0, 0, 0, 0.1);
+  --surface-hover: #f9f9f9;
+  --surface-active: #eeeeee;
+  --accent: #333;
+  --accent-muted: #666;
 }
 
 html.dark {
-  --bg: #0b0b0c;
-  --fg: #e6e6e6;
-  --muted: #9a9a9a;
+  /* Dark Neumorphic Theme */
+  --bg: #0a0a0b;
+  --fg: #ffffff;
+  --muted: #8a8a8a;
+  --surface: #0f0f10;
+  --surface-elevated: #141415;
+  --surface-depressed: #060607;
+  --shadow-light: rgba(255, 255, 255, 0.03);
+  --shadow-dark: rgba(0, 0, 0, 0.5);
+  --shadow-inset-light: rgba(255, 255, 255, 0.02);
+  --shadow-inset-dark: rgba(0, 0, 0, 0.3);
+  --surface-hover: #161617;
+  --surface-active: #0d0d0e;
+  --accent: #ffffff;
+  --accent-muted: #b0b0b0;
 }
 
 html.mono {
@@ -54,14 +98,14 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
   overflow-x: hidden;
   position: relative;
   min-height: 100vh;
   width: 100%;
 }
 
-/* Textured background effect */
+/* Neumorphic dark background with subtle texture */
 body::before {
   content: '';
   position: fixed;
@@ -70,15 +114,16 @@ body::before {
   width: 100%;
   height: 100%;
   background: 
-    radial-gradient(circle at 20% 80%, transparent 50%, rgba(255,255,255,0.3) 100%),
-    radial-gradient(circle at 80% 20%, transparent 50%, rgba(255,255,255,0.3) 100%);
-  background-size: 100px 100px, 150px 150px;
-  opacity: 0.6;
-  z-index: -1;
+    radial-gradient(circle at 15% 25%, rgba(255,255,255,0.008) 0%, transparent 50%),
+    radial-gradient(circle at 85% 75%, rgba(255,255,255,0.008) 0%, transparent 50%),
+    radial-gradient(circle at 45% 85%, rgba(0,0,0,0.05) 0%, transparent 30%);
+  background-size: 800px 800px, 600px 600px, 400px 400px;
+  opacity: 1;
+  z-index: -2;
   pointer-events: none;
 }
 
-/* Grain texture overlay */
+/* Subtle noise texture for tactile feel */
 body::after {
   content: '';
   position: fixed;
@@ -91,8 +136,8 @@ body::after {
       0deg,
       transparent,
       transparent 1px,
-      rgba(0,0,0,0.02) 1px,
-      rgba(0,0,0,0.02) 2px
+      rgba(255,255,255,0.005) 1px,
+      rgba(255,255,255,0.005) 2px
     ),
     repeating-linear-gradient(
       90deg,
@@ -101,7 +146,7 @@ body::after {
       rgba(0,0,0,0.02) 1px,
       rgba(0,0,0,0.02) 2px
     );
-  opacity: 0.8;
+  opacity: 1;
   z-index: -1;
   pointer-events: none;
 }
@@ -244,4 +289,178 @@ p {
   .float-title-delayed-5 {
     animation: none;
   }
+}
+
+/* ===== NEUMORPHIC DESIGN SYSTEM ===== */
+
+/* Base neumorphic elevated surface */
+.neomorphic-raised {
+  background: var(--surface);
+  border-radius: 20px;
+  box-shadow: 
+    8px 8px 16px var(--shadow-dark),
+    -8px -8px 16px var(--shadow-light);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Subtle raised surface */
+.neomorphic-raised-subtle {
+  background: var(--surface);
+  border-radius: 16px;
+  box-shadow: 
+    4px 4px 8px var(--shadow-dark),
+    -4px -4px 8px var(--shadow-light);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Pressed/inset surface */
+.neomorphic-pressed {
+  background: var(--surface-depressed);
+  border-radius: 16px;
+  box-shadow: 
+    inset 4px 4px 8px var(--shadow-inset-dark),
+    inset -4px -4px 8px var(--shadow-inset-light);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Elevated surface with stronger shadow */
+.neomorphic-elevated {
+  background: var(--surface-elevated);
+  border-radius: 24px;
+  box-shadow: 
+    12px 12px 24px var(--shadow-dark),
+    -12px -12px 24px var(--shadow-light);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Interactive button surface */
+.neomorphic-button {
+  background: var(--surface);
+  border-radius: 12px;
+  box-shadow: 
+    6px 6px 12px var(--shadow-dark),
+    -6px -6px 12px var(--shadow-light);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.neomorphic-button:hover {
+  background: var(--surface-hover);
+  box-shadow: 
+    8px 8px 16px var(--shadow-dark),
+    -8px -8px 16px var(--shadow-light);
+  transform: translateY(-1px);
+}
+
+.neomorphic-button:active {
+  background: var(--surface-active);
+  box-shadow: 
+    inset 3px 3px 6px var(--shadow-inset-dark),
+    inset -3px -3px 6px var(--shadow-inset-light);
+  transform: translateY(0);
+}
+
+/* Navigation link styling */
+.neomorphic-nav-link {
+  background: transparent;
+  border-radius: 10px;
+  padding: 12px 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  margin: 2px 0;
+}
+
+.neomorphic-nav-link:hover {
+  background: var(--surface);
+  box-shadow: 
+    4px 4px 8px var(--shadow-dark),
+    -4px -4px 8px var(--shadow-light);
+}
+
+.neomorphic-nav-link.active {
+  background: var(--surface-depressed);
+  box-shadow: 
+    inset 2px 2px 4px var(--shadow-inset-dark),
+    inset -2px -2px 4px var(--shadow-inset-light);
+}
+
+/* Card styling for projects */
+.neomorphic-card {
+  background: var(--surface);
+  border-radius: 20px;
+  box-shadow: 
+    10px 10px 20px var(--shadow-dark),
+    -10px -10px 20px var(--shadow-light);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.neomorphic-card:hover {
+  background: var(--surface-hover);
+  box-shadow: 
+    15px 15px 30px var(--shadow-dark),
+    -15px -15px 30px var(--shadow-light);
+  transform: translateY(-2px);
+}
+
+/* Sidebar styling */
+.neomorphic-sidebar {
+  background: var(--surface);
+  box-shadow: 
+    8px 0 16px var(--shadow-dark),
+    -2px 0 8px var(--shadow-light);
+  backdrop-filter: blur(10px);
+  border-right: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+/* Toggle switch styling */
+.neomorphic-toggle {
+  background: var(--surface-depressed);
+  border-radius: 25px;
+  padding: 4px;
+  box-shadow: 
+    inset 4px 4px 8px var(--shadow-inset-dark),
+    inset -4px -4px 8px var(--shadow-inset-light);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.neomorphic-toggle-thumb {
+  background: var(--surface-elevated);
+  border-radius: 50%;
+  box-shadow: 
+    3px 3px 6px var(--shadow-dark),
+    -3px -3px 6px var(--shadow-light);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Text styling */
+.neomorphic-text-white {
+  color: var(--accent);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.neomorphic-text-muted {
+  color: var(--accent-muted);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile menu button */
+.neomorphic-mobile-button {
+  background: var(--surface);
+  border-radius: 12px;
+  box-shadow: 
+    4px 4px 8px var(--shadow-dark),
+    -4px -4px 8px var(--shadow-light);
+  border: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.neomorphic-mobile-button:active {
+  box-shadow: 
+    inset 2px 2px 4px var(--shadow-inset-dark),
+    inset -2px -2px 4px var(--shadow-inset-light);
 }

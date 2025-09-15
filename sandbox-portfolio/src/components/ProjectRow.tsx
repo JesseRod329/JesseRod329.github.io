@@ -11,12 +11,10 @@ type Project = {
 };
 
 export default function ProjectRow({ project, index }: { project: Project; index: number }) {
-  const meta = `${new Date(project.date).toLocaleString("en-US", { month: "short", year: "numeric" })} / ${project.roles.join(" / ")}${project.collab ? `: ${project.collab}` : ""}`;
-
-  // Varying title sizes like the reference
+  // Varying title sizes for visual hierarchy
   const titleSizes = [
-    "text-[72px]", "text-[58px]", "text-[52px]", 
-    "text-[68px]", "text-[48px]", "text-[72px]"
+    "text-[42px] md:text-[58px]", "text-[38px] md:text-[52px]", "text-[36px] md:text-[48px]", 
+    "text-[44px] md:text-[62px]", "text-[34px] md:text-[46px]", "text-[46px] md:text-[64px]"
   ];
   const titleSize = titleSizes[index % titleSizes.length];
 
@@ -29,23 +27,57 @@ export default function ProjectRow({ project, index }: { project: Project; index
 
   return (
     <motion.li
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05, duration: 0.35 }}
-      className="group relative mb-20"
+      transition={{ delay: index * 0.08, duration: 0.5, ease: "easeOut" }}
+      className="group relative mb-16"
     >
       <Link to={`/projects/${project.slug}`} className="block no-underline">
         <motion.div
-          whileHover={{ x: 10 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-          className="relative"
+          whileHover={{ y: -4 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="neomorphic-card p-8 md:p-12 cursor-pointer"
         >
-          <h2 className={`${titleSize} ${floatClass} font-light tracking-[-0.02em] mb-2 text-fg leading-[0.9]`}>
-            {project.title}
-          </h2>
-          <div className="text-xs text-muted font-normal text-right mt-5">
-            {meta}
+          {/* Project title with neumorphic appearance */}
+          <div className="relative mb-6">
+            <h2 className={`${titleSize} ${floatClass} font-light tracking-[-0.02em] neomorphic-text-white leading-[0.9] mb-4`}>
+              {project.title}
+            </h2>
+            
+            {/* Subtle highlight effect on title */}
+            <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-5 bg-gradient-to-r from-white/10 to-transparent transition-opacity duration-300 pointer-events-none" />
           </div>
+
+          {/* Role tags with neumorphic styling */}
+          <div className="flex flex-wrap gap-3 mb-6">
+            {project.roles.map((role, roleIndex) => (
+              <span 
+                key={roleIndex}
+                className="neomorphic-raised-subtle px-4 py-2 text-sm neomorphic-text-muted font-medium"
+              >
+                {role}
+              </span>
+            ))}
+          </div>
+
+          {/* Meta information */}
+          <div className="flex justify-between items-center pt-4 border-t border-white/5">
+            <div className="text-sm neomorphic-text-muted">
+              {new Date(project.date).toLocaleString("en-US", { month: "short", year: "numeric" })}
+            </div>
+            {project.collab && (
+              <div className="text-sm neomorphic-text-muted">
+                {project.collab}
+              </div>
+            )}
+          </div>
+
+          {/* Subtle glow effect on hover */}
+          <div className="absolute inset-0 rounded-[20px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+               style={{
+                 background: 'radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.02), transparent 40%)',
+               }}
+          />
         </motion.div>
       </Link>
     </motion.li>
