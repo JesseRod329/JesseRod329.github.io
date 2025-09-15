@@ -159,32 +159,22 @@ function transformRegionalData(apiData) {
 // Get real-time trending topics
 app.get('/api/trending', async (req, res) => {
   try {
-    console.log('📊 Using enhanced mock trends data (Google Trends blocked)');
     const region = req.query.region || 'US';
-    
-    // Use enhanced mock data with dynamic values
-    const transformedData = generateEnhancedMockTrends();
-    
-    console.log('✅ Trends data ready:', transformedData.length, 'trends');
+    console.log(`📈 Fetching real-time trends for region: ${region}`);
+
+    const trendsData = await googleTrends.realTimeTrends({
+      geo: region,
+      category: 'all',
+    });
+
+    const transformedData = transformRealTimeTrends(trendsData);
+    console.log('✅ Real-time trends data transformed:', transformedData.length, 'trends');
     res.json({ success: true, data: transformedData });
   } catch (error) {
-    console.error('❌ Error generating trends data:', error);
-    // Fallback to basic mock data
-    const basicMockData = [
-      {
-        id: 'fallback-1',
-        title: 'Technology News',
-        volume: '500K',
-        change: 25,
-        category: 'TECH',
-        peakTime: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
-        sentiment: 'POSITIVE',
-        velocity: '75/hr',
-        sparkline: Array.from({ length: 24 }, () => Math.floor(Math.random() * 80 + 20)),
-        relatedQueries: ['tech news', 'technology trends', 'latest tech']
-      }
-    ];
-    res.json({ success: true, data: basicMockData });
+    console.error('❌ Error fetching real-time trends:', error);
+    console.log('📊 Falling back to enhanced mock trends data');
+    const mockData = generateEnhancedMockTrends();
+    res.json({ success: true, data: mockData });
   }
 });
 

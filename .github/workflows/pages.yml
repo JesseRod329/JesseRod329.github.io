@@ -45,6 +45,12 @@ jobs:
           npm cache clean --force
           npm ci
           npm run build
+          
+          echo "Copying built files to sandbox-portfolio directory..."
+          cd ..
+          rm -rf sandbox-portfolio-dist
+          mkdir -p sandbox-portfolio-dist
+          cp -r sandbox-portfolio/dist/* sandbox-portfolio-dist/
           echo "Sandbox Portfolio build completed"
       
       - name: Setup Pages
