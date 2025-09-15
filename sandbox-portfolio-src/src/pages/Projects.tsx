@@ -7,7 +7,7 @@ export default function Projects() {
   
   return (
     <main className="min-h-screen px-0 sm:px-6 md:px-8 lg:px-12 safe-content-sm">
-      <div className="w-full">
+      <div className="w-full flex flex-col items-start">
         {/* Page header */}
         <div className="mb-12 sm:mb-16 md:mb-20 lg:mb-24">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light neomorphic-text-white mb-4 sm:mb-6 tracking-tight">
