@@ -30,7 +30,7 @@ export default function ProjectRow({ project, index }: { project: Project; index
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08, duration: 0.5, ease: "easeOut" }}
-      className="group relative mb-8 sm:mb-12 md:mb-16"
+      className="group relative"
     >
       <Link to={`/projects/${project.slug}`} className="block no-underline">
         <div className="neomorphic-card p-6 sm:p-8 md:p-12 cursor-pointer">
