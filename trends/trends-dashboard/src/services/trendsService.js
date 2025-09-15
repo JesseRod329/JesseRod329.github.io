@@ -10,9 +10,9 @@ class TrendsService {
     // Check if we're in production (GitHub Pages) or development
     this.isProduction = process.env.NODE_ENV === 'production' || window.location.hostname !== 'localhost';
     this.apiBaseUrl = this.isProduction 
-      ? 'https://trends-api-backend.vercel.app/api' // We'll deploy this
+      ? 'https://trends-dashboard-jlqjj42yr-jesserod329s-projects.vercel.app/api' // Live backend API
       : 'http://localhost:3001/api';
-    this.useRealData = !this.isProduction; // Use mock data in production for now
+    this.useRealData = true; // Enable real data in production
     console.log(`🚀 Google Trends Service initialized - ${this.isProduction ? 'Production' : 'Development'} mode`);
   }
 
