@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Trends Terminal Dashboard - Jesse Rodriguez</title>
+    <meta name="description" content="Real-time Google Trends dashboard with terminal-style interface by Jesse Rodriguez">
+    <meta name="keywords" content="google trends, dashboard, terminal, react, javascript, jesse rodriguez">
+    <meta name="author" content="Jesse Rodriguez">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Google Trends Terminal Dashboard">
+    <meta property="og:description" content="Interactive terminal-style dashboard for Google Trends data">
+    <meta property="og:image" content="https://trends.jesserodriguez.me/og-image.png">
+    <meta property="og:url" content="https://trends.jesserodriguez.me">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Google Trends Terminal Dashboard">
+    <meta name="twitter:description" content="Interactive terminal-style dashboard for Google Trends data">
+    <meta name="twitter:image" content="https://trends.jesserodriguez.me/og-image.png">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #0a0a0a;
+            color: #ffb000;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+        }
+        
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .spinner {
+            border: 2px solid #333;
+            border-top: 2px solid #ffb000;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .portfolio-header {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.9);
+            padding: 10px 15px;
+            border: 1px solid #2a2a2a;
+            border-radius: 2px;
+        }
+        
+        .portfolio-header a {
+            color: #ffb000;
+            text-decoration: none;
+            font-size: 12px;
+        }
+        
+        .portfolio-header a:hover {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="portfolio-header">
+        <a href="https://jesserodriguez.me">← Back to Portfolio</a>
+    </div>
+    
+    <div id="root">
+        <div class="loading">
+            <div class="spinner"></div>
+            <div>Loading Google Trends Dashboard...</div>
+            <div style="font-size: 10px; color: #666;">
+                Terminal-style interface by Jesse Rodriguez
+            </div>
+        </div>
+    </div>
+</body>
+</html>
