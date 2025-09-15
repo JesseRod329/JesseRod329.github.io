@@ -30,8 +30,8 @@ export default function ProjectRow({ project, index }: { project: Project; index
       className="group relative"
     >
       <Link to={`/projects/${project.slug}`} className="block no-underline">
-        <div className="neomorphic-card p-6 sm:p-8 md:p-12 cursor-pointer">
-          {/* Clean project title without floating */}
+        <div className="glass-surface glass-card glass-reflection glow p-6 sm:p-8 md:p-12 cursor-pointer">
+          {/* Clean project title */}
           <div className="relative">
             <h2 className={`${titleSize} font-light tracking-[-0.02em] neomorphic-title-engraved leading-[0.9]`}>
               {project.title}
