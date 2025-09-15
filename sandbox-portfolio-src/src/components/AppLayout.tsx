@@ -9,7 +9,7 @@ export default function AppLayout() {
     <div className="min-h-screen bg-bg text-fg">
       {/* Mobile menu button */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-50 neomorphic-mobile-button p-2 neomorphic-text-white"
+        className="lg:hidden fixed top-5 left-5 z-50 neomorphic-mobile-button p-2 neomorphic-text-white"
         onClick={() => setSidebarOpen(!sidebarOpen)}
         aria-label="Toggle menu"
       >
@@ -28,7 +28,7 @@ export default function AppLayout() {
 
       <div className="flex min-h-screen">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 lg:ml-[200px] pt-16 pb-12 sm:pt-20 sm:pb-16 md:pt-24 md:pb-20 lg:pt-20">
+        <main className="flex-1 lg:ml-[200px] pt-20 pb-12 sm:pt-24 sm:pb-16 md:pt-28 md:pb-20 lg:pt-20">
           <Outlet />
         </main>
       </div>
