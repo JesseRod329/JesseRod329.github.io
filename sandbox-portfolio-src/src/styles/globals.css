@@ -101,6 +101,7 @@ body {
   position: relative;
   min-height: 100vh;
   width: 100%;
+  margin: 0; /* remove default browser margin causing mobile left offset */
 }
 
 /* Neumorphic dark background with subtle texture */
