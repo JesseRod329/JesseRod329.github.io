@@ -113,7 +113,7 @@ export default function AppLayout() {
       </nav>
 
       {/* Main Content */}
-      <main className="pt-16">
+      <main className="pt-20">
         <Outlet />
       </main>
     </div>
