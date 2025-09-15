@@ -18,12 +18,8 @@ export default function ProjectRow({ project, index }: { project: Project; index
   ];
   const titleSize = titleSizes[index % titleSizes.length];
 
-  // Floating animation classes with randomization
-  const floatClasses = [
-    "float-title", "float-title-delayed-1", "float-title-delayed-2",
-    "float-title-delayed-3", "float-title-delayed-4", "float-title-delayed-5"
-  ];
-  const floatClass = floatClasses[index % floatClasses.length];
+  // Simplified floating animation - reduced for performance
+  const floatClass = index % 2 === 0 ? "float-title" : "";
 
   return (
     <motion.li

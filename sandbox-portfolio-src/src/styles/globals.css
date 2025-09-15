@@ -66,9 +66,9 @@
   }
 }
 
-/* Fallback for browsers without prefers-color-scheme support */
-:root {
-  /* Light Neumorphic Theme */
+/* Fallback for browsers without prefers-color-scheme support - LOWER PRIORITY */
+html {
+  /* Light Neumorphic Theme as fallback only */
   --bg: #e0e0e0;
   --fg: #333333;
   --muted: #777777;
@@ -85,41 +85,6 @@
   --accent-muted: #777777;
 }
 
-html.light {
-  /* Light Neumorphic Theme */
-  --bg: #e0e0e0;
-  --fg: #333333;
-  --muted: #777777;
-  --surface: #e0e0e0;
-  --surface-elevated: #e6e6e6;
-  --surface-depressed: #dadada;
-  --shadow-light: rgba(255, 255, 255, 0.7);
-  --shadow-dark: rgba(163, 177, 198, 0.6);
-  --shadow-inset-light: rgba(255, 255, 255, 0.8);
-  --shadow-inset-dark: rgba(163, 177, 198, 0.4);
-  --surface-hover: #e3e3e3;
-  --surface-active: #dddddd;
-  --accent: #333333;
-  --accent-muted: #777777;
-}
-
-html.dark {
-  /* Light Neumorphic Theme - Keeping consistent design */
-  --bg: #e0e0e0;
-  --fg: #333333;
-  --muted: #777777;
-  --surface: #e0e0e0;
-  --surface-elevated: #e6e6e6;
-  --surface-depressed: #dadada;
-  --shadow-light: rgba(255, 255, 255, 0.7);
-  --shadow-dark: rgba(163, 177, 198, 0.6);
-  --shadow-inset-light: rgba(255, 255, 255, 0.8);
-  --shadow-inset-dark: rgba(163, 177, 198, 0.4);
-  --surface-hover: #e3e3e3;
-  --surface-active: #dddddd;
-  --accent: #333333;
-  --accent-muted: #777777;
-}
 
 html.mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace;
@@ -515,17 +480,6 @@ p {
   }
 }
 
-/* Fallback for browsers without prefers-color-scheme */
-.neomorphic-title-engraved {
-  text-shadow: 
-    2px 2px 4px rgba(163, 177, 198, 0.4),
-    -2px -2px 4px rgba(255, 255, 255, 0.8),
-    /* RGB Glow Effects */
-    0 0 10px rgba(255, 0, 150, 0.3),
-    0 0 20px rgba(0, 255, 255, 0.2),
-    0 0 30px rgba(255, 255, 0, 0.15),
-    0 0 40px rgba(255, 0, 255, 0.1);
-}
 
 /* Animated RGB glow effect */
 .neomorphic-rgb-glow {
@@ -624,49 +578,6 @@ p {
   }
 }
 
-/* Fallback animation for browsers without prefers-color-scheme */
-@keyframes rgbGlow {
-  0% {
-    text-shadow: 
-      2px 2px 4px rgba(163, 177, 198, 0.4),
-      -2px -2px 4px rgba(255, 255, 255, 0.8),
-      0 0 15px rgba(255, 0, 150, 0.4),
-      0 0 25px rgba(0, 255, 255, 0.3),
-      0 0 35px rgba(255, 255, 0, 0.2);
-  }
-  25% {
-    text-shadow: 
-      2px 2px 4px rgba(163, 177, 198, 0.4),
-      -2px -2px 4px rgba(255, 255, 255, 0.8),
-      0 0 18px rgba(0, 255, 255, 0.4),
-      0 0 28px rgba(255, 255, 0, 0.3),
-      0 0 38px rgba(255, 0, 255, 0.2);
-  }
-  50% {
-    text-shadow: 
-      2px 2px 4px rgba(163, 177, 198, 0.4),
-      -2px -2px 4px rgba(255, 255, 255, 0.8),
-      0 0 20px rgba(255, 255, 0, 0.4),
-      0 0 30px rgba(255, 0, 255, 0.3),
-      0 0 40px rgba(255, 0, 150, 0.2);
-  }
-  75% {
-    text-shadow: 
-      2px 2px 4px rgba(163, 177, 198, 0.4),
-      -2px -2px 4px rgba(255, 255, 255, 0.8),
-      0 0 22px rgba(255, 0, 255, 0.4),
-      0 0 32px rgba(255, 0, 150, 0.3),
-      0 0 42px rgba(0, 255, 255, 0.2);
-  }
-  100% {
-    text-shadow: 
-      2px 2px 4px rgba(163, 177, 198, 0.4),
-      -2px -2px 4px rgba(255, 255, 255, 0.8),
-      0 0 25px rgba(255, 0, 150, 0.4),
-      0 0 35px rgba(0, 255, 255, 0.3),
-      0 0 45px rgba(255, 255, 0, 0.2);
-  }
-}
 
 /* Mobile menu button */
 .neomorphic-mobile-button {
