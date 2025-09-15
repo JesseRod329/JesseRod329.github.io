@@ -452,131 +452,25 @@ p {
   position: relative;
 }
 
-/* Light theme engraved text */
+/* Clean engraved text without RGB glow */
 @media (prefers-color-scheme: light) {
   .neomorphic-title-engraved {
     text-shadow: 
       2px 2px 4px rgba(163, 177, 198, 0.4),
-      -2px -2px 4px rgba(255, 255, 255, 0.8),
-      /* RGB Glow Effects */
-      0 0 10px rgba(255, 0, 150, 0.3),
-      0 0 20px rgba(0, 255, 255, 0.2),
-      0 0 30px rgba(255, 255, 0, 0.15),
-      0 0 40px rgba(255, 0, 255, 0.1);
+      -2px -2px 4px rgba(255, 255, 255, 0.8);
   }
 }
 
-/* Dark theme engraved text - Enhanced RGB glow */
+/* Clean engraved text for dark theme */
 @media (prefers-color-scheme: dark) {
   .neomorphic-title-engraved {
     text-shadow: 
       1px 1px 2px rgba(0, 0, 0, 0.6),
-      -1px -1px 2px rgba(255, 255, 255, 0.05),
-      /* Enhanced RGB Glow for dark theme */
-      0 0 15px rgba(255, 0, 150, 0.5),
-      0 0 30px rgba(0, 255, 255, 0.3),
-      0 0 45px rgba(255, 255, 0, 0.2),
-      0 0 60px rgba(255, 0, 255, 0.15);
+      -1px -1px 2px rgba(255, 255, 255, 0.05);
   }
 }
 
 
-/* Animated RGB glow effect */
-.neomorphic-rgb-glow {
-  animation: rgbGlow 4s ease-in-out infinite alternate;
-}
-
-/* Light theme RGB glow animation */
-@media (prefers-color-scheme: light) {
-  @keyframes rgbGlow {
-    0% {
-      text-shadow: 
-        2px 2px 4px rgba(163, 177, 198, 0.4),
-        -2px -2px 4px rgba(255, 255, 255, 0.8),
-        0 0 15px rgba(255, 0, 150, 0.4),
-        0 0 25px rgba(0, 255, 255, 0.3),
-        0 0 35px rgba(255, 255, 0, 0.2);
-    }
-    25% {
-      text-shadow: 
-        2px 2px 4px rgba(163, 177, 198, 0.4),
-        -2px -2px 4px rgba(255, 255, 255, 0.8),
-        0 0 18px rgba(0, 255, 255, 0.4),
-        0 0 28px rgba(255, 255, 0, 0.3),
-        0 0 38px rgba(255, 0, 255, 0.2);
-    }
-    50% {
-      text-shadow: 
-        2px 2px 4px rgba(163, 177, 198, 0.4),
-        -2px -2px 4px rgba(255, 255, 255, 0.8),
-        0 0 20px rgba(255, 255, 0, 0.4),
-        0 0 30px rgba(255, 0, 255, 0.3),
-        0 0 40px rgba(255, 0, 150, 0.2);
-    }
-    75% {
-      text-shadow: 
-        2px 2px 4px rgba(163, 177, 198, 0.4),
-        -2px -2px 4px rgba(255, 255, 255, 0.8),
-        0 0 22px rgba(255, 0, 255, 0.4),
-        0 0 32px rgba(255, 0, 150, 0.3),
-        0 0 42px rgba(0, 255, 255, 0.2);
-    }
-    100% {
-      text-shadow: 
-        2px 2px 4px rgba(163, 177, 198, 0.4),
-        -2px -2px 4px rgba(255, 255, 255, 0.8),
-        0 0 25px rgba(255, 0, 150, 0.4),
-        0 0 35px rgba(0, 255, 255, 0.3),
-        0 0 45px rgba(255, 255, 0, 0.2);
-    }
-  }
-}
-
-/* Dark theme RGB glow animation - Enhanced intensity */
-@media (prefers-color-scheme: dark) {
-  @keyframes rgbGlow {
-    0% {
-      text-shadow: 
-        1px 1px 2px rgba(0, 0, 0, 0.6),
-        -1px -1px 2px rgba(255, 255, 255, 0.05),
-        0 0 20px rgba(255, 0, 150, 0.6),
-        0 0 35px rgba(0, 255, 255, 0.4),
-        0 0 50px rgba(255, 255, 0, 0.3);
-    }
-    25% {
-      text-shadow: 
-        1px 1px 2px rgba(0, 0, 0, 0.6),
-        -1px -1px 2px rgba(255, 255, 255, 0.05),
-        0 0 25px rgba(0, 255, 255, 0.6),
-        0 0 40px rgba(255, 255, 0, 0.4),
-        0 0 55px rgba(255, 0, 255, 0.3);
-    }
-    50% {
-      text-shadow: 
-        1px 1px 2px rgba(0, 0, 0, 0.6),
-        -1px -1px 2px rgba(255, 255, 255, 0.05),
-        0 0 30px rgba(255, 255, 0, 0.6),
-        0 0 45px rgba(255, 0, 255, 0.4),
-        0 0 60px rgba(255, 0, 150, 0.3);
-    }
-    75% {
-      text-shadow: 
-        1px 1px 2px rgba(0, 0, 0, 0.6),
-        -1px -1px 2px rgba(255, 255, 255, 0.05),
-        0 0 32px rgba(255, 0, 255, 0.6),
-        0 0 47px rgba(255, 0, 150, 0.4),
-        0 0 62px rgba(0, 255, 255, 0.3);
-    }
-    100% {
-      text-shadow: 
-        1px 1px 2px rgba(0, 0, 0, 0.6),
-        -1px -1px 2px rgba(255, 255, 255, 0.05),
-        0 0 35px rgba(255, 0, 150, 0.6),
-        0 0 50px rgba(0, 255, 255, 0.4),
-        0 0 65px rgba(255, 255, 0, 0.3);
-    }
-  }
-}
 
 
 /* Mobile menu button */

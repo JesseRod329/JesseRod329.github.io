@@ -28,10 +28,8 @@ export default function AppLayout() {
 
       <div className="flex min-h-screen">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className="flex-1 lg:ml-[200px] py-20 px-6 sm:px-8 lg:px-20">
-          <div className="max-w-[900px]">
-            <Outlet />
-          </div>
+        <main className="flex-1 lg:ml-[200px] py-12 sm:py-16 md:py-20">
+          <Outlet />
         </main>
       </div>
     </div>
