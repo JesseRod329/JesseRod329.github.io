@@ -1,5 +1,5 @@
-# GitHub Pages deployment workflow for iOS Portfolio
-name: Deploy iOS Portfolio to Pages
+# GitHub Pages deployment workflow for Portfolio Projects
+name: Deploy Portfolio Projects to Pages
 
 on:
   # Runs on pushes targeting the default branch
@@ -34,12 +34,17 @@ jobs:
         with:
           node-version: '18'
       
-      - name: Build iOS Portfolio
+      - name: Build Portfolio Projects
         run: |
           echo "Building iOS Portfolio..."
           cd ios
-          node build.js || echo "Build script completed"
-          echo "iOS Portfolio build completed"
+          node build.js || echo "iOS build completed"
+          
+          echo "Building Sandbox Portfolio..."
+          cd ../sandbox-portfolio
+          npm install
+          npm run build
+          echo "Sandbox Portfolio build completed"
       
       - name: Setup Pages
         uses: actions/configure-pages@v4
