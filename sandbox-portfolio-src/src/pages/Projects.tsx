@@ -19,7 +19,7 @@ export default function Projects() {
         </div>
 
         {/* Projects list */}
-        <ul className="space-y-8 sm:space-y-12 md:space-y-16 lg:space-y-20">
+        <ul className="list-none p-0 m-0 space-y-8 sm:space-y-12 md:space-y-16 lg:space-y-20">
           {visibleProjects.map((p, i) => (
             <ProjectRow key={p.slug} project={p} index={i} />
           ))}
