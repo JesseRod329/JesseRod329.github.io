@@ -402,14 +402,6 @@ p {
   position: relative;
 }
 
-.neomorphic-card:hover {
-  background: var(--surface-hover);
-  box-shadow: 
-    18px 18px 36px var(--shadow-dark),
-    -18px -18px 36px var(--shadow-light);
-  transform: translateY(-3px);
-}
-
 /* Sidebar styling */
 .neomorphic-sidebar {
   background: var(--surface);
@@ -455,13 +447,67 @@ p {
     -1px -1px 2px rgba(255, 255, 255, 0.6);
 }
 
-/* Soft engraved title text for light theme */
+/* Engraved title text with RGB glow effects */
 .neomorphic-title-engraved {
   color: var(--accent);
   text-shadow: 
     2px 2px 4px rgba(163, 177, 198, 0.4),
-    -2px -2px 4px rgba(255, 255, 255, 0.8);
+    -2px -2px 4px rgba(255, 255, 255, 0.8),
+    /* RGB Glow Effects */
+    0 0 10px rgba(255, 0, 150, 0.3),
+    0 0 20px rgba(0, 255, 255, 0.2),
+    0 0 30px rgba(255, 255, 0, 0.15),
+    0 0 40px rgba(255, 0, 255, 0.1);
   font-weight: 500;
+  position: relative;
+}
+
+/* Animated RGB glow effect */
+.neomorphic-rgb-glow {
+  animation: rgbGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes rgbGlow {
+  0% {
+    text-shadow: 
+      2px 2px 4px rgba(163, 177, 198, 0.4),
+      -2px -2px 4px rgba(255, 255, 255, 0.8),
+      0 0 15px rgba(255, 0, 150, 0.4),
+      0 0 25px rgba(0, 255, 255, 0.3),
+      0 0 35px rgba(255, 255, 0, 0.2);
+  }
+  25% {
+    text-shadow: 
+      2px 2px 4px rgba(163, 177, 198, 0.4),
+      -2px -2px 4px rgba(255, 255, 255, 0.8),
+      0 0 18px rgba(0, 255, 255, 0.4),
+      0 0 28px rgba(255, 255, 0, 0.3),
+      0 0 38px rgba(255, 0, 255, 0.2);
+  }
+  50% {
+    text-shadow: 
+      2px 2px 4px rgba(163, 177, 198, 0.4),
+      -2px -2px 4px rgba(255, 255, 255, 0.8),
+      0 0 20px rgba(255, 255, 0, 0.4),
+      0 0 30px rgba(255, 0, 255, 0.3),
+      0 0 40px rgba(255, 0, 150, 0.2);
+  }
+  75% {
+    text-shadow: 
+      2px 2px 4px rgba(163, 177, 198, 0.4),
+      -2px -2px 4px rgba(255, 255, 255, 0.8),
+      0 0 22px rgba(255, 0, 255, 0.4),
+      0 0 32px rgba(255, 0, 150, 0.3),
+      0 0 42px rgba(0, 255, 255, 0.2);
+  }
+  100% {
+    text-shadow: 
+      2px 2px 4px rgba(163, 177, 198, 0.4),
+      -2px -2px 4px rgba(255, 255, 255, 0.8),
+      0 0 25px rgba(255, 0, 150, 0.4),
+      0 0 35px rgba(0, 255, 255, 0.3),
+      0 0 45px rgba(255, 255, 0, 0.2);
+  }
 }
 
 /* Mobile menu button */

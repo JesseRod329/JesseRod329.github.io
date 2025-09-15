@@ -33,19 +33,12 @@ export default function ProjectRow({ project, index }: { project: Project; index
       className="group relative mb-16"
     >
       <Link to={`/projects/${project.slug}`} className="block no-underline">
-        <motion.div
-          whileHover={{ y: -4 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-          className="neomorphic-card p-8 md:p-12 cursor-pointer"
-        >
-          {/* Project title with neumorphic appearance */}
+        <div className="neomorphic-card p-8 md:p-12 cursor-pointer">
+          {/* Project title with RGB glowing engraved effect */}
           <div className="relative mb-6">
-            <h2 className={`${titleSize} ${floatClass} font-light tracking-[-0.02em] neomorphic-text-white leading-[0.9] mb-4`}>
+            <h2 className={`${titleSize} ${floatClass} font-light tracking-[-0.02em] neomorphic-title-engraved neomorphic-rgb-glow leading-[0.9] mb-4`}>
               {project.title}
             </h2>
-            
-            {/* Subtle highlight effect on title */}
-            <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-5 bg-gradient-to-r from-white/10 to-transparent transition-opacity duration-300 pointer-events-none" />
           </div>
 
           {/* Role tags with neumorphic styling */}
@@ -72,13 +65,7 @@ export default function ProjectRow({ project, index }: { project: Project; index
             )}
           </div>
 
-          {/* Subtle glow effect on hover */}
-          <div className="absolute inset-0 rounded-[20px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-               style={{
-                 background: 'radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.02), transparent 40%)',
-               }}
-          />
-        </motion.div>
+        </div>
       </Link>
     </motion.li>
   );
