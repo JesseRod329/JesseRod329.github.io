@@ -27,10 +27,10 @@ export default function ProjectRow({ project, index }: { project: Project; index
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08, duration: 0.5, ease: "easeOut" }}
-      className="group relative max-w-[900px] w-full"
+      className="group relative max-w-[900px] w-full sm:px-0"
     >
       <Link to={`/projects/${project.slug}`} className="block no-underline">
-        <div className="glass-surface glass-card glass-reflection glow p-6 sm:p-8 md:p-12 cursor-pointer w-full rounded-[18px]">
+        <div className="glass-surface glass-card glass-reflection glow p-5 sm:p-8 md:p-12 cursor-pointer w-full rounded-[18px] mx-0">
           {/* Clean project title */}
           <div className="relative">
             <h2 className={`${titleSize} font-light tracking-[-0.02em] neomorphic-title-engraved leading-[0.9]`}>
