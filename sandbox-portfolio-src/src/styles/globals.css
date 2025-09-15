@@ -27,65 +27,65 @@
 @tailwind utilities;
 
 :root {
-  /* Dark Neumorphic Theme */
-  --bg: #0a0a0b;
-  --fg: #ffffff;
-  --muted: #8a8a8a;
+  /* Light Neumorphic Theme */
+  --bg: #e0e0e0;
+  --fg: #333333;
+  --muted: #777777;
   
-  /* Neumorphic Colors */
-  --surface: #0f0f10;
-  --surface-elevated: #141415;
-  --surface-depressed: #060607;
+  /* Neumorphic Colors - Monochromatic */
+  --surface: #e0e0e0;
+  --surface-elevated: #e6e6e6;
+  --surface-depressed: #dadada;
   
-  /* Shadow System */
-  --shadow-light: rgba(255, 255, 255, 0.03);
-  --shadow-dark: rgba(0, 0, 0, 0.5);
-  --shadow-inset-light: rgba(255, 255, 255, 0.02);
-  --shadow-inset-dark: rgba(0, 0, 0, 0.3);
+  /* Dual Shadow System - Light and Dark */
+  --shadow-light: rgba(255, 255, 255, 0.7);
+  --shadow-dark: rgba(163, 177, 198, 0.6);
+  --shadow-inset-light: rgba(255, 255, 255, 0.8);
+  --shadow-inset-dark: rgba(163, 177, 198, 0.4);
   
   /* Interactive States */
-  --surface-hover: #161617;
-  --surface-active: #0d0d0e;
+  --surface-hover: #e3e3e3;
+  --surface-active: #dddddd;
   
   /* Accent Colors */
-  --accent: #ffffff;
-  --accent-muted: #b0b0b0;
+  --accent: #333333;
+  --accent-muted: #777777;
 }
 
 html.light {
-  /* Light theme preserved for compatibility */
-  --bg: #f5f5f5;
-  --fg: #333;
-  --muted: #666;
-  --surface: #ffffff;
-  --surface-elevated: #ffffff;
-  --surface-depressed: #eeeeee;
-  --shadow-light: rgba(255, 255, 255, 0.8);
-  --shadow-dark: rgba(0, 0, 0, 0.15);
-  --shadow-inset-light: rgba(255, 255, 255, 0.9);
-  --shadow-inset-dark: rgba(0, 0, 0, 0.1);
-  --surface-hover: #f9f9f9;
-  --surface-active: #eeeeee;
-  --accent: #333;
-  --accent-muted: #666;
+  /* Light Neumorphic Theme */
+  --bg: #e0e0e0;
+  --fg: #333333;
+  --muted: #777777;
+  --surface: #e0e0e0;
+  --surface-elevated: #e6e6e6;
+  --surface-depressed: #dadada;
+  --shadow-light: rgba(255, 255, 255, 0.7);
+  --shadow-dark: rgba(163, 177, 198, 0.6);
+  --shadow-inset-light: rgba(255, 255, 255, 0.8);
+  --shadow-inset-dark: rgba(163, 177, 198, 0.4);
+  --surface-hover: #e3e3e3;
+  --surface-active: #dddddd;
+  --accent: #333333;
+  --accent-muted: #777777;
 }
 
 html.dark {
-  /* Dark Neumorphic Theme */
-  --bg: #0a0a0b;
-  --fg: #ffffff;
-  --muted: #8a8a8a;
-  --surface: #0f0f10;
-  --surface-elevated: #141415;
-  --surface-depressed: #060607;
-  --shadow-light: rgba(255, 255, 255, 0.03);
-  --shadow-dark: rgba(0, 0, 0, 0.5);
-  --shadow-inset-light: rgba(255, 255, 255, 0.02);
-  --shadow-inset-dark: rgba(0, 0, 0, 0.3);
-  --surface-hover: #161617;
-  --surface-active: #0d0d0e;
-  --accent: #ffffff;
-  --accent-muted: #b0b0b0;
+  /* Light Neumorphic Theme - Keeping consistent design */
+  --bg: #e0e0e0;
+  --fg: #333333;
+  --muted: #777777;
+  --surface: #e0e0e0;
+  --surface-elevated: #e6e6e6;
+  --surface-depressed: #dadada;
+  --shadow-light: rgba(255, 255, 255, 0.7);
+  --shadow-dark: rgba(163, 177, 198, 0.6);
+  --shadow-inset-light: rgba(255, 255, 255, 0.8);
+  --shadow-inset-dark: rgba(163, 177, 198, 0.4);
+  --surface-hover: #e3e3e3;
+  --surface-active: #dddddd;
+  --accent: #333333;
+  --accent-muted: #777777;
 }
 
 html.mono {
@@ -293,74 +293,77 @@ p {
 
 /* ===== NEUMORPHIC DESIGN SYSTEM ===== */
 
-/* Base neumorphic elevated surface */
+/* Base neumorphic elevated surface - soft extruded */
 .neomorphic-raised {
   background: var(--surface);
-  border-radius: 20px;
+  border-radius: 25px;
+  border: none;
   box-shadow: 
-    8px 8px 16px var(--shadow-dark),
-    -8px -8px 16px var(--shadow-light);
+    9px 9px 18px var(--shadow-dark),
+    -9px -9px 18px var(--shadow-light);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Subtle raised surface */
+/* Subtle raised surface - minimal depth */
 .neomorphic-raised-subtle {
   background: var(--surface);
-  border-radius: 16px;
+  border-radius: 20px;
+  border: none;
   box-shadow: 
-    4px 4px 8px var(--shadow-dark),
-    -4px -4px 8px var(--shadow-light);
+    5px 5px 10px var(--shadow-dark),
+    -5px -5px 10px var(--shadow-light);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Pressed/inset surface */
+/* Pressed/inset surface - carved effect */
 .neomorphic-pressed {
   background: var(--surface-depressed);
-  border-radius: 16px;
+  border-radius: 20px;
+  border: none;
   box-shadow: 
-    inset 4px 4px 8px var(--shadow-inset-dark),
-    inset -4px -4px 8px var(--shadow-inset-light);
+    inset 6px 6px 12px var(--shadow-inset-dark),
+    inset -6px -6px 12px var(--shadow-inset-light);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Elevated surface with stronger shadow */
+/* Elevated surface - pushing through */
 .neomorphic-elevated {
   background: var(--surface-elevated);
-  border-radius: 24px;
+  border-radius: 30px;
+  border: none;
   box-shadow: 
-    12px 12px 24px var(--shadow-dark),
-    -12px -12px 24px var(--shadow-light);
+    15px 15px 30px var(--shadow-dark),
+    -15px -15px 30px var(--shadow-light);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Interactive button surface */
+/* Interactive button surface - soft tactile */
 .neomorphic-button {
   background: var(--surface);
-  border-radius: 12px;
-  box-shadow: 
-    6px 6px 12px var(--shadow-dark),
-    -6px -6px 12px var(--shadow-light);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
+  border-radius: 15px;
   border: none;
+  box-shadow: 
+    7px 7px 14px var(--shadow-dark),
+    -7px -7px 14px var(--shadow-light);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
   position: relative;
-  overflow: hidden;
 }
 
 .neomorphic-button:hover {
   background: var(--surface-hover);
   box-shadow: 
-    8px 8px 16px var(--shadow-dark),
-    -8px -8px 16px var(--shadow-light);
+    10px 10px 20px var(--shadow-dark),
+    -10px -10px 20px var(--shadow-light);
   transform: translateY(-1px);
 }
 
 .neomorphic-button:active {
   background: var(--surface-active);
   box-shadow: 
-    inset 3px 3px 6px var(--shadow-inset-dark),
-    inset -3px -3px 6px var(--shadow-inset-light);
-  transform: translateY(0);
+    inset 4px 4px 8px var(--shadow-inset-dark),
+    inset -4px -4px 8px var(--shadow-inset-light);
+  transform: translateY(1px);
 }
 
 /* Navigation link styling */
@@ -387,24 +390,24 @@ p {
     inset -2px -2px 4px var(--shadow-inset-light);
 }
 
-/* Card styling for projects */
+/* Card styling for projects - soft extruded */
 .neomorphic-card {
   background: var(--surface);
-  border-radius: 20px;
+  border-radius: 25px;
+  border: none;
   box-shadow: 
-    10px 10px 20px var(--shadow-dark),
-    -10px -10px 20px var(--shadow-light);
+    12px 12px 24px var(--shadow-dark),
+    -12px -12px 24px var(--shadow-light);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  overflow: hidden;
 }
 
 .neomorphic-card:hover {
   background: var(--surface-hover);
   box-shadow: 
-    15px 15px 30px var(--shadow-dark),
-    -15px -15px 30px var(--shadow-light);
-  transform: translateY(-2px);
+    18px 18px 36px var(--shadow-dark),
+    -18px -18px 36px var(--shadow-light);
+  transform: translateY(-3px);
 }
 
 /* Sidebar styling */
@@ -437,15 +440,28 @@ p {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Text styling */
+/* Text styling for light neumorphic theme */
 .neomorphic-text-white {
   color: var(--accent);
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  text-shadow: 
+    1px 1px 2px rgba(163, 177, 198, 0.3),
+    -1px -1px 2px rgba(255, 255, 255, 0.7);
 }
 
 .neomorphic-text-muted {
   color: var(--accent-muted);
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  text-shadow: 
+    1px 1px 2px rgba(163, 177, 198, 0.2),
+    -1px -1px 2px rgba(255, 255, 255, 0.6);
+}
+
+/* Soft engraved title text for light theme */
+.neomorphic-title-engraved {
+  color: var(--accent);
+  text-shadow: 
+    2px 2px 4px rgba(163, 177, 198, 0.4),
+    -2px -2px 4px rgba(255, 255, 255, 0.8);
+  font-weight: 500;
 }
 
 /* Mobile menu button */
