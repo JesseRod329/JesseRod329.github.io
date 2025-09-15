@@ -489,3 +489,31 @@ p {
     inset 2px 2px 4px var(--shadow-inset-dark),
     inset -2px -2px 4px var(--shadow-inset-light);
 }
+
+/* Safe area and fixed nav helpers */
+:root {
+  --nav-height: 64px;
+}
+
+@supports (padding-top: env(safe-area-inset-top)) {
+  .nav-safe {
+    padding-top: max(env(safe-area-inset-top), 0px);
+  }
+  .safe-content {
+    padding-top: calc(var(--nav-height) + env(safe-area-inset-top));
+  }
+}
+
+@supports not (padding-top: env(safe-area-inset-top)) {
+  .nav-safe {
+    padding-top: 0px;
+  }
+  .safe-content {
+    padding-top: var(--nav-height);
+  }
+}
+
+/* Utility to reserve space below a fixed header without extra spacing on larger screens */
+.safe-content-sm {
+  padding-top: calc(var(--nav-height) + 8px);
+}

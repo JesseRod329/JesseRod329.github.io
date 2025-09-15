@@ -7,7 +7,7 @@ export default function AppLayout() {
   return (
     <div className="min-h-screen bg-bg text-fg">
       {/* Top Navigation Bar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 neomorphic-sidebar border-b border-white/5">
+      <nav className="fixed top-0 left-0 right-0 z-50 neomorphic-sidebar border-b border-white/5 nav-safe" >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
@@ -113,7 +113,7 @@ export default function AppLayout() {
       </nav>
 
       {/* Main Content */}
-      <main className="pt-20">
+      <main className="safe-content">
         <Outlet />
       </main>
     </div>

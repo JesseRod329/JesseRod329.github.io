@@ -6,7 +6,7 @@ export default function Projects() {
   const visibleProjects = projects.filter((p: any) => !p.hidden);
   
   return (
-    <main className="min-h-screen px-4 sm:px-6 md:px-8 lg:px-12 pt-24 pb-8 sm:pt-28 sm:pb-12 md:pt-32 md:pb-16">
+    <main className="min-h-screen px-4 sm:px-6 md:px-8 lg:px-12 safe-content-sm">
       <div className="max-w-[900px] w-full mx-auto">
         {/* Page header */}
         <div className="mb-12 sm:mb-16 md:mb-20 lg:mb-24">
