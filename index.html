@@ -65,6 +65,42 @@ if (location.protocol !== 'https:') {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+
+  .knock-card {
+    border-left: 4px solid #e91e63;
+    position: relative;
+    overflow: hidden;
+  }
+  .knock-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    border-color: #e91e63;
+    background: rgba(233,30,99,0.08);
+    box-shadow: 0 10px 30px rgba(233,30,99,0.3), 0 0 20px rgba(233,30,99,0.2);
+  }
+
+  .planner-card {
+    border-left: 4px solid #3b82f6;
+    position: relative;
+    overflow: hidden;
+  }
+  .planner-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    border-color: #3b82f6;
+    background: rgba(59,130,246,0.08);
+    box-shadow: 0 10px 30px rgba(59,130,246,0.3), 0 0 20px rgba(59,130,246,0.2);
+  }
+
+  .fashion-card {
+    border-left: 4px solid #8b5cf6;
+    position: relative;
+    overflow: hidden;
+  }
+  .fashion-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    border-color: #8b5cf6;
+    background: rgba(139,92,246,0.08);
+    box-shadow: 0 10px 30px rgba(139,92,246,0.3), 0 0 20px rgba(139,92,246,0.2);
+  }
   .ui-card { border-left: 4px solid #2563eb; }
   .ui-card:hover { border-color: #2563eb; background: rgba(37,99,235,0.04); }
   .cli-card { border-left: 4px solid #10b981; }
@@ -1198,6 +1234,42 @@ if (location.protocol !== 'https:') {
   <div class="main-content">
     <main class="container" role="main">
       <div class="grid">
+        <a class="card interface-card wrestling-card" href="/wrestling-news/">
+          <div class="badge">RECOMMENDED</div>
+          <div class="title">Wrestling News Hub</div>
+          <div class="subtitle">Raw vs SmackDown news aggregator with glass UI and automated updates.</div>
+          <div class="actions">
+            <span class="btn primary">Open News</span>
+            <span class="btn">RSS · Glass UI · Auto-Update</span>
+          </div>
+        </a>
+        <a class="card interface-card knock-card" href="/knock.html">
+          <div class="badge">INTERACTIVE</div>
+          <div class="title">Knock Knock Door</div>
+          <div class="subtitle">Web Audio API door experience with 4 customizable styles and realistic sound effects.</div>
+          <div class="actions">
+            <span class="btn primary">Open Door</span>
+            <span class="btn">Web Audio API · CSS Animations</span>
+          </div>
+        </a>
+        <a class="card interface-card planner-card" href="/planner/">
+          <div class="badge">PRODUCTIVITY</div>
+          <div class="title">Circular Daily Planner</div>
+          <div class="subtitle">24-hour visual time wheel with export capabilities for desktop and mobile wallpapers.</div>
+          <div class="actions">
+            <span class="btn primary">Open Planner</span>
+            <span class="btn">Canvas API · PWA · Export</span>
+          </div>
+        </a>
+        <a class="card interface-card fashion-card" href="/fashion-palette/">
+          <div class="badge">AI/ML</div>
+          <div class="title">Fashion Palette Generator</div>
+          <div class="subtitle">Privacy-first AI color extraction with mathematical color theory for fashion design.</div>
+          <div class="actions">
+            <span class="btn primary">Open Generator</span>
+            <span class="btn">React · Canvas API · Color Theory</span>
+          </div>
+        </a>
         <a class="card interface-card cli-card" href="./terminal.html">
           <div class="badge">CLI</div>
           <div class="title">Terminal Interface</div>
@@ -1214,15 +1286,6 @@ if (location.protocol !== 'https:') {
           <div class="actions">
             <span class="btn primary">Open UI</span>
             <span class="btn">React · Three.js · Tailwind</span>
-          </div>
-        </a>
-        <a class="card interface-card wrestling-card" href="/wrestling-news/">
-          <div class="badge">NEWS</div>
-          <div class="title">Wrestling News Hub</div>
-          <div class="subtitle">Raw vs SmackDown news aggregator with glass UI and automated updates.</div>
-          <div class="actions">
-            <span class="btn primary">Open News</span>
-            <span class="btn">RSS · Glass UI · Auto-Update</span>
           </div>
         </a>
       </div>
@@ -1292,11 +1355,11 @@ if (location.protocol !== 'https:') {
       }
     });
 
-    // Mobile detection and UI recommendation
+    // Mobile detection and Wrestling News recommendation
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     if (isMobile) {
-      const uiCard = document.querySelector('.ui-card');
-      const badge = uiCard.querySelector('.badge');
+      const wrestlingCard = document.querySelector('.wrestling-card');
+      const badge = wrestlingCard.querySelector('.badge');
       badge.textContent = 'RECOMMENDED';
       badge.style.borderColor = '#ff3';
       badge.style.color = '#ff3';
