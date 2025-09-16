@@ -1,62 +1,46 @@
-/* Cyberpunk / Futuristic UI */
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+/* Clean Futuristic UI */
 
 :root {
-  --background: #0d0d1a;
-  --text: #e0e0e0;
-  --accent: #00ffff; /* Cyan */
-  --accent-glow: rgba(0, 255, 255, 0.5);
-  --secondary-accent: #ff00ff; /* Magenta */
-  --secondary-accent-glow: rgba(255, 0, 255, 0.5);
-  --glass-bg: rgba(13, 13, 26, 0.8);
-  --glass-border: rgba(0, 255, 255, 0.2);
+  --background: #000000;
+  --text: #ffffff;
+  --accent: #007aff; /* Apple's blue */
+  --card-background: #1c1c1e;
+  --border-color: #3a3a3c;
 }
 
 body {
   background-color: var(--background);
   color: var(--text);
-  font-family: 'Share Tech Mono', monospace;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
   padding: 0;
-  background-image: 
-    linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 20px 20px;
 }
 
-.cyber-glow {
-  text-shadow: 0 0 5px var(--accent-glow), 0 0 10px var(--accent-glow), 0 0 15px var(--accent-glow);
-}
-
-.cyber-card {
-  background-color: var(--glass-bg);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  border: 1px solid var(--glass-border);
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+.clean-card {
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
   transition: all 0.2s ease-in-out;
 }
 
-.cyber-card:hover {
+.clean-card:hover {
   border-color: var(--accent);
-  box-shadow: 0 0 15px var(--accent-glow);
+  transform: translateY(-2px);
 }
 
-.cyber-button {
-  background-color: transparent;
-  border: 1px solid var(--accent);
-  color: var(--accent);
-  padding: 0.5rem 1rem;
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
-  transition: all 0.2s ease-in-out;
-}
-
-.cyber-button:hover {
+.clean-button {
   background-color: var(--accent);
   color: var(--background);
-  box-shadow: 0 0 10px var(--accent-glow);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+  border: none;
+}
+
+.clean-button:hover {
+  opacity: 0.8;
 }
 
 #root {

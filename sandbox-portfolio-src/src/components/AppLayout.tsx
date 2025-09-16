@@ -3,40 +3,44 @@ import { Outlet, NavLink } from "react-router-dom";
 export default function AppLayout() {
   return (
     <div className="min-h-screen bg-background text-text">
-      <header className="fixed top-0 left-0 right-0 z-10">
+      <header className="fixed top-0 left-0 right-0 z-10 bg-background/80 backdrop-blur-md">
         <nav className="w-full p-4">
-          <div className="max-w-4xl mx-auto cyber-card p-2">
-            <div className="flex justify-between items-center">
-              <NavLink to="/" className="text-lg font-bold px-4 cyber-glow">
-                Jesse R.
+          <div className="max-w-4xl mx-auto flex justify-between items-center">
+            <NavLink to="/" className="text-lg font-semibold">
+              Jesse R.
+            </NavLink>
+            <div className="flex items-center space-x-4">
+              <NavLink
+                to="/"
+                end
+                className={({ isActive }) =>
+                  `px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                    isActive ? "text-accent" : "hover:text-accent"
+                  }`
+                }
+              >
+                Home
               </NavLink>
-              <div className="flex items-center space-x-4">
-                <NavLink
-                  to="/"
-                  end
-                  className={({ isActive }) =>
-                    `cyber-button ${isActive ? "bg-accent text-background" : ""}`
-                  }
-                >
-                  Home
-                </NavLink>
-                <NavLink
-                  to="/projects"
-                  className={({ isActive }) =>
-                    `cyber-button ${isActive ? "bg-accent text-background" : ""}`
-                  }
-                >
-                  Projects
-                </NavLink>
-                <NavLink
-                  to="/info"
-                  className={({ isActive }) =>
-                    `cyber-button ${isActive ? "bg-accent text-background" : ""}`
-                  }
-                >
-                  Info
-                </NavLink>
-              </div>
+              <NavLink
+                to="/projects"
+                className={({ isActive }) =>
+                  `px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                    isActive ? "text-accent" : "hover:text-accent"
+                  }`
+                }
+              >
+                Projects
+              </NavLink>
+              <NavLink
+                to="/info"
+                className={({ isActive }) =>
+                  `px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                    isActive ? "text-accent" : "hover:text-accent"
+                  }`
+                }
+              >
+                Info
+              </NavLink>
             </div>
           </div>
         </nav>

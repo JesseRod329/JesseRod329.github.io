@@ -11,7 +11,7 @@ export default function Projects() {
   return (
     <div>
       <header className="py-16 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2 cyber-glow">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2">
           Projects
         </h1>
         <p className="text-lg text-text/80">
@@ -30,7 +30,7 @@ export default function Projects() {
                 transition={{ duration: 0.3 }}
                 className="sticky top-24"
               >
-                <div className="cyber-card">
+                <div className="clean-card overflow-hidden">
                   <img
                     src={hoveredProject.image}
                     alt={hoveredProject.title}
