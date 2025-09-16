@@ -11,7 +11,7 @@ export default function Projects() {
   return (
     <div>
       <header className="py-16 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2 cyber-glow">
           Projects
         </h1>
         <p className="text-lg text-text/80">
@@ -30,11 +30,13 @@ export default function Projects() {
                 transition={{ duration: 0.3 }}
                 className="sticky top-24"
               >
-                <img
-                  src={hoveredProject.image}
-                  alt={hoveredProject.title}
-                  className="w-full h-auto rounded-lg shadow-lg"
-                />
+                <div className="cyber-card">
+                  <img
+                    src={hoveredProject.image}
+                    alt={hoveredProject.title}
+                    className="w-full h-auto"
+                  />
+                </div>
               </motion.div>
             )}
           </AnimatePresence>

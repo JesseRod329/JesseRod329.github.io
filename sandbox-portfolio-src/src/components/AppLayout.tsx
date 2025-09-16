@@ -5,19 +5,17 @@ export default function AppLayout() {
     <div className="min-h-screen bg-background text-text">
       <header className="fixed top-0 left-0 right-0 z-10">
         <nav className="w-full p-4">
-          <div className="max-w-4xl mx-auto glass-pane p-2 rounded-full">
+          <div className="max-w-4xl mx-auto cyber-card p-2">
             <div className="flex justify-between items-center">
-              <NavLink to="/" className="text-lg font-semibold px-4">
+              <NavLink to="/" className="text-lg font-bold px-4 cyber-glow">
                 Jesse R.
               </NavLink>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-4">
                 <NavLink
                   to="/"
                   end
                   className={({ isActive }) =>
-                    `px-4 py-2 text-sm font-medium rounded-full transition-colors ${
-                      isActive ? "bg-accent text-white" : "hover:bg-gray-200 dark:hover:bg-gray-700"
-                    }`
+                    `cyber-button ${isActive ? "bg-accent text-background" : ""}`
                   }
                 >
                   Home
@@ -25,9 +23,7 @@ export default function AppLayout() {
                 <NavLink
                   to="/projects"
                   className={({ isActive }) =>
-                    `px-4 py-2 text-sm font-medium rounded-full transition-colors ${
-                      isActive ? "bg-accent text-white" : "hover:bg-gray-200 dark:hover:bg-gray-700"
-                    }`
+                    `cyber-button ${isActive ? "bg-accent text-background" : ""}`
                   }
                 >
                   Projects
@@ -35,9 +31,7 @@ export default function AppLayout() {
                 <NavLink
                   to="/info"
                   className={({ isActive }) =>
-                    `px-4 py-2 text-sm font-medium rounded-full transition-colors ${
-                      isActive ? "bg-accent text-white" : "hover:bg-gray-200 dark:hover:bg-gray-700"
-                    }`
+                    `cyber-button ${isActive ? "bg-accent text-background" : ""}`
                   }
                 >
                   Info
