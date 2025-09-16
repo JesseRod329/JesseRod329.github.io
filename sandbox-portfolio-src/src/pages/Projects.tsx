@@ -1,11 +1,13 @@
+import { useState } from "react";
 import projects from "../data/projects.json";
-import ProjectCard from "../components/ProjectCard";
+import ProjectListItem from "../components/ProjectListItem";
 import type { Project } from "../types/project";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function Projects() {
-  // Filter out hidden projects
-  const visibleProjects: Project[] = projects.filter((p: Project) => !p.hidden);
-  
+  const visibleProjects: Project[] = (projects as Project[]).filter((p: Project) => !p.hidden);
+  const [hoveredProject, setHoveredProject] = useState<Project | null>(visibleProjects[0] || null);
+
   return (
     <div>
       <header className="py-16 text-center">
@@ -18,9 +20,35 @@ export default function Projects() {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {visibleProjects.map((p) => (
-          <ProjectCard key={p.slug} project={p} />
-        ))}
+        <div className="relative">
+          <AnimatePresence>
+            {hoveredProject && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+                className="sticky top-24"
+              >
+                <img
+                  src={hoveredProject.image}
+                  alt={hoveredProject.title}
+                  className="w-full h-auto rounded-lg shadow-lg"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+        <div>
+          {visibleProjects.map((p) => (
+            <ProjectListItem
+              key={p.slug}
+              project={p}
+              onMouseEnter={() => setHoveredProject(p)}
+              onMouseLeave={() => setHoveredProject(null)}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

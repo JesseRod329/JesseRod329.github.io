@@ -12,4 +12,5 @@ export interface Project {
   };
   hidden?: boolean;
   gallery?: string[];
+  image?: string;
 }

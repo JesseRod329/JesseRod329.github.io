@@ -7,7 +7,7 @@ import type { Project as ProjectType } from "../types/project";
 export default function Project() {
   const { slug } = useParams();
   // Filter out hidden projects for navigation
-  const visibleProjects: ProjectType[] = projects.filter((p: ProjectType) => !p.hidden);
+  const visibleProjects: ProjectType[] = (projects as ProjectType[]).filter((p: ProjectType) => !p.hidden);
   const index = visibleProjects.findIndex(p => p.slug === slug);
   const project: ProjectType = visibleProjects[index];
 
