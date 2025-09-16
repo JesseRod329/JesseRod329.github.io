@@ -11,11 +11,11 @@ export default function ProjectListItem({ project, onMouseEnter, onMouseLeave }:
   return (
     <Link
       to={`/projects/${project.slug}`}
-      className="block p-4 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+      className="block p-4 cyber-card mb-4"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <h3 className="text-lg font-semibold">{project.title}</h3>
+      <h3 className="text-lg font-bold cyber-glow">{project.title}</h3>
       <p className="text-sm text-text/80">{project.summary}</p>
     </Link>
   );
