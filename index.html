@@ -1146,6 +1146,16 @@ if (location.protocol !== 'https:') {
     box-shadow: 0 10px 30px rgba(16,185,129,0.1);
   }
 
+  .philosophy-card {
+    border-left: 4px solid #d97706;
+  }
+
+  .philosophy-card:hover {
+    border-color: #d97706;
+    background: rgba(217,119,6,0.04);
+    box-shadow: 0 10px 30px rgba(217,119,6,0.1);
+  }
+
   /* Modal Responsive */
   @media (max-width: 768px) {
     .modal-content {
@@ -1311,6 +1321,13 @@ if (location.protocol !== 'https:') {
         <div class="featured-title">Fashion Palette Generator</div>
         <div class="featured-subtitle">Privacy-first AI color extraction with mathematical color theory for fashion design</div>
         <div class="featured-tech">React · Canvas API · Color Theory</div>
+      </a>
+      
+      <a class="featured-card philosophy-card" href="/philosophers-library.html">
+        <div class="featured-badge">LITERATURE</div>
+        <div class="featured-title">The Philosopher's Library</div>
+        <div class="featured-subtitle">Curated collection of 100 essential philosophical texts with interactive exploration and literary design</div>
+        <div class="featured-tech">Three.js · Literary Design · Dark Mode</div>
       </a>
       
       <a class="featured-card brainwave-card" href="/brainwave-simulator/brainwave-simulator.html">
