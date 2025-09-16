@@ -980,6 +980,131 @@ if (location.protocol !== 'https:') {
     font-weight: 300;
   }
 
+  /* Featured Projects Section */
+  .featured-projects {
+    max-width: 1200px;
+    margin: 6rem auto;
+    padding: 0 2rem;
+  }
+
+  .featured-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .featured-header h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+    color: #fff;
+  }
+
+  .featured-header p {
+    font-size: 1.125rem;
+    color: #bbb;
+    font-weight: 300;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+
+  .featured-card {
+    position: relative;
+    border: 1px solid #333;
+    border-radius: 16px;
+    padding: 2rem;
+    background: rgba(0,0,0,0.8);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .featured-card:hover {
+    transform: translateY(-4px);
+    border-color: #ff3;
+    background: rgba(255,255,51,0.04);
+    box-shadow: 0 10px 30px rgba(255,255,51,0.1);
+  }
+
+  .featured-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    border: 1px solid #444;
+    padding: 4px 8px;
+    border-radius: 999px;
+    color: #ddd;
+    margin-bottom: 1rem;
+  }
+
+  .featured-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: #fff;
+  }
+
+  .featured-subtitle {
+    color: #bbb;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+    font-size: 0.95rem;
+  }
+
+  .featured-tech {
+    color: #888;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  /* Featured Card Specific Styles */
+  .knock-card {
+    border-left: 4px solid #e91e63;
+  }
+
+  .knock-card:hover {
+    border-color: #e91e63;
+    background: rgba(233,30,99,0.04);
+    box-shadow: 0 10px 30px rgba(233,30,99,0.1);
+  }
+
+  .planner-card {
+    border-left: 4px solid #3b82f6;
+  }
+
+  .planner-card:hover {
+    border-color: #3b82f6;
+    background: rgba(59,130,246,0.04);
+    box-shadow: 0 10px 30px rgba(59,130,246,0.1);
+  }
+
+  .fashion-card {
+    border-left: 4px solid #8b5cf6;
+  }
+
+  .fashion-card:hover {
+    border-color: #8b5cf6;
+    background: rgba(139,92,246,0.04);
+    box-shadow: 0 10px 30px rgba(139,92,246,0.1);
+  }
+
+  .brainwave-card {
+    border-left: 4px solid #10b981;
+  }
+
+  .brainwave-card:hover {
+    border-color: #10b981;
+    background: rgba(16,185,129,0.04);
+    box-shadow: 0 10px 30px rgba(16,185,129,0.1);
+  }
+
   /* Modal Responsive */
   @media (max-width: 768px) {
     .modal-content {
@@ -1006,6 +1131,28 @@ if (location.protocol !== 'https:') {
 
     .option-title {
       font-size: 1.125rem;
+    }
+
+    .featured-projects {
+      margin: 4rem auto;
+      padding: 0 1rem;
+    }
+
+    .featured-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .featured-card {
+      padding: 1.5rem;
+    }
+
+    .featured-header h2 {
+      font-size: 2rem;
+    }
+
+    .featured-header p {
+      font-size: 1rem;
     }
   }
 </style>
@@ -1078,6 +1225,44 @@ if (location.protocol !== 'https:') {
       </a>
     </div>
   </main>
+  
+  <!-- Featured Projects Section -->
+  <section class="featured-projects">
+    <div class="featured-header">
+      <h2>Featured Projects</h2>
+      <p>Handpicked applications showcasing the intersection of AI, design, and technology</p>
+    </div>
+    <div class="featured-grid">
+      <a class="featured-card knock-card" href="/knock.html">
+        <div class="featured-badge">INTERACTIVE</div>
+        <div class="featured-title">Knock Knock Door</div>
+        <div class="featured-subtitle">Web Audio API door experience with 4 customizable styles and realistic sound effects</div>
+        <div class="featured-tech">Web Audio API · CSS Animations · Vanilla JS</div>
+      </a>
+      
+      <a class="featured-card planner-card" href="/planner/">
+        <div class="featured-badge">PRODUCTIVITY</div>
+        <div class="featured-title">Circular Daily Planner</div>
+        <div class="featured-subtitle">24-hour visual time wheel with export capabilities for desktop and mobile wallpapers</div>
+        <div class="featured-tech">Canvas API · PWA · Responsive Design</div>
+      </a>
+      
+      <a class="featured-card fashion-card" href="/fashion-palette/">
+        <div class="featured-badge">AI/ML</div>
+        <div class="featured-title">Fashion Palette Generator</div>
+        <div class="featured-subtitle">Privacy-first AI color extraction with mathematical color theory for fashion design</div>
+        <div class="featured-tech">React · Canvas API · Color Theory</div>
+      </a>
+      
+      <a class="featured-card brainwave-card" href="/brainwave-simulator/brainwave-simulator.html">
+        <div class="featured-badge">SCIENTIFIC</div>
+        <div class="featured-title">AI Brainwave Simulator</div>
+        <div class="featured-subtitle">Real-time neural activity visualization based on actual EEG frequency bands</div>
+        <div class="featured-tech">Canvas API · Scientific Accuracy · Privacy-First</div>
+      </a>
+    </div>
+  </section>
+  
   <div class="hint">Shortcut: press "C" for CLI or "U" for UI</div>
   <script>
   (function(){
@@ -1085,7 +1270,7 @@ if (location.protocol !== 'https:') {
 
     // Mouse tracking for Marangoni effects
     document.addEventListener('mousemove', function(e){
-      const cards = document.querySelectorAll('.interface-card');
+      const cards = document.querySelectorAll('.interface-card, .featured-card');
       cards.forEach(card => {
         const rect = card.getBoundingClientRect();
         const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -1097,7 +1282,7 @@ if (location.protocol !== 'https:') {
 
     // Pulse effect on click
     document.addEventListener('click', function(e){
-      const card = e.target.closest('.interface-card');
+      const card = e.target.closest('.interface-card, .featured-card');
       if (card) {
         card.classList.add('pulse');
         setTimeout(() => card.classList.remove('pulse'), 600);
