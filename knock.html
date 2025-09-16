@@ -3,322 +3,664 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Knock Knock! 🚪 - Jesse Rodriguez</title>
-    <meta name="description" content="An interactive door experience by Jesse Rodriguez. Click to knock with different styles and sounds!">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="apple-touch-icon" sizes="180x180" href="/prismatic_door_180.png">
-    
-    <!-- Custom CSS -->
+    <title>The Ultimate Knock Experience 🚪</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        
         * {
-            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
+
+        body {
+            background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .door-container {
+            position: relative;
+            z-index: 10;
+            perspective: 1000px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .door-container:hover {
+            transform: scale(1.02);
+        }
+
+        .door {
+            width: 300px;
+            height: 500px;
+            background: linear-gradient(45deg, #8B4513, #A0522D, #CD853F);
+            border: 8px solid #654321;
+            border-radius: 20px 20px 5px 5px;
+            position: relative;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.5),
+                inset 0 5px 10px rgba(255, 255, 255, 0.1),
+                inset 0 -5px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
+
+        .door.knocking {
+            animation: knockShake 0.6s ease-in-out;
+        }
+
+        @keyframes knockShake {
+            0%, 100% { transform: rotateY(0deg) translateX(0); }
+            10% { transform: rotateY(2deg) translateX(5px); }
+            20% { transform: rotateY(-1deg) translateX(-2px); }
+            30% { transform: rotateY(3deg) translateX(3px); }
+            40% { transform: rotateY(-2deg) translateX(-4px); }
+            50% { transform: rotateY(1deg) translateX(2px); }
+            60% { transform: rotateY(-3deg) translateX(-1px); }
+        }
+
+        .door-panels {
+            position: absolute;
+            top: 50px;
+            left: 20px;
+            right: 20px;
+            bottom: 80px;
+        }
+
+        .panel {
+            background: linear-gradient(135deg, #A0522D, #8B4513);
+            border: 3px solid #654321;
+            border-radius: 10px;
+            margin: 15px 0;
+            height: calc(50% - 15px);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .doorknob {
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 25px;
+            height: 25px;
+            background: radial-gradient(circle at 30% 30%, #FFD700, #B8860B);
+            border-radius: 50%;
+            box-shadow: 
+                0 4px 8px rgba(0, 0, 0, 0.3),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .doorknob::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: #8B7355;
+            border-radius: 50%;
+        }
+
+        .door-container:hover .doorknob {
+            transform: translateY(-50%) scale(1.1) rotateZ(15deg);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .knocker {
+            position: absolute;
+            top: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 60px;
+        }
+
+        .knocker-base {
+            width: 40px;
+            height: 20px;
+            background: linear-gradient(45deg, #B8860B, #FFD700);
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .knocker-ring {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 35px;
+            height: 35px;
+            border: 6px solid #FFD700;
+            border-radius: 50%;
+            background: transparent;
+            transition: all 0.3s ease;
+            transform-origin: center bottom;
+        }
+
+        .knocker.active .knocker-ring {
+            animation: knockerSwing 0.6s ease-in-out;
+        }
+
+        @keyframes knockerSwing {
+            0%, 100% { transform: translateX(-50%) rotate(0deg); }
+            25% { transform: translateX(-50%) rotate(-15deg); }
+            75% { transform: translateX(-50%) rotate(15deg); }
+        }
+
         .ripple {
             position: absolute;
             border-radius: 50%;
-            background: rgba(251, 146, 60, 0.3);
-            animation: ripple-animation 0.6s ease-out;
+            background: rgba(255, 215, 0, 0.3);
             pointer-events: none;
+            transform: scale(0);
+            animation: rippleEffect 0.6s linear;
         }
-        
-        @keyframes ripple-animation {
-            0% {
-                transform: scale(0);
-                opacity: 0.8;
-            }
-            100% {
+
+        @keyframes rippleEffect {
+            to {
                 transform: scale(4);
                 opacity: 0;
             }
         }
-        
-        .door-shake {
-            animation: door-shake 0.3s ease-in-out;
-        }
-        
-        @keyframes door-shake {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            25% { transform: scale(0.98) rotate(-1deg); }
-            75% { transform: scale(0.98) rotate(1deg); }
-        }
-        
-        .floating {
-            animation: floating 3s ease-in-out infinite;
-        }
-        
-        @keyframes floating {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-        }
-        
-        .door-glow:hover::after {
-            content: '';
+
+        .particles {
             position: absolute;
-            inset: 0;
-            border-radius: 0.5rem;
-            background: linear-gradient(135deg, rgba(254, 215, 170, 0.2), rgba(254, 154, 110, 0.2));
-            opacity: 1;
-            transition: opacity 0.3s ease;
-        }
-        
-        .door-glow::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 0.5rem;
-            background: linear-gradient(135deg, rgba(254, 215, 170, 0.2), rgba(254, 154, 110, 0.2));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .handle-rotate {
-            animation: handle-rotate 0.3s ease-in-out;
-        }
-        
-        @keyframes handle-rotate {
-            0%, 100% { transform: translateY(-50%) rotate(0deg); }
-            25% { transform: translateY(-50%) rotate(15deg); }
-            75% { transform: translateY(-50%) rotate(-15deg); }
-        }
-        
-        .knocker-swing {
-            animation: knocker-swing 0.4s ease-in-out;
-        }
-        
-        @keyframes knocker-swing {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(-30deg); }
-            75% { transform: rotate(30deg); }
-        }
-        
-        .button-hover {
-            transition: all 0.2s ease;
-        }
-        
-        .button-hover:hover {
-            transform: scale(1.05);
-        }
-        
-        .button-hover:active {
-            transform: scale(0.95);
-        }
-        
-        .badge-bounce {
-            animation: badge-bounce 0.3s ease-out;
-        }
-        
-        @keyframes badge-bounce {
-            0% { transform: scale(0); }
-            60% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        
-        .hint-bounce {
-            animation: hint-bounce 2s ease-in-out infinite;
-        }
-        
-        @keyframes hint-bounce {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-        }
-
-        /* Enhanced door patterns */
-        .cyberpunk-pattern {
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3), 0 0 40px rgba(0, 212, 255, 0.2);
-        }
-
-        .cyberpunk-pattern:hover {
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.5), 0 0 60px rgba(0, 212, 255, 0.3);
-        }
-
-        .crystal-pattern {
-            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(135,206,235,0.3));
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255,255,255,0.3);
-        }
-
-        .gothic-pattern {
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 0 20px rgba(139,0,0,0.3);
-        }
-
-        .brick-pattern {
-            background-image: 
-                repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px),
-                repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px);
-        }
-
-        /* Enhanced animations */
-        .door-glow:hover {
-            transform: scale(1.02);
-            transition: all 0.3s ease;
-        }
-
-        .cyberpunk-pattern:hover {
-            animation: cyberpunk-glow 2s ease-in-out infinite;
-        }
-
-        @keyframes cyberpunk-glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 65, 0.3), 0 0 40px rgba(0, 212, 255, 0.2); }
-            50% { box-shadow: 0 0 40px rgba(0, 255, 65, 0.6), 0 0 80px rgba(0, 212, 255, 0.4); }
-        }
-
-        .crystal-pattern:hover {
-            animation: crystal-shimmer 1.5s ease-in-out infinite;
-        }
-
-        @keyframes crystal-shimmer {
-            0%, 100% { background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(135,206,235,0.3)); }
-            50% { background: linear-gradient(135deg, rgba(255,255,255,1), rgba(135,206,235,0.6)); }
-        }
-
-        /* Enhanced button styles */
-        .button-hover {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .button-hover:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
-
-        .button-hover:active {
-            transform: translateY(0) scale(0.98);
-        }
-
-        /* Enhanced ripple effects */
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
-            animation: ripple-animation 0.8s ease-out;
             pointer-events: none;
         }
 
-        @keyframes ripple-animation {
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #FFD700;
+            border-radius: 50%;
+            animation: particleFloat 1s ease-out forwards;
+        }
+
+        @keyframes particleFloat {
             0% {
-                transform: scale(0);
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--dx), var(--dy)) scale(0);
+            }
+        }
+
+        .hud {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            color: #FFD700;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            z-index: 20;
+        }
+
+        .counter {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 15px;
+            border: 2px solid #FFD700;
+            backdrop-filter: blur(10px);
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 20;
+        }
+
+        .control-btn {
+            background: rgba(255, 215, 0, 0.2);
+            border: 2px solid #FFD700;
+            color: #FFD700;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-weight: bold;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 215, 0, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .sound-wave {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+        }
+
+        .sound-wave.active {
+            animation: soundWaveExpand 0.8s ease-out;
+        }
+
+        @keyframes soundWaveExpand {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(0);
+            }
+            50% {
                 opacity: 0.8;
             }
             100% {
-                transform: scale(6);
                 opacity: 0;
+                transform: translate(-50%, -50%) scale(3);
+            }
+        }
+
+        .wave-ring {
+            width: 100px;
+            height: 100px;
+            border: 3px solid #FFD700;
+            border-radius: 50%;
+        }
+
+        .achievement {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #1a1a2e;
+            padding: 20px 30px;
+            border-radius: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            z-index: 100;
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .achievement.show {
+            animation: achievementPop 2s ease-out forwards;
+        }
+
+        @keyframes achievementPop {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0) rotate(-10deg);
+            }
+            20% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.2) rotate(2deg);
+            }
+            40% {
+                transform: translate(-50%, -50%) scale(0.9) rotate(-1deg);
+            }
+            60% {
+                transform: translate(-50%, -50%) scale(1.05) rotate(0deg);
+            }
+            80% {
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            }
+        }
+
+        .rainbow-mode {
+            animation: rainbowShift 2s linear infinite !important;
+        }
+
+        @keyframes rainbowShift {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .door {
+                width: 250px;
+                height: 400px;
+            }
+            
+            .hud {
+                top: 20px;
+                left: 20px;
+                font-size: 16px;
+            }
+            
+            .controls {
+                bottom: 20px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .control-btn {
+                padding: 10px 15px;
+                font-size: 14px;
             }
         }
     </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 overflow-hidden relative">
-    <!-- Animated background elements -->
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
-        <div class="absolute top-10 left-10 w-32 h-32 bg-yellow-200 rounded-full opacity-20 animate-pulse"></div>
-        <div class="absolute bottom-20 right-20 w-48 h-48 bg-orange-200 rounded-full opacity-15 animate-bounce" style="animation-duration: 4s;"></div>
-        <div class="absolute top-1/2 left-1/4 w-16 h-16 bg-red-200 rounded-full opacity-25 animate-ping" style="animation-duration: 3s;"></div>
-    </div>
-
-    <!-- Header Controls -->
-    <div class="relative z-10 p-6">
-        <div class="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div class="text-center sm:text-left">
-                <h1 class="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 bg-clip-text text-transparent">
-                    Knock Knock! 🚪
-                </h1>
-                <p class="text-gray-600 mt-2">Click the door to knock • Customize style & sound</p>
-            </div>
-            <div class="flex gap-3">
-                <!-- Door Style Control -->
-                <button id="style-button" class="button-hover bg-white/80 backdrop-blur-sm hover:bg-white/90 border-2 border-orange-200 hover:border-orange-300 shadow-lg px-4 py-3 rounded-lg flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5H9m12 0v12a4 4 0 01-4 4H9"></path>
-                    </svg>
-                    <div class="text-left">
-                        <div class="font-medium" id="style-name">Classic Wood</div>
-                        <div class="text-xs text-gray-500">Click to change</div>
-                    </div>
-                </button>
-
-                <!-- Sound Control -->
-                <button id="sound-button" class="button-hover bg-white/80 backdrop-blur-sm hover:bg-white/90 border-2 border-orange-200 hover:border-orange-300 shadow-lg px-4 py-3 rounded-lg flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 14.142M8.586 8.586A2 2 0 108.586 15.414L3 21H1v-2l5.586-5.586z"></path>
-                    </svg>
-                    <div class="text-left">
-                        <div class="font-medium" id="sound-name">🪵 Wood Knock</div>
-                        <div class="text-xs text-gray-500">Click to change</div>
-                    </div>
-                </button>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="hud">
+        <div class="counter">
+            🚪 Knocks: <span id="knockCount">0</span>
+            <div style="font-size: 14px; margin-top: 5px;">
+                🎵 <span id="currentSound">Classic</span> | 
+                🎨 <span id="currentStyle">Original</span>
             </div>
         </div>
     </div>
 
-    <!-- Main Door Area -->
-    <div class="relative z-10 flex-1 flex items-center justify-center p-6">
-        <div class="relative" id="door-container">
-            <!-- Ripple container -->
-            <div id="ripple-container" class="absolute inset-0 flex items-center justify-center pointer-events-none"></div>
-
-            <!-- Door Shadow -->
-            <div class="absolute top-4 left-4 w-80 h-96 bg-black/20 rounded-lg blur-sm"></div>
+    <div class="door-container" id="doorContainer">
+        <div class="door" id="door">
+            <div class="door-panels">
+                <div class="panel"></div>
+                <div class="panel"></div>
+            </div>
             
-            <!-- Main Door -->
-            <div id="main-door" class="door-glow relative w-80 h-96 rounded-lg shadow-2xl transition-all duration-300 hover:shadow-3xl border-4 cursor-pointer group">
-                <!-- Door Frame -->
-                <div id="door-frame" class="absolute inset-2 rounded border-2">
-                    <!-- Door Panels -->
-                    <div class="grid grid-cols-1 gap-4 p-6 h-full">
-                        <div id="door-panel-1" class="border-2 rounded-md flex-1"></div>
-                        <div id="door-panel-2" class="border-2 rounded-md flex-1"></div>
-                    </div>
-
-                    <!-- Door Handle -->
-                    <div id="door-handle" class="absolute right-4 top-1/2 transform -translate-y-1/2 w-6 h-12 rounded-full shadow-lg">
-                        <div id="door-handle-center" class="w-3 h-3 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
-                    </div>
-
-                    <!-- Door Knocker -->
-                    <div id="door-knocker" class="absolute top-16 right-4 w-8 h-8 rounded-full shadow-lg flex items-center justify-center">
-                        <div id="door-knocker-center" class="w-4 h-4 rounded-full"></div>
-                    </div>
-
-                    <!-- Decorative Elements -->
-                    <div id="door-top-line" class="absolute top-6 left-6 right-6 h-1 rounded-full opacity-50"></div>
-                    <div id="door-bottom-line" class="absolute bottom-6 left-6 right-6 h-1 rounded-full opacity-50"></div>
-                </div>
+            <div class="knocker" id="knocker">
+                <div class="knocker-ring"></div>
+                <div class="knocker-base"></div>
             </div>
-
-            <!-- Knock Counter Badge -->
-            <div id="knock-badge" class="absolute -top-2 -right-2 bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold shadow-lg badge-bounce" style="display: none;">
-                <span id="knock-count">0</span>
-            </div>
-
-            <!-- Interactive Hint -->
-            <div class="absolute -bottom-20 left-1/2 transform -translate-x-1/2 text-center">
-                <div class="bg-white/60 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg">
-                    <p class="text-gray-700 font-medium">👆 Click to knock! • Space: Knock • S: Style • A: Audio</p>
-                </div>
-                <div class="mt-2 text-2xl hint-bounce">✋</div>
+            
+            <div class="doorknob"></div>
+            
+            <div class="sound-wave" id="soundWave">
+                <div class="wave-ring"></div>
             </div>
         </div>
     </div>
 
-    <!-- Footer Stats -->
-    <div class="relative z-10 p-6">
-        <div class="max-w-4xl mx-auto text-center">
-            <div class="bg-white/40 backdrop-blur-sm rounded-2xl p-4 inline-block">
-                <p class="text-gray-700">
-                    <span class="font-bold text-2xl text-orange-600" id="footer-knock-count">0</span> knocks today
-                    <span class="mx-2">•</span>
-                    Current: <span class="font-semibold" id="footer-style-name">Classic Wood</span>
-                    <span class="mx-2">•</span>
-                    Sound: <span class="font-semibold" id="footer-sound-name">🪵 Wood Knock</span>
-                </p>
-            </div>
-        </div>
+    <div class="controls">
+        <button class="control-btn" onclick="cycleStyle()">🎨 Style</button>
+        <button class="control-btn" onclick="cycleSound()">🔊 Sound</button>
+        <button class="control-btn" onclick="autoKnock()">🤖 Auto</button>
+        <button class="control-btn" onclick="resetCounter()">🔄 Reset</button>
     </div>
 
-    <script src="knock-door-app.js"></script>
+    <div class="achievement" id="achievement"></div>
+
+    <script>
+        let knockCount = 0;
+        let currentStyle = 0;
+        let currentSound = 0;
+        let autoKnockInterval = null;
+        let achievements = {};
+
+        const styles = ['Original', 'Royal', 'Modern', 'Rainbow', 'Mystical'];
+        const sounds = ['Classic', 'Bell', 'Drum', 'Chime', 'Bass'];
+
+        // Create stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Knock functionality
+        function knock() {
+            knockCount++;
+            document.getElementById('knockCount').textContent = knockCount;
+            
+            const door = document.getElementById('door');
+            const knocker = document.getElementById('knocker');
+            const soundWave = document.getElementById('soundWave');
+            
+            // Visual effects
+            door.classList.add('knocking');
+            knocker.classList.add('active');
+            soundWave.classList.add('active');
+            
+            setTimeout(() => {
+                door.classList.remove('knocking');
+                knocker.classList.remove('active');
+                soundWave.classList.remove('active');
+            }, 600);
+
+            // Create ripple effect
+            createRipple();
+            
+            // Create particles
+            createParticles();
+            
+            // Play sound
+            playKnockSound();
+            
+            // Check achievements
+            checkAchievements();
+        }
+
+        function createRipple() {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            ripple.style.left = '50%';
+            ripple.style.top = '120px';
+            ripple.style.width = '20px';
+            ripple.style.height = '20px';
+            document.getElementById('doorContainer').appendChild(ripple);
+            
+            setTimeout(() => ripple.remove(), 600);
+        }
+
+        function createParticles() {
+            const particlesContainer = document.createElement('div');
+            particlesContainer.className = 'particles';
+            document.getElementById('doorContainer').appendChild(particlesContainer);
+            
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = '50%';
+                particle.style.top = '120px';
+                particle.style.setProperty('--dx', (Math.random() - 0.5) * 100 + 'px');
+                particle.style.setProperty('--dy', -(Math.random() * 50 + 30) + 'px');
+                particle.style.animationDelay = i * 0.1 + 's';
+                particlesContainer.appendChild(particle);
+            }
+            
+            setTimeout(() => particlesContainer.remove(), 1000);
+        }
+
+        function playKnockSound() {
+            // Create different sound frequencies based on current sound setting
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const frequencies = {
+                0: [200, 150], // Classic
+                1: [400, 350], // Bell
+                2: [80, 60],   // Drum  
+                3: [600, 500], // Chime
+                4: [100, 80]   // Bass
+            };
+            
+            const [freq1, freq2] = frequencies[currentSound];
+            
+            // First knock
+            setTimeout(() => playTone(audioContext, freq1, 0.1), 0);
+            // Second knock
+            setTimeout(() => playTone(audioContext, freq2, 0.1), 150);
+            // Third knock
+            setTimeout(() => playTone(audioContext, freq1, 0.1), 300);
+        }
+
+        function playTone(audioContext, frequency, duration) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = frequency;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration);
+        }
+
+        function cycleStyle() {
+            currentStyle = (currentStyle + 1) % styles.length;
+            document.getElementById('currentStyle').textContent = styles[currentStyle];
+            applyStyle();
+        }
+
+        function applyStyle() {
+            const door = document.getElementById('door');
+            const body = document.body;
+            
+            // Reset all style classes
+            door.classList.remove('rainbow-mode');
+            body.classList.remove('mystical-bg');
+            
+            switch(currentStyle) {
+                case 1: // Royal
+                    door.style.background = 'linear-gradient(45deg, #4B0082, #8B008B, #9932CC)';
+                    door.style.borderColor = '#2E0054';
+                    break;
+                case 2: // Modern
+                    door.style.background = 'linear-gradient(45deg, #2C3E50, #34495E, #5D6D7E)';
+                    door.style.borderColor = '#1B2631';
+                    door.style.borderRadius = '5px';
+                    break;
+                case 3: // Rainbow
+                    door.classList.add('rainbow-mode');
+                    break;
+                case 4: // Mystical
+                    door.style.background = 'linear-gradient(45deg, #1a237e, #3949ab, #5e35b1)';
+                    door.style.borderColor = '#0d47a1';
+                    door.style.boxShadow = '0 20px 40px rgba(94, 53, 177, 0.5), inset 0 5px 10px rgba(255, 255, 255, 0.1)';
+                    break;
+                default: // Original
+                    door.style.background = 'linear-gradient(45deg, #8B4513, #A0522D, #CD853F)';
+                    door.style.borderColor = '#654321';
+                    door.style.borderRadius = '20px 20px 5px 5px';
+                    door.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.5), inset 0 5px 10px rgba(255, 255, 255, 0.1), inset 0 -5px 10px rgba(0, 0, 0, 0.2)';
+            }
+        }
+
+        function cycleSound() {
+            currentSound = (currentSound + 1) % sounds.length;
+            document.getElementById('currentSound').textContent = sounds[currentSound];
+        }
+
+        function autoKnock() {
+            if (autoKnockInterval) {
+                clearInterval(autoKnockInterval);
+                autoKnockInterval = null;
+            } else {
+                autoKnockInterval = setInterval(knock, 800);
+            }
+        }
+
+        function resetCounter() {
+            knockCount = 0;
+            achievements = {};
+            document.getElementById('knockCount').textContent = knockCount;
+            showAchievement('🔄 Counter Reset!');
+        }
+
+        function checkAchievements() {
+            const milestones = [
+                { count: 1, text: '🎉 First Knock!' },
+                { count: 10, text: '🏆 Knock Novice!' },
+                { count: 25, text: '⭐ Persistent Knocker!' },
+                { count: 50, text: '🔥 Knock Master!' },
+                { count: 100, text: '👑 Legendary Knocker!' },
+                { count: 200, text: '🚀 Knock Champion!' },
+                { count: 500, text: '💎 Ultimate Knocker!' }
+            ];
+            
+            milestones.forEach(milestone => {
+                if (knockCount === milestone.count && !achievements[milestone.count]) {
+                    achievements[milestone.count] = true;
+                    showAchievement(milestone.text);
+                }
+            });
+        }
+
+        function showAchievement(text) {
+            const achievement = document.getElementById('achievement');
+            achievement.textContent = text;
+            achievement.classList.add('show');
+            
+            setTimeout(() => {
+                achievement.classList.remove('show');
+            }, 2000);
+        }
+
+        // Event listeners
+        document.getElementById('doorContainer').addEventListener('click', knock);
+        
+        document.addEventListener('keydown', (e) => {
+            switch(e.code) {
+                case 'Space':
+                    e.preventDefault();
+                    knock();
+                    break;
+                case 'KeyS':
+                    cycleStyle();
+                    break;
+                case 'KeyA':
+                    cycleSound();
+                    break;
+            }
+        });
+
+        // Initialize
+        createStars();
+        showAchievement('🚪 Welcome to the Ultimate Knock Experience!');
+    </script>
 </body>
 </html>
