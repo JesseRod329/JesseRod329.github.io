@@ -1282,15 +1282,6 @@ if (location.protocol !== 'https:') {
             <span class="btn">help · projects · nycai</span>
           </div>
         </a>
-        <a class="card interface-card ui-card" href="/sandbox-portfolio/">
-          <div class="badge">UI</div>
-          <div class="title">Visual Interface</div>
-          <div class="subtitle">Modern React UI with animations, projects, and pages.</div>
-          <div class="actions">
-            <span class="btn primary">Open UI</span>
-            <span class="btn">React · Three.js · Tailwind</span>
-          </div>
-        </a>
       </div>
     </main>
   
@@ -1332,7 +1323,7 @@ if (location.protocol !== 'https:') {
   </section>
   </div>
   
-  <div class="hint">Shortcut: press "C" for CLI or "U" for UI</div>
+  <div class="hint">Shortcut: press "C" for CLI terminal</div>
   <script>
   (function(){
     'use strict';
@@ -1362,19 +1353,18 @@ if (location.protocol !== 'https:') {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     if (isMobile) {
       const wrestlingCard = document.querySelector('.wrestling-card');
-      const badge = wrestlingCard.querySelector('.badge');
-      badge.textContent = 'RECOMMENDED';
-      badge.style.borderColor = '#ff3';
-      badge.style.color = '#ff3';
+      if (wrestlingCard) {
+        const badge = wrestlingCard.querySelector('.badge');
+        badge.textContent = 'RECOMMENDED';
+        badge.style.borderColor = '#ff3';
+        badge.style.color = '#ff3';
+      }
     }
 
     // Keyboard shortcuts
     document.addEventListener('keydown', function(e){
       if (e.key.toLowerCase() === 'c') {
         window.location.href = './terminal.html';
-      }
-      if (e.key.toLowerCase() === 'u') {
-        window.location.href = '/sandbox-portfolio/';
       }
     });
   })();
