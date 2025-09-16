@@ -1,5 +1,5 @@
 import projects from "../data/projects.json";
-import ProjectRow from "../components/ProjectRow";
+import ProjectCard from "../components/ProjectCard";
 import type { Project } from "../types/project";
 
 export default function Projects() {
@@ -7,25 +7,21 @@ export default function Projects() {
   const visibleProjects: Project[] = projects.filter((p: Project) => !p.hidden);
   
   return (
-    <main className="min-h-screen px-0 sm:px-6 md:px-8 lg:px-12 safe-content-sm">
-      <div className="w-full flex flex-col items-start">
-        {/* Page header */}
-        <div className="mb-12 sm:mb-16 md:mb-20 lg:mb-24">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light neomorphic-text-white mb-4 sm:mb-6 tracking-tight">
-            Projects
-          </h1>
-          <p className="text-base sm:text-lg neomorphic-text-muted max-w-[600px]">
-            Recent work in design and development.
-          </p>
-        </div>
+    <div>
+      <header className="py-16 text-center">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-2">
+          Projects
+        </h1>
+        <p className="text-lg text-text/80">
+          A selection of my recent work.
+        </p>
+      </header>
 
-        {/* Projects list */}
-        <ul className="list-none p-0 m-0 space-y-8 sm:space-y-12 md:space-y-16 lg:space-y-20">
-          {visibleProjects.map((p, i) => (
-            <ProjectRow key={p.slug} project={p} index={i} />
-          ))}
-        </ul>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {visibleProjects.map((p) => (
+          <ProjectCard key={p.slug} project={p} />
+        ))}
       </div>
-    </main>
+    </div>
   );
 }
