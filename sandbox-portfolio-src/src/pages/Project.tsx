@@ -2,20 +2,21 @@ import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import projects from "../data/projects.json";
 import { motion } from "framer-motion";
+import type { Project as ProjectType } from "../types/project";
 
 export default function Project() {
   const { slug } = useParams();
   // Filter out hidden projects for navigation
-  const visibleProjects = projects.filter((p: any) => !p.hidden);
+  const visibleProjects: ProjectType[] = projects.filter((p: ProjectType) => !p.hidden);
   const index = visibleProjects.findIndex(p => p.slug === slug);
-  const project = visibleProjects[index];
+  const project: ProjectType = visibleProjects[index];
 
   useEffect(() => {
     // prefetch next project
     if (visibleProjects[index + 1]) {
       const next = visibleProjects[index + 1];
       // simple image prefetch - check if gallery exists
-      if ('gallery' in next && Array.isArray(next.gallery)) {
+      if (next.gallery && Array.isArray(next.gallery)) {
         next.gallery.forEach((src: string) => {
           const img = new Image();
           img.src = src;
@@ -72,7 +73,7 @@ export default function Project() {
       </section>
 
       <section className="mb-8 flex gap-2 flex-wrap">
-        {project.stack?.map(s => (
+        {project.stack?.map((s: string) => (
           <span key={s} className="px-3 py-1 text-sm text-[var(--muted)] border border-[var(--muted)] rounded-md">
             {s}
           </span>
