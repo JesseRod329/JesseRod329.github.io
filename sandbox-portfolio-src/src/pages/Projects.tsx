@@ -1,9 +1,10 @@
 import projects from "../data/projects.json";
 import ProjectRow from "../components/ProjectRow";
+import type { Project } from "../types/project";
 
 export default function Projects() {
   // Filter out hidden projects
-  const visibleProjects = projects.filter((p: any) => !p.hidden);
+  const visibleProjects: Project[] = projects.filter((p: Project) => !p.hidden);
   
   return (
     <main className="min-h-screen px-0 sm:px-6 md:px-8 lg:px-12 safe-content-sm">
