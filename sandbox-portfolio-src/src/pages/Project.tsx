@@ -30,7 +30,7 @@ export default function Project() {
   return (
     <motion.article initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
       <header className="text-center py-16">
-        <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4 cyber-glow">
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
           {project.title}
         </h1>
         <p className="text-lg text-text/80">
@@ -38,14 +38,14 @@ export default function Project() {
         </p>
       </header>
 
-      <div className="cyber-card p-8 md:p-12">
+      <div className="clean-card p-8 md:p-12">
         <section className="mb-8">
-          <h2 className="text-2xl font-bold mb-4 cyber-glow">Summary</h2>
+          <h2 className="text-2xl font-semibold mb-4">Summary</h2>
           <p className="text-text/80 max-w-prose">{project.summary}</p>
         </section>
 
         <section className="mb-8">
-          <h2 className="text-2xl font-bold mb-4 cyber-glow">Stack</h2>
+          <h2 className="text-2xl font-semibold mb-4">Stack</h2>
           <div className="flex flex-wrap gap-2">
             {project.stack?.map(s => (
               <span key={s} className="px-3 py-1 text-sm bg-accent/20 text-accent rounded-full">
@@ -61,7 +61,7 @@ export default function Project() {
               href={project.links.live}
               target="_blank"
               rel="noopener noreferrer"
-              className="cyber-button"
+              className="clean-button"
             >
               Live Demo
             </a>
@@ -71,7 +71,7 @@ export default function Project() {
               href={project.links.repo}
               target="_blank"
               rel="noopener noreferrer"
-              className="cyber-button"
+              className="clean-button"
             >
               View Code
             </a>
@@ -81,12 +81,12 @@ export default function Project() {
 
       <nav className="flex justify-between mt-12">
         {index > 0 ? (
-          <Link to={`/projects/${visibleProjects[index - 1].slug}`} className="cyber-button">
+          <Link to={`/projects/${visibleProjects[index - 1].slug}`} className="clean-button">
             ← Previous
           </Link>
         ) : <div />}
         {index < visibleProjects.length - 1 ? (
-          <Link to={`/projects/${visibleProjects[index + 1].slug}`} className="cyber-button">
+          <Link to={`/projects/${visibleProjects[index + 1].slug}`} className="clean-button">
             Next →
           </Link>
         ) : <div />}
