@@ -101,6 +101,19 @@ if (location.protocol !== 'https:') {
     background: rgba(139,92,246,0.08);
     box-shadow: 0 10px 30px rgba(139,92,246,0.3), 0 0 20px rgba(139,92,246,0.2);
   }
+
+  .philosophy-card {
+    border-left: 4px solid #d97706;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .philosophy-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    border-color: #d97706;
+    background: rgba(217,119,6,0.08);
+    box-shadow: 0 10px 30px rgba(217,119,6,0.3), 0 0 20px rgba(217,119,6,0.2);
+  }
   .ui-card { border-left: 4px solid #2563eb; }
   .ui-card:hover { border-color: #2563eb; background: rgba(37,99,235,0.04); }
   .cli-card { border-left: 4px solid #10b981; }
@@ -110,6 +123,7 @@ if (location.protocol !== 'https:') {
   .knock-card .title { color: #ffffff !important; }
   .planner-card .title { color: #ffffff !important; }
   .fashion-card .title { color: #ffffff !important; }
+  .philosophy-card .title { color: #ffffff !important; }
   .title { font-size: clamp(1.75rem, 3vw, 2.25rem); font-weight: 900; letter-spacing:-0.02em; margin-bottom: .5rem; }
   .subtitle { color:#bbb; margin-bottom:1rem; }
   .badge { display:inline-block; font-size:.7rem; letter-spacing:.08em; border:1px solid #444; padding:4px 8px; border-radius:999px; color:#ddd; }
@@ -1283,6 +1297,15 @@ if (location.protocol !== 'https:') {
             <span class="btn">React · Canvas API · Color Theory</span>
           </div>
         </a>
+        <a class="card interface-card philosophy-card" href="/philosophers-library.html">
+          <div class="badge">LITERATURE</div>
+          <div class="title">The Philosopher's Library</div>
+          <div class="subtitle">Curated collection of 100 essential philosophical texts with interactive exploration and literary design.</div>
+          <div class="actions">
+            <span class="btn primary">Open Library</span>
+            <span class="btn">Three.js · Literary Design · Dark Mode</span>
+          </div>
+        </a>
         <a class="card interface-card cli-card" href="./terminal.html">
           <div class="badge">CLI</div>
           <div class="title">Terminal Interface</div>
@@ -1321,13 +1344,6 @@ if (location.protocol !== 'https:') {
         <div class="featured-title">Fashion Palette Generator</div>
         <div class="featured-subtitle">Privacy-first AI color extraction with mathematical color theory for fashion design</div>
         <div class="featured-tech">React · Canvas API · Color Theory</div>
-      </a>
-      
-      <a class="featured-card philosophy-card" href="/philosophers-library.html">
-        <div class="featured-badge">LITERATURE</div>
-        <div class="featured-title">The Philosopher's Library</div>
-        <div class="featured-subtitle">Curated collection of 100 essential philosophical texts with interactive exploration and literary design</div>
-        <div class="featured-tech">Three.js · Literary Design · Dark Mode</div>
       </a>
       
       <a class="featured-card brainwave-card" href="/brainwave-simulator/brainwave-simulator.html">
