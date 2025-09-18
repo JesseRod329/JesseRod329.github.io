@@ -49,6 +49,33 @@ if (location.protocol !== 'https:') {
     background: conic-gradient(from 0deg, transparent, #dc2626, transparent, #2563eb, transparent);
     opacity: 0;
     transition: opacity 0.3s ease;
+    animation: spin-slow 8s linear infinite;
+  }
+  .wrestling-card:hover::before {
+    opacity: 0.1;
+  }
+  .analytics-card {
+    border-left: 4px solid #8b5cf6;
+    position: relative;
+    overflow: hidden;
+  }
+  .analytics-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, #8b5cf6, transparent, #06b6d4, transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    animation: spin-slow 6s linear infinite;
+    z-index: -1;
+  }
+  .analytics-card:hover::before {
+    opacity: 0.15;
+  }
+    transition: opacity 0.3s ease;
     animation: wrestlingSpin 3s linear infinite;
     z-index: -1;
   }
@@ -1268,6 +1295,15 @@ if (location.protocol !== 'https:') {
           <div class="actions">
             <span class="btn primary">Open News</span>
             <span class="btn">RSS · Glass UI · Auto-Update</span>
+          </div>
+        </a>
+        <a class="card interface-card analytics-card" href="/wrestling-analytics-dashboard/">
+          <div class="badge">AWARD-WINNING</div>
+          <div class="title">Wrestling Analytics Dashboard</div>
+          <div class="subtitle">Data visualization platform with interactive network graphs, timeline charts, and global venue mapping.</div>
+          <div class="actions">
+            <span class="btn primary">Explore Data</span>
+            <span class="btn">React · D3.js · TypeScript</span>
           </div>
         </a>
         <a class="card interface-card knock-card" href="/knock.html">
