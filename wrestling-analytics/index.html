@@ -1,39 +1,781 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/wrestling-analytics/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Award-winning wrestling analytics dashboard with interactive visualizations" />
-    <meta name="keywords" content="wrestling, analytics, data visualization, AEW, NJPW, WWE" />
-    <meta name="author" content="Jesse Rodriguez" />
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="Wrestling Analytics Dashboard" />
-    <meta property="og:description" content="Award-winning data visualization platform for wrestling match analytics" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://jesserodriguez.me/wrestling-analytics/" />
-    
-    <!-- Security Headers -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; script-src 'self'; object-src 'none';" />
-    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-    <meta http-equiv="X-Frame-Options" content="DENY" />
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wrestling Analytics Dashboard</title>
-    <script type="module" crossorigin src="/wrestling-analytics/assets/index-b388b296.js"></script>
-    <link rel="modulepreload" crossorigin href="/wrestling-analytics/assets/vendor-5407acc1.js">
-    <link rel="modulepreload" crossorigin href="/wrestling-analytics/assets/motion-7cf5ffce.js">
-    <link rel="modulepreload" crossorigin href="/wrestling-analytics/assets/d3-f1df2ee8.js">
-    <link rel="stylesheet" href="/wrestling-analytics/assets/index-05e02ad9.css">
-  </head>
-  <body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-    <div id="root"></div>
-    
-  </body>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .search-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            font-size: 1.1rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 1.2rem;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #444;
+        }
+
+        .filter-select {
+            padding: 10px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            border-color: #667eea;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .chart-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .chart-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .chart-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .chart {
+            width: 100%;
+            height: 300px;
+            position: relative;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .wrestler-list {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .wrestler-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            background: rgba(102, 126, 234, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .wrestler-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+
+        .wrestler-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .wrestler-matches {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading {
+            animation: pulse 2s infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🥊 Wrestling Analytics Dashboard</h1>
+            <p>Real-time analysis of wrestling match data from top superstars</p>
+            <div id="total-stats" class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="total-matches">0</div>
+                    <div class="stat-label">Total Matches</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-wrestlers">5</div>
+                    <div class="stat-label">Wrestlers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="win-rate">0%</div>
+                    <div class="stat-label">Avg Win Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="recent-matches">0</div>
+                    <div class="stat-label">Recent Matches</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-section">
+            <h2 class="chart-title">🔍 Search & Filter</h2>
+            <div class="search-container">
+                <input type="text" id="search-input" class="search-input" placeholder="Search wrestlers, events, locations...">
+                <span class="search-icon">🔍</span>
+            </div>
+            
+            <div class="filters">
+                <div class="filter-group">
+                    <label class="filter-label">Wrestler</label>
+                    <select id="wrestler-filter" class="filter-select">
+                        <option value="">All Wrestlers</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Year</label>
+                    <select id="year-filter" class="filter-select">
+                        <option value="">All Years</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Result</label>
+                    <select id="result-filter" class="filter-select">
+                        <option value="">All Results</option>
+                        <option value="win">Wins</option>
+                        <option value="loss">Losses</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="chart-container">
+                <h3 class="chart-title">📊 Match Timeline</h3>
+                <canvas id="timelineChart" class="chart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <h3 class="chart-title">🏆 Win/Loss Breakdown</h3>
+                <canvas id="winLossChart" class="chart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <h3 class="chart-title">📈 Performance Trends</h3>
+                <canvas id="performanceChart" class="chart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <h3 class="chart-title">🌍 Global Venues</h3>
+                <div id="venueChart" class="chart"></div>
+            </div>
+        </div>
+
+        <div class="wrestler-list">
+            <h3 class="chart-title">👥 Wrestler Directory</h3>
+            <div id="wrestler-results">
+                <div class="loading">Loading wrestler data...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global data storage
+        let allWrestlerData = [];
+        let filteredData = [];
+        let charts = {};
+
+        // Wrestler files to load
+        const wrestlerFiles = [
+            'CM_Punk_matches.csv',
+            'John_Cena_matches.csv',
+            'Roman_Reigns_matches.csv',
+            'Seth_Rollins_matches.csv',
+            'Brock_Lesnar_matches.csv'
+        ];
+
+        // Initialize dashboard
+        async function initDashboard() {
+            console.log('Loading wrestling data...');
+            await loadWrestlerData();
+            setupEventListeners();
+            updateStats();
+            createCharts();
+            displayWrestlers();
+            console.log('Dashboard loaded successfully!');
+        }
+
+        // Load all wrestler data
+        async function loadWrestlerData() {
+            for (const file of wrestlerFiles) {
+                try {
+                    const response = await fetch(file);
+                    if (response.ok) {
+                        const csvText = await response.text();
+                        const wrestlerName = file.replace('_matches.csv', '').replace(/_/g, ' ');
+                        const matches = parseCSV(csvText, wrestlerName);
+                        allWrestlerData.push({
+                            name: wrestlerName,
+                            matches: matches,
+                            totalMatches: matches.length
+                        });
+                        console.log(`Loaded ${matches.length} matches for ${wrestlerName}`);
+                    }
+                } catch (error) {
+                    console.error(`Error loading ${file}:`, error);
+                }
+            }
+            filteredData = [...allWrestlerData];
+            populateFilters();
+        }
+
+        // Parse CSV data
+        function parseCSV(csvText, wrestlerName) {
+            const lines = csvText.split('\n').filter(line => line.trim());
+            const matches = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+
+                const values = line.split(',');
+                if (values.length >= 4) {
+                    const [, dateStr, , eventStr, resultStr] = values;
+                    
+                    if (dateStr && eventStr) {
+                        // Parse date
+                        const dateParts = dateStr.split('.');
+                        let matchDate = new Date();
+                        if (dateParts.length === 3) {
+                            matchDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+                        }
+
+                        // Determine win/loss
+                        let result = 'unknown';
+                        const event = eventStr.toLowerCase();
+                        if (event.includes('defeat') || event.includes('beat') || event.includes('win')) {
+                            result = 'win';
+                        } else if (event.includes('lost') || event.includes('lose') || event.includes('defeated by')) {
+                            result = 'loss';
+                        } else if (resultStr) {
+                            const resultLower = resultStr.toLowerCase();
+                            if (resultLower.includes('win') || resultLower.includes('victory')) {
+                                result = 'win';
+                            } else if (resultLower.includes('loss') || resultLower.includes('defeat')) {
+                                result = 'loss';
+                            }
+                        }
+
+                        matches.push({
+                            wrestler: wrestlerName,
+                            date: matchDate,
+                            event: eventStr,
+                            result: result,
+                            year: matchDate.getFullYear()
+                        });
+                    }
+                }
+            }
+
+            return matches.sort((a, b) => b.date - a.date);
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('search-input').addEventListener('input', handleSearch);
+            document.getElementById('wrestler-filter').addEventListener('change', handleFilter);
+            document.getElementById('year-filter').addEventListener('change', handleFilter);
+            document.getElementById('result-filter').addEventListener('change', handleFilter);
+        }
+
+        // Handle search
+        function handleSearch() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            console.log('Searching for:', searchTerm);
+            
+            if (searchTerm === '') {
+                filteredData = [...allWrestlerData];
+            } else {
+                filteredData = allWrestlerData.map(wrestler => ({
+                    ...wrestler,
+                    matches: wrestler.matches.filter(match => 
+                        match.wrestler.toLowerCase().includes(searchTerm) ||
+                        match.event.toLowerCase().includes(searchTerm)
+                    )
+                })).filter(wrestler => wrestler.matches.length > 0);
+            }
+            
+            applyFilters();
+            displayWrestlers();
+            updateCharts();
+            updateStats();
+        }
+
+        // Handle filters
+        function handleFilter() {
+            applyFilters();
+            displayWrestlers();
+            updateCharts();
+            updateStats();
+        }
+
+        // Apply all filters
+        function applyFilters() {
+            const wrestlerFilter = document.getElementById('wrestler-filter').value;
+            const yearFilter = document.getElementById('year-filter').value;
+            const resultFilter = document.getElementById('result-filter').value;
+
+            let filtered = [...allWrestlerData];
+
+            // Apply wrestler filter
+            if (wrestlerFilter) {
+                filtered = filtered.filter(wrestler => wrestler.name === wrestlerFilter);
+            }
+
+            // Apply other filters to matches
+            filtered = filtered.map(wrestler => ({
+                ...wrestler,
+                matches: wrestler.matches.filter(match => {
+                    if (yearFilter && match.year.toString() !== yearFilter) return false;
+                    if (resultFilter && match.result !== resultFilter) return false;
+                    return true;
+                })
+            })).filter(wrestler => wrestler.matches.length > 0);
+
+            filteredData = filtered;
+        }
+
+        // Populate filter dropdowns
+        function populateFilters() {
+            const wrestlerSelect = document.getElementById('wrestler-filter');
+            const yearSelect = document.getElementById('year-filter');
+
+            // Populate wrestler filter
+            allWrestlerData.forEach(wrestler => {
+                const option = document.createElement('option');
+                option.value = wrestler.name;
+                option.textContent = wrestler.name;
+                wrestlerSelect.appendChild(option);
+            });
+
+            // Populate year filter
+            const years = new Set();
+            allWrestlerData.forEach(wrestler => {
+                wrestler.matches.forEach(match => {
+                    years.add(match.year);
+                });
+            });
+
+            [...years].sort((a, b) => b - a).forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            });
+        }
+
+        // Update statistics
+        function updateStats() {
+            const totalMatches = filteredData.reduce((sum, wrestler) => sum + wrestler.matches.length, 0);
+            const totalWins = filteredData.reduce((sum, wrestler) => 
+                sum + wrestler.matches.filter(match => match.result === 'win').length, 0);
+            const winRate = totalMatches > 0 ? Math.round((totalWins / totalMatches) * 100) : 0;
+            const recentMatches = filteredData.reduce((sum, wrestler) => {
+                const recentCount = wrestler.matches.filter(match => {
+                    const oneYearAgo = new Date();
+                    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+                    return match.date > oneYearAgo;
+                }).length;
+                return sum + recentCount;
+            }, 0);
+
+            document.getElementById('total-matches').textContent = totalMatches.toLocaleString();
+            document.getElementById('total-wrestlers').textContent = filteredData.length;
+            document.getElementById('win-rate').textContent = `${winRate}%`;
+            document.getElementById('recent-matches').textContent = recentMatches.toLocaleString();
+        }
+
+        // Display wrestlers
+        function displayWrestlers() {
+            const container = document.getElementById('wrestler-results');
+            
+            if (filteredData.length === 0) {
+                container.innerHTML = '<div class="no-results">No wrestlers found matching your criteria.</div>';
+                return;
+            }
+
+            const html = filteredData.map(wrestler => `
+                <div class="wrestler-item" onclick="selectWrestler('${wrestler.name}')">
+                    <div class="wrestler-name">${wrestler.name}</div>
+                    <div class="wrestler-matches">${wrestler.matches.length} matches</div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        // Select wrestler
+        function selectWrestler(wrestlerName) {
+            document.getElementById('wrestler-filter').value = wrestlerName;
+            handleFilter();
+            console.log('Selected wrestler:', wrestlerName);
+        }
+
+        // Create charts
+        function createCharts() {
+            createTimelineChart();
+            createWinLossChart();
+            createPerformanceChart();
+            createVenueChart();
+        }
+
+        // Update charts
+        function updateCharts() {
+            Object.values(charts).forEach(chart => {
+                if (chart && chart.destroy) {
+                    chart.destroy();
+                }
+            });
+            createCharts();
+        }
+
+        // Create timeline chart
+        function createTimelineChart() {
+            const ctx = document.getElementById('timelineChart').getContext('2d');
+            
+            const monthlyData = {};
+            filteredData.forEach(wrestler => {
+                wrestler.matches.forEach(match => {
+                    const monthKey = `${match.date.getFullYear()}-${(match.date.getMonth() + 1).toString().padStart(2, '0')}`;
+                    monthlyData[monthKey] = (monthlyData[monthKey] || 0) + 1;
+                });
+            });
+
+            const sortedMonths = Object.keys(monthlyData).sort();
+            const labels = sortedMonths.slice(-12); // Last 12 months
+            const data = labels.map(month => monthlyData[month] || 0);
+
+            charts.timeline = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels.map(month => {
+                        const [year, monthNum] = month.split('-');
+                        return new Date(year, monthNum - 1).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+                    }),
+                    datasets: [{
+                        label: 'Matches per Month',
+                        data: data,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Create win/loss chart
+        function createWinLossChart() {
+            const ctx = document.getElementById('winLossChart').getContext('2d');
+            
+            let wins = 0, losses = 0, unknown = 0;
+            filteredData.forEach(wrestler => {
+                wrestler.matches.forEach(match => {
+                    if (match.result === 'win') wins++;
+                    else if (match.result === 'loss') losses++;
+                    else unknown++;
+                });
+            });
+
+            charts.winLoss = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Wins', 'Losses', 'Unknown'],
+                    datasets: [{
+                        data: [wins, losses, unknown],
+                        backgroundColor: ['#10b981', '#ef4444', '#94a3b8'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Create performance chart
+        function createPerformanceChart() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            
+            const wrestlerStats = filteredData.map(wrestler => {
+                const wins = wrestler.matches.filter(match => match.result === 'win').length;
+                const total = wrestler.matches.length;
+                const winRate = total > 0 ? (wins / total) * 100 : 0;
+                return {
+                    name: wrestler.name,
+                    winRate: winRate,
+                    totalMatches: total
+                };
+            });
+
+            charts.performance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: wrestlerStats.map(stat => stat.name),
+                    datasets: [{
+                        label: 'Win Rate (%)',
+                        data: wrestlerStats.map(stat => stat.winRate),
+                        backgroundColor: '#667eea',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Create venue chart
+        function createVenueChart() {
+            const container = document.getElementById('venueChart');
+            container.innerHTML = '<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; height: 100%;">';
+            
+            const venues = {};
+            filteredData.forEach(wrestler => {
+                wrestler.matches.forEach(match => {
+                    if (match.event && match.event.includes('WWE')) venues['WWE'] = (venues['WWE'] || 0) + 1;
+                    else if (match.event && match.event.includes('AEW')) venues['AEW'] = (venues['AEW'] || 0) + 1;
+                    else if (match.event && match.event.includes('NJPW')) venues['NJPW'] = (venues['NJPW'] || 0) + 1;
+                    else venues['Other'] = (venues['Other'] || 0) + 1;
+                });
+            });
+
+            Object.entries(venues).forEach(([venue, count]) => {
+                container.innerHTML += `
+                    <div style="text-align: center; padding: 15px; background: rgba(102, 126, 234, 0.1); border-radius: 10px; min-width: 80px;">
+                        <div style="font-size: 1.5rem; font-weight: bold; color: #667eea;">${count}</div>
+                        <div style="font-size: 0.9rem; color: #666;">${venue}</div>
+                    </div>
+                `;
+            });
+        }
+
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
 </html>
