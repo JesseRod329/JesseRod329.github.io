@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Usage Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body { font-family: 'Inter', sans-serif; margin: 0; background: #f5f5f5; }
+  .sidebar { width: 220px; background: #1e1e2f; color: #fff; height: 100vh; position: fixed; padding: 20px; }
+  .sidebar h2 { color: #fff; margin-bottom: 30px; }
+  .sidebar a { display: block; color: #bbb; margin: 15px 0; text-decoration: none; }
+  .sidebar a:hover { color: #fff; }
+  .main { margin-left: 240px; padding: 20px; }
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+  .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px; }
+  .card { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+  .card h3 { margin: 0 0 10px; font-size: 14px; color: #888; }
+  .card p { font-size: 24px; margin: 0; font-weight: bold; }
+  .charts { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+  .chart-card { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+  .muted { color: #9aa0a6; }
+  @media (max-width: 1024px) { .cards { grid-template-columns: repeat(2, 1fr); } .charts { grid-template-columns: 1fr; } }
+  @media (max-width: 640px) { .main { margin-left: 0; } .sidebar { position: static; height: auto; width: auto; } .cards { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body data-api-base="">
+
+<div class="sidebar" role="navigation" aria-label="Main">
+  <h2>Dashboard</h2>
+  <a href="/">Dashboard</a>
+  <a href="#">Prompt Library</a>
+  <a href="#">Analytics</a>
+  <a href="#">Settings</a>
+  <a href="#">Account</a>
+  <div class="muted" style="margin-top: 24px; font-size: 12px;">Env-aware. No mock data.</div>
+  <div id="envLabel" class="muted" style="font-size: 12px;"></div>
+  <noscript class="muted" style="display:block; margin-top: 8px;">Enable JavaScript to load analytics.</noscript>
+  <div id="a11ySkip" class="muted" style="margin-top: 8px;">Press Tab to skip to content</div>
+  <a href="#mainContent" class="muted" style="font-size: 12px;">Skip to content</a>
+  
+</div>
+
+<div class="main" id="mainContent" tabindex="-1">
+  <div class="header">
+    <h1>AI Usage Dashboard</h1>
+    <label for="range" class="visually-hidden" aria-hidden="true" style="position:absolute;left:-10000px;">Select time range</label>
+    <select id="range" aria-label="Select time range">
+      <option value="7d" selected>Last 7 Days</option>
+      <option value="30d">Last 30 Days</option>
+      <option value="custom">Custom Range</option>
+    </select>
+  </div>
+
+  <div class="cards" aria-live="polite">
+    <div class="card">
+      <h3>Total Prompts</h3>
+      <p id="totalPrompts" aria-label="Total prompts">—</p>
+    </div>
+    <div class="card">
+      <h3>Total Tokens</h3>
+      <p id="totalTokens" aria-label="Total tokens">—</p>
+    </div>
+    <div class="card">
+      <h3>Top Category</h3>
+      <p id="topCategory" aria-label="Top category">—</p>
+    </div>
+    <div class="card">
+      <h3>Total Topics</h3>
+      <p id="totalTopics" aria-label="Total topics">—</p>
+    </div>
+  </div>
+
+  <div class="charts">
+    <div class="chart-card">
+      <canvas id="promptsChart" aria-label="Prompts over time" role="img"></canvas>
+    </div>
+    <div class="chart-card">
+      <canvas id="categoriesChart" aria-label="Prompt categories" role="img"></canvas>
+    </div>
+  </div>
+</div>
+
+<script>
+// Optional: window.DASH_CONFIG = { API_BASE_URL: "https://dev.example.com" };
+(function() {
+  const body = document.body;
+  const apiBase = (window.DASH_CONFIG && window.DASH_CONFIG.API_BASE_URL) || body.getAttribute('data-api-base') || '';
+  const envEl = document.getElementById('envLabel');
+  if (envEl) envEl.textContent = apiBase ? `API: ${apiBase}` : 'API: not configured';
+
+  const ctx1 = document.getElementById('promptsChart').getContext('2d');
+  const promptsChart = new Chart(ctx1, {
+    type: 'line',
+    data: { labels: [], datasets: [{ label: 'Prompts', data: [], borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', fill: true, tension: 0.3 }] },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { ticks: { autoSkip: true, maxTicksLimit: 7 } } } }
+  });
+
+  const ctx2 = document.getElementById('categoriesChart').getContext('2d');
+  const categoriesChart = new Chart(ctx2, {
+    type: 'doughnut',
+    data: { labels: [], datasets: [{ data: [], backgroundColor: ['#4f46e5','#3b82f6','#10b981','#f59e0b','#ef4444','#a855f7','#06b6d4'] }] },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+  });
+
+  const $ = (id) => document.getElementById(id);
+
+  async function fetchJSON(path, options) {
+    if (!apiBase) throw new Error('API base URL is not configured');
+    const res = await fetch(apiBase + path, { credentials: 'include', ...options });
+    if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+    return res.json();
+  }
+
+  function setCard(id, value) {
+    const el = $(id);
+    if (el) el.textContent = value ?? '—';
+  }
+
+  function updatePromptsChart(series) {
+    promptsChart.data.labels = series.labels || [];
+    promptsChart.data.datasets[0].data = series.values || [];
+    promptsChart.update();
+  }
+
+  function updateCategoriesChart(series) {
+    categoriesChart.data.labels = series.labels || [];
+    categoriesChart.data.datasets[0].data = series.values || [];
+    categoriesChart.update();
+  }
+
+  function showEmptyState() {
+    setCard('totalPrompts', '—');
+    setCard('totalTokens', '—');
+    setCard('topCategory', '—');
+    setCard('totalTopics', '—');
+    updatePromptsChart({ labels: [], values: [] });
+    updateCategoriesChart({ labels: [], values: [] });
+  }
+
+  async function loadDashboard(range) {
+    try {
+      if (!apiBase) {
+        showEmptyState();
+        return;
+      }
+
+      const [summary, prompts, categories] = await Promise.all([
+        fetchJSON(`/dashboard/summary?range=${encodeURIComponent(range)}`),
+        fetchJSON(`/dashboard/prompts?range=${encodeURIComponent(range)}`),
+        fetchJSON(`/dashboard/categories?range=${encodeURIComponent(range)}`)
+      ]);
+
+      setCard('totalPrompts', summary.totalPrompts ?? '—');
+      setCard('totalTokens', summary.totalTokens ?? '—');
+      setCard('topCategory', summary.topCategory ?? '—');
+      setCard('totalTopics', summary.totalTopics ?? '—');
+
+      updatePromptsChart({ labels: prompts.labels, values: prompts.values });
+      updateCategoriesChart({ labels: categories.labels, values: categories.values });
+    } catch (err) {
+      console.error('Failed to load dashboard:', err);
+      showEmptyState();
+    }
+  }
+
+  // Range selector
+  const rangeSel = $('range');
+  rangeSel.addEventListener('change', () => {
+    const value = rangeSel.value;
+    if (value === 'custom') {
+      // Placeholder: Implement a date range picker and pass ISO dates to backend.
+      // To comply with project rules, do not simulate or mock data here.
+      return;
+    }
+    loadDashboard(value);
+  });
+
+  // Initial load
+  loadDashboard(rangeSel.value);
+})();
+</script>
+
+</body>
+</html>
+
+
+
