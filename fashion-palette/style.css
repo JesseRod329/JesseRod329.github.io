@@ -83,18 +83,38 @@ h1 {
 
 .upload-section {
     margin-bottom: 30px;
-    border: 2px dashed rgba(255, 255, 255, 0.3);
-    border-radius: 15px;
-    padding: 30px;
-    transition: all 0.3s ease;
+    border: 3px dashed rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    padding: 40px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     position: relative;
     overflow: hidden;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(5px);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .upload-section:hover {
     border-color: var(--color-teal);
-    box-shadow: 0 0 10px rgba(0, 201, 255, 0.4);
+    box-shadow: 
+        0 0 20px rgba(0, 201, 255, 0.6),
+        0 8px 40px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.upload-section.drag-over {
+    border-color: var(--color-pink);
+    box-shadow: 
+        0 0 25px rgba(255, 107, 203, 0.7),
+        0 8px 40px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transform: scale(1.02);
+    background: rgba(255, 107, 203, 0.05);
 }
 
 .upload-section input[type="file"] {
@@ -177,6 +197,71 @@ h1 {
 
 .color-swatch:hover span {
     opacity: 1;
+}
+
+.palette-controls {
+    margin: 30px 0;
+    text-align: center;
+}
+
+.palette-type-selector {
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.palette-type-selector h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.2em;
+    color: var(--color-gray);
+}
+
+.palette-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.palette-type-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: var(--color-white);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.palette-type-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--color-teal);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 201, 255, 0.3);
+}
+
+.palette-type-btn.active {
+    background: var(--gradient-1);
+    border-color: var(--color-teal);
+    box-shadow: 0 0 15px rgba(0, 201, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.palette-info {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.9em;
+    color: var(--color-gray);
 }
 
 button {
@@ -270,6 +355,17 @@ button:hover {
 
     .palette-section {
         margin-top: 20px;
+    }
+
+    .palette-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .palette-type-btn {
+        width: 100%;
+        max-width: 200px;
+        margin: 5px 0;
     }
 
     .palette-grid {
