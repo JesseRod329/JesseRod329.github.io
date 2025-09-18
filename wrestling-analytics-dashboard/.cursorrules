@@ -1,0 +1,119 @@
+---
+description: Wrestling Analytics Dashboard - Award-winning data visualization platform
+globs: **/*.tsx, **/*.ts, **/*.css, **/*.json
+---
+
+# Wrestling Analytics Dashboard - Cursor Rules
+
+## Project Overview
+Award-winning data visualization platform for wrestling match analytics with interactive charts, network graphs, and real-time statistics.
+
+## Core Technologies
+- React 18+ with TypeScript
+- D3.js for advanced visualizations
+- Tailwind CSS for styling
+- Vite for build system
+- GitHub Pages deployment
+
+## React Best Practices
+- Use functional components with hooks
+- Implement proper memoization (useMemo, useCallback) for expensive visualizations
+- Use React.memo for chart components to prevent unnecessary re-renders
+- Implement Error Boundaries for chart rendering failures
+- Use Context API for dashboard state management
+- Keep components small and focused (HeroMetrics, NetworkGraph, TimelineStream)
+
+## TypeScript Best Practices
+- Define interfaces for match data, wrestler profiles, and visualization configs
+- Use explicit return types for data processing functions
+- Implement proper error handling with custom error types
+- Use generics for reusable visualization components
+- Avoid `any`, prefer `unknown` for unknown types
+- Use strict TypeScript configuration
+
+## Data Visualization Guidelines
+- Process CSV data entirely client-side for privacy
+- Implement lazy loading for large datasets
+- Use virtualization for performance with 1000+ matches
+- Cache processed data in browser memory
+- Implement progressive loading with skeleton screens
+- Handle data parsing errors gracefully
+
+## Performance Optimization
+- Bundle size target: <500KB for main dashboard
+- First contentful paint: <2 seconds
+- Interactive visualizations: <100ms response time
+- Use code splitting for chart libraries
+- Implement proper cleanup for D3.js visualizations
+- Optimize for mobile devices (touch interactions)
+
+## Styling with Tailwind CSS
+- Use mobile-first responsive design
+- Implement dark mode support
+- Use semantic color naming (victory-green, defeat-red, championship-gold)
+- Consistent spacing and typography system
+- Smooth animations with transition utilities
+- Accessibility-compliant color contrasts
+
+## Clean Code Principles
+- Meaningful names for data processing functions
+- Single responsibility for each visualization component
+- DRY principle for reusable chart utilities
+- Smart comments for complex D3.js algorithms
+- Consistent file naming conventions
+- Proper error handling and logging
+
+## Code Quality Standards
+- File-by-file changes for systematic development
+- Preserve existing code when adding features
+- No unnecessary inventions beyond requirements
+- Comprehensive testing for data processing functions
+- Proper version control with clear commit messages
+
+## Data Processing
+- Parse CSV data with proper error handling
+- Validate data integrity and format
+- Handle missing or malformed match data
+- Implement data transformation utilities
+- Cache processed results for performance
+- Support real-time data updates
+
+## Accessibility Requirements
+- Full ARIA labeling for screen readers
+- Keyboard navigation for all interactions
+- Color blind friendly visualizations
+- Support for reduced motion preferences
+- Text scaling up to 200% zoom
+- Alternative data table views
+
+## Security Implementation
+- No external API calls (client-side only)
+- Proper CSP headers for GitHub Pages
+- Sanitize any user inputs
+- No sensitive data storage
+- Follow OWASP guidelines
+- Implement proper error boundaries
+
+## GitHub Pages Integration
+- Build for static hosting
+- Use relative paths for assets
+- Optimize for CDN delivery
+- Implement proper caching strategies
+- Support for custom domain
+- Automated deployment workflow
+
+## Testing Strategy
+- Unit tests for data processing functions
+- Integration tests for chart rendering
+- Performance tests for large datasets
+- Accessibility testing with screen readers
+- Cross-browser compatibility testing
+- Mobile device testing
+
+## Documentation Standards
+- Clear component documentation
+- API documentation for data processing
+- User guide for dashboard features
+- Performance benchmarks
+- Deployment instructions
+- Contributing guidelines
