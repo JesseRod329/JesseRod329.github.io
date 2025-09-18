@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline Rule Finder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #16213e;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #0f4c75, #3282b8);
+            padding: 25px 30px;
+            border-bottom: 3px solid #3282b8;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        .header p {
+            color: #bbe1fa;
+            font-size: 1rem;
+        }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            min-height: 600px;
+        }
+        
+        .sidebar {
+            background: #1a1a2e;
+            padding: 25px;
+            border-right: 2px solid #3282b8;
+        }
+        
+        .main-content {
+            padding: 25px 30px;
+            background: #16213e;
+        }
+        
+        .section-title {
+            color: #3282b8;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .folder-selector {
+            background: #0f4c75;
+            border: 2px dashed #3282b8;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .folder-selector:hover {
+            border-color: #bbe1fa;
+            background: #1a5f8a;
+        }
+        
+        .folder-selector input {
+            display: none;
+        }
+        
+        .folder-path {
+            background: #0f3460;
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #bbe1fa;
+            word-break: break-all;
+            border: 1px solid #3282b8;
+        }
+        
+        .file-list {
+            max-height: 400px;
+            overflow-y: auto;
+            background: #0f3460;
+            border-radius: 6px;
+            padding: 10px;
+        }
+        
+        .file-item {
+            padding: 8px 12px;
+            margin-bottom: 4px;
+            background: #1a5f8a;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .file-item:hover {
+            background: #3282b8;
+        }
+        
+        .file-size {
+            color: #bbe1fa;
+            font-size: 0.75rem;
+        }
+        
+        .idea-input {
+            width: 100%;
+            min-height: 120px;
+            background: #0f3460;
+            border: 2px solid #3282b8;
+            border-radius: 8px;
+            padding: 15px;
+            color: #eee;
+            font-size: 1rem;
+            line-height: 1.5;
+            resize: vertical;
+            font-family: inherit;
+            margin-bottom: 15px;
+        }
+        
+        .idea-input:focus {
+            outline: none;
+            border-color: #bbe1fa;
+            background: #1a5f8a;
+        }
+        
+        .idea-input::placeholder {
+            color: #7fb8d3;
+        }
+        
+        .search-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .search-btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .search-btn:disabled {
+            background: #34495e;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .results-section {
+            margin-top: 20px;
+        }
+        
+        .result-card {
+            background: #0f3460;
+            border: 1px solid #3282b8;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+        
+        .result-card:hover {
+            transform: translateY(-2px);
+            border-color: #bbe1fa;
+        }
+        
+        .result-header {
+            background: #1a5f8a;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .result-title {
+            font-weight: 600;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+        
+        .relevance-badge {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .result-content {
+            padding: 15px 20px;
+        }
+        
+        .match-item {
+            background: #1a1a2e;
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            border-left: 3px solid #e74c3c;
+        }
+        
+        .match-keywords {
+            color: #e74c3c;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .match-context {
+            color: #bbe1fa;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .no-results {
+            text-align: center;
+            color: #7fb8d3;
+            padding: 40px;
+            font-style: italic;
+        }
+        
+        .stats {
+            background: #0f3460;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3282b8;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #7fb8d3;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            color: #7fb8d3;
+        }
+        
+        .spinner {
+            border: 3px solid #3282b8;
+            border-top: 3px solid #bbe1fa;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .file-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .file-list::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+        
+        .file-list::-webkit-scrollbar-thumb {
+            background: #3282b8;
+            border-radius: 3px;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                border-right: none;
+                border-bottom: 2px solid #3282b8;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Rule Finder</h1>
+            <p>Scan your local markdown rules and find which ones apply to your ideas</p>
+        </div>
+        
+        <div class="main-grid">
+            <div class="sidebar">
+                <div class="section-title">📁 Rule Files</div>
+                
+                <div class="folder-selector" onclick="document.getElementById('folderInput').click()">
+                    <input type="file" id="folderInput" webkitdirectory multiple />
+                    <div>📂 Select Rules Folder</div>
+                    <div style="font-size: 0.8rem; color: #7fb8d3; margin-top: 5px;">
+                        Choose folder containing your .md rule files
+                    </div>
+                </div>
+                
+                <div id="folderPath" class="folder-path" style="display: none;"></div>
+                
+                <div id="stats" class="stats" style="display: none;">
+                    <div class="stat-item">
+                        <div id="fileCount" class="stat-number">0</div>
+                        <div class="stat-label">Files</div>
+                    </div>
+                    <div class="stat-item">
+                        <div id="totalSize" class="stat-number">0</div>
+                        <div class="stat-label">KB</div>
+                    </div>
+                </div>
+                
+                <div id="fileList" class="file-list"></div>
+            </div>
+            
+            <div class="main-content">
+                <div class="section-title">💡 Your Idea</div>
+                
+                <textarea 
+                    id="ideaInput" 
+                    class="idea-input"
+                    placeholder="Describe your idea, project, feature, or question here...
+
+Examples:
+- Building a user authentication system
+- Creating a REST API
+- Implementing data validation
+- Setting up error handling
+- Designing a database schema"
+                ></textarea>
+                
+                <button id="searchBtn" class="search-btn" disabled>Find Relevant Rules</button>
+                
+                <div class="results-section">
+                    <div class="section-title">🎯 Matching Rules</div>
+                    
+                    <div id="loading" class="loading">
+                        <div class="spinner"></div>
+                        <div>Analyzing rules...</div>
+                    </div>
+                    
+                    <div id="resultsContainer">
+                        <div class="no-results">
+                            Select your rules folder and describe your idea to find relevant guidelines
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ruleFiles = [];
+        let currentFolder = '';
+        
+        const folderInput = document.getElementById('folderInput');
+        const folderPath = document.getElementById('folderPath');
+        const fileList = document.getElementById('fileList');
+        const stats = document.getElementById('stats');
+        const fileCount = document.getElementById('fileCount');
+        const totalSize = document.getElementById('totalSize');
+        const ideaInput = document.getElementById('ideaInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const loading = document.getElementById('loading');
+        
+        folderInput.addEventListener('change', handleFolderSelection);
+        ideaInput.addEventListener('input', updateSearchButton);
+        searchBtn.addEventListener('click', findRelevantRules);
+        
+        async function handleFolderSelection() {
+            const files = Array.from(folderInput.files);
+            const mdFiles = files.filter(file => file.name.endsWith('.md') || file.name.endsWith('.markdown'));
+            
+            if (mdFiles.length === 0) {
+                alert('No markdown files found in the selected folder!');
+                return;
+            }
+            
+            ruleFiles = [];
+            let totalBytes = 0;
+            
+            // Get folder path from first file
+            if (mdFiles[0].webkitRelativePath) {
+                const pathParts = mdFiles[0].webkitRelativePath.split('/');
+                currentFolder = pathParts[0];
+                folderPath.textContent = currentFolder;
+                folderPath.style.display = 'block';
+            }
+            
+            // Process all markdown files
+            for (const file of mdFiles) {
+                try {
+                    const content = await readFileContent(file);
+                    const relativePath = file.webkitRelativePath.split('/').slice(1).join('/');
+                    
+                    ruleFiles.push({
+                        name: file.name,
+                        path: relativePath,
+                        content: content,
+                        size: file.size
+                    });
+                    
+                    totalBytes += file.size;
+                } catch (error) {
+                    console.error(`Error reading ${file.name}:`, error);
+                }
+            }
+            
+            // Update UI
+            updateStats(ruleFiles.length, totalBytes);
+            updateFileList();
+            updateSearchButton();
+        }
+        
+        function readFileContent(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = reject;
+                reader.readAsText(file);
+            });
+        }
+        
+        function updateStats(count, bytes) {
+            fileCount.textContent = count;
+            totalSize.textContent = Math.round(bytes / 1024);
+            stats.style.display = 'flex';
+        }
+        
+        function updateFileList() {
+            fileList.innerHTML = ruleFiles.map(file => `
+                <div class="file-item">
+                    <div>
+                        <div style="font-weight: 500;">${file.name}</div>
+                        <div style="font-size: 0.75rem; color: #7fb8d3;">${file.path}</div>
+                    </div>
+                    <div class="file-size">${(file.size / 1024).toFixed(1)}KB</div>
+                </div>
+            `).join('');
+        }
+        
+        function updateSearchButton() {
+            const hasFiles = ruleFiles.length > 0;
+            const hasIdea = ideaInput.value.trim().length > 10;
+            searchBtn.disabled = !(hasFiles && hasIdea);
+        }
+        
+        async function findRelevantRules() {
+            const idea = ideaInput.value.trim();
+            if (!idea || ruleFiles.length === 0) return;
+            
+            loading.style.display = 'block';
+            resultsContainer.innerHTML = '';
+            
+            try {
+                const results = await analyzeRules(idea, ruleFiles);
+                displayResults(results);
+            } catch (error) {
+                console.error('Analysis error:', error);
+                resultsContainer.innerHTML = '<div class="no-results">Error analyzing rules. Please try again.</div>';
+            }
+            
+            loading.style.display = 'none';
+        }
+        
+        function analyzeRules(idea, files) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    const ideaAnalysis = analyzeIdea(idea);
+                    const results = [];
+                    
+                    files.forEach(file => {
+                        const analysis = analyzeFileAdvanced(ideaAnalysis, file);
+                        
+                        if (analysis.relevance > 0.5) {
+                            results.push(analysis);
+                        }
+                    });
+                    
+                    // Sort by relevance score
+                    results.sort((a, b) => b.relevance - a.relevance);
+                    resolve(results);
+                }, 300);
+            });
+        }
+        
+        function analyzeIdea(idea) {
+            const text = idea.toLowerCase();
+            
+            // Extract different types of information
+            const keywords = extractKeywords(text);
+            const concepts = extractConcepts(text);
+            const technologies = extractTechnologies(text);
+            const actions = extractActions(text);
+            const domains = extractDomains(text);
+            
+            return {
+                original: idea,
+                keywords: keywords,
+                concepts: concepts,
+                technologies: technologies,
+                actions: actions,
+                domains: domains,
+                sentences: idea.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 5)
+            };
+        }
+        
+        function extractKeywords(text) {
+            // Remove common stop words and extract meaningful keywords
+            const stopWords = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'can', 'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them']);
+            
+            return text
+                .split(/\s+/)
+                .map(word => word.replace(/[^\w]/g, ''))
+                .filter(word => word.length > 2 && !stopWords.has(word))
+                .slice(0, 20); // Limit to top 20 keywords
+        }
+        
+        function extractConcepts(text) {
+            const conceptMap = {
+                // Authentication & Security
+                'auth': ['authentication', 'authorization', 'login', 'signin', 'signup', 'jwt', 'token', 'session', 'oauth', 'security', 'password', 'credential'],
+                'security': ['secure', 'encrypt', 'hash', 'ssl', 'tls', 'vulnerability', 'attack', 'protection', 'firewall', 'permission', 'access control'],
+                
+                // Data & Database
+                'database': ['db', 'sql', 'nosql', 'mongodb', 'postgres', 'mysql', 'redis', 'schema', 'table', 'collection', 'query', 'index'],
+                'data': ['storage', 'persist', 'cache', 'backup', 'migration', 'seed', 'model', 'entity', 'record'],
+                
+                // API & Web
+                'api': ['rest', 'restful', 'graphql', 'endpoint', 'route', 'controller', 'middleware', 'request', 'response', 'http', 'json'],
+                'web': ['frontend', 'backend', 'fullstack', 'client', 'server', 'browser', 'dom', 'html', 'css', 'javascript'],
+                
+                // Architecture & Patterns
+                'architecture': ['microservice', 'monolith', 'mvc', 'mvp', 'mvvm', 'clean', 'hexagonal', 'layered', 'component'],
+                'pattern': ['singleton', 'factory', 'observer', 'decorator', 'adapter', 'facade', 'strategy', 'repository'],
+                
+                // Development & Operations
+                'development': ['code', 'coding', 'programming', 'development', 'implement', 'build', 'create', 'develop'],
+                'testing': ['test', 'testing', 'unit', 'integration', 'e2e', 'mock', 'stub', 'coverage', 'tdd', 'bdd'],
+                'deployment': ['deploy', 'ci', 'cd', 'docker', 'kubernetes', 'aws', 'cloud', 'server', 'hosting', 'production'],
+                
+                // UI/UX
+                'ui': ['interface', 'user interface', 'gui', 'form', 'button', 'modal', 'component', 'layout', 'design'],
+                'ux': ['user experience', 'usability', 'accessibility', 'responsive', 'mobile', 'workflow', 'journey'],
+                
+                // Performance & Quality
+                'performance': ['optimize', 'fast', 'slow', 'speed', 'latency', 'throughput', 'scaling', 'bottleneck'],
+                'quality': ['maintainable', 'readable', 'clean', 'documentation', 'standard', 'convention', 'best practice']
+            };
+            
+            const foundConcepts = [];
+            Object.entries(conceptMap).forEach(([concept, synonyms]) => {
+                const hasMatch = synonyms.some(synonym => text.includes(synonym));
+                if (hasMatch) {
+                    foundConcepts.push(concept);
+                }
+            });
+            
+            return foundConcepts;
+        }
+        
+        function extractTechnologies(text) {
+            const techs = [
+                'javascript', 'typescript', 'python', 'java', 'csharp', 'php', 'ruby', 'go', 'rust', 'kotlin',
+                'react', 'vue', 'angular', 'svelte', 'node', 'express', 'django', 'flask', 'spring', 'laravel',
+                'mongodb', 'postgres', 'mysql', 'redis', 'elasticsearch', 'firebase', 'supabase',
+                'aws', 'azure', 'gcp', 'docker', 'kubernetes', 'terraform', 'ansible',
+                'git', 'github', 'gitlab', 'jenkins', 'circleci', 'travis'
+            ];
+            
+            return techs.filter(tech => text.includes(tech));
+        }
+        
+        function extractActions(text) {
+            const actionWords = [
+                'create', 'build', 'develop', 'implement', 'design', 'setup', 'configure',
+                'deploy', 'test', 'validate', 'secure', 'optimize', 'refactor', 'migrate',
+                'integrate', 'connect', 'sync', 'update', 'maintain', 'monitor', 'debug'
+            ];
+            
+            return actionWords.filter(action => text.includes(action));
+        }
+        
+        function extractDomains(text) {
+            const domains = [
+                'ecommerce', 'fintech', 'healthcare', 'education', 'gaming', 'social', 'media',
+                'analytics', 'crm', 'cms', 'blog', 'portfolio', 'dashboard', 'admin',
+                'marketplace', 'booking', 'messaging', 'notification', 'payment', 'subscription'
+            ];
+            
+            return domains.filter(domain => text.includes(domain));
+        }
+        
+        function analyzeFileAdvanced(ideaAnalysis, file) {
+            const fileContent = file.content.toLowerCase();
+            const fileStructure = analyzeFileStructure(file.content);
+            
+            let relevanceScore = 0;
+            const matches = [];
+            
+            // 1. Concept matching (highest weight)
+            ideaAnalysis.concepts.forEach(concept => {
+                if (fileContent.includes(concept)) {
+                    relevanceScore += 5;
+                    matches.push({
+                        type: 'concept',
+                        keyword: concept,
+                        context: findBestContext(file.content, concept),
+                        weight: 5
+                    });
+                }
+            });
+            
+            // 2. Technology matching
+            ideaAnalysis.technologies.forEach(tech => {
+                if (fileContent.includes(tech)) {
+                    relevanceScore += 3;
+                    matches.push({
+                        type: 'technology',
+                        keyword: tech,
+                        context: findBestContext(file.content, tech),
+                        weight: 3
+                    });
+                }
+            });
+            
+            // 3. Action matching
+            ideaAnalysis.actions.forEach(action => {
+                if (fileContent.includes(action)) {
+                    relevanceScore += 2;
+                    matches.push({
+                        type: 'action',
+                        keyword: action,
+                        context: findBestContext(file.content, action),
+                        weight: 2
+                    });
+                }
+            });
+            
+            // 4. Semantic sentence matching
+            ideaAnalysis.sentences.forEach(sentence => {
+                const sentenceScore = calculateSemanticSimilarity(sentence, fileContent);
+                if (sentenceScore > 0.3) {
+                    relevanceScore += sentenceScore * 4;
+                    matches.push({
+                        type: 'semantic',
+                        keyword: sentence.substring(0, 50) + '...',
+                        context: findMostSimilarSentence(sentence, file.content),
+                        weight: sentenceScore * 4
+                    });
+                }
+            });
+            
+            // 5. File structure bonuses
+            if (fileStructure.hasHeaders && ideaAnalysis.keywords.some(kw => 
+                fileStructure.headers.some(header => header.toLowerCase().includes(kw)))) {
+                relevanceScore += 2;
+            }
+            
+            if (fileStructure.hasLists && ideaAnalysis.actions.length > 0) {
+                relevanceScore += 1;
+            }
+            
+            if (fileStructure.hasCodeBlocks && ideaAnalysis.technologies.length > 0) {
+                relevanceScore += 1.5;
+            }
+            
+            // 6. Keyword density bonus
+            const keywordDensity = calculateKeywordDensity(ideaAnalysis.keywords, fileContent);
+            relevanceScore += keywordDensity * 2;
+            
+            return {
+                file: file,
+                relevance: Math.round(relevanceScore * 10) / 10,
+                matches: matches
+                    .sort((a, b) => b.weight - a.weight)
+                    .slice(0, 6) // Top 6 matches
+            };
+        }
+        
+        function analyzeFileStructure(content) {
+            const headers = content.match(/^#+\s+(.+)$/gm) || [];
+            const lists = content.match(/^[\s]*[-*+]\s+/gm) || [];
+            const codeBlocks = content.match(/```[\s\S]*?```/g) || [];
+            
+            return {
+                hasHeaders: headers.length > 0,
+                headers: headers.map(h => h.replace(/^#+\s+/, '')),
+                hasLists: lists.length > 0,
+                hasCodeBlocks: codeBlocks.length > 0,
+                wordCount: content.split(/\s+/).length
+            };
+        }
+        
+        function calculateSemanticSimilarity(sentence, content) {
+            const sentenceWords = extractKeywords(sentence.toLowerCase());
+            const contentWords = extractKeywords(content);
+            
+            if (sentenceWords.length === 0) return 0;
+            
+            let matchCount = 0;
+            sentenceWords.forEach(word => {
+                if (contentWords.includes(word)) {
+                    matchCount++;
+                } else {
+                    // Check for similar words
+                    const similarWord = contentWords.find(cw => calculateWordSimilarity(word, cw) > 0.8);
+                    if (similarWord) matchCount += 0.8;
+                }
+            });
+            
+            return matchCount / sentenceWords.length;
+        }
+        
+        function calculateKeywordDensity(keywords, content) {
+            const contentWords = extractKeywords(content);
+            const totalWords = contentWords.length;
+            
+            if (totalWords === 0) return 0;
+            
+            let keywordCount = 0;
+            keywords.forEach(keyword => {
+                keywordCount += contentWords.filter(word => word === keyword).length;
+            });
+            
+            return keywordCount / totalWords;
+        }
+        
+        function findBestContext(content, keyword) {
+            const lines = content.split('\n');
+            let bestMatch = '';
+            let bestScore = 0;
+            
+            lines.forEach(line => {
+                if (line.toLowerCase().includes(keyword.toLowerCase())) {
+                    const trimmed = line.trim();
+                    // Prefer lines that are headers, have multiple keywords, or are longer
+                    let score = 1;
+                    if (trimmed.startsWith('#')) score += 2;
+                    if (trimmed.includes('must') || trimmed.includes('should') || trimmed.includes('rule')) score += 1;
+                    if (trimmed.length > 50) score += 1;
+                    
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMatch = trimmed.length > 120 ? trimmed.substring(0, 120) + '...' : trimmed;
+                    }
+                }
+            });
+            
+            return bestMatch;
+        }
+        
+        function findMostSimilarSentence(targetSentence, content) {
+            const sentences = content.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 10);
+            let bestMatch = '';
+            let bestScore = 0;
+            
+            sentences.forEach(sentence => {
+                const similarity = calculateSemanticSimilarity(targetSentence, sentence);
+                if (similarity > bestScore) {
+                    bestScore = similarity;
+                    bestMatch = sentence.length > 120 ? sentence.substring(0, 120) + '...' : sentence;
+                }
+            });
+            
+            return bestMatch;
+        }
+        
+        function calculateWordSimilarity(word1, word2) {
+            if (word1 === word2) return 1;
+            if (word1.includes(word2) || word2.includes(word1)) return 0.8;
+            
+            const distance = levenshteinDistance(word1, word2);
+            const maxLen = Math.max(word1.length, word2.length);
+            return 1 - (distance / maxLen);
+        }
+        
+        function levenshteinDistance(str1, str2) {
+            const matrix = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(null));
+            
+            for (let i = 0; i <= str1.length; i += 1) {
+                matrix[0][i] = i;
+            }
+            
+            for (let j = 0; j <= str2.length; j += 1) {
+                matrix[j][0] = j;
+            }
+            
+            for (let j = 1; j <= str2.length; j += 1) {
+                for (let i = 1; i <= str1.length; i += 1) {
+                    const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1;
+                    matrix[j][i] = Math.min(
+                        matrix[j][i - 1] + 1,
+                        matrix[j - 1][i] + 1,
+                        matrix[j - 1][i - 1] + indicator
+                    );
+                }
+            }
+            
+            return matrix[str2.length][str1.length];
+        }
+        
+        function findWordContext(content, word) {
+            const lines = content.split('\n');
+            for (const line of lines) {
+                if (line.toLowerCase().includes(word.toLowerCase())) {
+                    const trimmed = line.trim();
+                    return trimmed.length > 100 ? trimmed.substring(0, 100) + '...' : trimmed;
+                }
+            }
+            return '';
+        }
+        
+        function displayResults(results) {
+            if (results.length === 0) {
+                resultsContainer.innerHTML = '<div class="no-results">No relevant rules found. Try different keywords or check if your rule files contain related content.</div>';
+                return;
+            }
+            
+            resultsContainer.innerHTML = results.map(result => `
+                <div class="result-card">
+                    <div class="result-header">
+                        <div class="result-title">${result.file.name}</div>
+                        <div class="relevance-badge">${result.relevance}</div>
+                    </div>
+                    <div class="result-content">
+                        <div style="color: #7fb8d3; font-size: 0.9rem; margin-bottom: 12px;">
+                            📁 ${result.file.path}
+                        </div>
+                        ${result.matches.map(match => `
+                            <div class="match-item">
+                                <div class="match-keywords">
+                                    <span style="background: ${getTypeColor(match.type)}; padding: 2px 6px; border-radius: 3px; font-size: 0.75rem; margin-right: 8px;">
+                                        ${match.type.toUpperCase()}
+                                    </span>
+                                    "${match.keyword}"
+                                </div>
+                                <div class="match-context">
+                                    ${match.context || 'Context not available'}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function getTypeColor(type) {
+            const colors = {
+                'concept': '#e74c3c',
+                'technology': '#3498db', 
+                'action': '#f39c12',
+                'semantic': '#9b59b6',
+                'keyword': '#27ae60'
+            };
+            return colors[type] || '#95a5a6';
+        }
+    </script>
+</body>
+</html>

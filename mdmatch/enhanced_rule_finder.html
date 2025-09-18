@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Rule Finder - Categorized Cursor Rules</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: #16213e;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #0f4c75, #3282b8);
+            padding: 25px 30px;
+            border-bottom: 3px solid #3282b8;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        .header p {
+            color: #bbe1fa;
+            font-size: 1rem;
+        }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            min-height: 600px;
+        }
+        
+        .sidebar {
+            background: #1a1a2e;
+            padding: 25px;
+            border-right: 2px solid #3282b8;
+        }
+        
+        .main-content {
+            padding: 25px 30px;
+            background: #16213e;
+        }
+        
+        .filter-panel {
+            background: #1a1a2e;
+            padding: 25px;
+            border-left: 2px solid #3282b8;
+        }
+        
+        .section-title {
+            color: #3282b8;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .search-container {
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: #0f3460;
+            border: 2px solid #3282b8;
+            border-radius: 8px;
+            color: #eee;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #bbe1fa;
+            background: #1a5f8a;
+        }
+        
+        .filter-group {
+            margin-bottom: 20px;
+        }
+        
+        .filter-group h4 {
+            color: #3282b8;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .filter-tag {
+            background: #0f4c75;
+            color: #bbe1fa;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        
+        .filter-tag:hover {
+            background: #1a5f8a;
+        }
+        
+        .filter-tag.active {
+            background: #e74c3c;
+            color: #fff;
+            border-color: #c0392b;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: #0f3460;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #3282b8;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #7fb8d3;
+        }
+        
+        .rule-card {
+            background: #0f3460;
+            border: 1px solid #3282b8;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+        
+        .rule-card:hover {
+            transform: translateY(-2px);
+            border-color: #bbe1fa;
+        }
+        
+        .rule-header {
+            background: #1a5f8a;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .rule-title {
+            font-weight: 600;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+        
+        .rule-complexity {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .complexity-simple { background: #27ae60; color: #fff; }
+        .complexity-medium { background: #f39c12; color: #fff; }
+        .complexity-complex { background: #e74c3c; color: #fff; }
+        
+        .rule-content {
+            padding: 15px 20px;
+        }
+        
+        .rule-description {
+            color: #bbe1fa;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        
+        .rule-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        
+        .rule-tag {
+            background: #1a1a2e;
+            color: #3282b8;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            border: 1px solid #3282b8;
+        }
+        
+        .rule-technologies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        
+        .tech-tag {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+        }
+        
+        .rule-focus {
+            color: #7fb8d3;
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+        
+        .no-results {
+            text-align: center;
+            color: #7fb8d3;
+            padding: 40px;
+            font-style: italic;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            color: #7fb8d3;
+        }
+        
+        .spinner {
+            border: 3px solid #3282b8;
+            border-top: 3px solid #bbe1fa;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .page-btn {
+            background: #0f4c75;
+            color: #bbe1fa;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .page-btn:hover {
+            background: #1a5f8a;
+        }
+        
+        .page-btn.active {
+            background: #e74c3c;
+            color: #fff;
+        }
+        
+        .page-btn:disabled {
+            background: #34495e;
+            cursor: not-allowed;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar, .filter-panel {
+                border-right: none;
+                border-bottom: 2px solid #3282b8;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Enhanced Rule Finder</h1>
+            <p>Discover and explore categorized Cursor AI rules with advanced filtering</p>
+        </div>
+        
+        <div class="main-grid">
+            <div class="sidebar">
+                <div class="section-title">📊 Statistics</div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div id="totalRules" class="stat-number">0</div>
+                        <div class="stat-label">Total Rules</div>
+                    </div>
+                    <div class="stat-card">
+                        <div id="filteredRules" class="stat-number">0</div>
+                        <div class="stat-label">Filtered</div>
+                    </div>
+                </div>
+                
+                <div class="section-title">🎯 Quick Filters</div>
+                
+                <div class="filter-group">
+                    <h4>Complexity</h4>
+                    <div class="filter-tags">
+                        <div class="filter-tag" data-filter="complexity" data-value="simple">Simple</div>
+                        <div class="filter-tag" data-filter="complexity" data-value="medium">Medium</div>
+                        <div class="filter-tag" data-filter="complexity" data-value="complex">Complex</div>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <h4>Focus Areas</h4>
+                    <div class="filter-tags" id="focusFilters">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <div class="search-container">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        class="search-input"
+                        placeholder="Search rules by name, technology, or description..."
+                    />
+                </div>
+                
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <div>Loading rules...</div>
+                </div>
+                
+                <div id="rulesContainer">
+                    <div class="no-results">
+                        Loading rule database...
+                    </div>
+                </div>
+                
+                <div class="pagination" id="pagination" style="display: none;">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="filter-panel">
+                <div class="section-title">🏷️ Categories</div>
+                
+                <div class="filter-group">
+                    <h4>Technologies</h4>
+                    <div class="filter-tags" id="techFilters">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <h4>Categories</h4>
+                    <div class="filter-tags" id="categoryFilters">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <h4>Patterns</h4>
+                    <div class="filter-tags" id="patternFilters">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <button id="clearFilters" class="filter-tag" style="width: 100%; margin-top: 20px; text-align: center;">
+                    Clear All Filters
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let rulesData = [];
+        let filteredRules = [];
+        let currentPage = 1;
+        const rulesPerPage = 10;
+        let activeFilters = {
+            search: '',
+            complexity: [],
+            technologies: [],
+            categories: [],
+            focusAreas: [],
+            patterns: []
+        };
+
+        // DOM elements
+        const searchInput = document.getElementById('searchInput');
+        const rulesContainer = document.getElementById('rulesContainer');
+        const loading = document.getElementById('loading');
+        const pagination = document.getElementById('pagination');
+        const totalRulesEl = document.getElementById('totalRules');
+        const filteredRulesEl = document.getElementById('filteredRules');
+
+        // Initialize the application
+        async function init() {
+            loading.style.display = 'block';
+            
+            try {
+                // Load the rule analysis data
+                const response = await fetch('rule_analysis.json');
+                const data = await response.json();
+                rulesData = data.rules;
+                filteredRules = [...rulesData];
+                
+                // Update statistics
+                totalRulesEl.textContent = rulesData.length;
+                filteredRulesEl.textContent = filteredRules.length;
+                
+                // Initialize filters
+                initializeFilters(data);
+                
+                // Render initial results
+                renderRules();
+                
+            } catch (error) {
+                console.error('Error loading rules:', error);
+                rulesContainer.innerHTML = '<div class="no-results">Error loading rules. Please check if rule_analysis.json exists.</div>';
+            }
+            
+            loading.style.display = 'none';
+        }
+
+        function initializeFilters(data) {
+            // Extract unique values for filters
+            const technologies = [...new Set(rulesData.flatMap(rule => rule.technologies))].sort();
+            const categories = [...new Set(rulesData.flatMap(rule => rule.categories))].sort();
+            const focusAreas = [...new Set(rulesData.flatMap(rule => rule.focus_areas))].sort();
+            const patterns = [...new Set(rulesData.flatMap(rule => rule.patterns))].sort();
+
+            // Populate filter tags
+            populateFilterTags('techFilters', technologies, 'technologies');
+            populateFilterTags('categoryFilters', categories, 'categories');
+            populateFilterTags('focusFilters', focusAreas, 'focusAreas');
+            populateFilterTags('patternFilters', patterns, 'patterns');
+
+            // Add event listeners
+            searchInput.addEventListener('input', handleSearch);
+            document.getElementById('clearFilters').addEventListener('click', clearAllFilters);
+            
+            // Add click listeners to all filter tags
+            document.querySelectorAll('.filter-tag[data-filter]').forEach(tag => {
+                tag.addEventListener('click', handleFilterClick);
+            });
+        }
+
+        function populateFilterTags(containerId, items, filterType) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = items.map(item => 
+                `<div class="filter-tag" data-filter="${filterType}" data-value="${item}">${item}</div>`
+            ).join('');
+        }
+
+        function handleSearch(e) {
+            activeFilters.search = e.target.value.toLowerCase();
+            applyFilters();
+        }
+
+        function handleFilterClick(e) {
+            const filterType = e.target.dataset.filter;
+            const value = e.target.dataset.value;
+            
+            if (filterType === 'complexity') {
+                // Toggle complexity filter
+                const index = activeFilters.complexity.indexOf(value);
+                if (index > -1) {
+                    activeFilters.complexity.splice(index, 1);
+                    e.target.classList.remove('active');
+                } else {
+                    activeFilters.complexity.push(value);
+                    e.target.classList.add('active');
+                }
+            } else {
+                // Toggle other filters
+                const filterArray = activeFilters[filterType];
+                const index = filterArray.indexOf(value);
+                if (index > -1) {
+                    filterArray.splice(index, 1);
+                    e.target.classList.remove('active');
+                } else {
+                    filterArray.push(value);
+                    e.target.classList.add('active');
+                }
+            }
+            
+            applyFilters();
+        }
+
+        function applyFilters() {
+            filteredRules = rulesData.filter(rule => {
+                // Search filter
+                if (activeFilters.search) {
+                    const searchText = activeFilters.search;
+                    const searchableText = [
+                        rule.name,
+                        rule.description,
+                        ...rule.technologies,
+                        ...rule.categories,
+                        ...rule.focus_areas,
+                        ...rule.keywords
+                    ].join(' ').toLowerCase();
+                    
+                    if (!searchableText.includes(searchText)) {
+                        return false;
+                    }
+                }
+                
+                // Complexity filter
+                if (activeFilters.complexity.length > 0 && !activeFilters.complexity.includes(rule.complexity)) {
+                    return false;
+                }
+                
+                // Technology filter
+                if (activeFilters.technologies.length > 0 && !activeFilters.technologies.some(tech => rule.technologies.includes(tech))) {
+                    return false;
+                }
+                
+                // Category filter
+                if (activeFilters.categories.length > 0 && !activeFilters.categories.some(cat => rule.categories.includes(cat))) {
+                    return false;
+                }
+                
+                // Focus area filter
+                if (activeFilters.focusAreas.length > 0 && !activeFilters.focusAreas.some(focus => rule.focus_areas.includes(focus))) {
+                    return false;
+                }
+                
+                // Pattern filter
+                if (activeFilters.patterns.length > 0 && !activeFilters.patterns.some(pattern => rule.patterns.includes(pattern))) {
+                    return false;
+                }
+                
+                return true;
+            });
+            
+            currentPage = 1;
+            filteredRulesEl.textContent = filteredRules.length;
+            renderRules();
+        }
+
+        function clearAllFilters() {
+            // Reset all filters
+            activeFilters = {
+                search: '',
+                complexity: [],
+                technologies: [],
+                categories: [],
+                focusAreas: [],
+                patterns: []
+            };
+            
+            // Clear search input
+            searchInput.value = '';
+            
+            // Remove active classes from all filter tags
+            document.querySelectorAll('.filter-tag').forEach(tag => {
+                tag.classList.remove('active');
+            });
+            
+            // Reset filtered rules
+            filteredRules = [...rulesData];
+            currentPage = 1;
+            filteredRulesEl.textContent = filteredRules.length;
+            renderRules();
+        }
+
+        function renderRules() {
+            const startIndex = (currentPage - 1) * rulesPerPage;
+            const endIndex = startIndex + rulesPerPage;
+            const pageRules = filteredRules.slice(startIndex, endIndex);
+            
+            if (pageRules.length === 0) {
+                rulesContainer.innerHTML = '<div class="no-results">No rules match your current filters. Try adjusting your search criteria.</div>';
+                pagination.style.display = 'none';
+                return;
+            }
+            
+            rulesContainer.innerHTML = pageRules.map(rule => `
+                <div class="rule-card">
+                    <div class="rule-header">
+                        <div class="rule-title">${rule.name}</div>
+                        <div class="rule-complexity complexity-${rule.complexity}">${rule.complexity}</div>
+                    </div>
+                    <div class="rule-content">
+                        <div class="rule-description">${rule.description}</div>
+                        
+                        <div class="rule-technologies">
+                            ${rule.technologies.slice(0, 8).map(tech => 
+                                `<span class="tech-tag">${tech}</span>`
+                            ).join('')}
+                            ${rule.technologies.length > 8 ? `<span class="tech-tag">+${rule.technologies.length - 8} more</span>` : ''}
+                        </div>
+                        
+                        <div class="rule-tags">
+                            ${rule.categories.slice(0, 5).map(cat => 
+                                `<span class="rule-tag">${cat}</span>`
+                            ).join('')}
+                        </div>
+                        
+                        <div class="rule-focus">
+                            <strong>Focus:</strong> ${rule.focus_areas.slice(0, 3).join(', ')}
+                            ${rule.focus_areas.length > 3 ? ` +${rule.focus_areas.length - 3} more` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredRules.length / rulesPerPage);
+            
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+            
+            pagination.style.display = 'flex';
+            
+            let paginationHTML = '';
+            
+            // Previous button
+            paginationHTML += `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">Previous</button>`;
+            
+            // Page numbers
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+            
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+            }
+            
+            // Next button
+            paginationHTML += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">Next</button>`;
+            
+            pagination.innerHTML = paginationHTML;
+        }
+
+        function changePage(page) {
+            const totalPages = Math.ceil(filteredRules.length / rulesPerPage);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                renderRules();
+            }
+        }
+
+        // Initialize the application
+        init();
+    </script>
+</body>
+</html>

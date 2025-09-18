@@ -1,0 +1,274 @@
+# Gemini-Powered PRD Creator .cursorrules
+
+## Project Overview
+This is a React-based PRD (Product Requirements Document) Creator powered by Google Gemini AI. The application features a modern glassmorphism UI with streaming AI responses, internationalization support, and comprehensive form validation.
+
+## Tech Stack
+- **Frontend**: React 18+ with TypeScript
+- **Styling**: Tailwind CSS with glassmorphism effects
+- **Icons**: Lucide React
+- **AI Integration**: Google Gemini API (Gemini Pro)
+- **State Management**: React Hooks (useState, useEffect, custom hooks)
+- **Browser APIs**: Clipboard, File/Blob, Navigator
+- **Build Tool**: Vite (compatible with CRA, Next.js)
+
+## Core Development Principles
+
+### 1. Code Quality & Simplicity
+- **Simplicity First**: Write simple, straightforward code
+- **Readability**: Ensure code is easy to read and understand
+- **Minimal Changes**: Only modify code related to the current task
+- **DRY Principle**: Avoid code duplication, create reusable components
+- **Early Returns**: Use early returns to avoid nested conditions
+- **Descriptive Naming**: Use clear, descriptive names for variables and functions
+- **Functional Style**: Prefer functional, immutable patterns
+
+### 2. TypeScript Best Practices
+- **Strict Mode**: Enable all strict TypeScript options
+- **Explicit Typing**: Type all variables, parameters, and return values
+- **Interface Over Type**: Use interfaces for object shapes, types for unions
+- **No 'any'**: Avoid 'any', use 'unknown' with runtime checks
+- **Utility Types**: Leverage TypeScript utility types (Partial, Pick, Omit)
+- **Generic Components**: Use generics for reusable components
+
+### 3. React Component Guidelines
+- **Functional Components**: Use functional components with React.FC
+- **Custom Hooks**: Extract reusable logic into custom hooks
+- **Props Interface**: Define clear interfaces for component props
+- **React.memo**: Use for performance optimization when needed
+- **Error Boundaries**: Implement error boundaries for robust error handling
+- **Component Composition**: Prefer composition over inheritance
+
+### 4. State Management
+- **useState**: For local component state
+- **useEffect**: For side effects and API calls
+- **Custom Hooks**: For complex state logic and API integration
+- **State Lifting**: Lift state up when multiple components need it
+- **Immutable Updates**: Always update state immutably
+
+## Project Structure
+```
+src/
+├── components/          # Reusable UI components
+│   ├── ui/             # Basic UI components (buttons, inputs, etc.)
+│   ├── forms/          # Form-specific components
+│   ├── layout/         # Layout components (headers, sidebars)
+│   └── prd/            # PRD-specific components
+├── hooks/              # Custom React hooks
+│   ├── useGeminiAPI.ts # Gemini API integration
+│   ├── useClipboard.ts # Clipboard functionality
+│   └── useI18n.ts      # Internationalization
+├── types/              # TypeScript type definitions
+│   ├── api.ts          # API response types
+│   ├── prd.ts          # PRD data types
+│   └── ui.ts           # UI component types
+├── utils/              # Utility functions
+│   ├── markdown.ts     # Markdown processing
+│   ├── validation.ts   # Form validation
+│   └── formatting.ts   # Text formatting
+├── services/           # External service integrations
+│   └── gemini.ts       # Gemini API service
+├── styles/             # Global styles and Tailwind config
+└── locales/            # Internationalization files
+```
+
+## API Integration Rules
+
+### Gemini API Integration
+- **Custom Hook**: Use `useGeminiAPI` hook for all API calls
+- **Error Handling**: Implement comprehensive error handling
+- **Loading States**: Show loading indicators during API calls
+- **Streaming Support**: Handle streaming responses for real-time updates
+- **Rate Limiting**: Implement proper rate limiting awareness
+- **API Key Security**: Use environment variables for API keys
+
+```typescript
+// Example Gemini API hook structure
+const useGeminiAPI = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  const generatePRD = async (prompt: string, options?: GeminiOptions) => {
+    // Implementation with proper error handling
+  };
+  
+  return { generatePRD, loading, error };
+};
+```
+
+## Styling Guidelines
+
+### Tailwind CSS Best Practices
+- **Utility Classes**: Use Tailwind utility classes for styling
+- **Consistent Ordering**: Maintain consistent order of utility classes
+- **Responsive Design**: Use responsive variants (sm:, md:, lg:, xl:)
+- **Custom Classes**: Create custom classes only when necessary
+- **Design Tokens**: Define design tokens in tailwind.config.js
+
+### Glassmorphism Effects
+- **Backdrop Blur**: Use `backdrop-blur-md` for glass effects
+- **Transparency**: Use `bg-white/10` or `bg-black/10` for transparency
+- **Borders**: Use `border-white/20` for subtle borders
+- **Shadows**: Use `shadow-lg` for depth
+
+```css
+/* Glassmorphism component example */
+.glassmorphism {
+  @apply backdrop-blur-md bg-white/10 border border-white/20 shadow-lg;
+}
+```
+
+## Form Validation & User Experience
+
+### Form Handling
+- **Controlled Components**: Use controlled components for all form inputs
+- **Validation**: Implement real-time validation with clear error messages
+- **Accessibility**: Ensure proper ARIA labels and keyboard navigation
+- **Loading States**: Show loading indicators during form submission
+
+### Internationalization (i18n)
+- **Locale Detection**: Use Navigator API for automatic language detection
+- **Translation Keys**: Use consistent translation key naming
+- **RTL Support**: Consider right-to-left language support
+- **Dynamic Loading**: Load translations dynamically
+
+## Performance Optimization
+
+### React Performance
+- **React.memo**: Use for components that receive stable props
+- **useMemo**: Use for expensive calculations
+- **useCallback**: Use for stable function references
+- **Code Splitting**: Use React.lazy for route-based code splitting
+
+### Bundle Optimization
+- **Tree Shaking**: Import only needed functions from libraries
+- **Dynamic Imports**: Use dynamic imports for heavy dependencies
+- **Image Optimization**: Use optimized images and lazy loading
+
+## Error Handling & Debugging
+
+### Error Boundaries
+- **Component Level**: Wrap components in error boundaries
+- **Global Level**: Implement global error boundary
+- **User Feedback**: Provide clear error messages to users
+- **Logging**: Implement proper error logging
+
+### Development Tools
+- **TypeScript**: Use strict TypeScript for compile-time error checking
+- **ESLint**: Configure ESLint for code quality
+- **Prettier**: Use Prettier for code formatting
+- **React DevTools**: Use React DevTools for debugging
+
+## Testing Guidelines
+
+### Component Testing
+- **Unit Tests**: Test individual components in isolation
+- **Integration Tests**: Test component interactions
+- **Accessibility Tests**: Ensure components are accessible
+- **Visual Regression**: Test for visual changes
+
+### API Testing
+- **Mock API**: Mock Gemini API responses for testing
+- **Error Scenarios**: Test error handling paths
+- **Loading States**: Test loading state transitions
+
+## Security Considerations
+
+### API Security
+- **Environment Variables**: Store API keys in environment variables
+- **Input Validation**: Validate all user inputs
+- **XSS Prevention**: Sanitize user-generated content
+- **CORS**: Configure CORS properly for API calls
+
+### Data Privacy
+- **Data Minimization**: Only collect necessary user data
+- **Local Storage**: Use secure local storage practices
+- **Session Management**: Implement proper session handling
+
+## Deployment & Build
+
+### Build Configuration
+- **Environment Variables**: Configure for different environments
+- **Asset Optimization**: Optimize images and static assets
+- **Bundle Analysis**: Analyze bundle size and dependencies
+- **Source Maps**: Generate source maps for debugging
+
+### Deployment Checklist
+- [ ] Environment variables configured
+- [ ] API keys secured
+- [ ] Build optimized
+- [ ] Error tracking configured
+- [ ] Analytics configured (if needed)
+
+## Code Review Guidelines
+
+### Pull Request Requirements
+- **Clear Description**: Provide clear PR description with context
+- **Screenshots**: Include screenshots for UI changes
+- **Testing**: Ensure all tests pass
+- **TypeScript**: No TypeScript errors
+- **Performance**: Consider performance implications
+
+### Review Checklist
+- [ ] Code follows project conventions
+- [ ] TypeScript types are correct
+- [ ] Components are reusable and modular
+- [ ] Error handling is comprehensive
+- [ ] Performance is optimized
+- [ ] Accessibility requirements met
+
+## Documentation Standards
+
+### Code Documentation
+- **JSDoc**: Use JSDoc for function documentation
+- **Component Props**: Document all component props
+- **API Endpoints**: Document API integration points
+- **Custom Hooks**: Document custom hook usage
+
+### README Requirements
+- **Setup Instructions**: Clear setup and installation steps
+- **API Configuration**: How to configure Gemini API
+- **Environment Variables**: List all required environment variables
+- **Deployment Guide**: Step-by-step deployment instructions
+
+## Common Patterns
+
+### Custom Hooks Pattern
+```typescript
+// Custom hook for API calls
+const useAPI = <T>(endpoint: string) => {
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  const fetchData = useCallback(async () => {
+    // Implementation
+  }, [endpoint]);
+  
+  return { data, loading, error, fetchData };
+};
+```
+
+### Component Composition Pattern
+```typescript
+// Composable component structure
+interface ComponentProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+const Component: React.FC<ComponentProps> = ({ children, className }) => {
+  return (
+    <div className={cn("base-classes", className)}>
+      {children}
+    </div>
+  );
+};
+```
+
+## Remember
+- **Think before coding**: Plan your approach before implementing
+- **Test thoroughly**: Ensure all functionality works as expected
+- **Consider edge cases**: Handle error scenarios gracefully
+- **Optimize for users**: Prioritize user experience and performance
+- **Keep it simple**: Avoid over-engineering solutions
