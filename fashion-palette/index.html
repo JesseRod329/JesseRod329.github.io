@@ -20,13 +20,27 @@
             <!-- Uploaded image will be displayed here -->
         </div>
 
-        <button id="generatePaletteBtn">Generate Palette</button>
+        <div class="palette-controls">
+            <button id="generatePaletteBtn">Generate Palette</button>
+            
+            <div class="palette-type-selector" id="paletteTypeSelector" style="display: none;">
+                <h3>Choose Palette Style</h3>
+                <div class="palette-buttons">
+                    <button class="palette-type-btn active" data-type="dominant">Dominant Colors</button>
+                    <button class="palette-type-btn" data-type="complementary">Complementary</button>
+                    <button class="palette-type-btn" data-type="triadic">Triadic</button>
+                    <button class="palette-type-btn" data-type="analogous">Analogous</button>
+                    <button class="palette-type-btn" data-type="monochromatic">Monochromatic</button>
+                </div>
+            </div>
+        </div>
 
         <div class="loading-spinner" id="loadingSpinner"></div>
         <div class="message" id="message"></div>
 
         <div class="palette-section">
-            <h2>Extracted Colors</h2>
+            <h2>Color Palette</h2>
+            <div class="palette-info" id="paletteInfo"></div>
             <div class="palette-grid" id="paletteGrid">
                 <!-- Color swatches will be displayed here -->
             </div>
