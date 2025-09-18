@@ -133,6 +133,17 @@ class PaletteGenerator {
             colorSwatch.addEventListener('click', () => this.copyToClipboard(hex));
             this.paletteGrid.appendChild(colorSwatch);
         });
+
+        // Auto-scroll to palette section on mobile
+        setTimeout(() => {
+            const paletteSection = document.querySelector('.palette-section');
+            if (paletteSection && window.innerWidth <= 768) {
+                paletteSection.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }
+        }, 100);
     }
 
     rgbToHex(r, g, b) {

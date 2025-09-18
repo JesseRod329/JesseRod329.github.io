@@ -18,18 +18,24 @@
     --inner-shadow-glow: inset 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     min-height: 100vh;
     background: var(--gradient-background);
     color: var(--color-white);
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     position: relative;
+    padding: 20px 0;
 }
 
 body::before {
@@ -62,7 +68,8 @@ body::before {
     width: 90%;
     position: relative;
     z-index: 1;
-    overflow: hidden;
+    overflow: visible;
+    margin: 0 auto;
 }
 
 h1 {
@@ -234,21 +241,80 @@ button:hover {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+    body {
+        padding: 10px 0;
+        align-items: flex-start;
+    }
+
     .container {
         padding: 20px;
         width: 95%;
+        margin: 0 auto;
+        overflow: visible;
     }
 
     h1 {
         font-size: 2em;
+        margin-bottom: 20px;
+    }
+
+    .upload-section {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .image-display {
+        min-height: 150px;
+        margin-bottom: 20px;
+    }
+
+    .palette-section {
+        margin-top: 20px;
     }
 
     .palette-grid {
         grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
         gap: 15px;
+        margin-top: 15px;
     }
 
     .color-swatch {
         height: 80px;
+        font-size: 0.8em;
+    }
+
+    .color-swatch span {
+        font-size: 0.8em;
+    }
+
+    button {
+        padding: 12px 24px;
+        font-size: 1em;
+        margin-top: 15px;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+        width: 98%;
+    }
+
+    h1 {
+        font-size: 1.8em;
+    }
+
+    .palette-grid {
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        gap: 10px;
+    }
+
+    .color-swatch {
+        height: 70px;
+    }
+
+    .upload-section p {
+        font-size: 1em;
     }
 }
