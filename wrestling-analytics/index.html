@@ -196,6 +196,7 @@
 
         // Convert file names to wrestler objects
         function initializeWrestlers() {
+            console.log('Initializing wrestlers...');
             allWrestlers = wrestlerFiles.map(file => {
                 const name = file.replace('_matches.csv', '').replace(/_/g, ' ').replace(/,/g, ',');
                 return {
@@ -207,6 +208,9 @@
             
             allWrestlers.sort((a, b) => a.name.localeCompare(b.name));
             filteredWrestlers = [...allWrestlers];
+            
+            console.log(`Loaded ${allWrestlers.length} wrestlers`);
+            console.log(`First few wrestlers:`, allWrestlers.slice(0, 5));
             
             updateStats();
             displayWrestlers();
@@ -233,20 +237,25 @@
         // Display wrestlers
         function displayWrestlers() {
             const container = document.getElementById('wrestlers-list');
+            console.log('Displaying wrestlers, count:', filteredWrestlers.length);
             
             if (filteredWrestlers.length === 0) {
                 container.innerHTML = '<div class="no-results">No wrestlers found.</div>';
                 return;
             }
 
-            const html = filteredWrestlers.map(wrestler => `
-                <div class="wrestler-card" onclick="selectWrestler('${wrestler.name}')">
+            const wrestlersToShow = filteredWrestlers.slice(0, 100);
+            console.log('Showing first 100 wrestlers');
+            
+            const html = wrestlersToShow.map(wrestler => `
+                <div class="wrestler-card" onclick="selectWrestler('${wrestler.name.replace(/'/g, "\\'")}')">
                     <div class="wrestler-name">${wrestler.name}</div>
                     <div class="wrestler-count">${wrestler.matchCount}</div>
                 </div>
             `).join('');
 
             container.innerHTML = `<div class="wrestlers-grid">${html}</div>`;
+            console.log('HTML updated');
         }
 
         // Select wrestler
