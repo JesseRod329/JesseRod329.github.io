@@ -1,8 +1,7 @@
 // Wrestling News Hub - Main JavaScript
 class WrestlingNewsHub {
     constructor() {
-        this.rawNews = [];
-        this.smackdownNews = [];
+        this.wrestlingNews = [];
         this.init();
     }
 
@@ -15,24 +14,36 @@ class WrestlingNewsHub {
     // Load news data from JSON files
     async loadNewsData() {
         try {
-            // Load Raw news
+            // Try to load unified wrestling news first
+            const wrestlingResponse = await fetch('data/wrestling-news.json');
+            if (wrestlingResponse.ok) {
+                this.wrestlingNews = await wrestlingResponse.json();
+                this.displayNews('wrestling', this.wrestlingNews);
+                return;
+            }
+
+            // Fallback: Load and combine Raw and SmackDown news
             const rawResponse = await fetch('data/raw-news.json');
-            if (rawResponse.ok) {
-                this.rawNews = await rawResponse.json();
-                this.displayNews('raw', this.rawNews);
-            }
-
-            // Load SmackDown news
             const smackdownResponse = await fetch('data/smackdown-news.json');
+            
+            let rawNews = [];
+            let smackdownNews = [];
+            
+            if (rawResponse.ok) {
+                rawNews = await rawResponse.json();
+            }
+            
             if (smackdownResponse.ok) {
-                this.smackdownNews = await smackdownResponse.json();
-                this.displayNews('smackdown', this.smackdownNews);
+                smackdownNews = await smackdownResponse.json();
             }
 
-            // If no data files exist, show sample data
-            if (this.rawNews.length === 0 && this.smackdownNews.length === 0) {
-                this.loadSampleData();
-            }
+            // Combine all news
+            this.wrestlingNews = [...rawNews, ...smackdownNews];
+            
+            // Sort by publication date (newest first)
+            this.wrestlingNews.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+            
+            this.displayNews('wrestling', this.wrestlingNews);
 
         } catch (error) {
             console.error('Error loading news data:', error);
@@ -56,7 +67,7 @@ class WrestlingNewsHub {
         if (newsData.length === 0) {
             container.innerHTML = `
                 <div class="no-news">
-                    <p>No news available at the moment.</p>
+                    <p>No wrestling news available at the moment.</p>
                     <p>Check back soon for updates!</p>
                 </div>
             `;
@@ -160,8 +171,11 @@ class WrestlingNewsHub {
             }
         ];
 
-        this.displayNews('raw', this.rawNews);
-        this.displayNews('smackdown', this.smackdownNews);
+        // Combine all news and sort by date
+        this.wrestlingNews = [...this.rawNews, ...this.smackdownNews];
+        this.wrestlingNews.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+        
+        this.displayNews('wrestling', this.wrestlingNews);
     }
 
     // Setup event listeners
