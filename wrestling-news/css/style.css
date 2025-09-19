@@ -6,17 +6,12 @@
 }
 
 :root {
-    /* Raw Colors (Red Theme) */
-    --raw-primary: #dc2626;
-    --raw-secondary: #ef4444;
-    --raw-accent: #fca5a5;
-    --raw-dark: #991b1b;
-    
-    /* SmackDown Colors (Blue Theme) */
-    --smackdown-primary: #2563eb;
-    --smackdown-secondary: #3b82f6;
-    --smackdown-accent: #93c5fd;
-    --smackdown-dark: #1d4ed8;
+    /* Wrestling Colors (Unified Theme) */
+    --wrestling-primary: #f59e0b;
+    --wrestling-secondary: #fbbf24;
+    --wrestling-accent: #fde68a;
+    --wrestling-dark: #d97706;
+    --wrestling-gold: #ffd700;
     
     /* Glass UI Colors */
     --glass-bg: rgba(255, 255, 255, 0.1);
@@ -99,14 +94,14 @@ body {
 }
 
 .wrestling-text {
-    background: linear-gradient(45deg, var(--raw-primary), var(--raw-secondary));
+    background: linear-gradient(45deg, var(--wrestling-primary), var(--wrestling-gold));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
 .news-text {
-    background: linear-gradient(45deg, var(--smackdown-primary), var(--smackdown-secondary));
+    background: linear-gradient(45deg, var(--wrestling-secondary), var(--wrestling-accent));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -120,10 +115,7 @@ body {
 
 /* Main Container */
 .main-container {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    gap: var(--spacing-lg);
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--spacing-md);
     position: relative;
@@ -141,34 +133,26 @@ body {
     min-height: 600px;
     position: relative;
     overflow: hidden;
+    transition: all 0.3s ease;
 }
 
-.raw-section {
-    border-left: 4px solid var(--raw-primary);
+.wrestling-section {
+    border-left: 4px solid var(--wrestling-primary);
 }
 
-.raw-section::before {
+.wrestling-section::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, var(--raw-primary), var(--raw-secondary));
+    background: linear-gradient(90deg, var(--wrestling-primary), var(--wrestling-gold));
 }
 
-.smackdown-section {
-    border-left: 4px solid var(--smackdown-primary);
-}
-
-.smackdown-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--smackdown-primary), var(--smackdown-secondary));
+.news-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
 }
 
 /* Section Headers */
@@ -188,14 +172,9 @@ body {
     margin: 0;
 }
 
-.raw-logo h2 {
-    color: var(--raw-primary);
-    text-shadow: 0 0 10px rgba(220, 38, 38, 0.3);
-}
-
-.smackdown-logo h2 {
-    color: var(--smackdown-primary);
-    text-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
+.wrestling-logo h2 {
+    color: var(--wrestling-primary);
+    text-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
 }
 
 .brand-accent {
@@ -203,14 +182,7 @@ body {
     height: 3px;
     margin-top: var(--spacing-xs);
     border-radius: 2px;
-}
-
-.raw-logo .brand-accent {
-    background: linear-gradient(90deg, var(--raw-primary), var(--raw-secondary));
-}
-
-.smackdown-logo .brand-accent {
-    background: linear-gradient(90deg, var(--smackdown-primary), var(--smackdown-secondary));
+    background: linear-gradient(90deg, var(--wrestling-primary), var(--wrestling-gold));
 }
 
 .section-stats {
@@ -237,36 +209,6 @@ body {
     opacity: 0.7;
 }
 
-/* Divider */
-.divider {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-}
-
-.divider-line {
-    width: 2px;
-    height: 60px;
-    background: linear-gradient(180deg, transparent, var(--glass-border), transparent);
-}
-
-.vs-badge {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-primary);
-    font-weight: 700;
-    font-size: 1.2rem;
-    box-shadow: 0 4px 16px var(--glass-shadow);
-}
 
 /* News Container */
 .news-container {
@@ -429,9 +371,6 @@ body {
         gap: var(--spacing-md);
     }
     
-    .divider {
-        display: none;
-    }
     
     .news-section {
         padding: var(--spacing-md);
