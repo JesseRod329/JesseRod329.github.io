@@ -8,7 +8,16 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from update_news import WrestlingNewsAggregator
+import importlib.util
+import sys
+
+# Import the update-news module
+spec = importlib.util.spec_from_file_location("update_news", "update-news.py")
+update_news = importlib.util.module_from_spec(spec)
+sys.modules["update_news"] = update_news
+spec.loader.exec_module(update_news)
+
+WrestlingNewsAggregator = update_news.WrestlingNewsAggregator
 
 def main():
     print("🧪 Testing Wrestling News Aggregator")
@@ -45,18 +54,17 @@ def main():
     aggregator.run()
     
     print(f"\n📊 Results:")
-    print(f"Raw articles: {len(aggregator.raw_news)}")
-    print(f"SmackDown articles: {len(aggregator.smackdown_news)}")
+    print(f"Total wrestling articles: {len(aggregator.wrestling_news)}")
     
-    if aggregator.raw_news:
-        print(f"\n🔴 Latest Raw news:")
-        for article in aggregator.raw_news[:3]:
-            print(f"  • {article['title']} ({article['source']})")
+    for category, articles in aggregator.news_by_category.items():
+        print(f"{category.upper()}: {len(articles)} articles")
     
-    if aggregator.smackdown_news:
-        print(f"\n🔵 Latest SmackDown news:")
-        for article in aggregator.smackdown_news[:3]:
-            print(f"  • {article['title']} ({article['source']})")
+    print(f"\n🏆 Latest wrestling news by category:")
+    for category, articles in aggregator.news_by_category.items():
+        if articles:
+            print(f"\n{category.upper()}:")
+            for article in articles[:2]:
+                print(f"  • {article['title']} ({article['source']})")
 
 if __name__ == "__main__":
     main()

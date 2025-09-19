@@ -16,39 +16,52 @@ import random
 
 class WrestlingNewsAggregator:
     def __init__(self):
-        self.raw_news = []
-        self.smackdown_news = []
-        
-        # RSS feeds for wrestling news
-        self.feeds = {
-            'wwe_official': 'https://www.wwe.com/rss.xml',
-            'pwinsider': 'https://www.pwinsider.com/feeds/rss.xml',
-            'fightful': 'https://www.fightful.com/rss.xml',
-            'wrestling_inc': 'https://www.wrestlinginc.com/feed/',
-            'cageside_seats': 'https://www.cagesideseats.com/rss/index.xml',
-            'bleacher_report': 'https://bleacherreport.com/wwe/rss',
-            'sportskeeda': 'https://www.sportskeeda.com/wwe/feed',
-            'wrestling_news': 'https://wrestlingnews.co/feed/'
+        self.wrestling_news = []
+        self.news_by_category = {
+            'wwe': [],
+            'aew': [],
+            'tna': [],
+            'njpw': [],
+            'general': []
         }
         
-        # Keywords to categorize news
-        self.raw_keywords = [
-            'raw', 'monday night raw', 'raw results', 'raw live',
-            'raw superstar', 'raw champion', 'raw women', 'raw tag team',
-            'monday night', 'raw exclusive', 'raw after show'
+        # RSS feeds for wrestling news - working sources only
+        self.feeds = {
+            'fightful': 'https://www.fightful.com/rss.xml',
+            'wrestling_inc': 'https://www.wrestlinginc.com/feed/',
+            'wrestling_news': 'https://wrestlingnews.co/feed/',
+            'wrestlezone': 'https://www.wrestlezone.com/feed/',
+            'wrestleview': 'https://www.wrestleview.com/feed/',
+            'wwe_official': 'https://www.wwe.com/rss.xml'
+        }
+        
+        # Keywords to categorize news by promotion
+        self.wwe_keywords = [
+            'wwe', 'wrestlemania', 'summerslam', 'royal rumble', 'nxt', 'nxt takeover',
+            'raw', 'monday night raw', 'smackdown', 'friday night smackdown',
+            'wwe champion', 'wwe superstar', 'wwe news', 'wwe results'
         ]
         
-        self.smackdown_keywords = [
-            'smackdown', 'friday night smackdown', 'smackdown results', 'smackdown live',
-            'smackdown superstar', 'smackdown champion', 'smackdown women', 'smackdown tag team',
-            'friday night', 'smackdown exclusive', 'smackdown after show'
+        self.aew_keywords = [
+            'aew', 'all elite wrestling', 'dynamite', 'rampage', 'collision', 'all out',
+            'double or nothing', 'revolution', 'full gear', 'aew champion', 'aew news',
+            'tony khan', 'aew results', 'aew superstar'
+        ]
+        
+        self.tna_keywords = [
+            'tna', 'impact wrestling', 'impact', 'bound for glory', 'slammiversary',
+            'tna champion', 'tna news', 'tna results', 'tna superstar', 'impact results'
+        ]
+        
+        self.njpw_keywords = [
+            'njpw', 'new japan', 'wrestle kingdom', 'g1 climax', 'king of pro wrestling',
+            'njpw champion', 'njpw news', 'njpw results', 'iwgp', 'new japan pro wrestling'
         ]
         
         # General wrestling keywords
-        self.wrestling_keywords = [
-            'wwe', 'wrestling', 'champion', 'championship', 'wrestler', 'superstar',
-            'pay-per-view', 'ppv', 'wrestlemania', 'summerslam', 'royal rumble',
-            'wrestlemania', 'nxt', 'nxt takeover', 'wrestling news', 'wwe news'
+        self.general_keywords = [
+            'wrestling', 'champion', 'championship', 'wrestler', 'superstar',
+            'pay-per-view', 'ppv', 'wrestling news', 'pro wrestling'
         ]
 
     def fetch_feed(self, url, max_retries=3):
@@ -104,24 +117,32 @@ class WrestlingNewsAggregator:
         return summary
 
     def categorize_news(self, title, summary, content=""):
-        """Categorize news as Raw, SmackDown, or general wrestling"""
+        """Categorize news by promotion"""
         text = f"{title} {summary} {content}".lower()
         
-        # Check for Raw keywords
-        raw_score = sum(1 for keyword in self.raw_keywords if keyword in text)
-        smackdown_score = sum(1 for keyword in self.smackdown_keywords if keyword in text)
+        # Check for each promotion
+        wwe_score = sum(1 for keyword in self.wwe_keywords if keyword in text)
+        aew_score = sum(1 for keyword in self.aew_keywords if keyword in text)
+        tna_score = sum(1 for keyword in self.tna_keywords if keyword in text)
+        njpw_score = sum(1 for keyword in self.njpw_keywords if keyword in text)
+        general_score = sum(1 for keyword in self.general_keywords if keyword in text)
         
-        # Check for general wrestling keywords
-        wrestling_score = sum(1 for keyword in self.wrestling_keywords if keyword in text)
+        # Find the highest scoring category
+        scores = {
+            'wwe': wwe_score,
+            'aew': aew_score,
+            'tna': tna_score,
+            'njpw': njpw_score,
+            'general': general_score
+        }
         
-        # If it's clearly Raw or SmackDown, categorize accordingly
-        if raw_score > smackdown_score and raw_score > 0:
-            return 'raw'
-        elif smackdown_score > raw_score and smackdown_score > 0:
-            return 'smackdown'
-        elif wrestling_score > 0:
-            # If it's wrestling news but not clearly Raw/SmackDown, randomly assign
-            return random.choice(['raw', 'smackdown'])
+        # Get the category with the highest score
+        max_category = max(scores, key=scores.get)
+        max_score = scores[max_category]
+        
+        # Only categorize if there's a clear match (score > 0)
+        if max_score > 0:
+            return max_category
         else:
             return None
 
@@ -169,34 +190,44 @@ class WrestlingNewsAggregator:
             
             print(f"Found {len(feed.entries)} entries in {feed_name}")
             
-            for entry in feed.entries:  # Limit to 10 entries per feed
+            for entry in feed.entries[:10]:  # Limit to 10 entries per feed
                 news_item = self.process_entry(entry, feed_name.replace('_', ' ').title())
                 if news_item:
-                    if news_item['category'] == 'raw':
-                        self.raw_news.append(news_item)
-                    else:
-                        self.smackdown_news.append(news_item)
+                    category = news_item['category']
+                    if category in self.news_by_category:
+                        self.news_by_category[category].append(news_item)
+                    self.wrestling_news.append(news_item)
             
             # Be respectful to servers
             time.sleep(1)
         
         # Sort by publication date (newest first)
-        self.raw_news.sort(key=lambda x: x['publishedAt'], reverse=True)
-        self.smackdown_news.sort(key=lambda x: x['publishedAt'], reverse=True)
+        self.wrestling_news.sort(key=lambda x: x['publishedAt'], reverse=True)
         
-        # Limit to 20 articles per category
-        self.raw_news = self.raw_news
-        self.smackdown_news = self.smackdown_news
+        # Sort each category
+        for category in self.news_by_category:
+            self.news_by_category[category].sort(key=lambda x: x['publishedAt'], reverse=True)
+            # Limit to 15 articles per category
+            self.news_by_category[category] = self.news_by_category[category][:15]
 
     def save_news(self):
         """Save news to JSON files"""
-        print(f"Saving {len(self.raw_news)} Raw articles and {len(self.smackdown_news)} SmackDown articles")
+        print(f"Saving {len(self.wrestling_news)} total wrestling articles")
         
-        with open('data/raw-news.json', 'w', encoding='utf-8') as f:
-            json.dump(self.raw_news, f, indent=2, ensure_ascii=False)
+        # Print category breakdown
+        for category, articles in self.news_by_category.items():
+            print(f"  {category.upper()}: {len(articles)} articles")
         
-        with open('data/smackdown-news.json', 'w', encoding='utf-8') as f:
-            json.dump(self.smackdown_news, f, indent=2, ensure_ascii=False)
+        # Save unified wrestling news
+        with open('../data/wrestling-news.json', 'w', encoding='utf-8') as f:
+            json.dump(self.wrestling_news, f, indent=2, ensure_ascii=False)
+        
+        # Also save individual category files for backward compatibility
+        with open('../data/raw-news.json', 'w', encoding='utf-8') as f:
+            json.dump(self.news_by_category['wwe'], f, indent=2, ensure_ascii=False)
+        
+        with open('../data/smackdown-news.json', 'w', encoding='utf-8') as f:
+            json.dump(self.news_by_category['aew'], f, indent=2, ensure_ascii=False)
 
     def run(self):
         """Main execution function"""
