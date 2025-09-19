@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Tweets - Wrestling News Hub</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .tweet-form {
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        button {
+            background: #1da1f2;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        button:hover {
+            background: #0d8bd9;
+        }
+        .tweet-list {
+            margin-top: 30px;
+        }
+        .tweet-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #1da1f2;
+        }
+        .tweet-text {
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+        .tweet-meta {
+            font-size: 12px;
+            color: #666;
+        }
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            float: right;
+        }
+        .delete-btn:hover {
+            background: #c82333;
+        }
+        .instructions {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+        .instructions h3 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐦 Update Your Tweets</h1>
+        
+        <div class="instructions">
+            <h3>How to use this:</h3>
+            <ol>
+                <li>Add your recent tweets below (copy from X/Twitter)</li>
+                <li>Click "Add Tweet" for each one</li>
+                <li>Click "Save All Tweets" when done</li>
+                <li>Your tweets will appear in the ticker on your wrestling news site!</li>
+            </ol>
+        </div>
+
+        <div class="tweet-form">
+            <div class="form-group">
+                <label for="tweetText">Tweet Text:</label>
+                <textarea id="tweetText" placeholder="Paste your tweet text here..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="tweetUrl">Tweet URL (optional):</label>
+                <input type="url" id="tweetUrl" placeholder="https://x.com/JesseRodPodcast/status/...">
+            </div>
+            <button onclick="addTweet()">Add Tweet</button>
+        </div>
+
+        <div class="tweet-list">
+            <h3>Current Tweets:</h3>
+            <div id="tweetList"></div>
+            <button onclick="saveTweets()" style="margin-top: 20px;">Save All Tweets</button>
+        </div>
+    </div>
+
+    <script>
+        let tweets = [];
+
+        // Load existing tweets
+        async function loadTweets() {
+            try {
+                const response = await fetch('data/tweets.json');
+                if (response.ok) {
+                    tweets = await response.json();
+                    displayTweets();
+                }
+            } catch (error) {
+                console.log('No existing tweets found');
+            }
+        }
+
+        function addTweet() {
+            const text = document.getElementById('tweetText').value.trim();
+            const url = document.getElementById('tweetUrl').value.trim();
+            
+            if (!text) {
+                alert('Please enter tweet text');
+                return;
+            }
+
+            const tweet = {
+                text: text,
+                url: url || `https://x.com/JesseRodPodcast/status/${Date.now()}`,
+                created_at: new Date().toISOString()
+            };
+
+            tweets.unshift(tweet); // Add to beginning
+            displayTweets();
+            
+            // Clear form
+            document.getElementById('tweetText').value = '';
+            document.getElementById('tweetUrl').value = '';
+        }
+
+        function deleteTweet(index) {
+            tweets.splice(index, 1);
+            displayTweets();
+        }
+
+        function displayTweets() {
+            const container = document.getElementById('tweetList');
+            container.innerHTML = '';
+
+            tweets.forEach((tweet, index) => {
+                const tweetDiv = document.createElement('div');
+                tweetDiv.className = 'tweet-item';
+                tweetDiv.innerHTML = `
+                    <div class="tweet-text">${tweet.text}</div>
+                    <div class="tweet-meta">
+                        ${new Date(tweet.created_at).toLocaleString()} | 
+                        <a href="${tweet.url}" target="_blank">View Tweet</a>
+                        <button class="delete-btn" onclick="deleteTweet(${index})">Delete</button>
+                    </div>
+                `;
+                container.appendChild(tweetDiv);
+            });
+        }
+
+        async function saveTweets() {
+            try {
+                const response = await fetch('data/tweets.json', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(tweets)
+                });
+
+                if (response.ok) {
+                    alert('Tweets saved successfully! They will appear in your ticker shortly.');
+                } else {
+                    // Fallback: download as file
+                    const blob = new Blob([JSON.stringify(tweets, null, 2)], {type: 'application/json'});
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'tweets.json';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    alert('Tweets downloaded as file. Please upload to data/tweets.json on your server.');
+                }
+            } catch (error) {
+                // Fallback: download as file
+                const blob = new Blob([JSON.stringify(tweets, null, 2)], {type: 'application/json'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'tweets.json';
+                a.click();
+                URL.revokeObjectURL(url);
+                alert('Tweets downloaded as file. Please upload to data/tweets.json on your server.');
+            }
+        }
+
+        // Load tweets on page load
+        loadTweets();
+    </script>
+</body>
+</html>

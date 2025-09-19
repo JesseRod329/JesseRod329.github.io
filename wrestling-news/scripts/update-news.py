@@ -234,6 +234,20 @@ class WrestlingNewsAggregator:
         print("Starting wrestling news aggregation...")
         self.fetch_all_news()
         self.save_news()
+        
+        # Also update tweets
+        print("\nUpdating tweets...")
+        try:
+            import subprocess
+            result = subprocess.run(['python3', 'update-tweets.py'], 
+                                  capture_output=True, text=True, cwd='.')
+            if result.returncode == 0:
+                print("✅ Tweets updated successfully")
+            else:
+                print(f"❌ Tweet update failed: {result.stderr}")
+        except Exception as e:
+            print(f"❌ Tweet update error: {e}")
+        
         print("News aggregation complete!")
 
 if __name__ == "__main__":
