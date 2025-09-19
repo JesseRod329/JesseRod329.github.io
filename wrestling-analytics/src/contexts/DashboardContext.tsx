@@ -135,26 +135,48 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'UPDATE_FILTERS', payload: filters });
   };
 
-  // Real wrestler files from the wresltedash directory
-  const wrestlerFiles = [
-    'AJ_Styles_matches.csv',
-    'Adam_Cole_matches.csv',
-    'Adam_Copeland_matches.csv',
-    'Adam_Page_matches.csv',
-    'AJ_Lee_matches.csv',
-    '2_Cold_Scorpio_matches.csv',
-    'Aja_Kong_matches.csv',
-    'Akira_Taue_matches.csv',
-    'Akira_Tozawa_matches.csv',
-    'Al_Snow_matches.csv',
-    '2-Dope_matches.csv',
-    '911_matches.csv',
-    'AR_Fox_matches.csv',
-    'AZM_matches.csv',
-    'Absolute_Andy_matches.csv',
-    'Ahmed_Johnson_matches.csv',
-    'Adam_Rose_matches.csv'
-  ];
+  // Load ALL 594 wrestler files from the wresltedash directory
+  const getAllWrestlerFiles = async (): Promise<string[]> => {
+    try {
+      // Fetch the directory listing from GitHub API to get all CSV files
+      const response = await fetch('https://api.github.com/repos/JesseRod329/JesseRod329.github.io/contents/wresltedash');
+      if (!response.ok) {
+        console.warn('Failed to fetch directory listing, using fallback list');
+        return getFallbackWrestlerFiles();
+      }
+      
+      const files = await response.json();
+      return files
+        .filter((file: any) => file.name.endsWith('_matches.csv'))
+        .map((file: any) => file.name)
+        .sort();
+    } catch (error) {
+      console.warn('Error fetching wrestler files, using fallback:', error);
+      return getFallbackWrestlerFiles();
+    }
+  };
+
+  // Fallback list of wrestler files (first 50 for initial load)
+  const getFallbackWrestlerFiles = (): string[] => {
+    return [
+      '2-Dope_matches.csv', '2_Cold_Scorpio_matches.csv', '911_matches.csv',
+      'AJ_Lee_matches.csv', 'AJ_Styles_matches.csv', 'AR_Fox_matches.csv',
+      'AZM_matches.csv', 'Absolute_Andy_matches.csv', 'Adam_Cole_matches.csv',
+      'Adam_Copeland_matches.csv', 'Adam_Page_matches.csv', 'Adam_Rose_matches.csv',
+      'Ahmed_Johnson_matches.csv', 'Aja_Kong_matches.csv', 'Akira_Taue_matches.csv',
+      'Akira_Tozawa_matches.csv', 'Al_Snow_matches.csv', 'Alex_Riley_matches.csv',
+      'Alex_Shelley_matches.csv', 'Alex_Wright_matches.csv', 'Alexa_Bliss_matches.csv',
+      'Alexander_Rusev_matches.csv', 'Ali_matches.csv', 'Alistair_Overeem_matches.csv',
+      'Ambrose_matches.csv', 'Andrade_matches.csv', 'Andre_the_Giant_matches.csv',
+      'Angel_Garza_matches.csv', 'Angelo_Dawkins_matches.csv', 'Apollo_Crews_matches.csv',
+      'Ariya_Daivari_matches.csv', 'Arn_Anderson_matches.csv', 'Asuka_matches.csv',
+      'Austin_Aries_matches.csv', 'Austin_Theory_matches.csv', 'B-Team_matches.csv',
+      'Baron_Corbin_matches.csv', 'Batista_matches.csv', 'Bayley_matches.csv',
+      'Becky_Lynch_matches.csv', 'Big_Cass_matches.csv', 'Big_E_matches.csv',
+      'Big_Show_matches.csv', 'Bill_Goldberg_matches.csv', 'Bobby_Lashley_matches.csv',
+      'Bobby_Roode_matches.csv', 'Booker_T_matches.csv', 'Braun_Strowman_matches.csv'
+    ];
+  };
 
   const parseCSV = async (filename: string): Promise<MatchData[]> => {
     try {
@@ -298,31 +320,50 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const refreshData = async (): Promise<void> => {
     dispatch({ type: 'SET_LOADING', payload: true });
     try {
+      console.log('Loading ALL 594 wrestlers...');
+      
+      // Get all wrestler files (594 total)
+      const wrestlerFiles = await getAllWrestlerFiles();
+      console.log(`Found ${wrestlerFiles.length} wrestler files`);
+      
       const allMatches: MatchData[] = [];
       const wrestlers: WrestlerProfile[] = [];
       
-      // Load data from sample files
+      // Load data from ALL files with progress tracking
+      let loadedCount = 0;
+      const totalFiles = wrestlerFiles.length;
+      
       for (const file of wrestlerFiles) {
-        const matches = await parseCSV(file);
-        if (matches.length > 0) {
-          allMatches.push(...matches);
+        try {
+          const matches = await parseCSV(file);
+          if (matches.length > 0) {
+            allMatches.push(...matches);
+            
+            const wrestlerName = file.replace('_matches.csv', '').replace(/_/g, ' ');
+            const wins = matches.filter(m => m.result === 'win').length;
+            const losses = matches.filter(m => m.result === 'loss').length;
+            const draws = matches.filter(m => m.result === 'draw').length;
+            
+            wrestlers.push({
+              name: wrestlerName,
+              totalMatches: matches.length,
+              wins,
+              losses,
+              draws,
+              winRate: matches.length > 0 ? Math.round((wins / matches.length) * 100) : 0,
+              matches,
+              promotion: extractPromotion(matches[0]?.event || ''),
+              lastMatch: matches[matches.length - 1]?.parsedDate,
+            });
+          }
           
-          const wrestlerName = file.replace('_matches.csv', '').replace(/_/g, ' ');
-          const wins = matches.filter(m => m.result === 'win').length;
-          const losses = matches.filter(m => m.result === 'loss').length;
-          const draws = matches.filter(m => m.result === 'draw').length;
-          
-          wrestlers.push({
-            name: wrestlerName,
-            totalMatches: matches.length,
-            wins,
-            losses,
-            draws,
-            winRate: matches.length > 0 ? Math.round((wins / matches.length) * 100) : 0,
-            matches,
-            promotion: extractPromotion(matches[0]?.event || ''),
-            lastMatch: matches[matches.length - 1]?.parsedDate,
-          });
+          loadedCount++;
+          if (loadedCount % 50 === 0) {
+            console.log(`Loaded ${loadedCount}/${totalFiles} wrestlers...`);
+          }
+        } catch (error) {
+          console.warn(`Failed to load ${file}:`, error);
+          // Continue loading other files even if one fails
         }
       }
       
@@ -330,8 +371,9 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
       dispatch({ type: 'SET_WRESTLERS', payload: wrestlers });
       dispatch({ type: 'SET_LOADING', payload: false });
       
-      console.log(`Loaded ${allMatches.length} matches from ${wrestlers.length} wrestlers`);
+      console.log(`✅ Successfully loaded ${allMatches.length} matches from ${wrestlers.length} wrestlers out of ${totalFiles} files`);
     } catch (error) {
+      console.error('Error loading wrestler data:', error);
       dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Unknown error' });
     }
   };
