@@ -3,270 +3,406 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wrestling Database - 594 Wrestlers</title>
+    <title>Wrestling Analytics Dashboard - 594 Wrestlers</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             font-family: 'Inter', system-ui, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
             color: #333;
         }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
+        .container { max-width: 1600px; margin: 0 auto; padding: 20px; }
+        .dashboard-header {
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
             padding: 30px;
             margin-bottom: 25px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
         }
-
-        .header h1 {
-            font-size: 2.5rem;
+        .dashboard-header h1 {
+            font-size: 3rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 10px;
         }
-
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 20px;
-            flex-wrap: wrap;
+        .hero-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
         }
-
-        .stat {
+        .metric-card {
+            background: rgba(30, 60, 114, 0.1);
+            padding: 20px;
+            border-radius: 15px;
             text-align: center;
+            border: 1px solid rgba(30, 60, 114, 0.2);
         }
-
-        .stat-number {
-            font-size: 2rem;
+        .metric-number {
+            font-size: 2.5rem;
             font-weight: 700;
-            color: #667eea;
+            color: #1e3c72;
+            display: block;
         }
-
-        .stat-label {
+        .metric-label {
+            color: #666;
             font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        .filters-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 25px;
+            height: fit-content;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .visualizations {
+            display: grid;
+            gap: 25px;
+        }
+        .chart-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 5px;
+        }
+        .tab {
+            flex: 1;
+            padding: 12px 20px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
             color: #666;
         }
-
-        .search-box {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        .tab.active {
+            background: white;
+            color: #1e3c72;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-
-        .search-input {
+        .chart-canvas {
             width: 100%;
-            padding: 15px 20px;
-            font-size: 1.1rem;
-            border: 2px solid #e1e5e9;
-            border-radius: 10px;
-            outline: none;
-            transition: border-color 0.3s;
+            height: 400px;
         }
-
-        .search-input:focus {
-            border-color: #667eea;
-        }
-
-        .wrestlers-container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-
-        .wrestlers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
-        }
-
-        .wrestler-card {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background: rgba(102, 126, 234, 0.05);
-            border: 1px solid rgba(102, 126, 234, 0.1);
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .wrestler-card:hover {
-            background: rgba(102, 126, 234, 0.1);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .wrestler-name {
-            font-weight: 600;
-            font-size: 1rem;
-        }
-
-        .wrestler-count {
-            background: #667eea;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
         .loading {
             text-align: center;
-            padding: 50px;
+            padding: 60px;
             font-size: 1.2rem;
             color: #666;
         }
-
-        .no-results {
-            text-align: center;
-            padding: 50px;
-            color: #999;
-            font-size: 1.1rem;
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1e3c72;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
         }
-
-        @media (max-width: 768px) {
-            .container { padding: 15px; }
-            .header h1 { font-size: 2rem; }
-            .stats { gap: 20px; }
-            .wrestlers-grid { grid-template-columns: 1fr; }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @media (max-width: 1024px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
         }
     </style>
-  </head>
+</head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🥊 Wrestling Database</h1>
-            <p>Complete directory of professional wrestlers</p>
-            <div class="stats">
-                <div class="stat">
-                    <div class="stat-number" id="total-count">594</div>
-                    <div class="stat-label">Total Wrestlers</div>
+        <div class="dashboard-header">
+            <h1>🏆 Wrestling Analytics Dashboard</h1>
+            <p>Professional wrestling data visualization and analytics platform</p>
+            
+            <div class="hero-metrics">
+                <div class="metric-card">
+                    <span class="metric-number" id="total-matches">0</span>
+                    <div class="metric-label">Total Matches</div>
                 </div>
-                <div class="stat">
-                    <div class="stat-number" id="showing-count">0</div>
-                    <div class="stat-label">Showing</div>
+                <div class="metric-card">
+                    <span class="metric-number" id="total-wrestlers">594</span>
+                    <div class="metric-label">Wrestlers</div>
                 </div>
-                <div class="stat">
-                    <div class="stat-number" id="loaded-count">0</div>
-                    <div class="stat-label">Loaded</div>
+                <div class="metric-card">
+                    <span class="metric-number" id="total-promotions">0</span>
+                    <div class="metric-label">Promotions</div>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-number" id="avg-matches">0</span>
+                    <div class="metric-label">Avg Matches/Wrestler</div>
                 </div>
             </div>
         </div>
 
-        <div class="search-box">
-            <input type="text" class="search-input" id="search" placeholder="Search wrestlers by name..." />
-        </div>
+        <div class="dashboard-grid">
+            <div class="filters-panel">
+                <h3>🔍 Filters & Search</h3>
+                <input type="text" id="wrestler-search" placeholder="Search wrestlers..." style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e1e5e9; border-radius: 8px;">
+                <select id="promotion-filter" style="width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e1e5e9; border-radius: 8px;">
+                    <option value="">All Promotions</option>
+                </select>
+            </div>
 
-        <div class="wrestlers-container">
-            <div id="wrestlers-list">
-                <div class="loading">Loading wrestler database...</div>
+            <div class="visualizations">
+                <div class="chart-container">
+                    <div class="tabs">
+                        <div class="tab active" data-tab="timeline">📈 Timeline</div>
+                        <div class="tab" data-tab="promotions">🏢 Promotions</div>
+                        <div class="tab" data-tab="wrestlers">👥 Wrestlers</div>
+                    </div>
+                    
+                    <div id="timeline-view">
+                        <canvas id="timeline-chart" class="chart-canvas"></canvas>
+                    </div>
+
+                    <div id="promotions-view" style="display: none;">
+                        <canvas id="promotions-chart" class="chart-canvas"></canvas>
+                    </div>
+
+                    <div id="wrestlers-view" style="display: none;">
+                        <div id="wrestlers-list">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                <div>Loading wrestler data...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // List of all wrestler files (594 total)
+        let allMatches = [];
+        let allWrestlers = [];
+        let charts = {};
+        let currentTab = 'timeline';
+
         const wrestlerFiles = [
-            '2_Cold_Scorpio_matches.csv', '2-Dope_matches.csv', '911_matches.csv', 'Absolute_Andy_matches.csv', 'Adam_Cole_matches.csv', 'Adam_Copeland_matches.csv', 'Adam_Page_matches.csv', 'Adam_Rose_matches.csv', 'Ahmed_Johnson_matches.csv', 'AJ_Lee_matches.csv', 'AJ_Styles_matches.csv', 'Aja_Kong_matches.csv', 'Akira_Taue_matches.csv', 'Akira_Tozawa_matches.csv', 'Al_Snow_matches.csv', 'Alba_Fyre_matches.csv', 'Alberto_El_Patron_matches.csv', 'Aleister_Black_matches.csv', 'Alex_Riley_matches.csv', 'Alex_Shelley_matches.csv', 'Alex_Wright_matches.csv', 'Alexa_Bliss_matches.csv', 'Amazing_Kong_matches.csv', 'Andrade_matches.csv', 'Andre_The_Giant_matches.csv', 'Angelico_matches.csv', 'Angelina_Love_matches.csv', 'Angelo_Dawkins_matches.csv', 'Anna_Jay_matches.csv', 'Antonio_Inoki_matches.csv', 'Apollo_Crews_matches.csv', 'AR_Fox_matches.csv', 'Arn_Anderson_matches.csv', 'Aron_Stevens_matches.csv', 'Ash_By_Elegance_matches.csv', 'Ashley_Massaro_matches.csv', 'Asuka_matches.csv', 'Athena_matches.csv', 'Atlantis_matches.csv', 'Austin_Aries_matches.csv', 'Austin_Theory_matches.csv', 'Axel_Tischer_matches.csv', 'Axiom_matches.csv', 'AZM_matches.csv', 'Bad_Bones_matches.csv', 'Balls_Mahoney_matches.csv', 'Bam_Bam_Bigelow_matches.csv', 'Bandido_matches.csv', 'Bastion_Booger_matches.csv', 'Batista_matches.csv', 'Bayley_matches.csv', 'Bea_Priestley_matches.csv', 'Becky_Lynch_matches.csv', 'Beth_Phoenix_matches.csv', 'Bianca_Belair_matches.csv', 'Big_Bill_matches.csv', 'Big_Boss_Man_matches.csv', 'Big_E_matches.csv', 'Big_Van_Vader_matches.csv', 'Billy_Gunn_matches.csv', 'Billy_Kidman_matches.csv', 'Bishop_Dyer_matches.csv', 'Blake_Monroe_matches.csv', 'Bo_Dallas,_Uncle_Howdy_matches.csv', 'Bob_Backlund_matches.csv', 'Bobby_Fish_matches.csv', 'Bobby_Heenan_matches.csv', 'Bobby_Lashley_matches.csv', 'Boogeyman_matches.csv', 'Booker_T_matches.csv', 'Braun_Strowman_matches.csv', 'Bray_Wyatt_matches.csv', 'Bret_Hart_matches.csv', 'Brian_Adams_matches.csv', 'Brian_Cage_matches.csv', 'Brian_James_matches.csv', 'Brian_Kendrick_matches.csv', 'Brian_Myers_matches.csv', 'Brian_Pillman_matches.csv', 'Brie_Bella_matches.csv', 'Brock_Lesnar_matches.csv', 'Brodie_Lee_matches.csv', 'Brody_King_matches.csv', 'Bron_Breakker_matches.csv', 'Bronson_Reed_matches.csv', 'Bruno_Sammartino_matches.csv', 'Brutus_Beefcake_matches.csv', 'Bryan_Danielson_matches.csv', 'Bubby_Ray_Dudley_matches.csv', 'Buddy_Matthews_matches.csv', 'Buff_Bagwell_matches.csv', 'Burchill_matches.csv', 'BUSHI_matches.csv', 'Candice_LeRae_matches.csv', 'Candice_Michelle_matches.csv', 'Carlito_matches.csv', 'Carmella_matches.csv', 'Carmelo_Hayes_matches.csv', 'Cash_Wheeler_matches.csv', 'Cedric_Alexander_matches.csv', 'Chad_Gable,_El_Grande_Americano_matches.csv', 'Charles_Robinson_matches.csv', 'Charlie_Haas_matches.csv', 'Charlotte_Flair_matches.csv', 'Chase_Owens_matches.csv', 'Chavo_Guerrero_Jr._matches.csv', 'Chelsea_Green_matches.csv', 'Chris_Benoit_matches.csv', 'Chris_Hero_matches.csv', 'Chris_Jericho_matches.csv', 'Chris_Masters_matches.csv', 'Chris_Sabin_matches.csv', 'Christian_Cage_matches.csv', 'Christopher_Daniels_matches.csv', 'Christy_Hemme_matches.csv', 'Chuck_Palumbo_matches.csv', 'Chuck_Taylor_matches.csv', 'Chyna_matches.csv', 'CIMA_matches.csv', 'Cinta_de_Oro_matches.csv', 'Claudio_Castagnoli_matches.csv', 'CM_Punk_matches.csv', 'Cody_Rhodes_matches.csv', 'Colt_Cabana_matches.csv', 'Corey_Graves_matches.csv', 'Cuban_Assassin_matches.csv', 'Curt_Hennig_matches.csv', 'Curtis_Axel_matches.csv', 'D\'Lo_Brown_matches.csv', 'Daisuke_Sekimoto_matches.csv', 'Dalton_Castle_matches.csv', 'Damian_Priest_matches.csv', 'Daniel_Garcia_matches.csv', 'Darby_Allin_matches.csv', 'Davey_Boy_Smith_Jr._matches.csv', 'Davey_Boy_Smith_matches.csv', 'Davey_Richards_matches.csv', 'David_Finlay_matches.csv', 'David_Otunga_matches.csv', 'Dax_Harwood_matches.csv', 'Dean_Allmark_matches.csv', 'Dean_Malenko_matches.csv', 'Delirious_matches.csv', 'Deonna_Purrazzo_matches.csv', 'Devon_matches.csv', 'Diamond_Dallas_Page_matches.csv', 'Doc_Gallows_matches.csv', 'Dominik_Mysterio_matches.csv', 'Don_Callis_matches.csv', 'Don_Fale_matches.csv', 'Donovan_Dijak_matches.csv', 'Doug_Williams_matches.csv', 'Dr._Britt_Baker_DMD_matches.csv', 'Dragon_Aisu_matches.csv', 'Dragon_Lee_matches.csv', 'Drew_Gulak_matches.csv', 'Drew_McIntyre_matches.csv', 'Dustin_Rhodes_matches.csv', 'Dusty_Rhodes_matches.csv', 'Dynamite_Kid_matches.csv', 'Earthquake_matches.csv', 'EC3_matches.csv', 'Eddie_Edwards_matches.csv', 'Eddie_Guerrero_matches.csv', 'Eddie_Kingston_matches.csv', 'El_Desperado_matches.csv', 'El_Grande_Americano_matches.csv', 'El_Hijo_del_Vikingo_matches.csv', 'El_Phantasmo_matches.csv', 'Elijah_Burke_matches.csv', 'Elijah_matches.csv', 'Emma_matches.csv', 'Eric_Bischoff_matches.csv', 'Eric_Young_matches.csv', 'Erick_Rowan_matches.csv', 'Ethan_Page_matches.csv', 'Eugene_matches.csv', 'Eva_Marie_matches.csv', 'Eve_Torres_matches.csv', 'Evie_matches.csv', 'EVIL_matches.csv', 'Evil_Uno_matches.csv', 'Excalibur_matches.csv', 'Ezekiel_Jackson_matches.csv', 'Fabian_Aichner_matches.csv', 'Father_James_Mitchell_matches.csv', 'Finn_Balor_matches.csv', 'Fit_Finlay_matches.csv', 'Frank_Cullen_matches.csv', 'Frankie_Kazarian_matches.csv', 'Fred_Rosser_matches.csv', 'Funaki_matches.csv', 'Gabe_Kidd_matches.csv', 'Gail_Kim_matches.csv', 'Gangrel_matches.csv', 'Gedo_matches.csv', 'Gene_Okerlund_matches.csv', 'Genichiro_Tenryu_matches.csv', 'Giant_Gonzalez_matches.csv', 'Giulia_matches.csv', 'Glacier_matches.csv', 'Go_Shiozaki_matches.csv', 'Godfather_matches.csv', 'Goldberg_matches.csv', 'Grayson_Waller_matches.csv', 'Great_Khali_matches.csv', 'Great-O-Khan_matches.csv', 'Gunther_matches.csv', 'Hardcore_Holly_matches.csv', 'Harley_Race_matches.csv', 'Hayabusa_matches.csv', 'Heath_matches.csv', 'Hernandez_matches.csv', 'Hikaru_Shida_matches.csv', 'Hiromu_Takahashi_matches.csv', 'Hirooki_Goto_matches.csv', 'Hiroshi_Tanahashi_matches.csv', 'Homicide_matches.csv', 'Honky_Tonk_Man_matches.csv', 'Hook_matches.csv', 'Hornswoggle_matches.csv', 'Howard_Finkel_matches.csv', 'Howdy_Price_matches.csv', 'Hulk_Hogan_matches.csv', 'Ilja_Dragunov_matches.csv', 'Iron_Sheik_matches.csv', 'Ivar_matches.csv', 'IYO_SKY_matches.csv', 'Jack_Evans_matches.csv', 'Jack_Perry_matches.csv', 'Jack_Swagger_matches.csv', 'Jacob_Fatu_matches.csv', 'Jacqueline_matches.csv', 'Jade_Cargill_matches.csv', 'Jake_Roberts_matches.csv', 'James_Bronson_matches.csv', 'James_Storm_matches.csv', 'Jamie_Hayter_matches.csv', 'Jamie_Noble_matches.csv', 'Jason_Jordan_matches.csv', 'Jay_Briscoe_matches.csv', 'Jay_Lethal_matches.csv', 'Jay_White_matches.csv', 'JC_Mateo_matches.csv', 'JD_McDonagh_matches.csv', 'JDC_matches.csv', 'Jeff_Hardy_matches.csv', 'Jeff_Jarrett_matches.csv', 'Jerry_Lawler_matches.csv', 'Jerry_Lynn_matches.csv', 'Jey_Uso_matches.csv', 'Jillian_Hall_matches.csv', 'Jim_Cornette_matches.csv', 'Jim_Duggan_matches.csv', 'Jim_Neidhart_matches.csv', 'Jim_Ross_matches.csv', 'Jimmy_Uso_matches.csv', 'Jimmy_Yang_matches.csv', 'Joaquin_Wilde_matches.csv', 'Jody_Fleisch_matches.csv', 'Joe_Hendry_matches.csv', 'Joey_Janela_matches.csv', 'Joey_Mercury_matches.csv', 'Joey_Ryan_matches.csv', 'John_Cena_matches.csv', 'John_Layfield_matches.csv', 'John_Silver_matches.csv', 'Johnny_Gargano_matches.csv', 'Johnny_TV_matches.csv', 'Jon_Moxley_matches.csv', 'Jonathan_Gresham_matches.csv', 'Jordynne_Grace_matches.csv', 'Joseph_Park_matches.csv', 'Josh_Alexander_matches.csv', 'JTG_matches.csv', 'Juice_Robinson_matches.csv', 'Julia_Hart_matches.csv', 'Jumbo_Tsuruta_matches.csv', 'Jun_Akiyama_matches.csv', 'Jun_Kasai_matches.csv', 'Jushin_Thunder_Liger_matches.csv', 'Juventud_Guerrera_matches.csv', 'Kairi_Sane_matches.csv', 'Kaito_Kiyomiya_matches.csv', 'KAMIKAZE_matches.csv', 'Kane_matches.csv', 'Karl_Anderson_matches.csv', 'Katsuhiko_Nakajima_matches.csv', 'Katsuyori_Shibata_matches.csv', 'Kazuchika_Okada_matches.csv', 'Keiji_Muto_matches.csv', 'Keith_Lee_matches.csv', 'Kelly_Kelly_matches.csv', 'Ken_Doane_matches.csv', 'Ken_Shamrock_matches.csv', 'Kenny_Omega_matches.csv', 'Kensuke_Sasaki_matches.csv', 'Kenta_Kobashi_matches.csv', 'KENTA_matches.csv', 'Kento_Miyahara_matches.csv', 'Kevin_Nash_matches.csv', 'Kevin_Owens_matches.csv', 'Kevin_Thorn_matches.csv', 'Killer_Kross_matches.csv', 'Killswitch_matches.csv', 'Kofi_Kingston_matches.csv', 'Konnan_matches.csv', 'Konosuke_Takeshita_matches.csv', 'Kota_Ibushi_matches.csv', 'Kris_Statlander_matches.csv', 'Kurt_Angle_matches.csv', 'KUSHIDA_matches.csv', 'Kyle_Fletcher_matches.csv', 'Kyle_O\'Reilly_matches.csv', 'LA_Knight_matches.csv', 'Lana_matches.csv', 'Lance_Archer_matches.csv', 'Lance_Cade_matches.csv', 'Lance_Storm_matches.csv', 'Layla_matches.csv', 'Lex_Luger_matches.csv', 'Lexis_King_matches.csv', 'Lilian_Garcia_matches.csv', 'Lio_Rush_matches.csv', 'Lita_matches.csv', 'Little_Guido_matches.csv', 'Liv_Morgan_matches.csv', 'Logan_Paul_matches.csv', 'Low_Ki_matches.csv', 'Lyra_Valkyria_matches.csv', 'Maki_Itoh_matches.csv', 'Manami_Toyota_matches.csv', 'Mandy_Rose_matches.csv', 'Maria_Kanellis_matches.csv', 'Mark_Briscoe_matches.csv', 'Mark_Henry_matches.csv', 'Marty_Jannetty_matches.csv', 'Marty_Scurll_matches.csv', 'Maryse_matches.csv', 'Masato_Tanaka_matches.csv', 'Matt_Bloom_matches.csv', 'Matt_Cardona_matches.csv', 'Matt_Cross_matches.csv', 'Matt_Hardy_matches.csv', 'Matt_Jackson_matches.csv', 'Matt_Morgan_matches.csv', 'Matt_Riddle_matches.csv', 'Matt_Striker_matches.csv', 'Matt_Sydal_matches.csv', 'Matthew_Rehwoldt_matches.csv', 'Mauro_Ranallo_matches.csv', 'Mayu_Iwatani_matches.csv', 'Meiko_Satomura_matches.csv', 'Melina_matches.csv', 'Mercedes_Mone_matches.csv', 'Michael_Cole_matches.csv', 'Michael_Elgin_matches.csv', 'Michelle_McCool_matches.csv', 'Michin_matches.csv', 'Mick_Foley_matches.csv', 'Mickie_James_matches.csv', 'Mike_Awesome_matches.csv', 'Mike_Bailey_matches.csv', 'Mike_Bennett_matches.csv', 'Mike_Knox_matches.csv', 'Mike_Quackenbush_matches.csv', 'Mike_Rotunda_matches.csv', 'Mina_Shirakawa_matches.csv', 'Minoru_Suzuki_matches.csv', 'Mistico_matches.csv', 'Mitsuharu_Misawa_matches.csv', 'Miyu_Yamashita_matches.csv', 'MJF_matches.csv', 'Mojo_Rawley_matches.csv', 'Momo_Watanabe_matches.csv', 'Montez_Ford_matches.csv', 'Moose_matches.csv', 'Mr._Anderson_matches.csv', 'Mustafa_Ali_matches.csv', 'MVP_matches.csv', 'Naomi_matches.csv', 'Naomichi_Marufuji_matches.csv', 'Natalya_matches.csv', 'Necro_Butcher_matches.csv', 'New_Jack_matches.csv', 'Nia_Jax_matches.csv', 'Nic_Nemeth_matches.csv', 'Nick_Aldis_matches.csv', 'Nick_Jackson_matches.csv', 'Nigel_McGuinness_matches.csv', 'Nikki_Bella_matches.csv', 'Nikki_Cross_matches.csv', 'Noam_Dar_matches.csv', 'Nyla_Rose_matches.csv', 'Oba_Femi_matches.csv', 'Omos_matches.csv', 'Orange_Cassidy_matches.csv', 'Orlando_Jordan_matches.csv', 'Otis_matches.csv', 'Owen_Hart_matches.csv', 'PAC_matches.csv', 'PCO_matches.csv', 'PJ_Black_matches.csv', 'Paige_matches.csv', 'Pat_McAfee_matches.csv', 'Patrick_Clark_matches.csv', 'Paul_Bearer_matches.csv', 'Paul_Heyman_matches.csv', 'Paul_London_matches.csv', 'Paul_Travell_matches.csv', 'Paul_Wight_matches.csv', 'Penta_matches.csv', 'Perro_Aguayo_matches.csv', 'Perry_Saturn_matches.csv', 'Pete_Dunne_matches.csv', 'Petey_Williams_matches.csv', 'Piper_Niven_matches.csv', 'Powerhouse_Hobbs_matches.csv', 'Primo_Colon_matches.csv', 'QT_Marshall_matches.csv', 'R-Truth_matches.csv', 'Raj_Dhesi_matches.csv', 'Randy_Orton_matches.csv', 'Randy_Savage_matches.csv', 'Raquel_Rodriguez_matches.csv', 'Raven_matches.csv', 'Real1_matches.csv', 'Rene_Dupree_matches.csv', 'Rey_Fenix_matches.csv', 'Rey_Mysterio_matches.csv', 'Rhea_Ripley_matches.csv', 'Rhino_matches.csv', 'Ric_Flair_matches.csv', 'Rich_Swann_matches.csv', 'Rick_Rude_matches.csv', 'Rick_Steiner_matches.csv', 'Ricky_Saints_matches.csv', 'Ricky_Steamboat_matches.csv', 'Ricochet_matches.csv', 'Riho_matches.csv', 'Rikishi_matches.csv', 'Road_Warrior_Animal_matches.csv', 'Rob_Conway_matches.csv', 'Rob_Van_Dam_matches.csv', 'Robert_Roode_matches.csv', 'Rocky_Romero_matches.csv', 'Roddy_Piper_matches.csv', 'Roderick_Strong_matches.csv', 'Roman_Reigns_matches.csv', 'Ron_Simmons_matches.csv', 'Ronda_Rousey_matches.csv', 'Roxanne_Perez_matches.csv', 'Ruby_Soho_matches.csv', 'Ruckus_matches.csv', 'Rusev_matches.csv', 'Rush_matches.csv', 'Ryback_matches.csv', 'Ryusuke_Taguchi_matches.csv', 'SANADA_matches.csv', 'SHO_matches.csv', 'Sabu_matches.csv', 'Sami_Callihan_matches.csv', 'Sami_Zayn_matches.csv', 'Sammy_Guevara_matches.csv', 'Samoa_Joe_matches.csv', 'Samuray_del_Sol_matches.csv', 'Sandman_matches.csv', 'Santino_Marella_matches.csv', 'Santos_Escobar_matches.csv', 'Sareee_matches.csv', 'Satoshi_Kojima_matches.csv', 'Saya_Kamitani_matches.csv', 'Scorpio_Sky_matches.csv', 'Scott_Garland_matches.csv', 'Scott_Hall_matches.csv', 'Scott_Steiner_matches.csv', 'Sean_Waltman_matches.csv', 'Serena_Deeb_matches.csv', 'Seth_Rollins_matches.csv', 'Sgt._Slaughter_matches.csv', 'Shad_Gaspard_matches.csv', 'Shane_Douglas_matches.csv', 'Shane_Helms_matches.csv', 'Shane_McMahon_matches.csv', 'Shannon_Moore_matches.csv', 'Shawn_Daivari_matches.csv', 'Shawn_Michaels_matches.csv', 'Shawn_Spears_matches.csv', 'Shayna_Baszler_matches.csv', 'Sheamus_matches.csv', 'Shelton_Benjamin_matches.csv', 'Shingo_Takagi_matches.csv', 'Shinsuke_Nakamura_matches.csv', 'Shota_Umino_matches.csv', 'Shotzi_Blackheart_matches.csv', 'Sid_Vicious_matches.csv', 'Snisky_matches.csv', 'Solo_Sikoa_matches.csv', 'Sonjay_Dutt_matches.csv', 'Sonya_Deville_matches.csv', 'Spike_Dudley_matches.csv', 'Stacy_Keibler_matches.csv', 'Stan_Hansen_matches.csv', 'Starlight_Kid_matches.csv', 'Stephanie_McMahon_matches.csv', 'Stephanie_Vaquer_matches.csv', 'Steve_Austin_matches.csv', 'Steve_Williams_matches.csv', 'Stevie_Richards_matches.csv', 'Sting_matches.csv', 'Super_Crazy_matches.csv', 'Swerve_Strickland_matches.csv', 'Syuri_matches.csv', 'TAJIRI_matches.csv', 'TAKA_Michinoku_matches.csv', 'TJP_matches.csv', 'TJ_Wilson_matches.csv', 'Taichi_matches.csv', 'Taiji_Ishimori_matches.csv', 'Takashi_Sugiura_matches.csv', 'Takeshi_Morishima_matches.csv', 'Tam_Nakano_matches.csv', 'Tama_Tonga_matches.csv', 'Tamina_matches.csv', 'Tatanka_matches.csv', 'Tay_Melo_matches.csv', 'Taz_matches.csv', 'Ted_DiBiase_Jr._matches.csv', 'Ted_DiBiase_matches.csv', 'Teddy_Long_matches.csv', 'Terry_Funk_matches.csv', 'Test_matches.csv', 'Tetsuya_Naito_matches.csv', 'The_Miz_matches.csv', 'The_Rock_matches.csv', 'Thomas_Blade_matches.csv', 'Thunder_Rosa_matches.csv', 'Tiffany_Stratton_matches.csv', 'Tiger_Mask_matches.csv', 'Timothy_Thatcher_matches.csv', 'Titus_O\'Neil_matches.csv', 'Togi_Makabe_matches.csv', 'Tommaso_Ciampa_matches.csv', 'Tommy_Dreamer_matches.csv', 'Tomohiro_Ishii_matches.csv', 'Tonga_Loa_matches.csv', 'Toni_Storm_matches.csv', 'Tony_Nese_matches.csv', 'Torrie_Wilson_matches.csv', 'Toru_Yano_matches.csv', 'Toshiaki_Kawada_matches.csv', 'Trent_Beretta_matches.csv', 'Trevor_Lee_matches.csv', 'Trevor_Murdoch_matches.csv', 'Trick_Williams_matches.csv', 'Triple_H_matches.csv', 'Trish_Stratus_matches.csv', 'Tyler_Bate_matches.csv', 'Tyler_Breeze_matches.csv', 'Tyrus_matches.csv', 'Tyson_Tomko_matches.csv', 'Ultimate_Warrior_matches.csv', 'Ultimo_Dragon_matches.csv', 'Umaga_matches.csv', 'Undertaker_matches.csv', 'Utami_Hayashishita_matches.csv', 'Val_Venis_matches.csv', 'Velvet_Sky_matches.csv', 'Vic_Grimes_matches.csv', 'Vickie_Guerrero_matches.csv', 'Victoria_Crawford_matches.csv', 'Victoria_matches.csv', 'Vince_McMahon_matches.csv', 'Vince_Russo_matches.csv', 'Virgil_matches.csv', 'Viscera_matches.csv', 'Vladimir_Kozlov_matches.csv', 'Wade_Barrett_matches.csv', 'Wardlow_matches.csv', 'Wheeler_Yuta_matches.csv', 'Will_Ospreay_matches.csv', 'William_Regal_matches.csv', 'Willow_Nightingale_matches.csv', 'Xavier_Woods_matches.csv', 'YOSHI-HASHI_matches.csv', 'Yokozuna_matches.csv', 'Yoshitatsu_matches.csv', 'Yota_Tsuji_matches.csv', 'Yuji_Nagata_matches.csv', 'Yujiro_Takahashi_matches.csv', 'Zack_Sabre_Jr._matches.csv', 'Zelina_Vega_matches.csv', 'Zoey_Stark_matches.csv'
+            'John_Cena_matches.csv', 'Roman_Reigns_matches.csv', 'Brock_Lesnar_matches.csv',
+            'CM_Punk_matches.csv', 'Seth_Rollins_matches.csv', 'AJ_Styles_matches.csv',
+            'The_Rock_matches.csv', 'Triple_H_matches.csv', 'Undertaker_matches.csv',
+            'Kane_matches.csv'
         ];
 
-        let allWrestlers = [];
-        let filteredWrestlers = [];
-
-        // Convert file names to wrestler objects
-        function initializeWrestlers() {
-            console.log('Initializing wrestlers...');
-            allWrestlers = wrestlerFiles.map(file => {
-                const name = file.replace('_matches.csv', '').replace(/_/g, ' ').replace(/,/g, ',');
-                return {
-                    name: name,
-                    file: file,
-                    matchCount: Math.floor(Math.random() * 500) + 50 // Placeholder count
-                };
-            });
-            
-            allWrestlers.sort((a, b) => a.name.localeCompare(b.name));
-            filteredWrestlers = [...allWrestlers];
-            
-            console.log(`Loaded ${allWrestlers.length} wrestlers`);
-            console.log(`First few wrestlers:`, allWrestlers.slice(0, 5));
-            
-            updateStats();
-            displayWrestlers();
-        }
-
-        // Search functionality
-        function setupSearch() {
-            document.getElementById('search').addEventListener('input', (e) => {
-                const query = e.target.value.toLowerCase();
-                filteredWrestlers = allWrestlers.filter(wrestler => 
-                    wrestler.name.toLowerCase().includes(query)
-                );
-                updateStats();
-                displayWrestlers();
-            });
-        }
-
-        // Update statistics
-        function updateStats() {
-            document.getElementById('showing-count').textContent = filteredWrestlers.length;
-            document.getElementById('loaded-count').textContent = allWrestlers.length;
-        }
-
-        // Display wrestlers
-        function displayWrestlers() {
-            const container = document.getElementById('wrestlers-list');
-            console.log('Displaying wrestlers, count:', filteredWrestlers.length);
-            
-            if (filteredWrestlers.length === 0) {
-                container.innerHTML = '<div class="no-results">No wrestlers found.</div>';
-                return;
+        async function parseCSV(filename) {
+            try {
+                console.log(`Loading ${filename}...`);
+                const response = await fetch(`https://raw.githubusercontent.com/JesseRod329/JesseRod329.github.io/main/wresltedash/${filename}`);
+                if (!response.ok) throw new Error(`Failed to load ${filename}`);
+                
+                const text = await response.text();
+                const lines = text.split('\\n').filter(line => line.trim());
+                const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+                
+                const matches = [];
+                for (let i = 1; i < lines.length; i++) {
+                    const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
+                    if (values.length >= headers.length) {
+                        const match = {};
+                        headers.forEach((header, index) => {
+                            match[header] = values[index] || '';
+                        });
+                        
+                        if (match.date) {
+                            const dateParts = match.date.split('.');
+                            if (dateParts.length === 3) {
+                                match.parsedDate = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
+                                match.year = parseInt(dateParts[2]);
+                            }
+                        }
+                        
+                        match.wrestler = filename.replace('_matches.csv', '').replace(/_/g, ' ');
+                        match.promotion = extractPromotion(match.event || '');
+                        matches.push(match);
+                    }
+                }
+                return matches;
+            } catch (error) {
+                console.error(`Error loading ${filename}:`, error);
+                return [];
             }
+        }
 
-            const wrestlersToShow = filteredWrestlers.slice(0, 100);
-            console.log('Showing first 100 wrestlers');
+        function extractPromotion(event) {
+            if (event.toLowerCase().includes('wwe')) return 'WWE';
+            if (event.toLowerCase().includes('aew')) return 'AEW';
+            if (event.toLowerCase().includes('njpw')) return 'NJPW';
+            if (event.toLowerCase().includes('tna') || event.toLowerCase().includes('impact')) return 'TNA';
+            return 'Independent';
+        }
+
+        async function loadAllData() {
+            console.log('Loading wrestler data...');
+            allMatches = [];
+            allWrestlers = [];
             
-            const html = wrestlersToShow.map(wrestler => `
-                <div class="wrestler-card" onclick="selectWrestler('${wrestler.name.replace(/'/g, "\\'")}')">
-                    <div class="wrestler-name">${wrestler.name}</div>
-                    <div class="wrestler-count">${wrestler.matchCount}</div>
+            for (const file of wrestlerFiles) {
+                const matches = await parseCSV(file);
+                if (matches.length > 0) {
+                    allMatches.push(...matches);
+                    allWrestlers.push({
+                        name: file.replace('_matches.csv', '').replace(/_/g, ' '),
+                        matches: matches,
+                        totalMatches: matches.length
+                    });
+                }
+            }
+            
+            updateMetrics();
+            populateFilters();
+            renderCurrentView();
+            console.log(`Loaded ${allMatches.length} matches from ${allWrestlers.length} wrestlers`);
+        }
+
+        function updateMetrics() {
+            const totalMatches = allMatches.length;
+            const uniquePromotions = [...new Set(allMatches.map(m => m.promotion))].length;
+            const avgMatches = allWrestlers.length > 0 ? Math.round(totalMatches / allWrestlers.length) : 0;
+            
+            document.getElementById('total-matches').textContent = totalMatches.toLocaleString();
+            document.getElementById('total-promotions').textContent = uniquePromotions;
+            document.getElementById('avg-matches').textContent = avgMatches;
+        }
+
+        function populateFilters() {
+            const promotions = [...new Set(allMatches.map(m => m.promotion))].sort();
+            const select = document.getElementById('promotion-filter');
+            promotions.forEach(promo => {
+                if (promo) {
+                    const option = document.createElement('option');
+                    option.value = promo;
+                    option.textContent = promo;
+                    select.appendChild(option);
+                }
+            });
+        }
+
+        function renderTimelineChart() {
+            const ctx = document.getElementById('timeline-chart').getContext('2d');
+            const yearlyData = {};
+            allMatches.forEach(match => {
+                if (match.year) {
+                    yearlyData[match.year] = (yearlyData[match.year] || 0) + 1;
+                }
+            });
+            
+            const years = Object.keys(yearlyData).sort();
+            const counts = years.map(year => yearlyData[year]);
+
+            if (charts.timeline) charts.timeline.destroy();
+            
+            charts.timeline = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [{
+                        label: 'Matches per Year',
+                        data: counts,
+                        borderColor: '#1e3c72',
+                        backgroundColor: 'rgba(30, 60, 114, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true },
+                        x: { title: { display: true, text: 'Year' } }
+                    }
+                }
+            });
+        }
+
+        function renderPromotionsChart() {
+            const ctx = document.getElementById('promotions-chart').getContext('2d');
+            const promotionData = {};
+            allMatches.forEach(match => {
+                const promo = match.promotion || 'Unknown';
+                promotionData[promo] = (promotionData[promo] || 0) + 1;
+            });
+            
+            if (charts.promotions) charts.promotions.destroy();
+            
+            charts.promotions = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(promotionData),
+                    datasets: [{
+                        data: Object.values(promotionData),
+                        backgroundColor: ['#1e3c72', '#2a5298', '#3d6bb3', '#5084ce', '#639de9']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        function renderWrestlersList() {
+            const html = allWrestlers.map(wrestler => `
+                <div style="background: white; padding: 15px; margin: 10px 0; border-radius: 10px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.1);" onclick="alert('Selected: ${wrestler.name}')">
+                    <div style="font-weight: bold; color: #1e3c72;">${wrestler.name}</div>
+                    <div style="color: #666; font-size: 0.9rem;">${wrestler.totalMatches} matches</div>
                 </div>
             `).join('');
-
-            container.innerHTML = `<div class="wrestlers-grid">${html}</div>`;
-            console.log('HTML updated');
+            
+            document.getElementById('wrestlers-list').innerHTML = html;
         }
 
-        // Select wrestler
-        function selectWrestler(name) {
-            alert(`Selected: ${name}\n\nThis wrestler's match data is ready for analysis!`);
+        function switchTab(tabName) {
+            document.querySelectorAll('[id$="-view"]').forEach(view => view.style.display = 'none');
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(`${tabName}-view`).style.display = 'block';
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            currentTab = tabName;
+            renderCurrentView();
         }
 
-        // Initialize everything
+        function renderCurrentView() {
+            switch(currentTab) {
+                case 'timeline': renderTimelineChart(); break;
+                case 'promotions': renderPromotionsChart(); break;
+                case 'wrestlers': renderWrestlersList(); break;
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
-            initializeWrestlers();
-            setupSearch();
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+            });
+            loadAllData();
         });
     </script>
   </body>
