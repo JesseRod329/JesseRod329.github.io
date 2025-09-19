@@ -5,6 +5,7 @@ import type { WrestlerProfile } from '../types';
 export const WrestlerDirectory: React.FC = () => {
   const { wrestlers, filters } = useDashboard();
   const [selectedWrestler, setSelectedWrestler] = useState<WrestlerProfile | null>(null);
+  const [loadingMatches, setLoadingMatches] = useState(false);
 
   const filteredWrestlers = wrestlers.filter(wrestler => {
     const matchesSearch = !filters.searchTerm || 
@@ -39,6 +40,138 @@ export const WrestlerDirectory: React.FC = () => {
       case 'draw': return '🤝';
       default: return '❓';
     }
+  };
+
+  const loadWrestlerMatches = async (wrestler: WrestlerProfile) => {
+    if (wrestler.matchesLoaded || !wrestler.filename) return wrestler;
+    
+    setLoadingMatches(true);
+    try {
+      console.log(`Loading matches for ${wrestler.name}...`);
+      const response = await fetch(`https://raw.githubusercontent.com/JesseRod329/JesseRod329.github.io/main/wresltedash/${wrestler.filename}`);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to load ${wrestler.filename}`);
+      }
+      
+      const text = await response.text();
+      const lines = text.split('\n').filter(line => line.trim());
+      
+      if (lines.length < 2) return wrestler;
+      
+      const matches = [];
+      const wrestlerName = wrestler.name;
+      
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i];
+        const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
+        
+        if (values.length >= 4) {
+          const date = values[1];
+          const event = values[3];
+          
+          let parsedDate: Date | null = null;
+          let year = 2023;
+          
+          if (date && date.includes('.')) {
+            const dateParts = date.split('.');
+            if (dateParts.length === 3) {
+              const day = parseInt(dateParts[0]);
+              const month = parseInt(dateParts[1]);
+              const yearStr = dateParts[2];
+              year = parseInt(yearStr);
+              parsedDate = new Date(year, month - 1, day);
+            }
+          }
+          
+          const result = extractResultFromEvent(event, wrestlerName);
+          const promotion = extractPromotion(event);
+          const opponent = extractOpponent(event, wrestlerName);
+          
+          matches.push({
+            date: date || 'Unknown',
+            parsedDate: parsedDate || new Date(),
+            year,
+            wrestler: wrestlerName,
+            opponent: opponent || 'Unknown',
+            result,
+            event: event || 'Unknown Event',
+            promotion,
+            location: values[4] || 'Unknown',
+            matchTime: '0:00'
+          });
+        }
+      }
+      
+      const wins = matches.filter(m => m.result === 'win').length;
+      const losses = matches.filter(m => m.result === 'loss').length;
+      const draws = matches.filter(m => m.result === 'draw').length;
+      
+      return {
+        ...wrestler,
+        matches,
+        totalMatches: matches.length,
+        wins,
+        losses,
+        draws,
+        winRate: matches.length > 0 ? Math.round((wins / matches.length) * 100) : 0,
+        promotion: extractPromotion(matches[0]?.event || ''),
+        lastMatch: matches[matches.length - 1]?.parsedDate,
+        matchesLoaded: true
+      };
+    } catch (error) {
+      console.error(`Error loading matches for ${wrestler.name}:`, error);
+      return wrestler;
+    } finally {
+      setLoadingMatches(false);
+    }
+  };
+
+  const extractResultFromEvent = (event: string, wrestlerName: string): 'win' | 'loss' | 'draw' | 'unknown' => {
+    if (!event || !wrestlerName) return 'unknown';
+    
+    const lowerEvent = event.toLowerCase();
+    const lowerWrestler = wrestlerName.toLowerCase();
+    
+    if (lowerEvent.includes(`${lowerWrestler}defeats`) || 
+        lowerEvent.includes(`${lowerWrestler} defeats`)) {
+      return 'win';
+    }
+    
+    if (lowerEvent.includes(`defeats${lowerWrestler}`) || 
+        lowerEvent.includes(`defeats ${lowerWrestler}`)) {
+      return 'loss';
+    }
+    
+    return 'unknown';
+  };
+
+  const extractPromotion = (event: string): string => {
+    if (event.toLowerCase().includes('wwe')) return 'WWE';
+    if (event.toLowerCase().includes('aew')) return 'AEW';
+    if (event.toLowerCase().includes('njpw')) return 'NJPW';
+    if (event.toLowerCase().includes('tna') || event.toLowerCase().includes('impact')) return 'TNA';
+    return 'Independent';
+  };
+
+  const extractOpponent = (event: string, wrestlerName: string): string => {
+    if (!event || !wrestlerName) return 'Unknown';
+    
+    const lowerWrestler = wrestlerName.toLowerCase();
+    
+    const defeatsPattern = new RegExp(`${lowerWrestler}\\s*defeats\\s*([^\\s(]+)`, 'i');
+    const match1 = event.match(defeatsPattern);
+    if (match1 && match1[1]) {
+      return match1[1].trim();
+    }
+    
+    const defeatedPattern = new RegExp(`([^\\s(]+)\\s*defeats\\s*${lowerWrestler}`, 'i');
+    const match2 = event.match(defeatedPattern);
+    if (match2 && match2[1]) {
+      return match2[1].trim();
+    }
+    
+    return 'Unknown';
   };
 
   if (selectedWrestler) {
@@ -131,7 +264,10 @@ export const WrestlerDirectory: React.FC = () => {
         {filteredWrestlers.map((wrestler) => (
           <div
             key={wrestler.name}
-            onClick={() => setSelectedWrestler(wrestler)}
+            onClick={async () => {
+              const wrestlerWithMatches = await loadWrestlerMatches(wrestler);
+              setSelectedWrestler(wrestlerWithMatches);
+            }}
             className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-all cursor-pointer hover:scale-105"
           >
             <div className="flex justify-between items-start mb-2">
@@ -141,20 +277,28 @@ export const WrestlerDirectory: React.FC = () => {
               </span>
             </div>
             <div className="text-sm text-gray-600 space-y-1">
-              <div className="flex justify-between">
-                <span>Total Matches:</span>
-                <span className="font-medium">{wrestler.totalMatches}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Win Rate:</span>
-                <span className="font-medium text-green-600">{wrestler.winRate}%</span>
-              </div>
-              <div className="flex justify-between text-xs text-gray-500 mt-2">
-                <span>{wrestler.wins}W-{wrestler.losses}L-{wrestler.draws}D</span>
-              </div>
+              {wrestler.matchesLoaded ? (
+                <>
+                  <div className="flex justify-between">
+                    <span>Total Matches:</span>
+                    <span className="font-medium">{wrestler.totalMatches}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Win Rate:</span>
+                    <span className="font-medium text-green-600">{wrestler.winRate}%</span>
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-500 mt-2">
+                    <span>{wrestler.wins}W-{wrestler.losses}L-{wrestler.draws}D</span>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-2">
+                  <div className="text-xs text-gray-500">Click to load matches</div>
+                </div>
+              )}
             </div>
             <div className="mt-3 text-xs text-blue-600 font-medium">
-              Click to view match history →
+              {loadingMatches ? 'Loading...' : 'Click to view match history →'}
             </div>
           </div>
         ))}

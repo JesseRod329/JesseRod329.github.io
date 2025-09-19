@@ -31,9 +31,9 @@ function DashboardContent() {
       <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 flex items-center justify-center">
         <div className="bg-white/90 backdrop-blur-sm rounded-xl p-8 max-w-md mx-4 text-center">
           <LoadingSpinner />
-          <h2 className="text-xl font-bold text-gray-900 mt-4">Loading Wrestling Data</h2>
-          <p className="text-gray-600 mt-2">Fetching match data from ALL 594 wrestlers...</p>
-          <p className="text-sm text-gray-500 mt-1">This may take a moment...</p>
+          <h2 className="text-xl font-bold text-gray-900 mt-4">Loading Wrestler Directory</h2>
+          <p className="text-gray-600 mt-2">Getting list of 594 wrestlers...</p>
+          <p className="text-sm text-gray-500 mt-1">Matches will load when you click on a wrestler</p>
         </div>
       </div>
     );

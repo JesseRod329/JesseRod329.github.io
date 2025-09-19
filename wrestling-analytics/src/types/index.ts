@@ -26,6 +26,8 @@ export interface WrestlerProfile {
     start: Date;
     end: Date;
   };
+  filename?: string; // For lazy loading
+  matchesLoaded?: boolean; // Track if matches have been loaded
 }
 
 export interface DashboardMetrics {
