@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer } from 'react';
+import { createContext, useContext, useReducer, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { 
   DashboardContextType, 
@@ -126,15 +126,127 @@ const DashboardContext = createContext<DashboardContextType | undefined>(undefin
 export function DashboardProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(dashboardReducer, initialState);
 
+  // Load data on component mount
+  useEffect(() => {
+    refreshData();
+  }, []);
+
   const updateFilters = (filters: Partial<FilterState>) => {
     dispatch({ type: 'UPDATE_FILTERS', payload: filters });
+  };
+
+  // Sample wrestler files for demo
+  const wrestlerFiles = [
+    'John_Cena_matches.csv',
+    'Roman_Reigns_matches.csv', 
+    'Brock_Lesnar_matches.csv',
+    'CM_Punk_matches.csv',
+    'Seth_Rollins_matches.csv',
+    'AJ_Styles_matches.csv',
+    'The_Rock_matches.csv',
+    'Triple_H_matches.csv',
+    'Undertaker_matches.csv',
+    'Kane_matches.csv'
+  ];
+
+  const parseCSV = async (filename: string): Promise<MatchData[]> => {
+    try {
+      console.log(`Loading ${filename}...`);
+      const response = await fetch(`https://raw.githubusercontent.com/JesseRod329/JesseRod329.github.io/main/wresltedash/${filename}`);
+      if (!response.ok) {
+        console.warn(`Failed to load ${filename}: ${response.status}`);
+        return [];
+      }
+      
+      const text = await response.text();
+      const lines = text.split('\n').filter(line => line.trim());
+      const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+      
+      const matches: MatchData[] = [];
+      for (let i = 1; i < lines.length; i++) {
+        const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
+        if (values.length >= headers.length) {
+          const match: any = {};
+          headers.forEach((header, index) => {
+            match[header] = values[index] || '';
+          });
+          
+          // Parse date
+          if (match.date) {
+            const dateParts = match.date.split('.');
+            if (dateParts.length === 3) {
+              match.parsedDate = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
+              match.year = parseInt(dateParts[2]);
+            }
+          }
+          
+          match.wrestler = filename.replace('_matches.csv', '').replace(/_/g, ' ');
+          match.promotion = extractPromotion(match.event || '');
+          match.result = extractResult(match.result || '');
+          match.opponent = 'Unknown Opponent'; // Simplified for demo
+          
+          matches.push(match as MatchData);
+        }
+      }
+      return matches;
+    } catch (error) {
+      console.error(`Error loading ${filename}:`, error);
+      return [];
+    }
+  };
+
+  const extractPromotion = (event: string): string => {
+    if (event.toLowerCase().includes('wwe')) return 'WWE';
+    if (event.toLowerCase().includes('aew')) return 'AEW';
+    if (event.toLowerCase().includes('njpw')) return 'NJPW';
+    if (event.toLowerCase().includes('tna') || event.toLowerCase().includes('impact')) return 'TNA';
+    return 'Independent';
+  };
+
+  const extractResult = (resultStr: string): 'win' | 'loss' | 'draw' | 'unknown' => {
+    const lower = resultStr.toLowerCase();
+    if (lower.includes('win') || lower.includes('defeat') || lower.includes('beat')) return 'win';
+    if (lower.includes('loss') || lower.includes('lost') || lower.includes('defeat')) return 'loss';
+    if (lower.includes('draw') || lower.includes('tie')) return 'draw';
+    return 'unknown';
   };
 
   const refreshData = async (): Promise<void> => {
     dispatch({ type: 'SET_LOADING', payload: true });
     try {
-      // Data loading logic will be implemented here
+      const allMatches: MatchData[] = [];
+      const wrestlers: WrestlerProfile[] = [];
+      
+      // Load data from sample files
+      for (const file of wrestlerFiles) {
+        const matches = await parseCSV(file);
+        if (matches.length > 0) {
+          allMatches.push(...matches);
+          
+          const wrestlerName = file.replace('_matches.csv', '').replace(/_/g, ' ');
+          const wins = matches.filter(m => m.result === 'win').length;
+          const losses = matches.filter(m => m.result === 'loss').length;
+          const draws = matches.filter(m => m.result === 'draw').length;
+          
+          wrestlers.push({
+            name: wrestlerName,
+            totalMatches: matches.length,
+            wins,
+            losses,
+            draws,
+            winRate: matches.length > 0 ? Math.round((wins / matches.length) * 100) : 0,
+            matches,
+            promotion: extractPromotion(matches[0]?.event || ''),
+            lastMatch: matches[matches.length - 1]?.parsedDate,
+          });
+        }
+      }
+      
+      dispatch({ type: 'SET_DATA', payload: allMatches });
+      dispatch({ type: 'SET_WRESTLERS', payload: wrestlers });
       dispatch({ type: 'SET_LOADING', payload: false });
+      
+      console.log(`Loaded ${allMatches.length} matches from ${wrestlers.length} wrestlers`);
     } catch (error) {
       dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Unknown error' });
     }
