@@ -307,7 +307,13 @@
         }
 
         function renderTimelineChart() {
-            const ctx = document.getElementById('timeline-chart').getContext('2d');
+            console.log('Rendering timeline chart...');
+            const ctx = document.getElementById('timeline-chart');
+            if (!ctx) {
+                console.error('Timeline chart canvas not found!');
+                return;
+            }
+            
             const yearlyData = {};
             allMatches.forEach(match => {
                 if (match.year) {
@@ -315,6 +321,7 @@
                 }
             });
             
+            console.log('Yearly data:', yearlyData);
             const years = Object.keys(yearlyData).sort();
             const counts = years.map(year => yearlyData[year]);
 
@@ -344,6 +351,7 @@
                     }
                 }
             });
+            console.log('Timeline chart rendered');
         }
 
         function renderPromotionsChart() {
@@ -395,10 +403,40 @@
         }
 
         function renderCurrentView() {
+            console.log('Rendering current view:', currentTab);
             switch(currentTab) {
-                case 'timeline': renderTimelineChart(); break;
-                case 'promotions': renderPromotionsChart(); break;
-                case 'wrestlers': renderWrestlersList(); break;
+                case 'timeline': 
+                    renderTimelineChart(); 
+                    break;
+                case 'promotions': 
+                    renderPromotionsChart(); 
+                    break;
+                case 'wrestlers': 
+                    renderWrestlersList(); 
+                    break;
+            }
+        }
+
+        function showSearchResults() {
+            const searchTerm = document.getElementById('wrestler-search').value.toLowerCase();
+            if (!searchTerm) return;
+            
+            const results = allWrestlers.filter(wrestler => 
+                wrestler.name.toLowerCase().includes(searchTerm)
+            );
+            
+            console.log(`Found ${results.length} wrestlers matching "${searchTerm}"`);
+            
+            const html = results.slice(0, 20).map(wrestler => `
+                <div style="background: white; padding: 15px; margin: 10px 0; border-radius: 10px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.1);" onclick="alert('Selected: ${wrestler.name}')">
+                    <div style="font-weight: bold; color: #1e3c72;">${wrestler.name}</div>
+                    <div style="color: #666; font-size: 0.9rem;">${wrestler.totalMatches} matches</div>
+                </div>
+            `).join('');
+            
+            const container = document.getElementById('wrestlers-list');
+            if (container) {
+                container.innerHTML = html || '<div style="text-align: center; padding: 50px; color: #999;">No wrestlers found matching your search.</div>';
             }
         }
 
@@ -406,6 +444,20 @@
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.addEventListener('click', () => switchTab(tab.dataset.tab));
             });
+            
+            // Add search functionality
+            document.getElementById('wrestler-search').addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                if (searchTerm.length >= 2) {
+                    showSearchResults();
+                    // Switch to wrestlers tab to show results
+                    switchTab('wrestlers');
+                } else if (searchTerm.length === 0) {
+                    // Clear search, go back to timeline
+                    switchTab('timeline');
+                }
+            });
+            
             loadAllData();
         });
     </script>
