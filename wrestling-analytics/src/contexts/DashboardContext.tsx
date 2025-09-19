@@ -135,18 +135,25 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'UPDATE_FILTERS', payload: filters });
   };
 
-  // Sample wrestler files for demo
+  // Real wrestler files from the wresltedash directory
   const wrestlerFiles = [
-    'John_Cena_matches.csv',
-    'Roman_Reigns_matches.csv', 
-    'Brock_Lesnar_matches.csv',
-    'CM_Punk_matches.csv',
-    'Seth_Rollins_matches.csv',
     'AJ_Styles_matches.csv',
-    'The_Rock_matches.csv',
-    'Triple_H_matches.csv',
-    'Undertaker_matches.csv',
-    'Kane_matches.csv'
+    'Adam_Cole_matches.csv',
+    'Adam_Copeland_matches.csv',
+    'Adam_Page_matches.csv',
+    'AJ_Lee_matches.csv',
+    '2_Cold_Scorpio_matches.csv',
+    'Aja_Kong_matches.csv',
+    'Akira_Taue_matches.csv',
+    'Akira_Tozawa_matches.csv',
+    'Al_Snow_matches.csv',
+    '2-Dope_matches.csv',
+    '911_matches.csv',
+    'AR_Fox_matches.csv',
+    'AZM_matches.csv',
+    'Absolute_Andy_matches.csv',
+    'Ahmed_Johnson_matches.csv',
+    'Adam_Rose_matches.csv'
   ];
 
   const parseCSV = async (filename: string): Promise<MatchData[]> => {
@@ -160,34 +167,63 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
       
       const text = await response.text();
       const lines = text.split('\n').filter(line => line.trim());
-      const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+      
+      if (lines.length < 2) return [];
       
       const matches: MatchData[] = [];
+      const wrestlerName = filename.replace('_matches.csv', '').replace(/_/g, ' ');
+      
       for (let i = 1; i < lines.length; i++) {
-        const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
-        if (values.length >= headers.length) {
-          const match: any = {};
-          headers.forEach((header, index) => {
-            match[header] = values[index] || '';
-          });
+        const line = lines[i];
+        // Split by comma but handle quoted fields properly
+        const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
+        
+        if (values.length >= 4) {
+          const date = values[1]; // Second column is date
+          const event = values[3]; // Fourth column is event description
           
-          // Parse date
-          if (match.date) {
-            const dateParts = match.date.split('.');
+          // Parse date (format: 08.09.2025)
+          let parsedDate: Date | null = null;
+          let year = 2023;
+          
+          if (date && date.includes('.')) {
+            const dateParts = date.split('.');
             if (dateParts.length === 3) {
-              match.parsedDate = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
-              match.year = parseInt(dateParts[2]);
+              const day = parseInt(dateParts[0]);
+              const month = parseInt(dateParts[1]);
+              const yearStr = dateParts[2];
+              year = parseInt(yearStr);
+              parsedDate = new Date(year, month - 1, day);
             }
           }
           
-          match.wrestler = filename.replace('_matches.csv', '').replace(/_/g, ' ');
-          match.promotion = extractPromotion(match.event || '');
-          match.result = extractResult(match.result || '');
-          match.opponent = 'Unknown Opponent'; // Simplified for demo
+          // Extract result from event description
+          const result = extractResultFromEvent(event, wrestlerName);
           
-          matches.push(match as MatchData);
+          // Extract promotion from event
+          const promotion = extractPromotion(event);
+          
+          // Extract opponent from event
+          const opponent = extractOpponent(event, wrestlerName);
+          
+          const match: MatchData = {
+            date: date || 'Unknown',
+            parsedDate: parsedDate || new Date(),
+            year,
+            wrestler: wrestlerName,
+            opponent: opponent || 'Unknown',
+            result,
+            event: event || 'Unknown Event',
+            promotion,
+            location: values[4] || 'Unknown',
+            matchTime: '0:00' // Default since not in CSV
+          };
+          
+          matches.push(match);
         }
       }
+      
+      console.log(`Loaded ${matches.length} matches for ${wrestlerName}`);
       return matches;
     } catch (error) {
       console.error(`Error loading ${filename}:`, error);
@@ -203,13 +239,61 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     return 'Independent';
   };
 
-  const extractResult = (resultStr: string): 'win' | 'loss' | 'draw' | 'unknown' => {
-    const lower = resultStr.toLowerCase();
-    if (lower.includes('win') || lower.includes('defeat') || lower.includes('beat')) return 'win';
-    if (lower.includes('loss') || lower.includes('lost') || lower.includes('defeat')) return 'loss';
-    if (lower.includes('draw') || lower.includes('tie')) return 'draw';
+  const extractResultFromEvent = (event: string, wrestlerName: string): 'win' | 'loss' | 'draw' | 'unknown' => {
+    if (!event || !wrestlerName) return 'unknown';
+    
+    const lowerEvent = event.toLowerCase();
+    const lowerWrestler = wrestlerName.toLowerCase();
+    
+    // Check for win patterns
+    if (lowerEvent.includes(`${lowerWrestler}defeats`) || 
+        lowerEvent.includes(`${lowerWrestler} defeats`) ||
+        lowerEvent.includes(`${lowerWrestler}defeated`) ||
+        lowerEvent.includes(`${lowerWrestler} defeated`)) {
+      return 'win';
+    }
+    
+    // Check for loss patterns (someone defeats this wrestler)
+    if (lowerEvent.includes(`defeats${lowerWrestler}`) || 
+        lowerEvent.includes(`defeats ${lowerWrestler}`) ||
+        lowerEvent.includes(`defeated${lowerWrestler}`) ||
+        lowerEvent.includes(`defeated ${lowerWrestler}`)) {
+      return 'loss';
+    }
+    
     return 'unknown';
   };
+
+  const extractOpponent = (event: string, wrestlerName: string): string => {
+    if (!event || !wrestlerName) return 'Unknown';
+    
+    const lowerWrestler = wrestlerName.toLowerCase();
+    
+    // Try to extract opponent from "Wrestler defeats Opponent" pattern
+    const defeatsPattern = new RegExp(`${lowerWrestler}\\s*defeats\\s*([^\\s(]+)`, 'i');
+    const match1 = event.match(defeatsPattern);
+    if (match1 && match1[1]) {
+      return match1[1].trim();
+    }
+    
+    // Try to extract opponent from "Opponent defeats Wrestler" pattern
+    const defeatedPattern = new RegExp(`([^\\s(]+)\\s*defeats\\s*${lowerWrestler}`, 'i');
+    const match2 = event.match(defeatedPattern);
+    if (match2 && match2[1]) {
+      return match2[1].trim();
+    }
+    
+    return 'Unknown';
+  };
+
+  // Helper function for future use
+  // const extractResult = (resultStr: string): 'win' | 'loss' | 'draw' | 'unknown' => {
+  //   const lower = resultStr.toLowerCase();
+  //   if (lower.includes('win') || lower.includes('defeat') || lower.includes('beat')) return 'win';
+  //   if (lower.includes('loss') || lower.includes('lost') || lower.includes('defeat')) return 'loss';
+  //   if (lower.includes('draw') || lower.includes('tie')) return 'draw';
+  //   return 'unknown';
+  // };
 
   const refreshData = async (): Promise<void> => {
     dispatch({ type: 'SET_LOADING', payload: true });
