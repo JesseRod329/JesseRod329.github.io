@@ -239,12 +239,20 @@ class WrestlingNewsAggregator:
         print("\nUpdating tweets...")
         try:
             import subprocess
-            result = subprocess.run(['python3', 'update-tweets.py'], 
+            # Try Twitter API first
+            result = subprocess.run(['python3', 'twitter-api.py'], 
                                   capture_output=True, text=True, cwd='.')
             if result.returncode == 0:
-                print("✅ Tweets updated successfully")
+                print("✅ Tweets updated via Twitter API")
             else:
-                print(f"❌ Tweet update failed: {result.stderr}")
+                print(f"❌ Twitter API failed: {result.stderr}")
+                # Fallback to RSS method
+                result2 = subprocess.run(['python3', 'update-tweets.py'], 
+                                      capture_output=True, text=True, cwd='.')
+                if result2.returncode == 0:
+                    print("✅ Tweets updated via RSS fallback")
+                else:
+                    print(f"❌ Tweet update failed: {result2.stderr}")
         except Exception as e:
             print(f"❌ Tweet update error: {e}")
         
