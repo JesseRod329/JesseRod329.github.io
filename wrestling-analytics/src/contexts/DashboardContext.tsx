@@ -178,135 +178,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     ];
   };
 
-  const parseCSV = async (filename: string): Promise<MatchData[]> => {
-    try {
-      console.log(`Loading ${filename}...`);
-      const response = await fetch(`https://raw.githubusercontent.com/JesseRod329/JesseRod329.github.io/main/wresltedash/${filename}`);
-      if (!response.ok) {
-        console.warn(`Failed to load ${filename}: ${response.status}`);
-        return [];
-      }
-      
-      const text = await response.text();
-      const lines = text.split('\n').filter(line => line.trim());
-      
-      if (lines.length < 2) return [];
-      
-      const matches: MatchData[] = [];
-      const wrestlerName = filename.replace('_matches.csv', '').replace(/_/g, ' ');
-      
-      for (let i = 1; i < lines.length; i++) {
-        const line = lines[i];
-        // Split by comma but handle quoted fields properly
-        const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
-        
-        if (values.length >= 4) {
-          const date = values[1]; // Second column is date
-          const event = values[3]; // Fourth column is event description
-          
-          // Parse date (format: 08.09.2025)
-          let parsedDate: Date | null = null;
-          let year = 2023;
-          
-          if (date && date.includes('.')) {
-            const dateParts = date.split('.');
-            if (dateParts.length === 3) {
-              const day = parseInt(dateParts[0]);
-              const month = parseInt(dateParts[1]);
-              const yearStr = dateParts[2];
-              year = parseInt(yearStr);
-              parsedDate = new Date(year, month - 1, day);
-            }
-          }
-          
-          // Extract result from event description
-          const result = extractResultFromEvent(event, wrestlerName);
-          
-          // Extract promotion from event
-          const promotion = extractPromotion(event);
-          
-          // Extract opponent from event
-          const opponent = extractOpponent(event, wrestlerName);
-          
-          const match: MatchData = {
-            date: date || 'Unknown',
-            parsedDate: parsedDate || new Date(),
-            year,
-            wrestler: wrestlerName,
-            opponent: opponent || 'Unknown',
-            result,
-            event: event || 'Unknown Event',
-            promotion,
-            location: values[4] || 'Unknown',
-            matchTime: '0:00' // Default since not in CSV
-          };
-          
-          matches.push(match);
-        }
-      }
-      
-      console.log(`Loaded ${matches.length} matches for ${wrestlerName}`);
-      return matches;
-    } catch (error) {
-      console.error(`Error loading ${filename}:`, error);
-      return [];
-    }
-  };
 
-  const extractPromotion = (event: string): string => {
-    if (event.toLowerCase().includes('wwe')) return 'WWE';
-    if (event.toLowerCase().includes('aew')) return 'AEW';
-    if (event.toLowerCase().includes('njpw')) return 'NJPW';
-    if (event.toLowerCase().includes('tna') || event.toLowerCase().includes('impact')) return 'TNA';
-    return 'Independent';
-  };
-
-  const extractResultFromEvent = (event: string, wrestlerName: string): 'win' | 'loss' | 'draw' | 'unknown' => {
-    if (!event || !wrestlerName) return 'unknown';
-    
-    const lowerEvent = event.toLowerCase();
-    const lowerWrestler = wrestlerName.toLowerCase();
-    
-    // Check for win patterns
-    if (lowerEvent.includes(`${lowerWrestler}defeats`) || 
-        lowerEvent.includes(`${lowerWrestler} defeats`) ||
-        lowerEvent.includes(`${lowerWrestler}defeated`) ||
-        lowerEvent.includes(`${lowerWrestler} defeated`)) {
-      return 'win';
-    }
-    
-    // Check for loss patterns (someone defeats this wrestler)
-    if (lowerEvent.includes(`defeats${lowerWrestler}`) || 
-        lowerEvent.includes(`defeats ${lowerWrestler}`) ||
-        lowerEvent.includes(`defeated${lowerWrestler}`) ||
-        lowerEvent.includes(`defeated ${lowerWrestler}`)) {
-      return 'loss';
-    }
-    
-    return 'unknown';
-  };
-
-  const extractOpponent = (event: string, wrestlerName: string): string => {
-    if (!event || !wrestlerName) return 'Unknown';
-    
-    const lowerWrestler = wrestlerName.toLowerCase();
-    
-    // Try to extract opponent from "Wrestler defeats Opponent" pattern
-    const defeatsPattern = new RegExp(`${lowerWrestler}\\s*defeats\\s*([^\\s(]+)`, 'i');
-    const match1 = event.match(defeatsPattern);
-    if (match1 && match1[1]) {
-      return match1[1].trim();
-    }
-    
-    // Try to extract opponent from "Opponent defeats Wrestler" pattern
-    const defeatedPattern = new RegExp(`([^\\s(]+)\\s*defeats\\s*${lowerWrestler}`, 'i');
-    const match2 = event.match(defeatedPattern);
-    if (match2 && match2[1]) {
-      return match2[1].trim();
-    }
-    
-    return 'Unknown';
-  };
 
   // Helper function for future use
   // const extractResult = (resultStr: string): 'win' | 'loss' | 'draw' | 'unknown' => {
@@ -320,63 +192,39 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const refreshData = async (): Promise<void> => {
     dispatch({ type: 'SET_LOADING', payload: true });
     try {
-      console.log('Loading ALL 594 wrestlers...');
+      console.log('Loading wrestler directory...');
       
-      // Get all wrestler files (594 total)
+      // Just load wrestler names and basic info first (no match data yet)
       const wrestlerFiles = await getAllWrestlerFiles();
       console.log(`Found ${wrestlerFiles.length} wrestler files`);
       
-      const allMatches: MatchData[] = [];
-      const wrestlers: WrestlerProfile[] = [];
+      // Create wrestler profiles with basic info only
+      const wrestlers: WrestlerProfile[] = wrestlerFiles.map(file => {
+        const wrestlerName = file.replace('_matches.csv', '').replace(/_/g, ' ');
+        return {
+          name: wrestlerName,
+          totalMatches: 0, // Will load on demand
+          wins: 0,
+          losses: 0,
+          draws: 0,
+          winRate: 0,
+          matches: [], // Empty initially
+          promotion: 'Unknown', // Will determine when loading matches
+          lastMatch: new Date(),
+          filename: file // Store filename for lazy loading
+        };
+      });
       
-      // Load data from ALL files with progress tracking
-      let loadedCount = 0;
-      const totalFiles = wrestlerFiles.length;
-      
-      for (const file of wrestlerFiles) {
-        try {
-          const matches = await parseCSV(file);
-          if (matches.length > 0) {
-            allMatches.push(...matches);
-            
-            const wrestlerName = file.replace('_matches.csv', '').replace(/_/g, ' ');
-            const wins = matches.filter(m => m.result === 'win').length;
-            const losses = matches.filter(m => m.result === 'loss').length;
-            const draws = matches.filter(m => m.result === 'draw').length;
-            
-            wrestlers.push({
-              name: wrestlerName,
-              totalMatches: matches.length,
-              wins,
-              losses,
-              draws,
-              winRate: matches.length > 0 ? Math.round((wins / matches.length) * 100) : 0,
-              matches,
-              promotion: extractPromotion(matches[0]?.event || ''),
-              lastMatch: matches[matches.length - 1]?.parsedDate,
-            });
-          }
-          
-          loadedCount++;
-          if (loadedCount % 50 === 0) {
-            console.log(`Loaded ${loadedCount}/${totalFiles} wrestlers...`);
-          }
-        } catch (error) {
-          console.warn(`Failed to load ${file}:`, error);
-          // Continue loading other files even if one fails
-        }
-      }
-      
-      dispatch({ type: 'SET_DATA', payload: allMatches });
       dispatch({ type: 'SET_WRESTLERS', payload: wrestlers });
       dispatch({ type: 'SET_LOADING', payload: false });
       
-      console.log(`✅ Successfully loaded ${allMatches.length} matches from ${wrestlers.length} wrestlers out of ${totalFiles} files`);
+      console.log(`✅ Loaded ${wrestlers.length} wrestlers (matches will load on demand)`);
     } catch (error) {
-      console.error('Error loading wrestler data:', error);
+      console.error('Error loading wrestler directory:', error);
       dispatch({ type: 'SET_ERROR', payload: error instanceof Error ? error.message : 'Unknown error' });
     }
   };
+
 
   const contextValue: DashboardContextType = {
     ...state,
