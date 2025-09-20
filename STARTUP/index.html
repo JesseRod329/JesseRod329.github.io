@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlayStation 2 Emulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            font-family: Arial, sans-serif;
+            color: white;
+            overflow: hidden;
+            cursor: none;
+        }
+
+        .screen {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background: radial-gradient(circle at center, #001133, #000000);
+        }
+
+        .startup-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: radial-gradient(circle at center, #001a3d, #000000);
+            position: relative;
+        }
+
+        .ps2-logo {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #4a9eff;
+            text-shadow: 0 0 20px #4a9eff;
+            animation: logoGlow 3s ease-in-out;
+            opacity: 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes logoGlow {
+            0% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .towers-container {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            opacity: 0;
+            animation: towersAppear 2s ease-in-out 1.5s forwards;
+        }
+
+        @keyframes towersAppear {
+            from { opacity: 0; transform: translateY(100px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tower {
+            width: 8px;
+            margin: 0 2px;
+            background: linear-gradient(to top, #4a9eff, #87ceeb);
+            box-shadow: 0 0 10px #4a9eff;
+            animation: towerGrow 0.5s ease-out forwards;
+            border-radius: 2px 2px 0 0;
+        }
+
+        @keyframes towerGrow {
+            from { height: 0; }
+        }
+
+        .main-menu {
+            display: none;
+            height: 100vh;
+            background: radial-gradient(ellipse at center, #002050, #000010);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(74, 158, 255, 0.1), transparent 50%),
+                radial-gradient(circle at 80% 30%, rgba(135, 206, 235, 0.1), transparent 50%);
+        }
+
+        .menu-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #4a9eff;
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+            opacity: 0.7;
+        }
+
+        @keyframes float {
+            from { transform: translateY(100vh) translateX(0); }
+            to { transform: translateY(-10px) translateX(20px); }
+        }
+
+        .menu-header {
+            position: absolute;
+            top: 40px;
+            left: 60px;
+            font-size: 1.2rem;
+            color: #87ceeb;
+            text-shadow: 0 0 10px rgba(135, 206, 235, 0.5);
+        }
+
+        .menu-items {
+            position: absolute;
+            left: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            padding-left: 20px;
+            margin-bottom: 5px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .menu-item:hover, .menu-item.selected {
+            color: #4a9eff;
+            border-left-color: #4a9eff;
+            text-shadow: 0 0 10px #4a9eff;
+            transform: translateX(10px);
+            background: rgba(74, 158, 255, 0.1);
+        }
+
+        .menu-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+            background: #4a9eff;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            box-shadow: 0 0 8px rgba(74, 158, 255, 0.5);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .settings-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 500px;
+            background: rgba(0, 32, 80, 0.2);
+            border: 1px solid rgba(74, 158, 255, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(20px);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 1001;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(74, 158, 255, 0.3);
+        }
+
+        .close-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #87ceeb;
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .close-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #4a9eff;
+            color: #4a9eff;
+            transform: scale(1.1);
+        }
+
+        .launch-button {
+            background: linear-gradient(135deg, #4a9eff, #87ceeb);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 158, 255, 0.3);
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .launch-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 158, 255, 0.4);
+        }
+
+        .settings-title {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: #87ceeb;
+            border-bottom: 1px solid rgba(74, 158, 255, 0.3);
+            padding-bottom: 10px;
+            text-shadow: 0 0 5px rgba(135, 206, 235, 0.5);
+        }
+
+        .setting-item {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .setting-label {
+            font-size: 0.9rem;
+            color: #ccc;
+            flex: 1;
+        }
+
+        .setting-control {
+            background: rgba(74, 158, 255, 0.2);
+            border: 1px solid #4a9eff;
+            border-radius: 4px;
+            padding: 5px 10px;
+            color: white;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .setting-control:hover {
+            background: rgba(74, 158, 255, 0.4);
+            box-shadow: 0 0 10px rgba(74, 158, 255, 0.5);
+        }
+
+        .skip-button {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(74, 158, 255, 0.2);
+            border: 1px solid #4a9eff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .skip-button:hover {
+            background: rgba(74, 158, 255, 0.4);
+            box-shadow: 0 0 15px rgba(74, 158, 255, 0.5);
+        }
+
+        .time-display {
+            position: absolute;
+            top: 40px;
+            right: 60px;
+            font-size: 1rem;
+            color: #87ceeb;
+            text-shadow: 0 0 5px rgba(135, 206, 235, 0.5);
+        }
+
+        .click-ripple {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: rgba(74, 158, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: ripple 0.5s ease-out;
+            z-index: 1000;
+        }
+
+        @keyframes ripple {
+            from { transform: scale(1); opacity: 1; }
+            to { transform: scale(3); opacity: 0; }
+        }
+
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #4a9eff, transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+        }
+
+        .audio-visualizer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            opacity: 0;
+            animation: audioVisualizerAppear 1s ease-in-out 2s forwards;
+        }
+
+        @keyframes audioVisualizerAppear {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .audio-bar {
+            width: 4px;
+            margin: 0 1px;
+            background: linear-gradient(to top, #4a9eff, #87ceeb);
+            border-radius: 2px 2px 0 0;
+            animation: audioPulse 0.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes audioPulse {
+            from { height: 20px; }
+            to { height: 60px; }
+        }
+
+        @media (max-width: 768px) {
+            .ps2-logo { font-size: 2.5rem; }
+            .menu-items { left: 30px; }
+            .settings-panel { 
+                width: 95%;
+                max-width: 400px;
+                padding: 20px;
+            }
+            .menu-header, .time-display { left: 30px; right: 30px; }
+            .skip-button { bottom: 20px; right: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor" id="cursor"></div>
+    
+    <div class="screen">
+        <!-- Startup Screen -->
+        <div class="startup-screen" id="startupScreen">
+            <div class="ps2-logo" id="logo">JESSE RODRIGUEZ</div>
+            <div class="towers-container" id="towersContainer"></div>
+            <div class="audio-visualizer" id="audioVisualizer"></div>
+            <button class="skip-button" onclick="skipToMenu()">Press X to Skip</button>
+        </div>
+
+        <!-- Main Menu -->
+        <div class="main-menu" id="mainMenu">
+            <div class="menu-background"></div>
+            <div class="menu-particles" id="particles"></div>
+            
+            <div class="menu-header">Browser</div>
+            <div class="time-display" id="timeDisplay"></div>
+
+            <div class="menu-items">
+                <div class="menu-item selected" data-menu="portfolio">
+                    <div class="menu-icon">🚀</div>
+                    Portfolio Hub
+                </div>
+                <div class="menu-item" data-menu="planner">
+                    <div class="menu-icon">⏰</div>
+                    Circular Daily Planner
+                </div>
+                <div class="menu-item" data-menu="prd">
+                    <div class="menu-icon">📋</div>
+                    PRD Creator (AI-Powered)
+                </div>
+                <div class="menu-item" data-menu="wrestling">
+                    <div class="menu-icon">🤼</div>
+                    Wrestling News Hub
+                </div>
+                <div class="menu-item" data-menu="brainwave">
+                    <div class="menu-icon">🧠</div>
+                    AI Brainwave Simulator
+                </div>
+                <div class="menu-item" data-menu="fashion">
+                    <div class="menu-icon">🎨</div>
+                    Fashion Palette Generator
+                </div>
+                <div class="menu-item" data-menu="trends">
+                    <div class="menu-icon">📊</div>
+                    Google Trends Dashboard
+                </div>
+            </div>
+
+            <!-- Modal Overlay -->
+            <div class="modal-overlay" id="modalOverlay">
+                <div class="settings-panel" id="settingsPanel">
+                    <div class="modal-header">
+                        <div class="settings-title" id="modalTitle">Project Details</div>
+                        <div class="close-button" id="closeButton">×</div>
+                    </div>
+                    <div id="modalContent">
+                        <!-- Content will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let startupTimeout;
+        let selectedMenuItem = 0;
+        let timeInterval;
+        let audioContext;
+        let audioBuffer;
+        let isPlaying = false;
+        const menuItems = document.querySelectorAll('.menu-item');
+        const cursor = document.getElementById('cursor');
+
+        // Custom cursor movement
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX - 10 + 'px';
+            cursor.style.top = e.clientY - 10 + 'px';
+        });
+
+        // Initialize Web Audio API
+        function initAudio() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                createStartupSound();
+            } catch (e) {
+                console.log('Web Audio API not supported');
+            }
+        }
+
+        // Create synthetic dial-up modem sound
+        function createStartupSound() {
+            if (!audioContext) return;
+            
+            const duration = 4; // 4 seconds to match animation
+            const sampleRate = audioContext.sampleRate;
+            const length = sampleRate * duration;
+            const buffer = audioContext.createBuffer(1, length, sampleRate);
+            const data = buffer.getChannelData(0);
+            
+            // Create authentic dial-up modem sequence
+            for (let i = 0; i < length; i++) {
+                const t = i / sampleRate;
+                let sample = 0;
+                
+                // Initial dial tone (0-0.5s)
+                if (t < 0.5) {
+                    sample = (Math.sin(2 * Math.PI * 350 * t) + Math.sin(2 * Math.PI * 440 * t)) * 0.3;
+                }
+                // First dial sequence (0.5-1s) - 9
+                else if (t < 1) {
+                    const dialTime = (t - 0.5) * 2;
+                    if (dialTime < 0.1) {
+                        sample = Math.sin(2 * Math.PI * 800 * t) * 0.4;
+                    } else if (dialTime < 0.2) {
+                        sample = Math.sin(2 * Math.PI * 1000 * t) * 0.4;
+                    } else if (dialTime < 0.3) {
+                        sample = Math.sin(2 * Math.PI * 1200 * t) * 0.4;
+                    } else if (dialTime < 0.4) {
+                        sample = Math.sin(2 * Math.PI * 1400 * t) * 0.4;
+                    } else if (dialTime < 0.5) {
+                        sample = Math.sin(2 * Math.PI * 1600 * t) * 0.4;
+                    }
+                }
+                // Second dial sequence (1-1.5s) - 5
+                else if (t < 1.5) {
+                    const dialTime = (t - 1) * 2;
+                    if (dialTime < 0.1) {
+                        sample = Math.sin(2 * Math.PI * 800 * t) * 0.4;
+                    } else if (dialTime < 0.2) {
+                        sample = Math.sin(2 * Math.PI * 1000 * t) * 0.4;
+                    } else if (dialTime < 0.3) {
+                        sample = Math.sin(2 * Math.PI * 1200 * t) * 0.4;
+                    } else if (dialTime < 0.4) {
+                        sample = Math.sin(2 * Math.PI * 1400 * t) * 0.4;
+                    }
+                }
+                // Third dial sequence (1.5-2s) - 5
+                else if (t < 2) {
+                    const dialTime = (t - 1.5) * 2;
+                    if (dialTime < 0.1) {
+                        sample = Math.sin(2 * Math.PI * 800 * t) * 0.4;
+                    } else if (dialTime < 0.2) {
+                        sample = Math.sin(2 * Math.PI * 1000 * t) * 0.4;
+                    } else if (dialTime < 0.3) {
+                        sample = Math.sin(2 * Math.PI * 1200 * t) * 0.4;
+                    } else if (dialTime < 0.4) {
+                        sample = Math.sin(2 * Math.PI * 1400 * t) * 0.4;
+                    }
+                }
+                // Fourth dial sequence (2-2.5s) - 5
+                else if (t < 2.5) {
+                    const dialTime = (t - 2) * 2;
+                    if (dialTime < 0.1) {
+                        sample = Math.sin(2 * Math.PI * 800 * t) * 0.4;
+                    } else if (dialTime < 0.2) {
+                        sample = Math.sin(2 * Math.PI * 1000 * t) * 0.4;
+                    } else if (dialTime < 0.3) {
+                        sample = Math.sin(2 * Math.PI * 1200 * t) * 0.4;
+                    } else if (dialTime < 0.4) {
+                        sample = Math.sin(2 * Math.PI * 1400 * t) * 0.4;
+                    }
+                }
+                // Fifth dial sequence (2.5-3s) - 5
+                else if (t < 3) {
+                    const dialTime = (t - 2.5) * 2;
+                    if (dialTime < 0.1) {
+                        sample = Math.sin(2 * Math.PI * 800 * t) * 0.4;
+                    } else if (dialTime < 0.2) {
+                        sample = Math.sin(2 * Math.PI * 1000 * t) * 0.4;
+                    } else if (dialTime < 0.3) {
+                        sample = Math.sin(2 * Math.PI * 1200 * t) * 0.4;
+                    } else if (dialTime < 0.4) {
+                        sample = Math.sin(2 * Math.PI * 1400 * t) * 0.4;
+                    }
+                }
+                // Sixth dial sequence (3-3.5s) - 5
+                else if (t < 3.5) {
+                    const dialTime = (t - 3) * 2;
+                    if (dialTime < 0.1) {
+                        sample = Math.sin(2 * Math.PI * 800 * t) * 0.4;
+                    } else if (dialTime < 0.2) {
+                        sample = Math.sin(2 * Math.PI * 1000 * t) * 0.4;
+                    } else if (dialTime < 0.3) {
+                        sample = Math.sin(2 * Math.PI * 1200 * t) * 0.4;
+                    } else if (dialTime < 0.4) {
+                        sample = Math.sin(2 * Math.PI * 1400 * t) * 0.4;
+                    }
+                }
+                // Seventh dial sequence (3.5-4s) - 5
+                else if (t < 4) {
+                    const dialTime = (t - 3.5) * 2;
+                    if (dialTime < 0.1) {
+                        sample = Math.sin(2 * Math.PI * 800 * t) * 0.4;
+                    } else if (dialTime < 0.2) {
+                        sample = Math.sin(2 * Math.PI * 1000 * t) * 0.4;
+                    } else if (dialTime < 0.3) {
+                        sample = Math.sin(2 * Math.PI * 1200 * t) * 0.4;
+                    } else if (dialTime < 0.4) {
+                        sample = Math.sin(2 * Math.PI * 1400 * t) * 0.4;
+                    }
+                }
+                
+                // Add some noise and crackling for authenticity
+                sample += (Math.random() - 0.5) * 0.05;
+                
+                data[i] = sample;
+            }
+            
+            audioBuffer = buffer;
+        }
+
+        // Play startup sound
+        function playStartupSound() {
+            if (!audioContext || !audioBuffer || isPlaying) return;
+            
+            isPlaying = true;
+            const source = audioContext.createBufferSource();
+            source.buffer = audioBuffer;
+            source.connect(audioContext.destination);
+            source.start();
+            
+            // Start audio visualizer
+            startAudioVisualizer();
+            
+            source.onended = () => {
+                isPlaying = false;
+            };
+        }
+
+        // Create audio visualizer bars
+        function createAudioVisualizer() {
+            const container = document.getElementById('audioVisualizer');
+            for (let i = 0; i < 50; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'audio-bar';
+                bar.style.animationDelay = (i * 0.1) + 's';
+                bar.style.animationDuration = (0.3 + Math.random() * 0.4) + 's';
+                container.appendChild(bar);
+            }
+        }
+
+        // Start audio visualizer animation
+        function startAudioVisualizer() {
+            const bars = document.querySelectorAll('.audio-bar');
+            bars.forEach((bar, index) => {
+                setTimeout(() => {
+                    bar.style.animationPlayState = 'running';
+                }, index * 50);
+            });
+        }
+
+        // Generate audio towers animation
+        function createTowers() {
+            const container = document.getElementById('towersContainer');
+            for (let i = 0; i < 100; i++) {
+                const tower = document.createElement('div');
+                tower.className = 'tower';
+                const height = Math.random() * 200 + 50;
+                tower.style.height = height + 'px';
+                tower.style.animationDelay = (i * 0.05) + 's';
+                container.appendChild(tower);
+            }
+        }
+
+        // Create floating particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (4 + Math.random() * 4) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Update time display
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const dateString = now.toLocaleDateString();
+            document.getElementById('timeDisplay').textContent = `${timeString} ${dateString}`;
+        }
+
+        // Skip to main menu
+        function skipToMenu() {
+            clearTimeout(startupTimeout);
+            document.getElementById('startupScreen').style.display = 'none';
+            document.getElementById('mainMenu').style.display = 'block';
+            createParticles();
+            updateTime();
+            timeInterval = setInterval(updateTime, 1000);
+        }
+
+        // Menu navigation
+        function selectMenuItem(index) {
+            menuItems.forEach((item, i) => {
+                item.classList.toggle('selected', i === index);
+            });
+            selectedMenuItem = index;
+            updateSettingsPanel();
+        }
+
+        // Update settings panel based on selected menu item
+        function updateSettingsPanel() {
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+            const menuTypes = ['portfolio', 'planner', 'prd', 'wrestling', 'brainwave', 'fashion', 'trends'];
+            const selectedType = menuTypes[selectedMenuItem];
+            
+            // Show the modal with smooth transition
+            modalOverlay.classList.add('visible');
+            
+            const titles = {
+                portfolio: 'Portfolio Hub',
+                planner: 'Circular Daily Planner',
+                prd: 'PRD Creator (AI-Powered)',
+                wrestling: 'Wrestling News Hub',
+                brainwave: 'AI Brainwave Simulator',
+                fashion: 'Fashion Palette Generator',
+                trends: 'Google Trends Dashboard'
+            };
+            
+            modalTitle.textContent = titles[selectedType];
+            
+            let panelContent = '';
+            let launchUrl = '';
+            
+            switch(selectedType) {
+                case 'portfolio':
+                    panelContent = `
+                        <div class="setting-item">
+                            <span class="setting-label">Status</span>
+                            <span class="setting-control">Live & Active</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Projects</span>
+                            <span class="setting-control">7+ Applications</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Tech Stack</span>
+                            <span class="setting-control">React, Vue, AI</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Visit Site</span>
+                            <span class="setting-control">jesserodriguez.me</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Features</span>
+                            <span class="setting-control">CLI + Visual UI</span>
+                        </div>
+                    `;
+                    launchUrl = 'https://jesserodriguez.me';
+                    break;
+                    
+                case 'planner':
+                    panelContent = `
+                        <div class="setting-item">
+                            <span class="setting-label">Type</span>
+                            <span class="setting-control">Circular Interface</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Modes</span>
+                            <span class="setting-control">Light & Dark</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Features</span>
+                            <span class="setting-control">Time Management</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">PWA Ready</span>
+                            <span class="setting-control">Yes</span>
+                        </div>
+                    `;
+                    launchUrl = 'https://jesserodriguez.me/planner/';
+                    break;
+                    
+                case 'prd':
+                    panelContent = `
+                        <div class="setting-item">
+                            <span class="setting-label">AI Engine</span>
+                            <span class="setting-control">Google Gemini</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Purpose</span>
+                            <span class="setting-control">PRD Generation</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Framework</span>
+                            <span class="setting-control">React + TypeScript</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Input</span>
+                            <span class="setting-control">Vague Ideas</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Output</span>
+                            <span class="setting-control">Professional PRD</span>
+                        </div>
+                    `;
+                    launchUrl = 'https://jesserodriguez.me/PRD%20MAKER/';
+                    break;
+                    
+                case 'wrestling':
+                    panelContent = `
+                        <div class="setting-item">
+                            <span class="setting-label">Source</span>
+                            <span class="setting-control">X/Twitter API</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Content</span>
+                            <span class="setting-control">Raw & SmackDown</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Features</span>
+                            <span class="setting-control">Live Ticker</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Design</span>
+                            <span class="setting-control">X.com Aesthetic</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Updates</span>
+                            <span class="setting-control">Real-time</span>
+                        </div>
+                    `;
+                    launchUrl = 'https://jesserodriguez.me/wrestling-news/';
+                    break;
+                    
+                case 'brainwave':
+                    panelContent = `
+                        <div class="setting-item">
+                            <span class="setting-label">Privacy</span>
+                            <span class="setting-control">100% Local</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Processing</span>
+                            <span class="setting-control">Client-side Only</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Style</span>
+                            <span class="setting-control">Cyberpunk UI</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Data</span>
+                            <span class="setting-control">Zero Tracking</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Visualization</span>
+                            <span class="setting-control">Neural Activity</span>
+                        </div>
+                    `;
+                    launchUrl = 'https://jesserodriguez.me/brainwave-simulator/';
+                    break;
+                    
+                case 'fashion':
+                    panelContent = `
+                        <div class="setting-item">
+                            <span class="setting-label">Input</span>
+                            <span class="setting-control">Image Upload</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Output</span>
+                            <span class="setting-control">Color Palettes</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Types</span>
+                            <span class="setting-control">Dominant & Complementary</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Interface</span>
+                            <span class="setting-control">Drag & Drop</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Use Case</span>
+                            <span class="setting-control">Fashion Design</span>
+                        </div>
+                    `;
+                    launchUrl = 'https://jesserodriguez.me/fashion-palette/';
+                    break;
+                    
+                case 'trends':
+                    panelContent = `
+                        <div class="setting-item">
+                            <span class="setting-label">Data Source</span>
+                            <span class="setting-control">Google Trends API</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Interface</span>
+                            <span class="setting-control">Retro Terminal</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Updates</span>
+                            <span class="setting-control">Live Real-time</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Framework</span>
+                            <span class="setting-control">React Dashboard</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Features</span>
+                            <span class="setting-control">Interactive Charts</span>
+                        </div>
+                    `;
+                    launchUrl = 'https://jesserodriguez.me/trends/';
+                    break;
+            }
+            
+            // Add launch button
+            panelContent += `<button class="launch-button" onclick="window.open('${launchUrl}', '_blank')">🚀 Launch Project</button>`;
+            
+            modalContent.innerHTML = panelContent;
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('mainMenu').style.display === 'block') {
+                switch(e.key) {
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        selectMenuItem(Math.max(0, selectedMenuItem - 1));
+                        break;
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        selectMenuItem(Math.min(menuItems.length - 1, selectedMenuItem + 1));
+                        break;
+                    case 'Enter':
+                        e.preventDefault();
+                        // Handle enter key for selected menu item
+                        break;
+                }
+            }
+            
+            // Skip startup with X key
+            if (e.key.toLowerCase() === 'x' && document.getElementById('startupScreen').style.display !== 'none') {
+                skipToMenu();
+            }
+        });
+
+        // Menu item click handlers
+        menuItems.forEach((item, index) => {
+            item.addEventListener('click', () => selectMenuItem(index));
+        });
+
+        // Close button functionality
+        document.getElementById('closeButton').addEventListener('click', () => {
+            document.getElementById('modalOverlay').classList.remove('visible');
+        });
+
+        // Close modal when clicking overlay
+        document.getElementById('modalOverlay').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('modalOverlay')) {
+                document.getElementById('modalOverlay').classList.remove('visible');
+            }
+        });
+
+        // Click effects
+        document.addEventListener('click', (e) => {
+            // Create ripple effect
+            const ripple = document.createElement('div');
+            ripple.className = 'click-ripple';
+            ripple.style.left = e.clientX - 10 + 'px';
+            ripple.style.top = e.clientY - 10 + 'px';
+            document.body.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 500);
+        });
+
+        // Initialize startup sequence
+        createTowers();
+        createAudioVisualizer();
+        initAudio();
+        
+        // Play startup sound after a short delay
+        setTimeout(() => {
+            playStartupSound();
+        }, 500);
+        
+        // Auto-advance to main menu after 4 seconds
+        startupTimeout = setTimeout(() => {
+            skipToMenu();
+        }, 4000);
+
+        // Add touch support for mobile
+        let touchStartY = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            const touchEndY = e.changedTouches[0].clientY;
+            const diff = touchStartY - touchEndY;
+            
+            if (Math.abs(diff) > 50) { // Minimum swipe distance
+                if (diff > 0) { // Swipe up
+                    selectMenuItem(Math.max(0, selectedMenuItem - 1));
+                } else { // Swipe down
+                    selectMenuItem(Math.min(menuItems.length - 1, selectedMenuItem + 1));
+                }
+            }
+        });
+    </script>
+</body>
+</html>
