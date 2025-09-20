@@ -411,15 +411,75 @@
         }
 
         @media (max-width: 768px) {
-            .ps2-logo { font-size: 2.5rem; }
-            .menu-items { left: 30px; }
+            .ps2-logo { 
+                font-size: 2.5rem; 
+                margin-top: 20px;
+            }
+            .menu-items { 
+                left: 30px; 
+                top: 45%;
+            }
             .settings-panel { 
                 width: 95%;
                 max-width: 400px;
                 padding: 20px;
             }
-            .menu-header, .time-display { left: 30px; right: 30px; }
-            .skip-button { bottom: 20px; right: 20px; }
+            .menu-header { 
+                left: 30px; 
+                right: 30px;
+                top: 20px;
+                font-size: 1rem;
+            }
+            .time-display { 
+                left: 30px; 
+                right: 30px;
+                top: 20px;
+                font-size: 0.9rem;
+                text-align: right;
+            }
+            .skip-button { 
+                bottom: 20px; 
+                right: 20px;
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+            .audio-hint {
+                bottom: 20px;
+                left: 20px;
+                padding: 8px 12px;
+                font-size: 0.7rem;
+            }
+            .startup-screen {
+                padding: 20px;
+                box-sizing: border-box;
+            }
+        }
+
+        /* Extra small screens */
+        @media (max-width: 480px) {
+            .ps2-logo { 
+                font-size: 2rem; 
+                margin-top: 10px;
+            }
+            .menu-header, .time-display {
+                top: 15px;
+                font-size: 0.85rem;
+            }
+            .menu-items {
+                top: 40%;
+                left: 20px;
+            }
+            .skip-button, .audio-hint {
+                bottom: 15px;
+                padding: 6px 12px;
+                font-size: 0.7rem;
+            }
+            .skip-button {
+                right: 15px;
+            }
+            .audio-hint {
+                left: 15px;
+            }
         }
     </style>
 </head>
