@@ -114,6 +114,20 @@ if (location.protocol !== 'https:') {
     background: rgba(217,119,6,0.08);
     box-shadow: 0 10px 30px rgba(217,119,6,0.3), 0 0 20px rgba(217,119,6,0.2);
   }
+
+  .timezone-card {
+    border-left: 4px solid #667eea;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .timezone-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    border-color: #667eea;
+    background: rgba(102,126,234,0.08);
+    box-shadow: 0 10px 30px rgba(102,126,234,0.3), 0 0 20px rgba(102,126,234,0.2);
+  }
+
   .ui-card { border-left: 4px solid #2563eb; }
   .ui-card:hover { border-color: #2563eb; background: rgba(37,99,235,0.04); }
   .cli-card { border-left: 4px solid #10b981; }
@@ -125,6 +139,7 @@ if (location.protocol !== 'https:') {
   .fashion-card .title { color: #ffffff !important; }
   .philosophy-card .title { color: #ffffff !important; }
   .brainwave-card .title { color: #ffffff !important; }
+  .timezone-card .title { color: #ffffff !important; }
   .title { font-size: clamp(1.75rem, 3vw, 2.25rem); font-weight: 900; letter-spacing:-0.02em; margin-bottom: .5rem; }
   .subtitle { color:#bbb; margin-bottom:1rem; }
   .badge { display:inline-block; font-size:.7rem; letter-spacing:.08em; border:1px solid #444; padding:4px 8px; border-radius:999px; color:#ddd; }
@@ -1445,6 +1460,15 @@ if (location.protocol !== 'https:') {
           <div class="actions">
             <span class="btn primary">Open Simulator</span>
             <span class="btn">Canvas API · Scientific Accuracy · Privacy-First</span>
+          </div>
+        </a>
+        <a class="card interface-card timezone-card" href="/TIME/">
+          <div class="badge">GLOBAL</div>
+          <div class="title">WorldTime Beauty</div>
+          <div class="subtitle">Stunning global timezone display with real-time city clocks and time converter.</div>
+          <div class="actions">
+            <span class="btn primary">Explore Time</span>
+            <span class="btn">Real-time · Multi-zone · Visual</span>
           </div>
         </a>
       </div>
