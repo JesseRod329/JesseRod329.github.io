@@ -323,6 +323,26 @@
             box-shadow: 0 0 15px rgba(74, 158, 255, 0.5);
         }
 
+        .audio-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            background: rgba(74, 158, 255, 0.1);
+            border: 1px solid #4a9eff;
+            color: #87ceeb;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            z-index: 100;
+            opacity: 0.8;
+        }
+
+        .audio-hint:hover {
+            opacity: 1;
+            background: rgba(74, 158, 255, 0.2);
+        }
+
         .time-display {
             position: absolute;
             top: 40px;
@@ -412,6 +432,7 @@
             <div class="ps2-logo" id="logo">JESSE RODRIGUEZ</div>
             <div class="towers-container" id="towersContainer"></div>
             <div class="audio-visualizer" id="audioVisualizer"></div>
+            <div class="audio-hint" id="audioHint">Click anywhere to enable audio 🔊</div>
             <button class="skip-button" onclick="skipToMenu()">Press X to Skip</button>
         </div>
 
@@ -621,6 +642,19 @@
         function playStartupSound() {
             if (!audioContext || !audioBuffer || isPlaying) return;
             
+            // Resume audio context if suspended (required for autoplay policy)
+            if (audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    startAudioPlayback();
+                }).catch(e => {
+                    console.log('Audio context resume failed:', e);
+                });
+            } else {
+                startAudioPlayback();
+            }
+        }
+        
+        function startAudioPlayback() {
             isPlaying = true;
             const source = audioContext.createBufferSource();
             source.buffer = audioBuffer;
@@ -979,6 +1013,29 @@
         createTowers();
         createAudioVisualizer();
         initAudio();
+        
+        // Add click handler to enable audio (required for autoplay policy)
+        let audioEnabled = false;
+        function enableAudio() {
+            if (!audioEnabled && audioContext && audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    audioEnabled = true;
+                    console.log('Audio enabled by user interaction');
+                    // Hide the audio hint
+                    const audioHint = document.getElementById('audioHint');
+                    if (audioHint) {
+                        audioHint.style.opacity = '0';
+                        setTimeout(() => audioHint.style.display = 'none', 300);
+                    }
+                    // Try to play the startup sound now that audio is enabled
+                    playStartupSound();
+                });
+            }
+        }
+        
+        // Add click listener to any element to enable audio
+        document.addEventListener('click', enableAudio, { once: true });
+        document.addEventListener('keydown', enableAudio, { once: true });
         
         // Play startup sound after a short delay
         setTimeout(() => {
