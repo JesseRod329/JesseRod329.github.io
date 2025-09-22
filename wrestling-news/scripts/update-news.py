@@ -13,6 +13,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 import time
 import random
+import os
 
 class WrestlingNewsAggregator:
     def __init__(self):
@@ -218,15 +219,20 @@ class WrestlingNewsAggregator:
         for category, articles in self.news_by_category.items():
             print(f"  {category.upper()}: {len(articles)} articles")
         
+        # Resolve data directory relative to this script so CWD doesn't matter
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        data_dir = os.path.normpath(os.path.join(script_dir, '..', 'data'))
+        os.makedirs(data_dir, exist_ok=True)
+
         # Save unified wrestling news
-        with open('../data/wrestling-news.json', 'w', encoding='utf-8') as f:
+        with open(os.path.join(data_dir, 'wrestling-news.json'), 'w', encoding='utf-8') as f:
             json.dump(self.wrestling_news, f, indent=2, ensure_ascii=False)
         
         # Also save individual category files for backward compatibility
-        with open('../data/raw-news.json', 'w', encoding='utf-8') as f:
+        with open(os.path.join(data_dir, 'raw-news.json'), 'w', encoding='utf-8') as f:
             json.dump(self.news_by_category['wwe'], f, indent=2, ensure_ascii=False)
         
-        with open('../data/smackdown-news.json', 'w', encoding='utf-8') as f:
+        with open(os.path.join(data_dir, 'smackdown-news.json'), 'w', encoding='utf-8') as f:
             json.dump(self.news_by_category['aew'], f, indent=2, ensure_ascii=False)
 
     def run(self):
