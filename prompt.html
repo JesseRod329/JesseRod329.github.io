@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; script-src 'self' 'unsafe-inline'; object-src 'none'; media-src 'none'; child-src 'none'; form-action 'none'; base-uri 'self';">
+<title>Prompt Generator — Jesse Rodriguez</title>
+<style>
+  /* Reset & Basic Styles */
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #0a0a0a;
+    color: #e0e0e0;
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    background: #111;
+    border-bottom: 1px solid #222;
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    background: rgba(17, 17, 17, 0.95);
+  }
+
+  .header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: #999;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    font-size: 0.95rem;
+  }
+
+  .nav-links a:hover {
+    color: #fff;
+  }
+
+  /* Hero Section */
+  .hero {
+    text-align: center;
+    padding: 4rem 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: 1.25rem;
+    color: #999;
+    margin-bottom: 2rem;
+    font-weight: 300;
+  }
+
+  /* Prompt Generator Container */
+  .prompt-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2rem 4rem;
+  }
+
+  /* Category Tabs */
+  .category-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .category-tab {
+    padding: 0.75rem 1.5rem;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 100px;
+    color: #999;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .category-tab:hover {
+    background: #222;
+    color: #fff;
+    border-color: #444;
+  }
+
+  .category-tab.active {
+    background: #667eea;
+    color: #fff;
+    border-color: #667eea;
+  }
+
+  /* Prompt Builder */
+  .prompt-builder {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .input-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .input-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #ccc;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .text-input,
+  .textarea-input {
+    width: 100%;
+    background: #0a0a0a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: #fff;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s ease;
+  }
+
+  .text-input:focus,
+  .textarea-input:focus {
+    outline: none;
+    border-color: #667eea;
+  }
+
+  .textarea-input {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  /* Options Grid */
+  .options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .option-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+  }
+
+  .option-chip:hover {
+    background: #222;
+    border-color: #444;
+  }
+
+  .option-chip.selected {
+    background: #667eea;
+    border-color: #667eea;
+    color: #fff;
+  }
+
+  .option-chip input[type="checkbox"] {
+    display: none;
+  }
+
+  /* Generated Prompt */
+  .prompt-output {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 12px;
+    padding: 2rem;
+    position: relative;
+  }
+
+  .output-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+
+  .generated-prompt {
+    background: #0a0a0a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 1.5rem;
+    color: #fff;
+    font-size: 1rem;
+    line-height: 1.6;
+    min-height: 150px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  .generated-prompt:empty::before {
+    content: "Your generated prompt will appear here...";
+    color: #666;
+  }
+
+  /* Action Buttons */
+  .action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .btn-primary {
+    background: #667eea;
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background: #5a5fcf;
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background: #222;
+    color: #fff;
+    border: 1px solid #444;
+  }
+
+  .btn-secondary:hover {
+    background: #333;
+    border-color: #555;
+  }
+
+  /* Copy Success Toast */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: #4caf50;
+    color: #fff;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 1000;
+  }
+
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  /* Prompt Templates */
+  .templates-section {
+    margin-top: 4rem;
+  }
+
+  .templates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .template-card {
+    background: #111;
+    border: 1px solid #222;
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .template-card:hover {
+    border-color: #667eea;
+    transform: translateY(-2px);
+  }
+
+  .template-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #fff;
+  }
+
+  .template-description {
+    font-size: 0.875rem;
+    color: #999;
+    line-height: 1.5;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .header-content {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .nav-links {
+      gap: 1rem;
+    }
+
+    .category-tabs {
+      justify-content: flex-start;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 0.5rem;
+    }
+
+    .prompt-builder {
+      padding: 1.5rem;
+    }
+
+    .action-buttons {
+      flex-direction: column;
+    }
+
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .toast {
+      left: 1rem;
+      right: 1rem;
+      bottom: 1rem;
+    }
+  }
+
+  /* Loading Animation */
+  .loading {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    border-top: 1px solid #222;
+    margin-top: 4rem;
+  }
+
+  .footer p {
+    color: #666;
+    font-size: 0.875rem;
+  }
+
+  .footer a {
+    color: #999;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .footer a:hover {
+    color: #fff;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-content">
+    <a href="/" class="logo">Jesse Rodriguez</a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/#projects">Projects</a></li>
+        <li><a href="/prompt">Prompts</a></li>
+        <li><a href="/#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+  <h1>AI Prompt Generator</h1>
+  <p>Create powerful prompts for ChatGPT, Claude, and other AI models</p>
+</section>
+
+<!-- Prompt Generator -->
+<div class="prompt-container">
+  <!-- Category Tabs -->
+  <div class="category-tabs">
+    <button class="category-tab active" data-category="creative">Creative Writing</button>
+    <button class="category-tab" data-category="coding">Coding & Development</button>
+    <button class="category-tab" data-category="business">Business & Marketing</button>
+    <button class="category-tab" data-category="education">Education & Learning</button>
+    <button class="category-tab" data-category="custom">Custom Prompt</button>
+  </div>
+
+  <!-- Prompt Builder -->
+  <div class="prompt-builder">
+    <div class="input-group">
+      <label class="input-label">Task Description</label>
+      <textarea class="textarea-input" id="taskInput" placeholder="Describe what you want the AI to do..."></textarea>
+    </div>
+
+    <div class="input-group" id="toneGroup">
+      <label class="input-label">Tone & Style</label>
+      <div class="options-grid">
+        <label class="option-chip">
+          <input type="checkbox" value="professional">
+          <span>Professional</span>
+        </label>
+        <label class="option-chip">
+          <input type="checkbox" value="casual">
+          <span>Casual</span>
+        </label>
+        <label class="option-chip">
+          <input type="checkbox" value="creative">
+          <span>Creative</span>
+        </label>
+        <label class="option-chip">
+          <input type="checkbox" value="technical">
+          <span>Technical</span>
+        </label>
+        <label class="option-chip">
+          <input type="checkbox" value="friendly">
+          <span>Friendly</span>
+        </label>
+        <label class="option-chip">
+          <input type="checkbox" value="formal">
+          <span>Formal</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="input-group" id="constraintsGroup">
+      <label class="input-label">Constraints & Requirements</label>
+      <div class="options-grid">
+        <label class="option-chip">
+          <input type="checkbox" value="concise">
+          <span>Keep it concise</span>
+        </label>
+        <label class="option-chip">
+          <input type="checkbox" value="detailed">
+          <span>Provide details</span>
+        </label>
+        <label class="option-chip">
+          <input type="checkbox" value="examples">
+          <span>Include examples</span>
+        </label>
+        <label class="option-chip">
+          <input type="checkbox" value="step-by-step">
+          <span>Step-by-step</span>
+        </label>
+        <label class="option-chip">
+          <input type="checkbox" value="beginner-friendly">
+          <span>Beginner-friendly</span>
+        </label>
+        <label class="option-chip">
+          <input type="checkbox" value="expert-level">
+          <span>Expert level</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label class="input-label">Additional Context (Optional)</label>
+      <textarea class="textarea-input" id="contextInput" placeholder="Add any additional context or specific requirements..."></textarea>
+    </div>
+  </div>
+
+  <!-- Generated Prompt Output -->
+  <div class="prompt-output">
+    <div class="output-label">Generated Prompt</div>
+    <div class="generated-prompt" id="generatedPrompt"></div>
+    <div class="action-buttons">
+      <button class="btn btn-primary" id="generateBtn">
+        <span>Generate Prompt</span>
+      </button>
+      <button class="btn btn-secondary" id="copyBtn">
+        <span>Copy to Clipboard</span>
+      </button>
+      <button class="btn btn-secondary" id="clearBtn">
+        <span>Clear All</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Prompt Templates -->
+  <section class="templates-section">
+    <h2 style="font-size: 2rem; margin-bottom: 1rem; text-align: center;">Popular Templates</h2>
+    <div class="templates-grid">
+      <div class="template-card" data-template="blog-post">
+        <h3 class="template-title">Blog Post Writer</h3>
+        <p class="template-description">Generate engaging blog posts with SEO optimization and proper structure</p>
+      </div>
+      <div class="template-card" data-template="code-review">
+        <h3 class="template-title">Code Review Assistant</h3>
+        <p class="template-description">Get detailed code reviews with suggestions for improvements</p>
+      </div>
+      <div class="template-card" data-template="marketing-copy">
+        <h3 class="template-title">Marketing Copy</h3>
+        <p class="template-description">Create compelling marketing copy that converts</p>
+      </div>
+      <div class="template-card" data-template="lesson-plan">
+        <h3 class="template-title">Lesson Plan Creator</h3>
+        <p class="template-description">Design comprehensive lesson plans for any subject</p>
+      </div>
+      <div class="template-card" data-template="story-writer">
+        <h3 class="template-title">Creative Story Writer</h3>
+        <p class="template-description">Generate creative stories with rich characters and plots</p>
+      </div>
+      <div class="template-card" data-template="data-analysis">
+        <h3 class="template-title">Data Analysis Helper</h3>
+        <p class="template-description">Analyze data and generate insights with visualizations</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast">Prompt copied to clipboard!</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <p>&copy; 2025 Jesse Rodriguez. All rights reserved.</p>
+  <p><a href="/">Back to Home</a> | <a href="mailto:jesse@jesserodriguez.me">Contact</a></p>
+</footer>
+
+<script>
+// Prompt Generator Logic
+const promptGenerator = {
+  categories: {
+    creative: {
+      prefix: "You are a creative writing assistant. ",
+      suggestions: ["Write a", "Create a", "Develop a", "Craft a"]
+    },
+    coding: {
+      prefix: "You are an expert programmer. ",
+      suggestions: ["Write code to", "Create a function that", "Build a", "Implement"]
+    },
+    business: {
+      prefix: "You are a business strategy expert. ",
+      suggestions: ["Analyze", "Create a strategy for", "Develop a plan to", "Optimize"]
+    },
+    education: {
+      prefix: "You are an educational expert. ",
+      suggestions: ["Explain", "Teach", "Create a lesson about", "Simplify"]
+    },
+    custom: {
+      prefix: "",
+      suggestions: []
+    }
+  },
+
+  templates: {
+    'blog-post': {
+      task: "Write a comprehensive blog post about [TOPIC]",
+      tone: ["professional", "friendly"],
+      constraints: ["detailed", "examples", "step-by-step"],
+      context: "Include an engaging introduction, main points with subheadings, practical examples, and a compelling conclusion. Optimize for SEO with relevant keywords."
+    },
+    'code-review': {
+      task: "Review the following code and provide detailed feedback",
+      tone: ["technical", "professional"],
+      constraints: ["detailed", "examples", "step-by-step"],
+      context: "Focus on code quality, performance, security, and best practices. Suggest specific improvements with code examples."
+    },
+    'marketing-copy': {
+      task: "Create compelling marketing copy for [PRODUCT/SERVICE]",
+      tone: ["professional", "creative"],
+      constraints: ["concise", "examples"],
+      context: "Focus on benefits over features, include a clear call-to-action, and use persuasive language that resonates with the target audience."
+    },
+    'lesson-plan': {
+      task: "Create a detailed lesson plan for teaching [SUBJECT/TOPIC]",
+      tone: ["professional", "friendly"],
+      constraints: ["detailed", "step-by-step", "beginner-friendly"],
+      context: "Include learning objectives, materials needed, step-by-step activities, assessment methods, and homework assignments."
+    },
+    'story-writer': {
+      task: "Write a creative story about [THEME/PROMPT]",
+      tone: ["creative", "casual"],
+      constraints: ["detailed", "examples"],
+      context: "Include vivid descriptions, well-developed characters, engaging dialogue, and a compelling plot with a satisfying resolution."
+    },
+    'data-analysis': {
+      task: "Analyze the following data and provide insights",
+      tone: ["technical", "professional"],
+      constraints: ["detailed", "examples", "step-by-step"],
+      context: "Include statistical analysis, key findings, visualizations descriptions, and actionable recommendations based on the data."
+    }
+  },
+
+  currentCategory: 'creative',
+
+  init() {
+    this.setupEventListeners();
+    this.loadSavedData();
+  },
+
+  setupEventListeners() {
+    // Category tabs
+    document.querySelectorAll('.category-tab').forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+        e.target.classList.add('active');
+        this.currentCategory = e.target.dataset.category;
+        this.updateUIForCategory();
+      });
+    });
+
+    // Option chips
+    document.querySelectorAll('.option-chip').forEach(chip => {
+      chip.addEventListener('click', (e) => {
+        if (e.target.tagName !== 'INPUT') {
+          chip.classList.toggle('selected');
+          const checkbox = chip.querySelector('input');
+          checkbox.checked = !checkbox.checked;
+        }
+      });
+    });
+
+    // Generate button
+    document.getElementById('generateBtn').addEventListener('click', () => {
+      this.generatePrompt();
+    });
+
+    // Copy button
+    document.getElementById('copyBtn').addEventListener('click', () => {
+      this.copyPrompt();
+    });
+
+    // Clear button
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      this.clearAll();
+    });
+
+    // Template cards
+    document.querySelectorAll('.template-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        const templateId = card.dataset.template;
+        this.loadTemplate(templateId);
+      });
+    });
+
+    // Auto-save on input
+    document.getElementById('taskInput').addEventListener('input', () => this.saveData());
+    document.getElementById('contextInput').addEventListener('input', () => this.saveData());
+  },
+
+  updateUIForCategory() {
+    const category = this.categories[this.currentCategory];
+    if (category.suggestions.length > 0) {
+      const taskInput = document.getElementById('taskInput');
+      taskInput.placeholder = `${category.suggestions[0]} ...`;
+    }
+  },
+
+  generatePrompt() {
+    const task = document.getElementById('taskInput').value.trim();
+    const context = document.getElementById('contextInput').value.trim();
+    
+    if (!task) {
+      this.showToast('Please enter a task description', 'error');
+      return;
+    }
+
+    const selectedTones = Array.from(document.querySelectorAll('#toneGroup input:checked'))
+      .map(input => input.value);
+    
+    const selectedConstraints = Array.from(document.querySelectorAll('#constraintsGroup input:checked'))
+      .map(input => input.value);
+
+    let prompt = '';
+
+    // Add category-specific prefix
+    const category = this.categories[this.currentCategory];
+    if (category.prefix) {
+      prompt += category.prefix;
+    }
+
+    // Add tone instructions
+    if (selectedTones.length > 0) {
+      prompt += `Please use a ${selectedTones.join(' and ')} tone. `;
+    }
+
+    // Add main task
+    prompt += `\n\n${task}`;
+
+    // Add constraints
+    if (selectedConstraints.length > 0) {
+      prompt += '\n\nRequirements:\n';
+      selectedConstraints.forEach(constraint => {
+        switch(constraint) {
+          case 'concise':
+            prompt += '- Keep the response concise and to the point\n';
+            break;
+          case 'detailed':
+            prompt += '- Provide detailed explanations and thorough coverage\n';
+            break;
+          case 'examples':
+            prompt += '- Include relevant examples to illustrate points\n';
+            break;
+          case 'step-by-step':
+            prompt += '- Break down the process into clear, numbered steps\n';
+            break;
+          case 'beginner-friendly':
+            prompt += '- Explain concepts in simple terms suitable for beginners\n';
+            break;
+          case 'expert-level':
+            prompt += '- Provide advanced insights and technical depth\n';
+            break;
+        }
+      });
+    }
+
+    // Add additional context
+    if (context) {
+      prompt += `\n\nAdditional context:\n${context}`;
+    }
+
+    // Display the generated prompt
+    document.getElementById('generatedPrompt').textContent = prompt;
+    this.saveData();
+  },
+
+  copyPrompt() {
+    const promptText = document.getElementById('generatedPrompt').textContent;
+    if (!promptText || promptText === 'Your generated prompt will appear here...') {
+      this.showToast('Generate a prompt first', 'error');
+      return;
+    }
+
+    navigator.clipboard.writeText(promptText).then(() => {
+      this.showToast('Prompt copied to clipboard!');
+    }).catch(() => {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = promptText;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      this.showToast('Prompt copied to clipboard!');
+    });
+  },
+
+  clearAll() {
+    document.getElementById('taskInput').value = '';
+    document.getElementById('contextInput').value = '';
+    document.getElementById('generatedPrompt').textContent = '';
+    
+    document.querySelectorAll('.option-chip').forEach(chip => {
+      chip.classList.remove('selected');
+      chip.querySelector('input').checked = false;
+    });
+
+    localStorage.removeItem('promptGeneratorData');
+    this.showToast('All fields cleared');
+  },
+
+  loadTemplate(templateId) {
+    const template = this.templates[templateId];
+    if (!template) return;
+
+    // Clear existing selections
+    this.clearAll();
+
+    // Set task
+    document.getElementById('taskInput').value = template.task;
+
+    // Set tone
+    template.tone.forEach(tone => {
+      const chip = document.querySelector(`#toneGroup input[value="${tone}"]`);
+      if (chip) {
+        chip.checked = true;
+        chip.parentElement.classList.add('selected');
+      }
+    });
+
+    // Set constraints
+    template.constraints.forEach(constraint => {
+      const chip = document.querySelector(`#constraintsGroup input[value="${constraint}"]`);
+      if (chip) {
+        chip.checked = true;
+        chip.parentElement.classList.add('selected');
+      }
+    });
+
+    // Set context
+    document.getElementById('contextInput').value = template.context;
+
+    // Generate prompt automatically
+    this.generatePrompt();
+    this.showToast('Template loaded successfully');
+  },
+
+  saveData() {
+    const data = {
+      task: document.getElementById('taskInput').value,
+      context: document.getElementById('contextInput').value,
+      tones: Array.from(document.querySelectorAll('#toneGroup input:checked')).map(i => i.value),
+      constraints: Array.from(document.querySelectorAll('#constraintsGroup input:checked')).map(i => i.value),
+      generatedPrompt: document.getElementById('generatedPrompt').textContent,
+      category: this.currentCategory
+    };
+    localStorage.setItem('promptGeneratorData', JSON.stringify(data));
+  },
+
+  loadSavedData() {
+    const savedData = localStorage.getItem('promptGeneratorData');
+    if (!savedData) return;
+
+    try {
+      const data = JSON.parse(savedData);
+      
+      // Restore inputs
+      if (data.task) document.getElementById('taskInput').value = data.task;
+      if (data.context) document.getElementById('contextInput').value = data.context;
+      if (data.generatedPrompt && data.generatedPrompt !== 'Your generated prompt will appear here...') {
+        document.getElementById('generatedPrompt').textContent = data.generatedPrompt;
+      }
+
+      // Restore category
+      if (data.category) {
+        this.currentCategory = data.category;
+        document.querySelectorAll('.category-tab').forEach(tab => {
+          tab.classList.remove('active');
+          if (tab.dataset.category === data.category) {
+            tab.classList.add('active');
+          }
+        });
+      }
+
+      // Restore tones
+      if (data.tones) {
+        data.tones.forEach(tone => {
+          const chip = document.querySelector(`#toneGroup input[value="${tone}"]`);
+          if (chip) {
+            chip.checked = true;
+            chip.parentElement.classList.add('selected');
+          }
+        });
+      }
+
+      // Restore constraints
+      if (data.constraints) {
+        data.constraints.forEach(constraint => {
+          const chip = document.querySelector(`#constraintsGroup input[value="${constraint}"]`);
+          if (chip) {
+            chip.checked = true;
+            chip.parentElement.classList.add('selected');
+          }
+        });
+      }
+    } catch (e) {
+      console.error('Error loading saved data:', e);
+    }
+  },
+
+  showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.style.background = type === 'error' ? '#f44336' : '#4caf50';
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+};
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+  promptGenerator.init();
+});
+
+// Mobile detection (redirect if needed)
+if (typeof window !== 'undefined') {
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if (isMobile && window.location.pathname === '/prompt') {
+    // Mobile users can still access the prompt page
+    console.log('Mobile device detected on prompt page');
+  }
+}
+</script>
+
+</body>
+</html>

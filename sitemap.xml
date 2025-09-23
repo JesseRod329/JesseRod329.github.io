@@ -73,6 +73,15 @@
     <mobile:mobile/>
   </url>
   
+  <!-- AI Prompt Generator -->
+  <url>
+    <loc>https://jesserodriguez.me/prompt</loc>
+    <lastmod>2025-09-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <mobile:mobile/>
+  </url>
+  
   <!-- PWA Manifest -->
   <url>
     <loc>https://jesserodriguez.me/ios/manifest.json</loc>
