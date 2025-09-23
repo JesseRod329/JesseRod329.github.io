@@ -1,5 +1,9 @@
 {
+  "scripts": {
+    "generate:prompts": "node scripts/generate-prompt-data.mjs"
+  },
   "dependencies": {
-    "google-trends-api": "^4.9.2"
+    "google-trends-api": "^4.9.2",
+    "js-yaml": "^4.1.0"
   }
 }
