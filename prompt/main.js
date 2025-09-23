@@ -1,3 +1,10 @@
+const state = {
+  query: '',
+  author: 'all',
+};
+
+let allCases = [];
+
 function createElement(tag, className, textContent) {
   const el = document.createElement(tag);
   if (className) el.className = className;
@@ -135,21 +142,97 @@ async function loadCases() {
   return Array.isArray(data?.cases) ? data.cases : [];
 }
 
+function renderCards(container, entries) {
+  if (!entries.length) {
+    container.innerHTML = '<p class="status">No prompt cases match the current filters.</p>';
+    return;
+  }
+
+  container.innerHTML = '';
+  entries.forEach((entry) => container.appendChild(renderCard(entry)));
+}
+
+function normalize(value) {
+  return typeof value === 'string' ? value.toLowerCase() : '';
+}
+
+function matchesQuery(entry, query) {
+  if (!query) return true;
+  const needle = query.toLowerCase();
+  const haystack = [
+    entry.title,
+    entry.titleOriginal,
+    entry.prompt,
+    entry.promptOriginal,
+    entry.promptNote,
+    entry.referenceNote,
+    entry.author,
+  ];
+
+  return haystack.some((value) => normalize(value).includes(needle));
+}
+
+function matchesAuthor(entry, author) {
+  if (author === 'all') return true;
+  const authorValue = entry.author?.toLowerCase() ?? '';
+  return authorValue === author.toLowerCase();
+}
+
+function applyFilters(container) {
+  const results = allCases.filter(
+    (entry) => matchesQuery(entry, state.query) && matchesAuthor(entry, state.author)
+  );
+  renderCards(container, results);
+}
+
+function populateAuthorFilter(select, entries) {
+  const authors = Array.from(
+    new Set(
+      entries
+        .map((entry) => entry.author?.trim())
+        .filter(Boolean)
+    )
+  ).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+
+  authors.forEach((author) => {
+    const option = document.createElement('option');
+    option.value = author;
+    option.textContent = author;
+    select.appendChild(option);
+  });
+}
+
 async function init() {
   const grid = document.querySelector('.cards');
+  const searchInput = document.getElementById('promptSearch');
+  const authorSelect = document.getElementById('authorFilter');
   if (!grid) return;
 
   grid.innerHTML = '<p class="status">Loading prompt library…</p>';
 
   try {
-    const entries = await loadCases();
-    if (!entries.length) {
+    allCases = await loadCases();
+    if (!allCases.length) {
       grid.innerHTML = '<p class="status">No prompt cases available yet.</p>';
       return;
     }
 
-    grid.innerHTML = '';
-    entries.forEach((entry) => grid.appendChild(renderCard(entry)));
+    if (authorSelect) {
+      populateAuthorFilter(authorSelect, allCases);
+      authorSelect.addEventListener('change', (event) => {
+        state.author = event.target.value;
+        applyFilters(grid);
+      });
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('input', (event) => {
+        state.query = event.target.value.trim();
+        applyFilters(grid);
+      });
+    }
+
+    applyFilters(grid);
   } catch (error) {
     console.error(error);
     grid.innerHTML = '<p class="status error">Unable to load prompt data right now.</p>';

@@ -34,6 +34,18 @@
   </section>
 
   <main class="page">
+    <section class="controls" aria-label="Prompt filters">
+      <div class="field">
+        <label for="promptSearch">Search prompts</label>
+        <input type="search" id="promptSearch" name="promptSearch" placeholder="Search by title, prompt, or author" autocomplete="off" spellcheck="false">
+      </div>
+      <div class="field">
+        <label for="authorFilter">Filter by author</label>
+        <select id="authorFilter" name="authorFilter">
+          <option value="all">All authors</option>
+        </select>
+      </div>
+    </section>
     <section class="cards" aria-live="polite"></section>
   </main>
 
