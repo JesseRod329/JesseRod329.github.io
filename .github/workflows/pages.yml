@@ -37,20 +37,20 @@ jobs:
       - name: Build Portfolio Projects
         run: |
           echo "Building iOS Portfolio..."
-          cd ios
-          node build.js || echo "iOS build completed"
+          (cd ios && node build.js) || echo "iOS build script not found or failed; continuing"
           
-          echo "Building Sandbox Portfolio..."
-          cd ../sandbox-portfolio-src
-          npm ci
-          npm run build
-          
-          echo "Copying built files to sandbox-portfolio directory..."
-          cd ..
-          rm -rf sandbox-portfolio
-          mkdir -p sandbox-portfolio
-          cp -r sandbox-portfolio-src/dist/* sandbox-portfolio/
-          echo "Sandbox Portfolio build completed"
+          if [ -d sandbox-portfolio-src ]; then
+            echo "Building Sandbox Portfolio..."
+            (cd sandbox-portfolio-src && npm ci && npm run build)
+
+            echo "Copying built files to sandbox-portfolio directory..."
+            rm -rf sandbox-portfolio
+            mkdir -p sandbox-portfolio
+            cp -r sandbox-portfolio-src/dist/* sandbox-portfolio/
+            echo "Sandbox Portfolio build completed"
+          else
+            echo "sandbox-portfolio-src directory not present; skipping sandbox build."
+          fi
       
       - name: Setup Pages
         uses: actions/configure-pages@v4
