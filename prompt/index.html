@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; script-src 'self'; object-src 'none'; media-src 'none'; child-src 'none'; form-action 'none'; base-uri 'self';">
+<title>Prompt — Jesse Rodriguez</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background:#fff;
+    color:#111;
+    line-height:1.5;
+    font-weight:400;
+    overflow-x:hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  .header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:1rem 2rem;
+    border-bottom:1px solid #eee;
+  }
+  .brand { font-weight:900; letter-spacing:-0.02em; text-transform:uppercase; }
+  .nav a { margin-left:1rem; text-transform:uppercase; font-weight:700; font-size:0.9rem; }
+
+  .hero {
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    min-height:50vh;
+    text-align:center;
+    padding:2rem;
+    gap:2rem;
+  }
+  .hero h1 {
+    font-size:clamp(2rem, 7vw, 3.5rem);
+    font-weight:900;
+    letter-spacing:-0.02em;
+    text-transform:uppercase;
+    line-height:0.95;
+  }
+  .hero p { max-width:760px; opacity:0.8; }
+
+  .container { max-width:1000px; margin:2rem auto 4rem; padding:0 2rem; }
+
+  .prompt-card {
+    background:#fff;
+    border:1px solid #eee;
+    border-radius:8px;
+    padding:1.25rem;
+    margin-bottom:1rem;
+  }
+  .prompt-title { font-weight:700; text-transform:uppercase; font-size:0.9rem; opacity:0.7; margin-bottom:0.5rem; }
+  .prompt-text { font-family:'Monaco','Menlo','Ubuntu Mono',monospace; white-space:pre-wrap; }
+
+  .footer { text-align:center; padding:2rem; font-size:0.875rem; opacity:0.6; font-weight:300; }
+  .footer a { color: inherit; text-decoration: underline; }
+
+  @media (max-width: 768px) {
+    .container { padding: 0 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="brand"><a href="/">Jesse</a></div>
+  <nav class="nav">
+    <a href="/">Home</a>
+    <a href="/ios/">Mobile</a>
+    <a href="/classic.html">Classic</a>
+  </nav>
+ </header>
+
+<section class="hero">
+  <h1>Prompt Library</h1>
+  <p>Selected prompts and templates I use for design, code, and strategy. Copy, adapt, and ship.</p>
+</section>
+
+<main class="container">
+  <div class="prompt-card">
+    <div class="prompt-title">Product Spec (Concise)</div>
+    <pre class="prompt-text">You are a senior PM. Create a concise 1-pager with:
+- Problem
+- Goals & non-goals
+- Users & use cases
+- KPI(s)
+- Solution outline (MVP)
+- Risks & open questions
+Return as structured Markdown.</pre>
+  </div>
+
+  <div class="prompt-card">
+    <div class="prompt-title">Code Review (Actionable)</div>
+    <pre class="prompt-text">Review the diff for correctness, readability, and risks.
+Call out:
+- Naming and clarity
+- Edge cases and error handling
+- Test coverage suggestions
+Return a short checklist with proposed edits.</pre>
+  </div>
+
+  <div class="prompt-card">
+    <div class="prompt-title">Design Crit (Objective)</div>
+    <pre class="prompt-text">Evaluate the design against:
+- Hierarchy and spacing
+- Contrast and color accessibility
+- Copy tone and brevity
+- Mobile responsiveness
+Give prioritized, actionable feedback.</pre>
+  </div>
+
+  <div class="prompt-card">
+    <div class="prompt-title">Meeting Notes → Actions</div>
+    <pre class="prompt-text">Given raw meeting notes, extract:
+- Decisions
+- Action items (owner, due date)
+- Risks/blockers
+Return in a table, then a concise summary paragraph.</pre>
+  </div>
+
+  <div class="prompt-card">
+    <div class="prompt-title">Job Story Generator</div>
+    <pre class="prompt-text">Generate X job stories using the format:
+When &lt;situation&gt;, I want &lt;motivation&gt; so I can &lt;expected outcome&gt;.
+Vary audiences and constraints; keep each to one line.</pre>
+  </div>
+</main>
+
+<footer class="footer">
+  <a href="/">Back to home</a>
+ </footer>
+
+</body>
+</html>
+
