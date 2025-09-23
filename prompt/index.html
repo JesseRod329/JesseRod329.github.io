@@ -54,5 +54,33 @@
   </footer>
 
   <script type="module" src="./main.js"></script>
+
+  <div class="modal" id="promptModal" hidden>
+    <div class="modal-overlay" data-modal-dismiss></div>
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="promptModalTitle">
+      <button class="modal-close" type="button" aria-label="Close prompt details" data-modal-dismiss>&times;</button>
+      <div class="modal-content">
+        <figure class="modal-preview" hidden>
+          <img alt="" id="promptModalImage">
+        </figure>
+        <header class="modal-header">
+          <h2 id="promptModalTitle"></h2>
+          <div class="modal-meta" id="promptModalMeta"></div>
+        </header>
+        <section class="modal-section">
+          <div class="section-title">Prompt</div>
+          <pre class="prompt-text" id="promptModalPrompt"></pre>
+        </section>
+        <section class="modal-section" id="promptModalReference" hidden>
+          <div class="section-title">Reference</div>
+          <p class="requirement"></p>
+        </section>
+        <section class="modal-section" id="promptModalSources" hidden>
+          <div class="section-title">Sources</div>
+          <ul></ul>
+        </section>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

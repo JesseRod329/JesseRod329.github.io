@@ -27,26 +27,89 @@ function trimMultiline(text) {
   return typeof text === 'string' ? text.trim() : '';
 }
 
-function renderSources(sources = []) {
-  if (!sources.length) return null;
+const modalElements = {
+  root: null,
+  dialog: null,
+  title: null,
+  meta: null,
+  prompt: null,
+  referenceSection: null,
+  referenceText: null,
+  sourcesSection: null,
+  sourcesList: null,
+  imageFigure: null,
+  image: null,
+  focusTrigger: null,
+  closeButtons: [],
+  initialized: false,
+};
 
-  const wrapper = createElement('div', 'source-list');
-  const title = createElement('div', 'section-title', 'Sources');
-  const list = createElement('ul');
+function clearChildren(node) {
+  if (!node) return;
+  while (node.firstChild) {
+    node.removeChild(node.firstChild);
+  }
+}
 
+function populateModalSources(listEl, sources = []) {
+  if (!listEl) return 0;
+  clearChildren(listEl);
+  let count = 0;
   sources.forEach((item, index) => {
     const url = item?.url;
     if (!url) return;
-
     const li = document.createElement('li');
     li.appendChild(createLink(url, item.title || `Link ${index + 1}`));
-    list.appendChild(li);
+    listEl.appendChild(li);
+    count += 1;
+  });
+  return count;
+}
+
+function setupModal() {
+  if (modalElements.initialized) return;
+
+  const root = document.getElementById('promptModal');
+  if (!root) return;
+
+  modalElements.root = root;
+  modalElements.dialog = root.querySelector('.modal-dialog');
+  modalElements.title = root.querySelector('#promptModalTitle');
+  modalElements.meta = root.querySelector('#promptModalMeta');
+  modalElements.prompt = root.querySelector('#promptModalPrompt');
+  modalElements.referenceSection = root.querySelector('#promptModalReference');
+  modalElements.referenceText = modalElements.referenceSection?.querySelector('.requirement') ?? null;
+  modalElements.sourcesSection = root.querySelector('#promptModalSources');
+  modalElements.sourcesList = modalElements.sourcesSection?.querySelector('ul') ?? null;
+  modalElements.imageFigure = root.querySelector('.modal-preview');
+  modalElements.image = root.querySelector('#promptModalImage');
+  modalElements.closeButtons = Array.from(root.querySelectorAll('[data-modal-dismiss]'));
+
+  modalElements.closeButtons.forEach((btn) => {
+    btn.addEventListener('click', closeModal);
   });
 
-  if (!list.children.length) return null;
+  root.addEventListener('click', (event) => {
+    if (event.target instanceof HTMLElement && event.target.dataset.modalDismiss !== undefined) {
+      closeModal();
+    }
+  });
 
-  wrapper.append(title, list);
-  return wrapper;
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && modalElements.root && !modalElements.root.hidden) {
+      closeModal();
+    }
+  });
+
+  modalElements.initialized = true;
+}
+
+function formatPreviewText(text, limit = 240) {
+  const trimmed = trimMultiline(text);
+  if (trimmed.length <= limit) {
+    return trimmed;
+  }
+  return `${trimmed.slice(0, limit).trim()}…`;
 }
 
 function renderCard(entry) {
@@ -66,13 +129,7 @@ function renderCard(entry) {
   const title = createElement('h2', null, entry.title || `Case ${entry.id}`);
   const tag = createElement('span', 'tag', `Case ${entry.id}`);
   title.appendChild(tag);
-
-  if (entry.titleOriginal && entry.titleOriginal !== entry.title) {
-    const subtitle = createElement('div', 'subtitle', entry.titleOriginal);
-    header.append(title, subtitle);
-  } else {
-    header.append(title);
-  }
+  header.append(title);
 
   const meta = createElement('div', 'meta');
   if (entry.author) {
@@ -92,43 +149,20 @@ function renderCard(entry) {
 
   card.appendChild(header);
 
-  const sourceLinks = renderSources(entry.sourceLinks);
-  if (sourceLinks) {
-    card.appendChild(sourceLinks);
-  }
+  const body = createElement('div', 'card-body');
+  const previewText = formatPreviewText(entry.prompt);
+  const preview = createElement('p', 'prompt-preview', previewText || 'Prompt available in details.');
+  body.appendChild(preview);
 
-  const promptSection = createElement('section');
-  promptSection.append(
-    createElement('div', 'section-title', 'Prompt'),
-    createElement('pre', 'prompt-text', trimMultiline(entry.prompt))
-  );
-  card.appendChild(promptSection);
+  const actions = createElement('div', 'card-actions');
+  const viewButton = document.createElement('button');
+  viewButton.type = 'button';
+  viewButton.textContent = 'View prompt';
+  viewButton.addEventListener('click', () => openModal(entry));
+  actions.appendChild(viewButton);
+  body.appendChild(actions);
 
-  const originalPrompt = trimMultiline(entry.promptOriginal);
-  if (originalPrompt && originalPrompt !== trimMultiline(entry.prompt)) {
-    const originalSection = createElement('section');
-    originalSection.append(
-      createElement('div', 'section-title', 'Original Prompt'),
-      createElement('pre', 'prompt-text', originalPrompt)
-    );
-    card.appendChild(originalSection);
-  }
-
-  const reference = trimMultiline(entry.referenceNote);
-  if (reference) {
-    const referenceSection = createElement('section');
-    referenceSection.append(
-      createElement('div', 'section-title', 'Reference'),
-      createElement('p', 'requirement', reference)
-    );
-    card.appendChild(referenceSection);
-  }
-
-  const note = trimMultiline(entry.promptNote);
-  if (note) {
-    const noteBlock = createElement('div', 'note', note);
-    card.appendChild(noteBlock);
-  }
+  card.appendChild(body);
 
   return card;
 }
@@ -202,6 +236,87 @@ function populateAuthorFilter(select, entries) {
   });
 }
 
+function fillModal(entry) {
+  if (!modalElements.root) return;
+
+  modalElements.title.textContent = entry.title || `Case ${entry.id}`;
+
+  clearChildren(modalElements.meta);
+  const caseLabel = createElement('span', null, `Case ${entry.id}`);
+  modalElements.meta.appendChild(caseLabel);
+
+  if (entry.author) {
+    const authorLabel = createElement('span');
+    authorLabel.textContent = 'By ';
+    if (entry.authorLink) {
+      authorLabel.appendChild(createLink(entry.authorLink, entry.author));
+    } else {
+      authorLabel.append(entry.author);
+    }
+    modalElements.meta.appendChild(authorLabel);
+  }
+
+  const promptText = trimMultiline(entry.prompt);
+  modalElements.prompt.textContent = promptText;
+
+  const referenceText = trimMultiline(entry.referenceNote);
+  if (modalElements.referenceSection && modalElements.referenceText) {
+    if (referenceText) {
+      modalElements.referenceText.textContent = referenceText;
+      modalElements.referenceSection.hidden = false;
+    } else {
+      modalElements.referenceSection.hidden = true;
+    }
+  }
+
+  if (modalElements.sourcesSection && modalElements.sourcesList) {
+    const count = populateModalSources(modalElements.sourcesList, entry.sourceLinks);
+    modalElements.sourcesSection.hidden = count === 0;
+  }
+
+  if (modalElements.imageFigure && modalElements.image) {
+    if (entry.image) {
+      modalElements.image.src = entry.image;
+      modalElements.image.alt = entry.alt || entry.title || `Case ${entry.id}`;
+      modalElements.imageFigure.hidden = false;
+    } else {
+      modalElements.image.removeAttribute('src');
+      modalElements.image.alt = '';
+      modalElements.imageFigure.hidden = true;
+    }
+  }
+}
+
+function openModal(entry) {
+  if (!modalElements.root) return;
+
+  modalElements.focusTrigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  fillModal(entry);
+
+  modalElements.root.hidden = false;
+  document.body.classList.add('modal-open');
+  if (modalElements.dialog) {
+    modalElements.dialog.setAttribute('tabindex', '-1');
+    modalElements.dialog.focus();
+  }
+}
+
+function closeModal() {
+  if (!modalElements.root || modalElements.root.hidden) return;
+
+  modalElements.root.hidden = true;
+  document.body.classList.remove('modal-open');
+
+  if (modalElements.dialog) {
+    modalElements.dialog.removeAttribute('tabindex');
+  }
+
+  if (modalElements.focusTrigger) {
+    modalElements.focusTrigger.focus({ preventScroll: true });
+    modalElements.focusTrigger = null;
+  }
+}
+
 async function init() {
   const grid = document.querySelector('.cards');
   const searchInput = document.getElementById('promptSearch');
@@ -211,6 +326,7 @@ async function init() {
   grid.innerHTML = '<p class="status">Loading prompt library…</p>';
 
   try {
+    setupModal();
     allCases = await loadCases();
     if (!allCases.length) {
       grid.innerHTML = '<p class="status">No prompt cases available yet.</p>';
