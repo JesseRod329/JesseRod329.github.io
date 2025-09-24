@@ -181,6 +181,55 @@
             display: none !important;
         }
 
+        /* Power-up indicators */
+        .power-up-indicator {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 5px;
+            border: 2px solid #333;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 15;
+        }
+
+        .power-up-active {
+            color: #4caf50;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Shield effect */
+        .shield-effect {
+            position: absolute;
+            border: 3px solid #2196f3;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: shieldPulse 0.5s ease-out;
+        }
+
+        @keyframes shieldPulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        /* Jump boost effect */
+        .jump-boost {
+            color: #ff9800;
+        }
+
+        /* Slow motion effect */
+        .slow-motion {
+            filter: hue-rotate(180deg);
+        }
+
         /* Pencil sketch effect for UI elements */
         .instructions, .game-over {
             position: relative;
@@ -226,12 +275,22 @@
             <div>High Score: <span id="highScore">0</span></div>
         </div>
 
+        <div class="power-up-indicator hidden" id="powerUpIndicator">
+            <div id="powerUpText">No Power-up Active</div>
+            <div id="powerUpTimer"></div>
+        </div>
+
         <div class="instructions" id="instructions">
             <h1>Pencil Runner</h1>
             <p>A minimalist side-scrolling adventure with hand-drawn pencil art style!</p>
             <p><strong>Controls:</strong></p>
             <p>SPACE or CLICK to jump</p>
-            <p>Avoid the obstacles and collect pencils!</p>
+            <p>Double-tap for double jump!</p>
+            <p><strong>Power-ups:</strong></p>
+            <p>🔵 Shield - Protects from one hit</p>
+            <p>🟠 Jump Boost - Higher jumps</p>
+            <p>🟣 Slow Motion - Slows everything down</p>
+            <p>🟢 Collect pencils for points!</p>
             <button class="start-btn" id="startBtn">Start Game</button>
         </div>
 
@@ -264,15 +323,31 @@
                     height: 40,
                     velocityY: 0,
                     isJumping: false,
-                    groundY: this.canvas.height - 150
+                    canDoubleJump: false,
+                    hasDoubleJumped: false,
+                    groundY: this.canvas.height - 150,
+                    hasShield: false
                 };
                 
                 this.obstacles = [];
                 this.collectibles = [];
+                this.powerUps = [];
                 this.backgroundOffset = 0;
-                this.gameSpeed = 2;
+                this.baseGameSpeed = 1.5; // Reduced base speed
+                this.gameSpeed = this.baseGameSpeed;
                 this.obstacleTimer = 0;
                 this.collectibleTimer = 0;
+                this.powerUpTimer = 0;
+                
+                // Power-up system
+                this.activePowerUp = null;
+                this.powerUpDuration = 0;
+                this.slowMotionMultiplier = 1;
+                
+                // Sound effects (using Web Audio API)
+                this.audioContext = null;
+                this.sounds = {};
+                this.initAudio();
                 
                 this.setupEventListeners();
                 this.gameLoop();
@@ -289,17 +364,90 @@
                 this.ctx.msImageSmoothingEnabled = false;
             }
             
+            initAudio() {
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    this.createSounds();
+                } catch (e) {
+                    console.log('Audio not supported');
+                }
+            }
+            
+            createSounds() {
+                if (!this.audioContext) return;
+                
+                // Jump sound
+                this.sounds.jump = () => {
+                    const oscillator = this.audioContext.createOscillator();
+                    const gainNode = this.audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(this.audioContext.destination);
+                    
+                    oscillator.frequency.setValueAtTime(400, this.audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(600, this.audioContext.currentTime + 0.1);
+                    
+                    gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
+                    
+                    oscillator.start();
+                    oscillator.stop(this.audioContext.currentTime + 0.1);
+                };
+                
+                // Collect sound
+                this.sounds.collect = () => {
+                    const oscillator = this.audioContext.createOscillator();
+                    const gainNode = this.audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(this.audioContext.destination);
+                    
+                    oscillator.frequency.setValueAtTime(800, this.audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(1200, this.audioContext.currentTime + 0.15);
+                    
+                    gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.15);
+                    
+                    oscillator.start();
+                    oscillator.stop(this.audioContext.currentTime + 0.15);
+                };
+                
+                // Power-up sound
+                this.sounds.powerUp = () => {
+                    const oscillator = this.audioContext.createOscillator();
+                    const gainNode = this.audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(this.audioContext.destination);
+                    
+                    oscillator.frequency.setValueAtTime(300, this.audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(900, this.audioContext.currentTime + 0.3);
+                    
+                    gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
+                    
+                    oscillator.start();
+                    oscillator.stop(this.audioContext.currentTime + 0.3);
+                };
+            }
+            
             setupEventListeners() {
+                let lastJumpTime = 0;
+                
                 document.addEventListener('keydown', (e) => {
                     if (e.code === 'Space' && this.gameState === 'playing') {
                         e.preventDefault();
-                        this.jump();
+                        const currentTime = Date.now();
+                        this.jump(currentTime - lastJumpTime < 300);
+                        lastJumpTime = currentTime;
                     }
                 });
                 
                 document.addEventListener('click', () => {
                     if (this.gameState === 'playing') {
-                        this.jump();
+                        const currentTime = Date.now();
+                        this.jump(currentTime - lastJumpTime < 300);
+                        lastJumpTime = currentTime;
                     }
                 });
                 
@@ -310,16 +458,39 @@
                 });
             }
             
-            jump() {
+            jump(isDoubleJump = false) {
                 if (!this.player.isJumping) {
-                    this.player.velocityY = -12;
+                    // First jump
+                    this.player.velocityY = this.player.canDoubleJump ? -14 : -12;
                     this.player.isJumping = true;
+                    this.player.canDoubleJump = true;
+                    this.player.hasDoubleJumped = false;
+                    this.playSound('jump');
+                } else if (this.player.canDoubleJump && !this.player.hasDoubleJumped && isDoubleJump) {
+                    // Double jump
+                    this.player.velocityY = -12;
+                    this.player.hasDoubleJumped = true;
+                    this.player.canDoubleJump = false;
+                    this.playSound('jump');
+                }
+            }
+            
+            playSound(soundName) {
+                if (this.sounds[soundName]) {
+                    try {
+                        this.sounds[soundName]();
+                    } catch (e) {
+                        // Audio context might not be ready
+                        if (this.audioContext && this.audioContext.state === 'suspended') {
+                            this.audioContext.resume();
+                        }
+                    }
                 }
             }
             
             updatePlayer() {
-                // Apply gravity
-                this.player.velocityY += 0.8;
+                // Apply gravity (reduced for easier gameplay)
+                this.player.velocityY += 0.6;
                 this.player.y += this.player.velocityY;
                 
                 // Check ground collision
@@ -327,19 +498,94 @@
                     this.player.y = this.player.groundY;
                     this.player.velocityY = 0;
                     this.player.isJumping = false;
+                    this.player.canDoubleJump = false;
+                    this.player.hasDoubleJumped = false;
                 }
+            }
+            
+            updatePowerUps() {
+                this.powerUpTimer++;
+                if (this.powerUpTimer > 400) { // Less frequent power-ups
+                    this.powerUpTimer = 0;
+                    const powerUpTypes = ['shield', 'jumpBoost', 'slowMotion'];
+                    const randomType = powerUpTypes[Math.floor(Math.random() * powerUpTypes.length)];
+                    
+                    this.powerUps.push({
+                        x: this.canvas.width,
+                        y: this.canvas.height - 180,
+                        width: 25,
+                        height: 25,
+                        speed: this.gameSpeed,
+                        type: randomType,
+                        rotation: 0
+                    });
+                }
+                
+                // Update power-up positions
+                for (let i = this.powerUps.length - 1; i >= 0; i--) {
+                    this.powerUps[i].x -= this.powerUps[i].speed;
+                    this.powerUps[i].rotation += 0.1;
+                    
+                    // Remove power-ups that are off screen
+                    if (this.powerUps[i].x + this.powerUps[i].width < 0) {
+                        this.powerUps.splice(i, 1);
+                    }
+                }
+            }
+            
+            updateActivePowerUp() {
+                if (this.activePowerUp) {
+                    this.powerUpDuration--;
+                    
+                    // Update power-up effects
+                    switch (this.activePowerUp) {
+                        case 'shield':
+                            this.player.hasShield = true;
+                            break;
+                        case 'jumpBoost':
+                            this.player.canDoubleJump = true;
+                            break;
+                        case 'slowMotion':
+                            this.slowMotionMultiplier = 0.5;
+                            break;
+                    }
+                    
+                    // Update UI
+                    const indicator = document.getElementById('powerUpIndicator');
+                    const text = document.getElementById('powerUpText');
+                    const timer = document.getElementById('powerUpTimer');
+                    
+                    indicator.classList.remove('hidden');
+                    text.textContent = this.activePowerUp.charAt(0).toUpperCase() + this.activePowerUp.slice(1);
+                    timer.textContent = Math.ceil(this.powerUpDuration / 60) + 's';
+                    
+                    if (this.powerUpDuration <= 0) {
+                        this.clearPowerUp();
+                    }
+                }
+            }
+            
+            clearPowerUp() {
+                this.activePowerUp = null;
+                this.powerUpDuration = 0;
+                this.player.hasShield = false;
+                this.slowMotionMultiplier = 1;
+                
+                document.getElementById('powerUpIndicator').classList.add('hidden');
             }
             
             updateObstacles() {
                 this.obstacleTimer++;
-                if (this.obstacleTimer > 120 - (this.score * 0.5)) {
+                // Slower obstacle spawning for easier gameplay
+                const spawnRate = Math.max(180 - (this.score * 0.3), 120);
+                if (this.obstacleTimer > spawnRate) {
                     this.obstacleTimer = 0;
                     this.obstacles.push({
                         x: this.canvas.width,
                         y: this.canvas.height - 150,
                         width: 25,
                         height: 35,
-                        speed: this.gameSpeed
+                        speed: this.gameSpeed * this.slowMotionMultiplier
                     });
                 }
                 
@@ -357,14 +603,14 @@
             
             updateCollectibles() {
                 this.collectibleTimer++;
-                if (this.collectibleTimer > 200) {
+                if (this.collectibleTimer > 150) { // More frequent collectibles
                     this.collectibleTimer = 0;
                     this.collectibles.push({
                         x: this.canvas.width,
                         y: this.canvas.height - 200,
                         width: 20,
                         height: 20,
-                        speed: this.gameSpeed,
+                        speed: this.gameSpeed * this.slowMotionMultiplier,
                         rotation: 0
                     });
                 }
@@ -388,8 +634,21 @@
                         this.player.x + this.player.width > obstacle.x &&
                         this.player.y < obstacle.y + obstacle.height &&
                         this.player.y + this.player.height > obstacle.y) {
-                        this.gameOver();
-                        return;
+                        
+                        if (this.player.hasShield) {
+                            // Shield protects from one hit
+                            this.player.hasShield = false;
+                            this.clearPowerUp();
+                            this.createShieldEffect();
+                            // Remove the obstacle that hit the shield
+                            const obstacleIndex = this.obstacles.indexOf(obstacle);
+                            if (obstacleIndex > -1) {
+                                this.obstacles.splice(obstacleIndex, 1);
+                            }
+                        } else {
+                            this.gameOver();
+                            return;
+                        }
                     }
                 }
                 
@@ -402,8 +661,55 @@
                         this.player.y + this.player.height > collectible.y) {
                         this.collectibles.splice(i, 1);
                         this.score += 50;
+                        this.playSound('collect');
                     }
                 }
+                
+                // Check power-up collisions
+                for (let i = this.powerUps.length - 1; i >= 0; i--) {
+                    let powerUp = this.powerUps[i];
+                    if (this.player.x < powerUp.x + powerUp.width &&
+                        this.player.x + this.player.width > powerUp.x &&
+                        this.player.y < powerUp.y + powerUp.height &&
+                        this.player.y + this.player.height > powerUp.y) {
+                        this.powerUps.splice(i, 1);
+                        this.activatePowerUp(powerUp.type);
+                    }
+                }
+            }
+            
+            activatePowerUp(type) {
+                this.activePowerUp = type;
+                this.powerUpDuration = 300; // 5 seconds at 60fps
+                this.playSound('powerUp');
+                
+                // Apply immediate effects
+                switch (type) {
+                    case 'shield':
+                        this.player.hasShield = true;
+                        break;
+                    case 'jumpBoost':
+                        this.player.canDoubleJump = true;
+                        break;
+                    case 'slowMotion':
+                        this.slowMotionMultiplier = 0.5;
+                        break;
+                }
+            }
+            
+            createShieldEffect() {
+                const effect = document.createElement('div');
+                effect.className = 'shield-effect';
+                effect.style.left = (this.player.x - 20) + 'px';
+                effect.style.top = (this.player.y - 20) + 'px';
+                effect.style.width = (this.player.width + 40) + 'px';
+                effect.style.height = (this.player.height + 40) + 'px';
+                
+                document.querySelector('.game-container').appendChild(effect);
+                
+                setTimeout(() => {
+                    effect.remove();
+                }, 500);
             }
             
             drawBackground() {
@@ -529,13 +835,53 @@
                     this.updatePlayer();
                     this.updateObstacles();
                     this.updateCollectibles();
+                    this.updatePowerUps();
+                    this.updateActivePowerUp();
                     this.checkCollisions();
                     
-                    // Increase game speed gradually
-                    this.gameSpeed = 2 + this.score * 0.001;
+                    // Increase game speed gradually (much slower progression)
+                    this.gameSpeed = this.baseGameSpeed + this.score * 0.0005;
                     
                     // Update UI
                     document.getElementById('score').textContent = this.score;
+                }
+            }
+            
+            drawPowerUps() {
+                for (let powerUp of this.powerUps) {
+                    this.ctx.save();
+                    this.ctx.translate(powerUp.x + powerUp.width/2, powerUp.y + powerUp.height/2);
+                    this.ctx.rotate(powerUp.rotation);
+                    
+                    // Draw different power-ups based on type
+                    switch (powerUp.type) {
+                        case 'shield':
+                            this.ctx.strokeStyle = '#2196f3';
+                            this.ctx.lineWidth = 3;
+                            this.ctx.beginPath();
+                            this.ctx.arc(0, 0, 10, 0, Math.PI * 2);
+                            this.ctx.stroke();
+                            break;
+                        case 'jumpBoost':
+                            this.ctx.strokeStyle = '#ff9800';
+                            this.ctx.lineWidth = 3;
+                            this.ctx.beginPath();
+                            this.ctx.moveTo(-8, 0);
+                            this.ctx.lineTo(8, 0);
+                            this.ctx.moveTo(0, -8);
+                            this.ctx.lineTo(0, 8);
+                            this.ctx.stroke();
+                            break;
+                        case 'slowMotion':
+                            this.ctx.strokeStyle = '#9c27b0';
+                            this.ctx.lineWidth = 3;
+                            this.ctx.beginPath();
+                            this.ctx.arc(0, 0, 8, 0, Math.PI * 1.5);
+                            this.ctx.stroke();
+                            break;
+                    }
+                    
+                    this.ctx.restore();
                 }
             }
             
@@ -546,6 +892,14 @@
                     this.drawPlayer();
                     this.drawObstacles();
                     this.drawCollectibles();
+                    this.drawPowerUps();
+                    
+                    // Apply slow motion visual effect
+                    if (this.slowMotionMultiplier < 1) {
+                        this.ctx.save();
+                        this.ctx.filter = 'hue-rotate(180deg)';
+                        this.ctx.restore();
+                    }
                 }
             }
             
@@ -587,14 +941,23 @@
                 game.score = 0;
                 game.obstacles = [];
                 game.collectibles = [];
+                game.powerUps = [];
                 game.player.y = game.player.groundY;
                 game.player.velocityY = 0;
                 game.player.isJumping = false;
-                game.gameSpeed = 2;
+                game.player.canDoubleJump = false;
+                game.player.hasDoubleJumped = false;
+                game.player.hasShield = false;
+                game.gameSpeed = game.baseGameSpeed;
                 game.obstacleTimer = 0;
                 game.collectibleTimer = 0;
+                game.powerUpTimer = 0;
+                game.activePowerUp = null;
+                game.powerUpDuration = 0;
+                game.slowMotionMultiplier = 1;
                 
                 document.getElementById('gameOver').classList.add('hidden');
+                document.getElementById('powerUpIndicator').classList.add('hidden');
                 document.getElementById('score').textContent = '0';
             }
         }
