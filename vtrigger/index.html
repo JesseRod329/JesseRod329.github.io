@@ -321,6 +321,8 @@
             <p>🟠 Jump Boost - Higher jumps</p>
             <p>🟣 Slow Motion - Slows everything down</p>
             <p>🟢 Collect pencils for points!</p>
+            <p><strong>Secret Cheat:</strong></p>
+            <p>🚁 Press ↑↓←→ arrows to fly!</p>
             <button class="start-btn" id="startBtn">Start Game</button>
         </div>
 
@@ -374,6 +376,12 @@
                 this.activePowerUp = null;
                 this.powerUpDuration = 0;
                 this.slowMotionMultiplier = 1;
+                
+                // Cheat system
+                this.cheatCode = [];
+                this.targetCheatCode = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+                this.isCheatMode = false;
+                this.cheatDuration = 0;
                 
                 // Sound effects (using Web Audio API)
                 this.audioContext = null;
@@ -466,6 +474,9 @@
                 let lastJumpTime = 0;
                 
                 document.addEventListener('keydown', (e) => {
+                    // Check for cheat code
+                    this.checkCheatCode(e.code);
+                    
                     if (e.code === 'Space' && this.gameState === 'playing') {
                         e.preventDefault();
                         const currentTime = Date.now();
@@ -519,18 +530,92 @@
                 }
             }
             
-            updatePlayer() {
-                // Apply gravity (balanced for faster gameplay)
-                this.player.velocityY += 0.7;
-                this.player.y += this.player.velocityY;
+            checkCheatCode(keyCode) {
+                // Only check during gameplay
+                if (this.gameState !== 'playing') return;
                 
-                // Check ground collision
-                if (this.player.y >= this.player.groundY) {
-                    this.player.y = this.player.groundY;
+                this.cheatCode.push(keyCode);
+                
+                // Keep only the last 4 keys
+                if (this.cheatCode.length > 4) {
+                    this.cheatCode.shift();
+                }
+                
+                // Check if cheat code matches
+                if (this.cheatCode.length === 4 && 
+                    this.cheatCode.every((code, index) => code === this.targetCheatCode[index])) {
+                    this.activateCheatMode();
+                }
+            }
+            
+            activateCheatMode() {
+                this.isCheatMode = true;
+                this.cheatDuration = 600; // 10 seconds at 60fps
+                this.playSound('powerUp');
+                
+                console.log('🚁 CHEAT MODE ACTIVATED! FLYING ENABLED!');
+                
+                // Show cheat indicator
+                const indicator = document.getElementById('powerUpIndicator');
+                const text = document.getElementById('powerUpText');
+                const timer = document.getElementById('powerUpTimer');
+                
+                indicator.classList.remove('hidden');
+                indicator.style.background = 'rgba(255, 215, 0, 0.9)';
+                text.textContent = 'FLYING MODE';
+                text.style.color = '#ff0000';
+                text.style.fontWeight = 'bold';
+                
+                // Clear the cheat code sequence
+                this.cheatCode = [];
+            }
+            
+            updateCheatMode() {
+                if (this.isCheatMode) {
+                    this.cheatDuration--;
+                    
+                    // Update timer display
+                    const timer = document.getElementById('powerUpTimer');
+                    timer.textContent = Math.ceil(this.cheatDuration / 60) + 's';
+                    
+                    if (this.cheatDuration <= 0) {
+                        this.deactivateCheatMode();
+                    }
+                }
+            }
+            
+            deactivateCheatMode() {
+                this.isCheatMode = false;
+                this.cheatDuration = 0;
+                
+                const indicator = document.getElementById('powerUpIndicator');
+                indicator.classList.add('hidden');
+                indicator.style.background = 'rgba(255, 255, 255, 0.9)';
+                
+                console.log('🚁 CHEAT MODE DEACTIVATED! Back to normal gameplay.');
+            }
+            
+            updatePlayer() {
+                if (this.isCheatMode) {
+                    // Flying mode - player hovers above ground
+                    this.player.y = this.player.groundY - 50; // Hover 50 pixels above ground
                     this.player.velocityY = 0;
                     this.player.isJumping = false;
                     this.player.canDoubleJump = false;
                     this.player.hasDoubleJumped = false;
+                } else {
+                    // Normal gravity (balanced for faster gameplay)
+                    this.player.velocityY += 0.7;
+                    this.player.y += this.player.velocityY;
+                    
+                    // Check ground collision
+                    if (this.player.y >= this.player.groundY) {
+                        this.player.y = this.player.groundY;
+                        this.player.velocityY = 0;
+                        this.player.isJumping = false;
+                        this.player.canDoubleJump = false;
+                        this.player.hasDoubleJumped = false;
+                    }
                 }
             }
             
@@ -659,26 +744,28 @@
             }
             
             checkCollisions() {
-                // Check obstacle collisions
-                for (let obstacle of this.obstacles) {
-                    if (this.player.x < obstacle.x + obstacle.width &&
-                        this.player.x + this.player.width > obstacle.x &&
-                        this.player.y < obstacle.y + obstacle.height &&
-                        this.player.y + this.player.height > obstacle.y) {
-                        
-                        if (this.player.hasShield) {
-                            // Shield protects from one hit
-                            this.player.hasShield = false;
-                            this.clearPowerUp();
-                            this.createShieldEffect();
-                            // Remove the obstacle that hit the shield
-                            const obstacleIndex = this.obstacles.indexOf(obstacle);
-                            if (obstacleIndex > -1) {
-                                this.obstacles.splice(obstacleIndex, 1);
+                // Check obstacle collisions (skip if in cheat mode)
+                if (!this.isCheatMode) {
+                    for (let obstacle of this.obstacles) {
+                        if (this.player.x < obstacle.x + obstacle.width &&
+                            this.player.x + this.player.width > obstacle.x &&
+                            this.player.y < obstacle.y + obstacle.height &&
+                            this.player.y + this.player.height > obstacle.y) {
+                            
+                            if (this.player.hasShield) {
+                                // Shield protects from one hit
+                                this.player.hasShield = false;
+                                this.clearPowerUp();
+                                this.createShieldEffect();
+                                // Remove the obstacle that hit the shield
+                                const obstacleIndex = this.obstacles.indexOf(obstacle);
+                                if (obstacleIndex > -1) {
+                                    this.obstacles.splice(obstacleIndex, 1);
+                                }
+                            } else {
+                                this.gameOver();
+                                return;
                             }
-                        } else {
-                            this.gameOver();
-                            return;
                         }
                     }
                 }
@@ -781,8 +868,23 @@
                 this.ctx.save();
                 this.ctx.translate(this.player.x + this.player.width/2, this.player.y + this.player.height/2);
                 
+                // Draw flying effects if in cheat mode
+                if (this.isCheatMode) {
+                    // Draw flying trail
+                    this.ctx.strokeStyle = 'rgba(255, 215, 0, 0.6)';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(-20, 0);
+                    this.ctx.lineTo(-40, 0);
+                    this.ctx.moveTo(-15, 5);
+                    this.ctx.lineTo(-35, 5);
+                    this.ctx.moveTo(-15, -5);
+                    this.ctx.lineTo(-35, -5);
+                    this.ctx.stroke();
+                }
+                
                 // Draw pencil runner (stick figure style)
-                this.ctx.strokeStyle = '#333';
+                this.ctx.strokeStyle = this.isCheatMode ? '#ff0000' : '#333';
                 this.ctx.lineWidth = 3;
                 this.ctx.lineCap = 'round';
                 
@@ -868,6 +970,7 @@
                     this.updateCollectibles();
                     this.updatePowerUps();
                     this.updateActivePowerUp();
+                    this.updateCheatMode();
                     this.checkCollisions();
                     
                     // Increase game speed gradually (faster progression for excitement)
@@ -1001,6 +1104,9 @@
                 game.activePowerUp = null;
                 game.powerUpDuration = 0;
                 game.slowMotionMultiplier = 1;
+                game.isCheatMode = false;
+                game.cheatDuration = 0;
+                game.cheatCode = [];
                 
                 document.getElementById('gameOver').classList.add('hidden');
                 document.getElementById('gameOverBackdrop').classList.add('hidden');
