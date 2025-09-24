@@ -364,7 +364,7 @@
                 this.collectibles = [];
                 this.powerUps = [];
                 this.backgroundOffset = 0;
-                this.baseGameSpeed = 1.5; // Reduced base speed
+                this.baseGameSpeed = 3.5; // Increased base speed for more excitement
                 this.gameSpeed = this.baseGameSpeed;
                 this.obstacleTimer = 0;
                 this.collectibleTimer = 0;
@@ -520,8 +520,8 @@
             }
             
             updatePlayer() {
-                // Apply gravity (reduced for easier gameplay)
-                this.player.velocityY += 0.6;
+                // Apply gravity (balanced for faster gameplay)
+                this.player.velocityY += 0.7;
                 this.player.y += this.player.velocityY;
                 
                 // Check ground collision
@@ -536,7 +536,7 @@
             
             updatePowerUps() {
                 this.powerUpTimer++;
-                if (this.powerUpTimer > 400) { // Less frequent power-ups
+                if (this.powerUpTimer > 200) { // More frequent power-ups
                     this.powerUpTimer = 0;
                     const powerUpTypes = ['shield', 'jumpBoost', 'slowMotion'];
                     const randomType = powerUpTypes[Math.floor(Math.random() * powerUpTypes.length)];
@@ -607,8 +607,8 @@
             
             updateObstacles() {
                 this.obstacleTimer++;
-                // Slower obstacle spawning for easier gameplay
-                const spawnRate = Math.max(180 - (this.score * 0.3), 120);
+                // Faster obstacle spawning for more excitement
+                const spawnRate = Math.max(90 - (this.score * 0.2), 60);
                 if (this.obstacleTimer > spawnRate) {
                     this.obstacleTimer = 0;
                     this.obstacles.push({
@@ -634,7 +634,7 @@
             
             updateCollectibles() {
                 this.collectibleTimer++;
-                if (this.collectibleTimer > 150) { // More frequent collectibles
+                if (this.collectibleTimer > 80) { // Much more frequent collectibles
                     this.collectibleTimer = 0;
                     this.collectibles.push({
                         x: this.canvas.width,
@@ -870,8 +870,8 @@
                     this.updateActivePowerUp();
                     this.checkCollisions();
                     
-                    // Increase game speed gradually (much slower progression)
-                    this.gameSpeed = this.baseGameSpeed + this.score * 0.0005;
+                    // Increase game speed gradually (faster progression for excitement)
+                    this.gameSpeed = this.baseGameSpeed + this.score * 0.002;
                     
                     // Update UI
                     document.getElementById('score').textContent = this.score;
