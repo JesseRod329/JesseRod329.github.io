@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; script-src 'self'; object-src 'none'; media-src 'none'; child-src 'none'; form-action 'none'; base-uri 'self';">
+    <title>Pencil Runner — Jesse Rodriguez</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #f5f5dc;
+            color: #333;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+
+        .game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(to bottom, #e8f4f8 0%, #f5f5dc 100%);
+            overflow: hidden;
+        }
+
+        #gameCanvas {
+            display: block;
+            background: transparent;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+
+        .game-ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            color: #333;
+            font-weight: bold;
+            text-shadow: 2px 2px 0px rgba(255,255,255,0.8);
+        }
+
+        .score {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .instructions {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            border: 3px solid #333;
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.3);
+            max-width: 400px;
+        }
+
+        .instructions h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .instructions p {
+            font-size: 18px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .start-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 20px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .start-btn:hover {
+            background: #555;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
+        }
+
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 10px;
+            border: 3px solid #333;
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.3);
+            display: none;
+        }
+
+        .game-over h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #d32f2f;
+            text-transform: uppercase;
+        }
+
+        .final-score {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .restart-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+        }
+
+        .restart-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
+        }
+
+        .home-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .home-btn:hover {
+            background: #555;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Pencil sketch effect for UI elements */
+        .instructions, .game-over {
+            position: relative;
+        }
+
+        .instructions::before, .game-over::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: #333;
+            border-radius: 10px;
+            z-index: -1;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .instructions, .game-over {
+                margin: 20px;
+                padding: 20px;
+            }
+            
+            .instructions h1 {
+                font-size: 24px;
+            }
+            
+            .instructions p {
+                font-size: 16px;
+            }
+            
+            .game-over h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-ui">
+            <div class="score">Score: <span id="score">0</span></div>
+            <div>High Score: <span id="highScore">0</span></div>
+        </div>
+
+        <div class="instructions" id="instructions">
+            <h1>Pencil Runner</h1>
+            <p>A minimalist side-scrolling adventure with hand-drawn pencil art style!</p>
+            <p><strong>Controls:</strong></p>
+            <p>SPACE or CLICK to jump</p>
+            <p>Avoid the obstacles and collect pencils!</p>
+            <button class="start-btn" onclick="startGame()">Start Game</button>
+        </div>
+
+        <div class="game-over hidden" id="gameOver">
+            <h2>Game Over!</h2>
+            <div class="final-score">Final Score: <span id="finalScore">0</span></div>
+            <button class="restart-btn" onclick="restartGame()">Play Again</button>
+            <a href="/" class="home-btn">Back to Home</a>
+        </div>
+
+        <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <script>
+        class PencilRunner {
+            constructor() {
+                this.canvas = document.getElementById('gameCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.setupCanvas();
+                
+                this.gameState = 'menu'; // menu, playing, gameOver
+                this.score = 0;
+                this.highScore = localStorage.getItem('pencilRunnerHighScore') || 0;
+                document.getElementById('highScore').textContent = this.highScore;
+                
+                this.player = {
+                    x: 100,
+                    y: this.canvas.height - 150,
+                    width: 30,
+                    height: 40,
+                    velocityY: 0,
+                    isJumping: false,
+                    groundY: this.canvas.height - 150
+                };
+                
+                this.obstacles = [];
+                this.collectibles = [];
+                this.backgroundOffset = 0;
+                this.gameSpeed = 2;
+                this.obstacleTimer = 0;
+                this.collectibleTimer = 0;
+                
+                this.setupEventListeners();
+                this.gameLoop();
+            }
+            
+            setupCanvas() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+                
+                // Set canvas style for crisp pixel art
+                this.ctx.imageSmoothingEnabled = false;
+                this.ctx.webkitImageSmoothingEnabled = false;
+                this.ctx.mozImageSmoothingEnabled = false;
+                this.ctx.msImageSmoothingEnabled = false;
+            }
+            
+            setupEventListeners() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.code === 'Space' && this.gameState === 'playing') {
+                        e.preventDefault();
+                        this.jump();
+                    }
+                });
+                
+                document.addEventListener('click', () => {
+                    if (this.gameState === 'playing') {
+                        this.jump();
+                    }
+                });
+                
+                window.addEventListener('resize', () => {
+                    this.setupCanvas();
+                    this.player.groundY = this.canvas.height - 150;
+                    this.player.y = this.player.groundY;
+                });
+            }
+            
+            jump() {
+                if (!this.player.isJumping) {
+                    this.player.velocityY = -12;
+                    this.player.isJumping = true;
+                }
+            }
+            
+            updatePlayer() {
+                // Apply gravity
+                this.player.velocityY += 0.8;
+                this.player.y += this.player.velocityY;
+                
+                // Check ground collision
+                if (this.player.y >= this.player.groundY) {
+                    this.player.y = this.player.groundY;
+                    this.player.velocityY = 0;
+                    this.player.isJumping = false;
+                }
+            }
+            
+            updateObstacles() {
+                this.obstacleTimer++;
+                if (this.obstacleTimer > 120 - (this.score * 0.5)) {
+                    this.obstacleTimer = 0;
+                    this.obstacles.push({
+                        x: this.canvas.width,
+                        y: this.canvas.height - 150,
+                        width: 25,
+                        height: 35,
+                        speed: this.gameSpeed
+                    });
+                }
+                
+                // Update obstacle positions
+                for (let i = this.obstacles.length - 1; i >= 0; i--) {
+                    this.obstacles[i].x -= this.obstacles[i].speed;
+                    
+                    // Remove obstacles that are off screen
+                    if (this.obstacles[i].x + this.obstacles[i].width < 0) {
+                        this.obstacles.splice(i, 1);
+                        this.score += 10;
+                    }
+                }
+            }
+            
+            updateCollectibles() {
+                this.collectibleTimer++;
+                if (this.collectibleTimer > 200) {
+                    this.collectibleTimer = 0;
+                    this.collectibles.push({
+                        x: this.canvas.width,
+                        y: this.canvas.height - 200,
+                        width: 20,
+                        height: 20,
+                        speed: this.gameSpeed,
+                        rotation: 0
+                    });
+                }
+                
+                // Update collectible positions
+                for (let i = this.collectibles.length - 1; i >= 0; i--) {
+                    this.collectibles[i].x -= this.collectibles[i].speed;
+                    this.collectibles[i].rotation += 0.2;
+                    
+                    // Remove collectibles that are off screen
+                    if (this.collectibles[i].x + this.collectibles[i].width < 0) {
+                        this.collectibles.splice(i, 1);
+                    }
+                }
+            }
+            
+            checkCollisions() {
+                // Check obstacle collisions
+                for (let obstacle of this.obstacles) {
+                    if (this.player.x < obstacle.x + obstacle.width &&
+                        this.player.x + this.player.width > obstacle.x &&
+                        this.player.y < obstacle.y + obstacle.height &&
+                        this.player.y + this.player.height > obstacle.y) {
+                        this.gameOver();
+                        return;
+                    }
+                }
+                
+                // Check collectible collisions
+                for (let i = this.collectibles.length - 1; i >= 0; i--) {
+                    let collectible = this.collectibles[i];
+                    if (this.player.x < collectible.x + collectible.width &&
+                        this.player.x + this.player.width > collectible.x &&
+                        this.player.y < collectible.y + collectible.height &&
+                        this.player.y + this.player.height > collectible.y) {
+                        this.collectibles.splice(i, 1);
+                        this.score += 50;
+                    }
+                }
+            }
+            
+            drawBackground() {
+                // Draw paper texture background
+                this.ctx.fillStyle = '#f5f5dc';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Draw ground line
+                this.ctx.strokeStyle = '#333';
+                this.ctx.lineWidth = 3;
+                this.ctx.beginPath();
+                this.ctx.moveTo(0, this.canvas.height - 115);
+                this.ctx.lineTo(this.canvas.width, this.canvas.height - 115);
+                this.ctx.stroke();
+                
+                // Draw sketchy clouds
+                this.ctx.strokeStyle = '#ccc';
+                this.ctx.lineWidth = 2;
+                for (let i = 0; i < 5; i++) {
+                    let x = (i * 200 + this.backgroundOffset * 0.5) % (this.canvas.width + 100);
+                    let y = 50 + i * 30;
+                    this.drawSketchyCloud(x, y);
+                }
+                
+                this.backgroundOffset += this.gameSpeed;
+            }
+            
+            drawSketchyCloud(x, y) {
+                this.ctx.beginPath();
+                this.ctx.arc(x, y, 20, 0, Math.PI * 2);
+                this.ctx.arc(x + 25, y, 25, 0, Math.PI * 2);
+                this.ctx.arc(x + 50, y, 20, 0, Math.PI * 2);
+                this.ctx.arc(x + 25, y - 15, 15, 0, Math.PI * 2);
+                this.ctx.stroke();
+            }
+            
+            drawPlayer() {
+                this.ctx.save();
+                this.ctx.translate(this.player.x + this.player.width/2, this.player.y + this.player.height/2);
+                
+                // Draw pencil runner (stick figure style)
+                this.ctx.strokeStyle = '#333';
+                this.ctx.lineWidth = 3;
+                this.ctx.lineCap = 'round';
+                
+                // Head
+                this.ctx.beginPath();
+                this.ctx.arc(0, -15, 8, 0, Math.PI * 2);
+                this.ctx.stroke();
+                
+                // Body
+                this.ctx.beginPath();
+                this.ctx.moveTo(0, -7);
+                this.ctx.lineTo(0, 10);
+                this.ctx.stroke();
+                
+                // Arms (animated)
+                let armAngle = Math.sin(Date.now() * 0.01) * 0.3;
+                this.ctx.beginPath();
+                this.ctx.moveTo(0, -5);
+                this.ctx.lineTo(5 + armAngle * 10, 5);
+                this.ctx.moveTo(0, -5);
+                this.ctx.lineTo(-5 - armAngle * 10, 5);
+                this.ctx.stroke();
+                
+                // Legs
+                this.ctx.beginPath();
+                this.ctx.moveTo(0, 10);
+                this.ctx.lineTo(-8, 25);
+                this.ctx.moveTo(0, 10);
+                this.ctx.lineTo(8, 25);
+                this.ctx.stroke();
+                
+                this.ctx.restore();
+            }
+            
+            drawObstacles() {
+                this.ctx.strokeStyle = '#d32f2f';
+                this.ctx.lineWidth = 4;
+                this.ctx.lineCap = 'round';
+                
+                for (let obstacle of this.obstacles) {
+                    // Draw sketchy obstacle (rock/spike)
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(obstacle.x + obstacle.width/2, obstacle.y);
+                    this.ctx.lineTo(obstacle.x, obstacle.y + obstacle.height);
+                    this.ctx.lineTo(obstacle.x + obstacle.width, obstacle.y + obstacle.height);
+                    this.ctx.closePath();
+                    this.ctx.stroke();
+                    
+                    // Add some sketchy lines
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(obstacle.x + 5, obstacle.y + 10);
+                    this.ctx.lineTo(obstacle.x + obstacle.width - 5, obstacle.y + 15);
+                    this.ctx.stroke();
+                }
+            }
+            
+            drawCollectibles() {
+                this.ctx.strokeStyle = '#4caf50';
+                this.ctx.lineWidth = 3;
+                this.ctx.lineCap = 'round';
+                
+                for (let collectible of this.collectibles) {
+                    this.ctx.save();
+                    this.ctx.translate(collectible.x + collectible.width/2, collectible.y + collectible.height/2);
+                    this.ctx.rotate(collectible.rotation);
+                    
+                    // Draw pencil collectible
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(-8, -8);
+                    this.ctx.lineTo(8, 8);
+                    this.ctx.moveTo(8, -8);
+                    this.ctx.lineTo(-8, 8);
+                    this.ctx.stroke();
+                    
+                    this.ctx.restore();
+                }
+            }
+            
+            update() {
+                if (this.gameState === 'playing') {
+                    this.updatePlayer();
+                    this.updateObstacles();
+                    this.updateCollectibles();
+                    this.checkCollisions();
+                    
+                    // Increase game speed gradually
+                    this.gameSpeed = 2 + this.score * 0.001;
+                    
+                    // Update UI
+                    document.getElementById('score').textContent = this.score;
+                }
+            }
+            
+            render() {
+                this.drawBackground();
+                
+                if (this.gameState === 'playing') {
+                    this.drawPlayer();
+                    this.drawObstacles();
+                    this.drawCollectibles();
+                }
+            }
+            
+            gameLoop() {
+                this.update();
+                this.render();
+                requestAnimationFrame(() => this.gameLoop());
+            }
+            
+            gameOver() {
+                this.gameState = 'gameOver';
+                
+                // Update high score
+                if (this.score > this.highScore) {
+                    this.highScore = this.score;
+                    localStorage.setItem('pencilRunnerHighScore', this.highScore);
+                    document.getElementById('highScore').textContent = this.highScore;
+                }
+                
+                document.getElementById('finalScore').textContent = this.score;
+                document.getElementById('gameOver').classList.remove('hidden');
+            }
+        }
+        
+        // Global game instance
+        let game;
+        
+        function startGame() {
+            document.getElementById('instructions').classList.add('hidden');
+            document.getElementById('gameOver').classList.add('hidden');
+            
+            game = new PencilRunner();
+            game.gameState = 'playing';
+        }
+        
+        function restartGame() {
+            if (game) {
+                game.gameState = 'playing';
+                game.score = 0;
+                game.obstacles = [];
+                game.collectibles = [];
+                game.player.y = game.player.groundY;
+                game.player.velocityY = 0;
+                game.player.isJumping = false;
+                game.gameSpeed = 2;
+                game.obstacleTimer = 0;
+                game.collectibleTimer = 0;
+                
+                document.getElementById('gameOver').classList.add('hidden');
+                document.getElementById('score').textContent = '0';
+            }
+        }
+        
+        // Initialize game on page load
+        window.addEventListener('load', () => {
+            game = new PencilRunner();
+        });
+    </script>
+</body>
+</html>
