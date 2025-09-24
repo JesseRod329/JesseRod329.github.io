@@ -169,6 +169,21 @@ if (location.protocol !== 'https:') {
   }
 
   .game-card .title { color: #ffffff !important; }
+
+  .prompt-card {
+    border-left: 4px solid #ff6b35;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .prompt-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    border-color: #ff6b35;
+    background: rgba(255,107,53,0.08);
+    box-shadow: 0 10px 30px rgba(255,107,53,0.3), 0 0 20px rgba(255,107,53,0.2);
+  }
+
+  .prompt-card .title { color: #ffffff !important; }
   .title { font-size: clamp(1.75rem, 3vw, 2.25rem); font-weight: 900; letter-spacing:-0.02em; margin-bottom: .5rem; }
   .subtitle { color:#bbb; margin-bottom:1rem; }
   .badge { display:inline-block; font-size:.7rem; letter-spacing:.08em; border:1px solid #444; padding:4px 8px; border-radius:999px; color:#ddd; }
@@ -1437,6 +1452,15 @@ if (location.protocol !== 'https:') {
   <div class="main-content">
     <main class="container" role="main">
       <div class="grid">
+        <a class="card interface-card prompt-card" href="/prompt/">
+          <div class="badge">NEW</div>
+          <div class="title">Prompt Library</div>
+          <div class="subtitle">Nano Banana prompt recipes from the Awesome Nano Banana Images archive. Copy, remix, and experiment with AI prompts.</div>
+          <div class="actions">
+            <span class="btn primary">Open Library</span>
+            <span class="btn">AI Prompts · Search · Archive</span>
+          </div>
+        </a>
         <a class="card interface-card wrestling-card" href="/wrestling-news/">
           <div class="badge">RECOMMENDED</div>
           <div class="title">Wrestling News Hub</div>
