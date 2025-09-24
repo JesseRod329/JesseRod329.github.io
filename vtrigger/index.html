@@ -6,7 +6,7 @@
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; script-src 'self'; object-src 'none'; media-src 'none'; child-src 'none'; form-action 'none'; base-uri 'self';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; script-src 'self' 'unsafe-inline'; object-src 'none'; media-src 'none'; child-src 'none'; form-action 'none'; base-uri 'self';">
     <title>Pencil Runner — Jesse Rodriguez</title>
     <style>
         * {
@@ -232,13 +232,13 @@
             <p><strong>Controls:</strong></p>
             <p>SPACE or CLICK to jump</p>
             <p>Avoid the obstacles and collect pencils!</p>
-            <button class="start-btn" onclick="startGame()">Start Game</button>
+            <button class="start-btn" id="startBtn">Start Game</button>
         </div>
 
         <div class="game-over hidden" id="gameOver">
             <h2>Game Over!</h2>
             <div class="final-score">Final Score: <span id="finalScore">0</span></div>
-            <button class="restart-btn" onclick="restartGame()">Play Again</button>
+            <button class="restart-btn" id="restartBtn">Play Again</button>
             <a href="/" class="home-btn">Back to Home</a>
         </div>
 
@@ -602,6 +602,10 @@
         // Initialize game on page load
         window.addEventListener('load', () => {
             game = new PencilRunner();
+            
+            // Add event listeners for buttons
+            document.getElementById('startBtn').addEventListener('click', startGame);
+            document.getElementById('restartBtn').addEventListener('click', restartGame);
         });
     </script>
 </body>
