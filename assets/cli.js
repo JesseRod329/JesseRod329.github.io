@@ -24,6 +24,7 @@ class PortfolioCLI {
       headers: this.showHeaders.bind(this),
       palette: this.showPalette.bind(this),
       brainwave: this.showBrainwave.bind(this),
+      prompt: this.showPrompt.bind(this),
       clear: this.clearTerminal.bind(this)
     };
 
@@ -279,6 +280,7 @@ class PortfolioCLI {
       '  headers   - HTTP security headers info',
       '  palette   - Fashion color palette generator',
       '  brainwave - AI neural activity simulator',
+      '  prompt    - AI prompt generator tool',
       '  clear     - Clear terminal output',
       '',
       'Use TAB for autocomplete, ↑/↓ for command history.',
@@ -508,6 +510,54 @@ class PortfolioCLI {
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
     link.textContent = 'Launch AI Brainwave Simulator';
+    
+    outputLine.appendChild(linkText);
+    outputLine.appendChild(link);
+    
+    this.outputContainer.appendChild(outputLine);
+    this.scrollToBottom();
+  }
+
+  showPrompt() {
+    this.addMultilineOutput([
+      '🤖 AI Prompt Generator',
+      '',
+      'Create powerful prompts for ChatGPT, Claude, and other AI models.',
+      '',
+      'Features:',
+      '• Multiple categories: Creative, Coding, Business, Education',
+      '• Customizable tone and style options',
+      '• Pre-built templates for common use cases',
+      '• One-click copy to clipboard',
+      '• Auto-save functionality',
+      '• Real-time prompt preview',
+      '',
+      'Templates Available:',
+      '• Blog Post Writer - SEO-optimized content creation',
+      '• Code Review Assistant - Detailed code analysis',
+      '• Marketing Copy - Compelling sales content',
+      '• Lesson Plan Creator - Educational materials',
+      '• Creative Story Writer - Fiction and narratives',
+      '• Data Analysis Helper - Statistical insights',
+      '',
+      'Privacy: All processing happens locally in your browser.',
+      ''
+    ], 'prompt');
+    
+    // Add link to prompt generator
+    this.addPromptLink();
+  }
+
+  addPromptLink() {
+    const outputLine = document.createElement('div');
+    outputLine.className = 'cli-output-line prompt';
+    
+    const linkText = document.createTextNode('🚀 ');
+    const link = document.createElement('a');
+    link.href = '/prompt';
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = 'Launch AI Prompt Generator';
     
     outputLine.appendChild(linkText);
     outputLine.appendChild(link);
