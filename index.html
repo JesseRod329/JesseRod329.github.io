@@ -184,6 +184,45 @@ if (location.protocol !== 'https:') {
   }
 
   .prompt-card .title { color: #ffffff !important; }
+
+  .graffiti-card {
+    border-left: 4px solid #ff6b35;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .graffiti-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, transparent, #ff6b35, transparent, #ffd700, transparent, #ff4757, transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    animation: graffitiSpin 4s linear infinite;
+    z-index: -1;
+  }
+
+  .graffiti-card:hover::before {
+    opacity: 0.15;
+  }
+
+  .graffiti-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    border-color: #ff6b35;
+    background: rgba(255,107,53,0.08);
+    box-shadow: 0 10px 30px rgba(255,107,53,0.3), 0 0 20px rgba(255,107,53,0.2);
+  }
+
+  @keyframes graffitiSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .graffiti-card .title { color: #ffffff !important; }
+
   .title { font-size: clamp(1.75rem, 3vw, 2.25rem); font-weight: 900; letter-spacing:-0.02em; margin-bottom: .5rem; }
   .subtitle { color:#bbb; margin-bottom:1rem; }
   .badge { display:inline-block; font-size:.7rem; letter-spacing:.08em; border:1px solid #444; padding:4px 8px; border-radius:999px; color:#ddd; }
@@ -1459,6 +1498,15 @@ if (location.protocol !== 'https:') {
           <div class="actions">
             <span class="btn primary">Open Library</span>
             <span class="btn">AI Prompts · Search · Archive</span>
+          </div>
+        </a>
+        <a class="card interface-card graffiti-card" href="/art/">
+          <div class="badge">AWARD-WINNING</div>
+          <div class="title">Digital Graffiti Studio</div>
+          <div class="subtitle">Professional-grade digital art app with advanced particle physics, realistic spray effects, and immersive environments.</div>
+          <div class="actions">
+            <span class="btn primary">Start Creating</span>
+            <span class="btn">React · Three.js · Web Audio</span>
           </div>
         </a>
         <a class="card interface-card wrestling-card" href="/wrestling-news/">

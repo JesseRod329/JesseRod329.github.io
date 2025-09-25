@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>3D Brain Visualization: The Neurology of Affirmation</title>
+    <meta name="description" content="Interactive 3D simulation of brain regions activating when hearing 'yes'." />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      html, body { height: 100%; }
+      body {
+        background: radial-gradient(1200px 800px at 70% 40%, #0b1020, #060913 60%, #04060d 100%);
+      }
+      .glow-shadow {
+        filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.9)) drop-shadow(0 0 12px rgba(99, 102, 241, 0.6));
+      }
+      #three-canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      .stage-item {
+        transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+      }
+      .stage-item .status-dot {
+        width: 0.75rem;
+        height: 0.75rem;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        background: rgba(51, 65, 85, 0.6);
+        transition: background 0.2s ease, box-shadow 0.2s ease;
+      }
+      .stage-item[data-status="active"] {
+        border-color: rgba(99, 102, 241, 0.8);
+        background: linear-gradient(140deg, rgba(30, 58, 138, 0.25), rgba(15, 23, 42, 0.55));
+        box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.2);
+      }
+      .stage-item[data-status="active"] .status-dot {
+        background: #6366f1;
+        box-shadow: 0 0 10px rgba(99, 102, 241, 0.8);
+      }
+      .stage-item[data-status="complete"] {
+        border-color: rgba(34, 197, 94, 0.6);
+        background: linear-gradient(140deg, rgba(22, 101, 52, 0.25), rgba(15, 23, 42, 0.55));
+      }
+      .stage-item[data-status="complete"] .status-dot {
+        background: #22c55e;
+        box-shadow: 0 0 8px rgba(34, 197, 94, 0.65);
+      }
+      .stage-item[data-preview="true"] {
+        border-color: rgba(148, 163, 184, 0.45);
+        background: linear-gradient(140deg, rgba(30, 41, 59, 0.55), rgba(15, 23, 42, 0.45));
+      }
+      .stage-item:focus-visible {
+        outline: 2px solid rgba(99, 102, 241, 0.7);
+        outline-offset: 2px;
+      }
+      .info-pill {
+        background: rgba(30, 41, 59, 0.65);
+        border: 1px solid rgba(148, 163, 184, 0.28);
+        border-radius: 999px;
+        padding: 0.2rem 0.6rem;
+        font-size: 0.75rem;
+        color: rgba(226, 232, 240, 0.9);
+      }
+      .gradient-border {
+        border: 1px solid rgba(148, 163, 184, 0.16);
+        background: linear-gradient(160deg, rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.45));
+        border-radius: 0.75rem;
+      }
+      .stage-insight-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+      }
+      @media (max-width: 1024px) {
+        .stage-insight-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      #insight-references a {
+        color: rgba(129, 140, 248, 0.95);
+      }
+      #insight-references a:hover {
+        color: rgba(165, 180, 252, 1);
+      }
+    </style>
+  </head>
+  <body class="text-slate-200">
+    <div class="w-screen h-screen grid grid-cols-1 lg:grid-cols-5">
+      <aside class="lg:col-span-2 p-6 lg:p-8 bg-slate-900/40 backdrop-blur border-r border-white/5 flex flex-col gap-6 overflow-y-auto">
+        <header>
+          <h1 class="text-2xl font-semibold tracking-tight">3D Brain Visualization</h1>
+          <p class="text-slate-400">Modeling the cortical and subcortical cascade evoked by hearing an affirmative.</p>
+        </header>
+
+        <section class="space-y-3">
+          <h2 class="text-lg font-medium">How to Use</h2>
+          <p class="text-slate-400 leading-relaxed">Press <span class="text-indigo-300 font-semibold">Hear "Yes"</span> to drive a research-based sequence of neural activations. Adjust attentional state to explore faster or slower processing, and interrogate each stage for networks, biomarkers, and citations.</p>
+        </section>
+
+        <section class="space-y-2">
+          <div class="text-slate-300 text-sm uppercase tracking-wider">Current Stage</div>
+          <div id="stage-title" class="text-xl font-semibold">Idle</div>
+          <p id="stage-desc" class="text-slate-400">Press the button to begin the five-step affirmation-processing sequence.</p>
+        </section>
+
+        <section class="gradient-border p-4 space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-sm uppercase tracking-wide text-slate-400">Model Controls</span>
+            <span id="model-duration" class="text-xs text-indigo-200/90">Baseline duration: —</span>
+          </div>
+          <label class="flex flex-col gap-2 text-sm text-slate-300">
+            Attentional state (speed multiplier)
+            <div class="flex items-center gap-3">
+              <input id="speed-range" type="range" min="0.7" max="1.4" step="0.05" value="1.0" class="w-full accent-indigo-400" />
+              <span id="speed-value" class="info-pill">1.00×</span>
+            </div>
+            <span class="text-xs text-slate-500">Higher vigilance accelerates cortical convergence; lower values emulate divided attention and slower gating.</span>
+          </label>
+          <div class="text-xs text-slate-500">
+            Data sources blend meta-analytic EEG/MEG latencies, dopaminergic reward modeling, and fronto-limbic integration literature. Durations scale with the attentional multiplier.
+          </div>
+        </section>
+
+        <section class="space-y-3">
+          <h2 class="text-lg font-medium">Sequence Timeline</h2>
+          <ol id="stage-list" class="space-y-2"></ol>
+        </section>
+
+        <section class="gradient-border p-4 space-y-4">
+          <div class="flex items-center justify-between">
+            <h2 id="insight-title" class="text-lg font-semibold">Stage Insight</h2>
+            <span class="text-xs text-indigo-200/80">Click a stage for deeper context</span>
+          </div>
+          <p id="insight-summary" class="text-sm text-slate-300 leading-relaxed">Select any stage in the timeline to surface its network-level explanation, neurochemical drivers, and key citations.</p>
+          <div class="stage-insight-grid text-sm text-slate-300">
+            <div>
+              <div class="text-xs uppercase text-slate-400 tracking-wide">Latency window</div>
+              <div id="insight-latency" class="text-slate-100 font-medium">—</div>
+            </div>
+            <div>
+              <div class="text-xs uppercase text-slate-400 tracking-wide">Neurochemical drivers</div>
+              <div id="insight-chemistry" class="text-slate-100 font-medium">—</div>
+            </div>
+            <div>
+              <div class="text-xs uppercase text-slate-400 tracking-wide">Networks engaged</div>
+              <div id="insight-networks" class="flex flex-wrap gap-2 pt-1"></div>
+            </div>
+            <div>
+              <div class="text-xs uppercase text-slate-400 tracking-wide">Biomarkers &amp; signals</div>
+              <div id="insight-biomarkers" class="text-slate-100 font-medium">—</div>
+            </div>
+          </div>
+          <div>
+            <div class="text-xs uppercase text-slate-400 tracking-wide">Key literature</div>
+            <ul id="insight-references" class="mt-1 space-y-1 text-xs"></ul>
+          </div>
+        </section>
+
+        <section class="text-xs text-slate-500 space-y-2 leading-relaxed">
+          <div class="text-slate-400 uppercase tracking-wide">Model Notes</div>
+          <p>Sequence latencies align with human EEG/MEG response windows: P1/N1 auditory complexes, N400 semantic integration, dopaminergic reward prediction, dorsolateral prefrontal appraisal, and limbic tagging.</p>
+          <p>While stylized, the 3D graph respects anatomical topology (MNI references) and highlights tractography-inspired pathways. Use the attentional slider to explore state-dependent timing shifts.</p>
+        </section>
+
+        <div class="mt-auto flex items-center gap-3 pt-4">
+          <button id="start-btn" class="inline-flex items-center gap-2 rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium shadow-sm hover:bg-indigo-500 active:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-slate-900">
+            <span>Hear "Yes"</span>
+          </button>
+          <button id="reset-btn" class="inline-flex items-center gap-2 rounded-md border border-white/10 px-4 py-2 text-sm font-medium hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-slate-400/30">Reset</button>
+        </div>
+      </aside>
+
+      <main class="lg:col-span-3 relative">
+        <canvas id="three-canvas" class="absolute inset-0"></canvas>
+        <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+      </main>
+    </div>
+
+    <script type="module">
+      import * as THREE from 'https://esm.sh/three@0.160.0';
+      import { OrbitControls } from 'https://esm.sh/three@0.160.0/examples/jsm/controls/OrbitControls';
+      import { GLTFLoader } from 'https://esm.sh/three@0.160.0/examples/jsm/loaders/GLTFLoader';
+      import { EffectComposer } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/EffectComposer';
+      import { RenderPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/RenderPass';
+      import { UnrealBloomPass } from 'https://esm.sh/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass';
+
+      const startButton = document.getElementById('start-btn');
+      const resetButton = document.getElementById('reset-btn');
+      const stageTitle = document.getElementById('stage-title');
+      const stageDesc = document.getElementById('stage-desc');
+      const stageListEl = document.getElementById('stage-list');
+      const insightTitle = document.getElementById('insight-title');
+      const insightSummary = document.getElementById('insight-summary');
+      const insightLatency = document.getElementById('insight-latency');
+      const insightChemistry = document.getElementById('insight-chemistry');
+      const insightNetworks = document.getElementById('insight-networks');
+      const insightBiomarkers = document.getElementById('insight-biomarkers');
+      const insightReferences = document.getElementById('insight-references');
+      const modelDurationEl = document.getElementById('model-duration');
+      const speedSlider = document.getElementById('speed-range');
+      const speedValueLabel = document.getElementById('speed-value');
+
+      const canvas = document.getElementById('three-canvas');
+      const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 200);
+      camera.position.set(0, 1.4, 4.4);
+      scene.add(camera);
+
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      controls.rotateSpeed = 0.6;
+      controls.minDistance = 2.2;
+      controls.maxDistance = 8;
+      controls.target.set(0, 0.6, 0);
+
+      const renderScene = new RenderPass(scene, camera);
+      const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+      bloomPass.threshold = 0.21;
+      bloomPass.strength = 1.2;
+      bloomPass.radius = 0.55;
+
+      const composer = new EffectComposer(renderer);
+      composer.addPass(renderScene);
+      composer.addPass(bloomPass);
+
+      function setRendererSizeFromParent() {
+        const parent = canvas.parentElement || document.body;
+        const rect = parent.getBoundingClientRect();
+        const width = Math.max(1, rect.width);
+        const height = Math.max(1, rect.height);
+        renderer.setSize(width, height, false);
+        composer.setSize(width, height);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+      }
+      setRendererSizeFromParent();
+
+      const hemi = new THREE.HemisphereLight(0xaecbff, 0x1b1e2b, 0.7);
+      scene.add(hemi);
+      const key = new THREE.DirectionalLight(0xffffff, 0.8);
+      key.position.set(4, 8, 6);
+      scene.add(key);
+      const rim = new THREE.PointLight(0x6172f3, 1.0, 20, 2.0);
+      rim.position.set(-3, 1.5, -3);
+      scene.add(rim);
+
+      // Add a starfield background
+      const starVertices = [];
+      for (let i = 0; i < 10000; i++) {
+        const x = THREE.MathUtils.randFloatSpread(200);
+        const y = THREE.MathUtils.randFloatSpread(200);
+        const z = THREE.MathUtils.randFloatSpread(200);
+        starVertices.push(x, y, z);
+      }
+      const starGeometry = new THREE.BufferGeometry();
+      starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+      const starMaterial = new THREE.PointsMaterial({ color: 0x888888, size: 0.02 });
+      const stars = new THREE.Points(starGeometry, starMaterial);
+      scene.add(stars);
+
+      scene.fog = new THREE.FogExp2(0x060913, 0.055);
+
+      const loader = new GLTFLoader();
+      const modelUrl = 'human_brain/scene.gltf'; // Using your local model!
+
+      loader.load(modelUrl, (gltf) => {
+        const brainModel = gltf.scene;
+        brainModel.scale.set(1.5, 1.5, 1.5);
+        brainModel.position.set(0, 0.6, 0);
+
+        brainModel.traverse((child) => {
+          if (child.isMesh) {
+            child.material = new THREE.MeshPhysicalMaterial({
+              color: 0x334155,
+              emissive: 0x0a0f1f,
+              metalness: 0.1,
+              roughness: 0.92,
+              transmission: 0.7,
+              thickness: 0.55,
+              transparent: true,
+              opacity: 0.15, // Lower opacity to see through it
+            });
+          }
+        });
+
+        scene.add(brainModel);
+      });
+
+      const activeNodes = new Set();
+      function createNode(color, position, name) {
+        const group = new THREE.Group();
+        group.position.copy(position);
+
+        const coreMat = new THREE.MeshStandardMaterial({
+          color,
+          emissive: color,
+          emissiveIntensity: 0.25,
+          roughness: 0.4,
+          metalness: 0.2,
+        });
+        const core = new THREE.Mesh(new THREE.SphereGeometry(0.08, 32, 32), coreMat);
+        group.add(core);
+
+        const haloTexture = createRadialGradientTexture('#99a2ff');
+        const haloMat = new THREE.SpriteMaterial({ map: haloTexture, color, transparent: true, opacity: 0.7, depthWrite: false });
+        const halo = new THREE.Sprite(haloMat);
+        halo.scale.set(0.6, 0.6, 0.6);
+        group.add(halo);
+
+        const label = makeLabelSprite(name);
+        label.position.set(0, 0.18, 0);
+        group.add(label);
+
+        group.userData = { core, halo, label, baseColor: color, position: position.clone() };
+        scene.add(group);
+        return group;
+      }
+
+      const REGIONS = {
+        auditoryCortex: { color: 0x60a5fa, pos: new THREE.Vector3(-0.8, 0.6, -0.2), label: 'Auditory Cortex' },
+        wernicke:      { color: 0x34d399, pos: new THREE.Vector3(-0.5, 0.65, -0.05), label: "Wernicke's Area" },
+        vta:           { color: 0xf59e0b, pos: new THREE.Vector3(-0.1, 0.4,  0.0), label: 'Ventral Tegmental Area' },
+        nucleusAcc:    { color: 0xf472b6, pos: new THREE.Vector3( 0.2, 0.5,  0.1), label: 'Nucleus Accumbens' },
+        prefrontal:    { color: 0x818cf8, pos: new THREE.Vector3( 0.7, 0.75, 0.2), label: 'Prefrontal Cortex' },
+        amygdala:      { color: 0xef4444, pos: new THREE.Vector3( 0.1, 0.35, -0.3), label: 'Amygdala' },
+      };
+
+      const nodes = Object.fromEntries(
+        Object.entries(REGIONS).map(([key, cfg]) => [key, createNode(cfg.color, cfg.pos, cfg.label)])
+      );
+
+      function makeLabelSprite(text) {
+        const canvas = document.createElement('canvas');
+        const padding = 16;
+        const ctx = canvas.getContext('2d');
+        ctx.font = '14px "Inter", "Segoe UI", system-ui, -apple-system, sans-serif';
+        const metrics = ctx.measureText(text);
+        const width = Math.ceil(metrics.width) + padding * 2;
+        const height = 32;
+        canvas.width = width * 2;
+        canvas.height = height * 2;
+        ctx.scale(2, 2);
+        ctx.fillStyle = 'rgba(2, 6, 23, 0.65)';
+        roundRect(ctx, 0, 0, width, height, 8);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(148, 163, 184, 0.25)';
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(226, 232, 240, 0.95)';
+        ctx.font = '14px "Inter", "Segoe UI", system-ui, -apple-system, sans-serif';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, padding, height / 2);
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.anisotropy = 4;
+        const material = new THREE.SpriteMaterial({ map: texture, depthWrite: false, transparent: true });
+        const sprite = new THREE.Sprite(material);
+        sprite.scale.set(width / 160, height / 160, 1);
+        return sprite;
+      }
+
+      function roundRect(ctx, x, y, w, h, r) {
+        const radius = Math.min(r, h / 2, w / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.arcTo(x + w, y, x + w, y + h, radius);
+        ctx.arcTo(x + w, y + h, x, y + h, radius);
+        ctx.arcTo(x, y + h, x, y, radius);
+        ctx.arcTo(x, y, x + w, y, radius);
+        ctx.closePath();
+      }
+
+      function createRadialGradientTexture(hex) {
+        const canvas = document.createElement('canvas');
+        const size = 256;
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        const gradient = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+        gradient.addColorStop(0, hex + 'ff');
+        gradient.addColorStop(0.3, hex + 'aa');
+        gradient.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, size, size);
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.minFilter = THREE.LinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        return texture;
+      }
+
+      const CONNECTIONS = [
+        { key: 'auditory-wernicke', from: 'auditoryCortex', to: 'wernicke', color: 0x60a5fa },
+        { key: 'wernicke-prefrontal', from: 'wernicke', to: 'prefrontal', color: 0x34d399 },
+        { key: 'vta-nacc', from: 'vta', to: 'nucleusAcc', color: 0xf59e0b },
+        { key: 'nacc-prefrontal', from: 'nucleusAcc', to: 'prefrontal', color: 0xf472b6 },
+        { key: 'prefrontal-amygdala', from: 'prefrontal', to: 'amygdala', color: 0x818cf8 },
+        { key: 'nacc-amygdala', from: 'nucleusAcc', to: 'amygdala', color: 0xf472b6 },
+      ];
+
+      const connectionMeshes = new Map();
+      CONNECTIONS.forEach(({ key, from, to, color }) => {
+        const start = nodes[from].position.clone();
+        const end = nodes[to].position.clone();
+        const mid = start.clone().lerp(end, 0.5).add(new THREE.Vector3(0, 0.18, 0));
+        const curve = new THREE.CatmullRomCurve3([start, mid, end], false, 'catmullrom', 0.2);
+        const geometry = new THREE.TubeGeometry(curve, 60, 0.008, 16, false);
+        const baseColor = new THREE.Color(color);
+        const highlightColor = baseColor.clone().lerp(new THREE.Color(0xffffff), 0.35);
+        const material = new THREE.MeshBasicMaterial({ color: baseColor.clone(), opacity: 0.2, transparent: true });
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.userData = { key, baseColor, highlightColor };
+        scene.add(mesh);
+        connectionMeshes.set(key, mesh);
+      });
+
+      function setConnectionsActive(keys, active) {
+        if (!keys) return;
+        keys.forEach((key) => {
+          const mesh = connectionMeshes.get(key);
+          if (!mesh) return;
+          const targetColor = active ? mesh.userData.highlightColor : mesh.userData.baseColor;
+          mesh.material.color.copy(targetColor);
+          mesh.material.opacity = active ? 0.55 : 0.2;
+        });
+      }
+
+      function resetConnections() {
+        connectionMeshes.forEach((mesh) => {
+          mesh.material.color.copy(mesh.userData.baseColor);
+          mesh.material.opacity = 0.2;
+        });
+      }
+
+      let speedMultiplier = parseFloat(speedSlider.value);
+      function scaledDuration(ms) {
+        return Math.max(60, ms / speedMultiplier);
+      }
+      function waitMs(ms) {
+        return new Promise((resolve) => setTimeout(resolve, scaledDuration(ms)));
+      }
+
+      function createPathParticle(pathPoints, color = 0xffffff) {
+        const geometry = new THREE.SphereGeometry(0.02, 16, 16);
+        const material = new THREE.MeshBasicMaterial({ color });
+        const particle = new THREE.Mesh(geometry, material);
+        scene.add(particle);
+        const curve = new THREE.CatmullRomCurve3(pathPoints, false, 'catmullrom', 0.2);
+        return { particle, curve };
+      }
+
+      function animatePath(pathObj, durationMs) {
+        const duration = scaledDuration(durationMs);
+        return new Promise((resolve) => {
+          const startTime = performance.now();
+          function tick(now) {
+            if (!isPlaying) {
+              scene.remove(pathObj.particle);
+              resolve();
+              return;
+            }
+            const elapsed = now - startTime;
+            const t = Math.min(1, elapsed / duration);
+            const pos = pathObj.curve.getPoint(t);
+            pathObj.particle.position.copy(pos);
+            if (t < 1) {
+              requestAnimationFrame(tick);
+            } else {
+              scene.remove(pathObj.particle);
+              resolve();
+            }
+          }
+          requestAnimationFrame(tick);
+        });
+      }
+
+      function setNodeActive(group, active) {
+        const { core, halo } = group.userData;
+        if (active) {
+          activeNodes.add(group);
+          core.material.emissiveIntensity = 1.2;
+          halo.material.opacity = 1.0;
+          halo.scale.set(0.95, 0.95, 0.95);
+        } else {
+          activeNodes.delete(group);
+          core.material.emissiveIntensity = 0.25;
+          halo.material.opacity = 0.7;
+          halo.scale.set(0.6, 0.6, 0.6);
+        }
+      }
+
+      function pulseNode(group, time) {
+        const { halo } = group.userData;
+        const isActive = activeNodes.has(group);
+        const baseScale = isActive ? 0.9 : 0.6;
+        const pulse = Math.sin(time * 2.6) * 0.05;
+        halo.scale.set(baseScale + pulse, baseScale + pulse, baseScale + pulse);
+        halo.material.opacity = (isActive ? 0.7 : 0.55) + Math.sin(time * 3.2) * 0.05;
+      }
+
+      const STAGES = [
+        {
+          key: 'sound',
+          title: 'Sound Processing — Auditory Cortex',
+          summary: 'Primary auditory cortex decomposes spectral and temporal structure of the affirmative cue.',
+          desc: 'Raw auditory input arrives via the thalamus (medial geniculate), triggering feedforward bursts in primary auditory cortex.',
+          latency: '15–80 ms post stimulus',
+          durationMs: 900,
+          holdAfterMs: 220,
+          neurochemistry: ['Glutamate', 'GABA balance'],
+          networks: ['Primary auditory cortex (A1)', 'Planum temporale'],
+          biomarkers: 'P50/N1 complex; 70–110 Hz gamma burst (Oya et al., 2002)',
+          references: [
+            { label: 'Picton (2011) Human Auditory Evoked Potentials', url: 'https://doi.org/10.1016/B978-0-444-53664-6.00002-9' },
+            { label: 'Oya et al. (2002) PNAS 99:13125', url: 'https://doi.org/10.1073/pnas.152522599' },
+          ],
+          connections: ['auditory-wernicke'],
+          run: async function () {
+            setConnectionsActive(this.connections, true);
+            setNodeActive(nodes.auditoryCortex, true);
+            const mid = nodes.auditoryCortex.position.clone().lerp(nodes.wernicke.position, 0.5).add(new THREE.Vector3(-0.12, 0.12, 0.04));
+            const pulse = createPathParticle([
+              nodes.auditoryCortex.position.clone(),
+              mid,
+              nodes.wernicke.position.clone(),
+            ], 0x60a5fa);
+            await animatePath(pulse, this.durationMs);
+            if (!isPlaying) return;
+            await waitMs(this.holdAfterMs);
+            setNodeActive(nodes.auditoryCortex, false);
+            setConnectionsActive(this.connections, false);
+          },
+        },
+        {
+          key: 'comprehension',
+          title: "Comprehension — Wernicke's Area",
+          summary: 'Superior temporal gyrus integrates phonology with lexical-semantic templates to derive meaning.',
+          desc: 'Wernicke-linked temporal fields bind phonemes into linguistic units, anticipating affirming intent and registering semantic fit.',
+          latency: '200–450 ms post stimulus',
+          durationMs: 1000,
+          holdAfterMs: 260,
+          neurochemistry: ['Glutamate', 'Acetylcholine modulation'],
+          networks: ["Posterior superior temporal gyrus", "Temporo-parietal junction"],
+          biomarkers: 'N400 semantic integration; theta-gamma coupling',
+          references: [
+            { label: 'Hickok & Poeppel (2007) Nat Rev Neurosci', url: 'https://doi.org/10.1038/nrn2113' },
+            { label: 'Friederici (2011) Physiol Rev', url: 'https://doi.org/10.1152/physrev.00006.2011' },
+          ],
+          connections: ['wernicke-prefrontal'],
+          run: async function () {
+            setConnectionsActive(this.connections, true);
+            setNodeActive(nodes.wernicke, true);
+            await waitMs(this.durationMs * 0.35);
+            if (!isPlaying) return;
+            const mid = nodes.wernicke.position.clone().lerp(nodes.prefrontal.position, 0.5).add(new THREE.Vector3(0.05, 0.16, 0.06));
+            const pulse = createPathParticle([
+              nodes.wernicke.position.clone(),
+              mid,
+              nodes.prefrontal.position.clone(),
+            ], 0x34d399);
+            await animatePath(pulse, this.durationMs * 0.65);
+            if (!isPlaying) return;
+            await waitMs(this.holdAfterMs);
+            setNodeActive(nodes.wernicke, false);
+            setConnectionsActive(this.connections, false);
+          },
+        },
+        {
+          key: 'reward',
+          title: 'Reward Prediction — VTA & Nucleus Accumbens',
+          summary: 'Midbrain dopaminergic burst signals positive prediction error and relays to ventral striatum.',
+          desc: 'Ventral tegmental area encodes confirmation as a rewarding cue, driving dopamine release into nucleus accumbens.',
+          latency: '150–300 ms post semantic appraisal',
+          durationMs: 1200,
+          holdAfterMs: 320,
+          neurochemistry: ['Dopamine', 'Endocannabinoids'],
+          networks: ['Ventral tegmental area', 'Ventral striatum (NAc)'],
+          biomarkers: 'Phasic dopamine (Schultz, 1997); beta desynchronization',
+          references: [
+            { label: 'Schultz (1997) J Neurophysiol', url: 'https://doi.org/10.1152/jn.1997.77.2.783' },
+            { label: 'Haber & Knutson (2010) Neuropsychopharmacology', url: 'https://doi.org/10.1038/npp.2009.129' },
+          ],
+          connections: ['vta-nacc'],
+          run: async function () {
+            setConnectionsActive(this.connections, true);
+            setNodeActive(nodes.vta, true);
+            const via = nodes.vta.position.clone().lerp(nodes.nucleusAcc.position, 0.5).add(new THREE.Vector3(0.08, 0.1, 0.02));
+            const pulse = createPathParticle([
+              nodes.vta.position.clone(),
+              via,
+              nodes.nucleusAcc.position.clone(),
+            ], 0xffbb66);
+            await animatePath(pulse, this.durationMs);
+            if (!isPlaying) return;
+            setNodeActive(nodes.vta, false);
+            setNodeActive(nodes.nucleusAcc, true);
+            await waitMs(this.holdAfterMs);
+            setNodeActive(nodes.nucleusAcc, false);
+            setConnectionsActive(this.connections, false);
+          },
+        },
+        {
+          key: 'cognitive',
+          title: 'Cognitive Evaluation — Prefrontal Cortex',
+          summary: 'Dorsolateral PFC integrates semantic, reward, and contextual cues to plan next action.',
+          desc: 'Prefrontal control networks weigh the affirmative signal against goals, updating working memory and executive policy.',
+          latency: '400–800 ms post stimulus',
+          durationMs: 1100,
+          holdAfterMs: 260,
+          neurochemistry: ['Dopamine D1', 'Noradrenaline'],
+          networks: ['DLPFC', 'Anterior cingulate'],
+          biomarkers: 'Late positive complex (LPC); frontal theta synchronization',
+          references: [
+            { label: 'Miller & Cohen (2001) Annu Rev Neurosci', url: 'https://doi.org/10.1146/annurev.neuro.24.1.167' },
+            { label: 'Cavanagh & Frank (2014) Trends Cogn Sci', url: 'https://doi.org/10.1016/j.tics.2014.04.012' },
+          ],
+          connections: ['wernicke-prefrontal', 'nacc-prefrontal'],
+          run: async function () {
+            setConnectionsActive(this.connections, true);
+            const inputs = [
+              createPathParticle([
+                nodes.wernicke.position.clone(),
+                nodes.wernicke.position.clone().lerp(nodes.prefrontal.position, 0.5).add(new THREE.Vector3(0.04, 0.18, 0.08)),
+                nodes.prefrontal.position.clone(),
+              ], 0x34d399),
+              createPathParticle([
+                nodes.nucleusAcc.position.clone(),
+                nodes.nucleusAcc.position.clone().lerp(nodes.prefrontal.position, 0.5).add(new THREE.Vector3(0.12, 0.12, -0.02)),
+                nodes.prefrontal.position.clone(),
+              ], 0xf472b6),
+            ];
+            await Promise.all(inputs.map((p) => animatePath(p, this.durationMs * 0.8)));
+            if (!isPlaying) return;
+            setNodeActive(nodes.prefrontal, true);
+            await waitMs(this.holdAfterMs);
+            setNodeActive(nodes.prefrontal, false);
+            setConnectionsActive(this.connections, false);
+          },
+        },
+        {
+          key: 'emotional',
+          title: 'Emotional Tagging — Amygdala',
+          summary: 'Amygdala couples cognitive appraisal with affective salience, reinforcing positive expectancy.',
+          desc: 'Limbic circuits attach emotional valence (relief, joy, safety) to the affirmative, shaping memory consolidation.',
+          latency: '500–1200 ms post stimulus',
+          durationMs: 1300,
+          holdAfterMs: 320,
+          neurochemistry: ['Glutamate', 'Noradrenaline', 'Serotonin'],
+          networks: ['Basolateral amygdala', 'Ventromedial PFC coupling'],
+          biomarkers: 'Late gamma synchrony; skin conductance correlates',
+          references: [
+            { label: 'Phelps & LeDoux (2005) Neuron', url: 'https://doi.org/10.1016/j.neuron.2005.09.025' },
+            { label: 'Pessoa (2017) Behav Brain Sci', url: 'https://doi.org/10.1017/S0140525X16000061' },
+          ],
+          connections: ['prefrontal-amygdala', 'nacc-amygdala'],
+          run: async function () {
+            setConnectionsActive(this.connections, true);
+            const pulse = createPathParticle([
+              nodes.nucleusAcc.position.clone(),
+              nodes.nucleusAcc.position.clone().lerp(nodes.amygdala.position, 0.5).add(new THREE.Vector3(0.02, 0.08, -0.08)),
+              nodes.amygdala.position.clone(),
+            ], 0xff6680);
+            await animatePath(pulse, this.durationMs * 0.7);
+            if (!isPlaying) return;
+            setNodeActive(nodes.amygdala, true);
+            await waitMs(this.holdAfterMs);
+            setNodeActive(nodes.amygdala, false);
+            setConnectionsActive(this.connections, false);
+          },
+        },
+      ];
+
+      const STAGE_MAP = new Map(STAGES.map((stage) => [stage.key, stage]));
+
+      function buildStageList() {
+        stageListEl.innerHTML = '';
+        STAGES.forEach((stage, index) => {
+          const li = document.createElement('li');
+          li.className = 'stage-item gradient-border px-3 py-3 flex flex-col gap-2 cursor-pointer focus:outline-none';
+          li.dataset.stageKey = stage.key;
+          li.setAttribute('data-status', 'idle');
+          li.innerHTML = `
+            <div class="flex items-start gap-3">
+              <span class="status-dot mt-1"></span>
+              <div class="flex-1 space-y-1">
+                <div class="flex flex-wrap items-center gap-2 justify-between">
+                  <span class="font-semibold text-sm text-slate-100">${index + 1}. ${stage.title}</span>
+                  <span class="text-xs text-slate-400 whitespace-nowrap">${stage.latency}</span>
+                </div>
+                <p class="text-xs text-slate-400 leading-snug">${stage.summary}</p>
+              </div>
+            </div>
+          `;
+          li.addEventListener('click', () => previewStage(stage.key));
+          li.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              previewStage(stage.key);
+            }
+          });
+          li.tabIndex = 0;
+          stageListEl.appendChild(li);
+          stage.dom = { listItem: li };
+        });
+      }
+
+      function setStageStatus(key, status) {
+        const stage = STAGE_MAP.get(key);
+        if (!stage || !stage.dom) return;
+        stage.dom.listItem.setAttribute('data-status', status);
+      }
+
+      function clearStagePreview() {
+        stageListEl.querySelectorAll('.stage-item').forEach((el) => el.removeAttribute('data-preview'));
+        insightSummary.classList.remove('text-indigo-200/80');
+      }
+
+      function previewStage(key) {
+        const stage = STAGE_MAP.get(key);
+        if (!stage) return;
+        showStageInsight(stage, { source: 'preview' });
+        clearStagePreview();
+        stage.dom.listItem.setAttribute('data-preview', 'true');
+        if (!isPlaying) {
+          stageTitle.textContent = stage.title;
+          stageDesc.textContent = stage.desc;
+        }
+      }
+
+      function showStageInsight(stage, { source = 'auto' } = {}) {
+        insightTitle.textContent = stage.title;
+        insightSummary.textContent = stage.summary;
+        insightLatency.textContent = stage.latency;
+        insightChemistry.textContent = stage.neurochemistry.join(', ');
+        insightBiomarkers.textContent = stage.biomarkers;
+        insightNetworks.innerHTML = '';
+        stage.networks.forEach((name) => {
+          const span = document.createElement('span');
+          span.className = 'info-pill';
+          span.textContent = name;
+          insightNetworks.appendChild(span);
+        });
+        insightReferences.innerHTML = '';
+        stage.references.forEach((ref) => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = ref.url;
+          a.target = '_blank';
+          a.rel = 'noreferrer';
+          a.textContent = ref.label;
+          li.appendChild(a);
+          insightReferences.appendChild(li);
+        });
+        if (source === 'preview') {
+          insightSummary.classList.add('text-indigo-200/80');
+        } else {
+          insightSummary.classList.remove('text-indigo-200/80');
+        }
+      }
+
+      function stageTotalDuration(stage) {
+        return stage.durationMs + (stage.holdAfterMs || 0);
+      }
+
+      function updateModelDuration() {
+        const baselineTotal = STAGES.reduce((sum, stage) => sum + stageTotalDuration(stage), 0);
+        const scaledTotal = baselineTotal / speedMultiplier;
+        modelDurationEl.textContent = `Baseline: ${formatDuration(baselineTotal)} · Current: ${formatDuration(scaledTotal)}`;
+      }
+
+      function formatDuration(ms) {
+        const seconds = ms / 1000;
+        if (seconds < 1) return `${Math.round(ms)} ms`;
+        if (seconds < 10) return `${seconds.toFixed(1)} s`;
+        return `${Math.round(seconds)} s`;
+      }
+
+      speedSlider.addEventListener('input', () => {
+        speedMultiplier = parseFloat(speedSlider.value);
+        speedValueLabel.textContent = `${speedMultiplier.toFixed(2)}×`;
+        updateModelDuration();
+      });
+
+      buildStageList();
+      showStageInsight(STAGE_MAP.get('sound'), { source: 'auto' });
+      updateModelDuration();
+
+      let isPlaying = false;
+
+      async function playSequence() {
+        if (isPlaying) return;
+        isPlaying = true;
+        resetStageStatuses();
+        resetConnections();
+        clearStagePreview();
+        for (const stage of STAGES) {
+          if (!isPlaying) break;
+          stageTitle.textContent = stage.title;
+          stageDesc.textContent = stage.desc;
+          showStageInsight(stage, { source: 'auto' });
+          setStageStatus(stage.key, 'active');
+          await stage.run.call(stage);
+          if (!isPlaying) break;
+          setStageStatus(stage.key, 'complete');
+          await waitMs(220);
+        }
+        if (isPlaying) {
+          stageTitle.textContent = 'Complete';
+          stageDesc.textContent = 'Sequence finished. Adjust settings or replay to explore different attentional states.';
+        }
+        isPlaying = false;
+      }
+
+      function resetStageStatuses() {
+        STAGES.forEach((stage) => {
+          setStageStatus(stage.key, 'idle');
+        });
+      }
+
+      function resetSequence() {
+        isPlaying = false;
+        resetStageStatuses();
+        resetConnections();
+        Object.values(nodes).forEach((group) => setNodeActive(group, false));
+        clearStagePreview();
+        showStageInsight(STAGE_MAP.get('sound'), { source: 'auto' });
+        stageTitle.textContent = 'Idle';
+        stageDesc.textContent = 'Press the button to begin the five-step affirmation-processing sequence.';
+      }
+
+      startButton.addEventListener('click', playSequence);
+      resetButton.addEventListener('click', resetSequence);
+      window.addEventListener('resize', setRendererSizeFromParent);
+
+      const clock = new THREE.Clock();
+      function render() {
+        const t = clock.getElapsedTime();
+
+        Object.values(nodes).forEach((group) => pulseNode(group, t));
+        controls.update();
+        composer.render();
+        requestAnimationFrame(render);
+      }
+      render();
+
+      resetSequence();
+    </script>
+  </body>
+</html>
