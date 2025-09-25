@@ -66,6 +66,18 @@ if (location.protocol !== 'https:') {
     100% { transform: rotate(360deg); }
   }
 
+  .md-dashboard-card {
+    border-left: 4px solid #10b981;
+    position: relative;
+    overflow: hidden;
+  }
+  .md-dashboard-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    border-color: #10b981;
+    background: rgba(16,185,129,0.08);
+    box-shadow: 0 10px 30px rgba(16,185,129,0.3), 0 0 20px rgba(16,185,129,0.2);
+  }
+
   .knock-card {
     border-left: 4px solid #e91e63;
     position: relative;
@@ -1491,6 +1503,15 @@ if (location.protocol !== 'https:') {
   <div class="main-content">
     <main class="container" role="main">
       <div class="grid">
+        <a class="card interface-card md-dashboard-card" href="/md/">
+          <div class="badge">PRODUCTIVITY</div>
+          <div class="title">Markdown Progress Dashboard</div>
+          <div class="subtitle">Award-winning project progress tracker with drag & drop file uploads, real-time parsing, and beautiful Tailwind UI.</div>
+          <div class="actions">
+            <span class="btn primary">Track Progress</span>
+            <span class="btn">Tailwind CSS · File Upload · GitHub Pages</span>
+          </div>
+        </a>
         <a class="card interface-card prompt-card" href="/prompt/">
           <div class="badge">NEW</div>
           <div class="title">Prompt Library</div>

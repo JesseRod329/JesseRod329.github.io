@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Progress Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .task-list-item {
+            display: flex;
+            align-items: center;
+        }
+        .task-list-item input {
+            accent-color: #3b82f6;
+        }
+        .task-list-item.completed label {
+            text-decoration: line-through;
+            color: #6b7280;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .hidden { display: none; }
+        #file-drop-zone {
+            border: 2px dashed #d1d5db;
+            transition: all 0.3s ease;
+        }
+        #file-drop-zone.dragover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+        
+        <!-- Header -->
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Markdown Progress Dashboard</h1>
+            <p class="text-gray-500 mt-1">A better way to visualize your project progress.</p>
+        </header>
+
+        <!-- File Upload Section -->
+        <div class="bg-white p-6 rounded-lg shadow-sm mb-8">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">Upload Markdown Files</h2>
+            <div id="file-drop-zone" class="p-8 text-center rounded-lg cursor-pointer">
+                <div class="space-y-4">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <div class="text-gray-600">
+                        <p class="text-lg font-medium">Drop your .md files here</p>
+                        <p class="text-sm">or click to browse</p>
+                    </div>
+                    <input type="file" id="file-input" multiple accept=".md" class="hidden">
+                    <button type="button" onclick="document.getElementById('file-input').click()" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200">
+                        Choose Files
+                    </button>
+                </div>
+            </div>
+            <div id="file-list" class="mt-4 space-y-2"></div>
+        </div>
+
+        <!-- Manual Input Section -->
+        <div class="bg-white p-4 rounded-lg shadow-sm mb-8">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Or Paste Markdown Content</h3>
+            <div class="flex flex-col gap-4">
+                <textarea id="markdown-input" rows="8" class="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm" placeholder="Paste your markdown content here with checkboxes like - [ ] Task..."></textarea>
+                <button id="parse-btn" class="bg-blue-600 text-white font-semibold py-2 px-5 rounded-md hover:bg-blue-700 transition duration-200 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 12-4.4 4.4-1.2-3.6a2 2 0 0 0-3.4 0L10 16.4l-1.6-4.4a2 2 0 0 0-3.4 0L3 12"/><path d="m18 8-2.2 2.2-1-2.8a2 2 0 0 0-3.6 0L9 10.2 7.5 8a2 2 0 0 0-3.6 0L2 8"/></svg>
+                    Parse Markdown
+                </button>
+            </div>
+        </div>
+
+        <!-- Overall Stats Section -->
+        <div id="stats-container">
+            <!-- Stats will be rendered here by JavaScript -->
+        </div>
+        
+        <!-- Projects Grid -->
+        <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Project cards will be rendered here by JavaScript -->
+        </div>
+
+        <!-- Issues Display -->
+        <div id="issues" class="hidden bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <!-- Issues will be rendered here by JavaScript -->
+        </div>
+
+    </div>
+
+    <script>
+        // Global variables
+        let uploadedFiles = [];
+        let projectsData = [];
+
+        // File handling
+        const fileInput = document.getElementById('file-input');
+        const fileDropZone = document.getElementById('file-drop-zone');
+        const fileList = document.getElementById('file-list');
+        const markdownInput = document.getElementById('markdown-input');
+        const parseBtn = document.getElementById('parse-btn');
+        const projectsEl = document.getElementById('projects-grid');
+        const statsEl = document.getElementById('stats-container');
+        const issuesEl = document.getElementById('issues');
+
+        // File drop zone functionality
+        fileDropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileDropZone.classList.add('dragover');
+        });
+
+        fileDropZone.addEventListener('dragleave', () => {
+            fileDropZone.classList.remove('dragover');
+        });
+
+        fileDropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileDropZone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
+                if (file.type === 'text/markdown' || file.name.endsWith('.md')) {
+                    uploadedFiles.push(file);
+                    updateFileList();
+                    parseFile(file);
+                }
+            });
+        }
+
+        function updateFileList() {
+            fileList.innerHTML = uploadedFiles.map((file, index) => `
+                <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="text-sm text-gray-700">${file.name}</span>
+                    </div>
+                    <button onclick="removeFile(${index})" class="text-red-500 hover:text-red-700">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function removeFile(index) {
+            uploadedFiles.splice(index, 1);
+            updateFileList();
+            reparseAllFiles();
+        }
+
+        async function parseFile(file) {
+            const text = await file.text();
+            const projects = parseMarkdown(text, file.name);
+            projectsData = projectsData.filter(p => p.fileName !== file.name);
+            projectsData.push(...projects);
+            renderDashboard();
+        }
+
+        // Markdown parsing
+        function parseMarkdown(text, fileName = 'Manual Input') {
+            const lines = text.split('\n');
+            const projects = [];
+            let currentProject = null;
+            let currentTasks = [];
+
+            // Regex patterns
+            const headingRegex = /^(#{1,6})\s+(.*)$/;
+            const checkboxRegex = /^\s*[-*+]\s*\[( |x|X)\]\s+(.*)$/;
+
+            lines.forEach((line, index) => {
+                const headingMatch = headingRegex.exec(line);
+                const checkboxMatch = checkboxRegex.exec(line);
+
+                if (headingMatch) {
+                    // Save previous project if it has tasks
+                    if (currentProject && currentTasks.length > 0) {
+                        projects.push({
+                            title: currentProject,
+                            fileName: fileName,
+                            lastUpdated: new Date().toISOString().slice(0, 19).replace('T', ' '),
+                            tasks: currentTasks
+                        });
+                    }
+                    
+                    // Start new project
+                    currentProject = headingMatch[2].trim();
+                    currentTasks = [];
+                } else if (checkboxMatch) {
+                    const isCompleted = checkboxMatch[1].toLowerCase() === 'x';
+                    const taskText = checkboxMatch[2].trim();
+                    
+                    currentTasks.push({
+                        text: taskText,
+                        completed: isCompleted
+                    });
+                }
+            });
+
+            // Save final project
+            if (currentProject && currentTasks.length > 0) {
+                projects.push({
+                    title: currentProject,
+                    fileName: fileName,
+                    lastUpdated: new Date().toISOString().slice(0, 19).replace('T', ' '),
+                    tasks: currentTasks
+                });
+            }
+
+            // If no headings but we have tasks, create a single project
+            if (projects.length === 0 && currentTasks.length > 0) {
+                projects.push({
+                    title: fileName.replace('.md', ''),
+                    fileName: fileName,
+                    lastUpdated: new Date().toISOString().slice(0, 19).replace('T', ' '),
+                    tasks: currentTasks
+                });
+            }
+
+            return projects;
+        }
+
+        // Manual parsing
+        parseBtn.addEventListener('click', () => {
+            const text = markdownInput.value.trim();
+            if (!text) return;
+
+            const projects = parseMarkdown(text, 'Manual Input');
+            projectsData = projectsData.filter(p => p.fileName !== 'Manual Input');
+            projectsData.push(...projects);
+            renderDashboard();
+        });
+
+        async function reparseAllFiles() {
+            projectsData = [];
+            for (const file of uploadedFiles) {
+                await parseFile(file);
+            }
+            renderDashboard();
+        }
+
+        // Rendering
+        function renderDashboard() {
+            projectsEl.innerHTML = "";
+
+            if (projectsData.length === 0) {
+                projectsEl.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">🚀 Ready to track progress?</h3>
+                        <p class="text-gray-500">Upload .md files or paste markdown content with checkboxes (e.g., "- [ ] Task") to see progress here.</p>
+                    </div>
+                `;
+                statsEl.innerHTML = '';
+                return;
+            }
+
+            // Calculate stats
+            let totalProjects = projectsData.length;
+            let totalTasks = 0;
+            let completedTasks = 0;
+
+            projectsData.forEach(project => {
+                const projectTotalTasks = project.tasks.length;
+                const projectCompletedTasks = project.tasks.filter(task => task.completed).length;
+                
+                totalTasks += projectTotalTasks;
+                completedTasks += projectCompletedTasks;
+            });
+
+            const pct = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+            // Render stats
+            statsEl.innerHTML = `
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Overall Progress</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div class="bg-white p-4 rounded-lg shadow-sm">
+                            <p class="text-2xl font-bold text-gray-800">${totalProjects}</p>
+                            <p class="text-sm text-gray-500">Total Projects</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm">
+                            <p class="text-2xl font-bold text-green-600">${completedTasks}</p>
+                            <p class="text-sm text-gray-500">Completed Tasks</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm">
+                            <p class="text-2xl font-bold text-gray-800">${totalTasks}</p>
+                            <p class="text-sm text-gray-500">Total Tasks</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm">
+                            <p class="text-2xl font-bold text-blue-600">${pct}%</p>
+                            <p class="text-sm text-gray-500">Progress</p>
+                        </div>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-4 mt-4">
+                        <div class="bg-gradient-to-r from-blue-500 to-green-500 h-4 rounded-full transition-all duration-1000" style="width: ${pct}%"></div>
+                    </div>
+                </div>
+            `;
+
+            // Render projects
+            projectsData.forEach(project => {
+                const projectTotalTasks = project.tasks.length;
+                const projectCompletedTasks = project.tasks.filter(task => task.completed).length;
+                const progress = projectTotalTasks > 0 ? Math.round((projectCompletedTasks / projectTotalTasks) * 100) : 0;
+                
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-lg shadow-sm p-5 flex flex-col";
+                
+                let taskListHTML = project.tasks.map((task, index) => `
+                    <div class="task-list-item text-gray-700 ${task.completed ? 'completed' : ''}">
+                        <input type="checkbox" id="task-${project.title}-${index}" class="mr-3 h-4 w-4 rounded border-gray-300" ${task.completed ? 'checked' : ''} disabled>
+                        <label for="task-${project.title}-${index}">${task.text}</label>
+                    </div>
+                `).join('');
+
+                card.innerHTML = `
+                    <div class="flex-grow">
+                        <h3 class="font-bold text-lg text-gray-800">${project.title}</h3>
+                        ${project.fileName !== 'Manual Input' ? `<p class="text-xs text-gray-400 mb-1 font-mono">${project.fileName}</p>` : ''}
+                        <p class="text-xs text-gray-400 mb-4">Updated: ${project.lastUpdated}</p>
+                        
+                        <div class="mb-4">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm font-medium text-gray-600">${projectCompletedTasks} / ${projectTotalTasks} tasks</span>
+                                <span class="text-sm font-bold text-blue-600">${progress}%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-blue-600 h-2.5 rounded-full transition-all duration-1000" style="width: ${progress}%"></div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            ${taskListHTML}
+                        </div>
+                    </div>
+                `;
+                projectsEl.appendChild(card);
+            });
+        }
+
+        // Initialize
+        renderDashboard();
+    </script>
+</body>
+</html>
