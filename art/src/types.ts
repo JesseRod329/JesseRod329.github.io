@@ -9,6 +9,7 @@ export interface Color {
 export interface Environment {
   id: string;
   name: string;
+  description: string;
   background: string;
   atmosphere: 'urban' | 'industrial' | 'futuristic' | 'rustic';
   lighting: 'warm' | 'cool' | 'blue';

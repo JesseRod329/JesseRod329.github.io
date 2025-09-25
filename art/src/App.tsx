@@ -6,7 +6,7 @@ import EnvironmentSelector from "./components/EnvironmentSelector";
 import ParticleSystem from "./components/ParticleSystem";
 import SoundManager from "./components/SoundManager";
 import { SprayCan } from "./components/SprayToolbar";
-import { ToolType, Environment, ParticleConfig } from "./types";
+import { ToolType, Environment, ParticleConfig, GraffitiCanvasRef } from "./types";
 
 const SPRAY_COLORS = [
   { hex: "#ff0000", name: "Crimson Red", metallic: false },
@@ -27,6 +27,7 @@ const ENVIRONMENTS: Environment[] = [
   {
     id: "brick",
     name: "Urban Brick",
+    description: "Classic city wall texture",
     background: "https://www.muraldecal.com/en/img/fomb001-png/folder/products-detalle-png/wall-murals-worn-white-brick-texture.png",
     atmosphere: "urban",
     lighting: "warm"
@@ -34,6 +35,7 @@ const ENVIRONMENTS: Environment[] = [
   {
     id: "concrete",
     name: "Concrete Wall",
+    description: "Industrial concrete surface",
     background: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=2000&auto=format&fit=crop",
     atmosphere: "industrial",
     lighting: "cool"
@@ -41,6 +43,7 @@ const ENVIRONMENTS: Environment[] = [
   {
     id: "metal",
     name: "Metal Surface",
+    description: "Futuristic metallic wall",
     background: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=2000&auto=format&fit=crop",
     atmosphere: "futuristic",
     lighting: "blue"
@@ -48,6 +51,7 @@ const ENVIRONMENTS: Environment[] = [
   {
     id: "wood",
     name: "Wooden Panel",
+    description: "Rustic wooden surface",
     background: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=2000&auto=format&fit=crop",
     atmosphere: "rustic",
     lighting: "warm"
@@ -74,9 +78,8 @@ export default function App() {
   });
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [showParticles, setShowParticles] = useState(true);
-  const [artworkHistory, setArtworkHistory] = useState<string[]>([]);
   const [, setCurrentArtwork] = useState<string>("");
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = useRef<GraffitiCanvasRef>(null);
   const soundManagerRef = useRef<any>(null);
 
   // Track cursor movement across the whole app
@@ -87,33 +90,19 @@ export default function App() {
   // Save artwork to history
   const saveArtwork = useCallback(() => {
     if (canvasRef.current) {
-      const dataURL = canvasRef.current.toDataURL('image/png');
+      const dataURL = canvasRef.current.save();
       setCurrentArtwork(dataURL);
-      setArtworkHistory(prev => [...prev.slice(-9), dataURL]);
     }
   }, []);
 
-  // Load artwork from history
-  const loadArtwork = useCallback((index: number) => {
-    if (artworkHistory[index] && canvasRef.current) {
-      const img = new Image();
-      img.onload = () => {
-        const ctx = canvasRef.current?.getContext('2d');
-        if (ctx) {
-          ctx.clearRect(0, 0, canvasRef.current!.width, canvasRef.current!.height);
-          ctx.drawImage(img, 0, 0);
-        }
-      };
-      img.src = artworkHistory[index];
-    }
-  }, [artworkHistory]);
 
   // Export artwork
   const exportArtwork = useCallback(() => {
     if (canvasRef.current) {
+      const dataURL = canvasRef.current.save();
       const link = document.createElement('a');
       link.download = `graffiti-art-${Date.now()}.png`;
-      link.href = canvasRef.current.toDataURL('image/png');
+      link.href = dataURL;
       link.click();
     }
   }, []);
@@ -121,10 +110,14 @@ export default function App() {
   // Clear canvas
   const clearCanvas = useCallback(() => {
     if (canvasRef.current) {
-      const ctx = canvasRef.current.getContext('2d');
-      if (ctx) {
-        ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-      }
+      canvasRef.current.clear();
+    }
+  }, []);
+
+  // Undo function
+  const undoArtwork = useCallback(() => {
+    if (canvasRef.current) {
+      canvasRef.current.undo();
     }
   }, []);
 
@@ -243,7 +236,7 @@ export default function App() {
           onSave={saveArtwork}
           onExport={exportArtwork}
           onClear={clearCanvas}
-          onUndo={() => loadArtwork(artworkHistory.length - 1)}
+          onUndo={undoArtwork}
           soundEnabled={soundEnabled}
           onToggleSound={() => setSoundEnabled(!soundEnabled)}
           showParticles={showParticles}
