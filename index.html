@@ -268,66 +268,35 @@ if (location.protocol !== 'https:') {
     height: 32px;
     border: 1px solid #333;
     box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 1px;
+    padding: 2px;
   }
   
   .cube-front {
     transform: rotateY(0deg) translateZ(16px);
-    background: 
-      linear-gradient(90deg, #ff0000 0%, #ff0000 33%, #00ff00 33%, #00ff00 66%, #0000ff 66%, #0000ff 100%),
-      linear-gradient(0deg, #ffffff 0%, #ffffff 33%, #ffff00 33%, #ffff00 66%, #ff8800 66%, #ff8800 100%);
-    background-size: 100% 33.33%, 100% 100%;
-    background-blend-mode: normal;
-    background-position: 0 0, 0 66.67%;
   }
   
   .cube-back {
     transform: rotateY(180deg) translateZ(16px);
-    background: 
-      linear-gradient(90deg, #ff8800 0%, #ff8800 33%, #ffffff 33%, #ffffff 66%, #ffff00 66%, #ffff00 100%),
-      linear-gradient(0deg, #ff0000 0%, #ff0000 33%, #0000ff 33%, #0000ff 66%, #00ff00 66%, #00ff00 100%);
-    background-size: 100% 33.33%, 100% 100%;
-    background-blend-mode: normal;
-    background-position: 0 0, 0 66.67%;
   }
   
   .cube-right {
     transform: rotateY(90deg) translateZ(16px);
-    background: 
-      linear-gradient(90deg, #00ff00 0%, #00ff00 33%, #ff8800 33%, #ff8800 66%, #ff0000 66%, #ff0000 100%),
-      linear-gradient(0deg, #0000ff 0%, #0000ff 33%, #ffff00 33%, #ffff00 66%, #ffffff 66%, #ffffff 100%);
-    background-size: 100% 33.33%, 100% 100%;
-    background-blend-mode: normal;
-    background-position: 0 0, 0 66.67%;
   }
   
   .cube-left {
     transform: rotateY(-90deg) translateZ(16px);
-    background: 
-      linear-gradient(90deg, #0000ff 0%, #0000ff 33%, #ffff00 33%, #ffff00 66%, #00ff00 66%, #00ff00 100%),
-      linear-gradient(0deg, #ffffff 0%, #ffffff 33%, #ff0000 33%, #ff0000 66%, #ff8800 66%, #ff8800 100%);
-    background-size: 100% 33.33%, 100% 100%;
-    background-blend-mode: normal;
-    background-position: 0 0, 0 66.67%;
   }
   
   .cube-top {
     transform: rotateX(90deg) translateZ(16px);
-    background: 
-      linear-gradient(90deg, #ffff00 0%, #ffff00 33%, #ffffff 33%, #ffffff 66%, #ff8800 66%, #ff8800 100%),
-      linear-gradient(0deg, #00ff00 0%, #00ff00 33%, #ff0000 33%, #ff0000 66%, #0000ff 66%, #0000ff 100%);
-    background-size: 100% 33.33%, 100% 100%;
-    background-blend-mode: normal;
-    background-position: 0 0, 0 66.67%;
   }
   
   .cube-bottom {
     transform: rotateX(-90deg) translateZ(16px);
-    background: 
-      linear-gradient(90deg, #ffffff 0%, #ffffff 33%, #0000ff 33%, #0000ff 66%, #ffff00 66%, #ffff00 100%),
-      linear-gradient(0deg, #ff8800 0%, #ff8800 33%, #00ff00 33%, #00ff00 66%, #ff0000 66%, #ff0000 100%);
-    background-size: 100% 33.33%, 100% 100%;
-    background-blend-mode: normal;
-    background-position: 0 0, 0 66.67%;
   }
   
   @keyframes rubiksRotate {
@@ -424,6 +393,19 @@ if (location.protocol !== 'https:') {
     .title { font-size:1.75rem; }
     .main-content { margin-top: 4rem; }
   }
+  
+  /* Rubik's Cube Squares */
+  .square {
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 1px;
+  }
+  
+  .square.red { background-color: #ff0000; }
+  .square.white { background-color: #ffffff; }
+  .square.green { background-color: #00ff00; }
+  .square.blue { background-color: #0000ff; }
+  .square.yellow { background-color: #ffff00; }
+  .square.orange { background-color: #ff8800; }
 </style>
 </head>
 <style>
@@ -1487,12 +1469,72 @@ if (location.protocol !== 'https:') {
     <div class="logo">
       JESSE <span class="accent">RODRIGUEZ</span>
       <div class="rubiks-cube">
-        <div class="cube-face cube-front"></div>
-        <div class="cube-face cube-back"></div>
-        <div class="cube-face cube-right"></div>
-        <div class="cube-face cube-left"></div>
-        <div class="cube-face cube-top"></div>
-        <div class="cube-face cube-bottom"></div>
+        <div class="cube-face cube-front">
+          <div class="square red"></div>
+          <div class="square red"></div>
+          <div class="square red"></div>
+          <div class="square red"></div>
+          <div class="square red"></div>
+          <div class="square red"></div>
+          <div class="square red"></div>
+          <div class="square red"></div>
+          <div class="square red"></div>
+        </div>
+        <div class="cube-face cube-back">
+          <div class="square white"></div>
+          <div class="square white"></div>
+          <div class="square white"></div>
+          <div class="square white"></div>
+          <div class="square white"></div>
+          <div class="square white"></div>
+          <div class="square white"></div>
+          <div class="square white"></div>
+          <div class="square white"></div>
+        </div>
+        <div class="cube-face cube-right">
+          <div class="square green"></div>
+          <div class="square green"></div>
+          <div class="square green"></div>
+          <div class="square green"></div>
+          <div class="square green"></div>
+          <div class="square green"></div>
+          <div class="square green"></div>
+          <div class="square green"></div>
+          <div class="square green"></div>
+        </div>
+        <div class="cube-face cube-left">
+          <div class="square blue"></div>
+          <div class="square blue"></div>
+          <div class="square blue"></div>
+          <div class="square blue"></div>
+          <div class="square blue"></div>
+          <div class="square blue"></div>
+          <div class="square blue"></div>
+          <div class="square blue"></div>
+          <div class="square blue"></div>
+        </div>
+        <div class="cube-face cube-top">
+          <div class="square yellow"></div>
+          <div class="square yellow"></div>
+          <div class="square yellow"></div>
+          <div class="square yellow"></div>
+          <div class="square yellow"></div>
+          <div class="square yellow"></div>
+          <div class="square yellow"></div>
+          <div class="square yellow"></div>
+          <div class="square yellow"></div>
+        </div>
+        <div class="cube-face cube-bottom">
+          <div class="square orange"></div>
+          <div class="square orange"></div>
+          <div class="square orange"></div>
+          <div class="square orange"></div>
+          <div class="square orange"></div>
+          <div class="square orange"></div>
+          <div class="square orange"></div>
+          <div class="square orange"></div>
+          <div class="square orange"></div>
+        </div>
       </div>
     </div>
   </div>
