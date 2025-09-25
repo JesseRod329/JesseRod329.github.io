@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Color, ToolType } from '../types';
-import { SprayCan } from './SprayToolbar';
+// import { SprayCan } from './SprayToolbar';
 
 interface AdvancedToolbarProps {
   colors: Color[];

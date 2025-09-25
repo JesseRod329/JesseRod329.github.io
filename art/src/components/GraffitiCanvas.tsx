@@ -16,8 +16,8 @@ interface GraffitiCanvasProps {
 const GraffitiCanvas = forwardRef<GraffitiCanvasRef, GraffitiCanvasProps>(({
   selectedColor,
   selectedTool,
-  cursorPosition,
-  isDrawing,
+  cursorPosition: _cursorPosition,
+  isDrawing: _isDrawing,
   setIsDrawing,
   brushSize,
   opacity,

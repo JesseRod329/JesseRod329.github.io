@@ -64,7 +64,7 @@ export default function App() {
   const [showUI, setShowUI] = useState(true);
   const [brushSize, setBrushSize] = useState(20);
   const [opacity, setOpacity] = useState(0.8);
-  const [particleConfig, setParticleConfig] = useState<ParticleConfig>({
+  const [particleConfig] = useState<ParticleConfig>({
     count: 15,
     size: { min: 1, max: 4 },
     velocity: { min: 0.5, max: 2 },
@@ -75,9 +75,9 @@ export default function App() {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [showParticles, setShowParticles] = useState(true);
   const [artworkHistory, setArtworkHistory] = useState<string[]>([]);
-  const [currentArtwork, setCurrentArtwork] = useState<string>("");
+  const [, setCurrentArtwork] = useState<string>("");
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const soundManagerRef = useRef<SoundManager>(null);
+  const soundManagerRef = useRef<any>(null);
 
   // Track cursor movement across the whole app
   const handleMouseMove = useCallback((e: MouseEvent) => {
@@ -216,7 +216,7 @@ export default function App() {
 
       {/* Main canvas for drawing */}
       <GraffitiCanvas
-        ref={canvasRef}
+        ref={canvasRef as any}
         selectedColor={selectedColor}
         selectedTool={selectedTool}
         cursorPosition={sprayOrigin}
