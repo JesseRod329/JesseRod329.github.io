@@ -1,1739 +1,1041 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>
-// Force HTTPS redirect
-if (location.protocol !== 'https:') {
-  location.replace('https:' + window.location.href.substring(window.location.protocol.length));
-}
-</script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="preconnect" href="https://jesserodriguez.me">
-<link rel="dns-prefetch" href="https://jesserodriguez.me">
-<meta http-equiv="X-Frame-Options" content="DENY">
-<meta http-equiv="X-Content-Type-Options" content="nosniff">
-<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'; media-src 'self'; child-src 'self'; form-action 'self'; base-uri 'self';">
-<title>Choose Interface — Jesse Rodriguez</title>
-<meta name="description" content="Choose between CLI terminal or visual UI to explore Jesse Rodriguez's portfolio.">
-<style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  html { scroll-behavior:smooth; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background: #000 !important; color: #fff; line-height: 1.5;
-    min-height: 100vh;
-  }
-  html {
-    background: #000 !important;
-  }
-  a { color: inherit; text-decoration: none; }
-  .container { min-height: 100vh; display:flex; align-items:center; justify-content:center; padding:2rem; }
-  .main-content { min-height: auto; margin-top: 2rem; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:2rem; max-width:1100px; width:100%; }
-  .card { position:relative; border:1px solid #333; border-radius:16px; padding:2rem; background: rgba(0,0,0,0.8); transition: transform .2s ease, border-color .2s ease, background .2s ease; overflow:hidden; }
-  .card:hover { transform: translateY(-2px); border-color:#ff3; background: rgba(255,255,51,0.04); }
-  .wrestling-card { 
-    border-left: 4px solid #dc2626;
-    position: relative;
-    overflow: hidden;
-  }
-  .wrestling-card::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: conic-gradient(from 0deg, transparent, #dc2626, transparent, #2563eb, transparent);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    animation: wrestlingSpin 3s linear infinite;
-    z-index: -1;
-  }
-  .wrestling-card:hover::before {
-    opacity: 0.1;
-  }
-  .wrestling-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    border-color: #dc2626;
-    background: rgba(220,38,38,0.08);
-    box-shadow: 0 10px 30px rgba(220,38,38,0.3), 0 0 20px rgba(220,38,38,0.2);
-  }
-  @keyframes wrestlingSpin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  .md-dashboard-card {
-    border-left: 4px solid #10b981;
-    position: relative;
-    overflow: hidden;
-  }
-  .md-dashboard-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    border-color: #10b981;
-    background: rgba(16,185,129,0.08);
-    box-shadow: 0 10px 30px rgba(16,185,129,0.3), 0 0 20px rgba(16,185,129,0.2);
-  }
-  .md-dashboard-card .title { color: #ffffff !important; }
-
-  .knock-card {
-    border-left: 4px solid #e91e63;
-    position: relative;
-    overflow: hidden;
-  }
-  .knock-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    border-color: #e91e63;
-    background: rgba(233,30,99,0.08);
-    box-shadow: 0 10px 30px rgba(233,30,99,0.3), 0 0 20px rgba(233,30,99,0.2);
-  }
-
-  .planner-card {
-    border-left: 4px solid #3b82f6;
-    position: relative;
-    overflow: hidden;
-  }
-  .planner-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    border-color: #3b82f6;
-    background: rgba(59,130,246,0.08);
-    box-shadow: 0 10px 30px rgba(59,130,246,0.3), 0 0 20px rgba(59,130,246,0.2);
-  }
-
-  .fashion-card {
-    border-left: 4px solid #8b5cf6;
-    position: relative;
-    overflow: hidden;
-  }
-  .fashion-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    border-color: #8b5cf6;
-    background: rgba(139,92,246,0.08);
-    box-shadow: 0 10px 30px rgba(139,92,246,0.3), 0 0 20px rgba(139,92,246,0.2);
-  }
-
-  .philosophy-card {
-    border-left: 4px solid #d97706;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .philosophy-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    border-color: #d97706;
-    background: rgba(217,119,6,0.08);
-    box-shadow: 0 10px 30px rgba(217,119,6,0.3), 0 0 20px rgba(217,119,6,0.2);
-  }
-
-  .timezone-card {
-    border-left: 4px solid #667eea;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .timezone-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    border-color: #667eea;
-    background: rgba(102,126,234,0.08);
-    box-shadow: 0 10px 30px rgba(102,126,234,0.3), 0 0 20px rgba(102,126,234,0.2);
-  }
-
-  .startup-card {
-    border-left: 4px solid #4a9eff;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .startup-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    border-color: #4a9eff;
-    background: rgba(74,158,255,0.08);
-    box-shadow: 0 10px 30px rgba(74,158,255,0.3), 0 0 20px rgba(74,158,255,0.2);
-  }
-
-  .ui-card { border-left: 4px solid #2563eb; }
-  .ui-card:hover { border-color: #2563eb; background: rgba(37,99,235,0.04); }
-  .cli-card { border-left: 4px solid #10b981; }
-  .cli-card:hover { border-color: #10b981; background: rgba(16,185,129,0.04); }
-  .ui-card .title { color: #ffffff !important; }
-  .wrestling-card .title { color: #ffffff !important; }
-  .knock-card .title { color: #ffffff !important; }
-  .planner-card .title { color: #ffffff !important; }
-  .fashion-card .title { color: #ffffff !important; }
-  .philosophy-card .title { color: #ffffff !important; }
-  .brainwave-card .title { color: #ffffff !important; }
-  .timezone-card .title { color: #ffffff !important; }
-  .startup-card .title { color: #ffffff !important; }
-
-  .game-card {
-    border-left: 4px solid #7c3aed;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .game-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    border-color: #7c3aed;
-    background: rgba(124,58,237,0.08);
-    box-shadow: 0 10px 30px rgba(124,58,237,0.3), 0 0 20px rgba(124,58,237,0.2);
-  }
-
-  .game-card .title { color: #ffffff !important; }
-
-  .prompt-card {
-    border-left: 4px solid #ff6b35;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .prompt-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    border-color: #ff6b35;
-    background: rgba(255,107,53,0.08);
-    box-shadow: 0 10px 30px rgba(255,107,53,0.3), 0 0 20px rgba(255,107,53,0.2);
-  }
-
-  .prompt-card .title { color: #ffffff !important; }
-
-  .graffiti-card {
-    border-left: 4px solid #ff6b35;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .graffiti-card::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: conic-gradient(from 0deg, transparent, #ff6b35, transparent, #ffd700, transparent, #ff4757, transparent);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    animation: graffitiSpin 4s linear infinite;
-    z-index: -1;
-  }
-
-  .graffiti-card:hover::before {
-    opacity: 0.15;
-  }
-
-  .graffiti-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    border-color: #ff6b35;
-    background: rgba(255,107,53,0.08);
-    box-shadow: 0 10px 30px rgba(255,107,53,0.3), 0 0 20px rgba(255,107,53,0.2);
-  }
-
-  @keyframes graffitiSpin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  .graffiti-card .title { color: #ffffff !important; }
-
-  .title { font-size: clamp(1.75rem, 3vw, 2.25rem); font-weight: 900; letter-spacing:-0.02em; margin-bottom: .5rem; }
-  .subtitle { color:#bbb; margin-bottom:1rem; }
-  .badge { display:inline-block; font-size:.7rem; letter-spacing:.08em; border:1px solid #444; padding:4px 8px; border-radius:999px; color:#ddd; }
-  .actions { margin-top:1.25rem; display:flex; gap:.75rem; }
-  .btn { display:inline-block; padding:.75rem 1rem; border-radius:10px; border:1px solid #333; background:#111; color:#fff; font-weight:700; letter-spacing:.04em; }
-  .btn.primary { background:#ff3; color:#111; border-color:#ff3; }
-  .hint { text-align:center; color:#999; margin-top:1.5rem; font-size:.9rem; }
-  .header { position:fixed; top:0; left:0; right:0; padding:1rem 1.5rem; display:flex; justify-content:space-between; align-items:center; background: linear-gradient(180deg, rgba(0,0,0,.7), transparent); border-bottom:1px solid rgba(255,255,255,0.06); }
-  .logo { font-weight:900; letter-spacing:.08em; text-transform:uppercase; color: #ffffff !important; display: flex; align-items: center; gap: 0.75rem; }
-  
-  /* Rubik's Cube Animation */
-  .rubiks-cube {
-    width: 32px;
-    height: 32px;
-    position: relative;
-    transform-style: preserve-3d;
-    animation: rubiksRotate 4s linear infinite;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-  }
-  
-  .rubiks-cube:hover {
-    animation-play-state: paused;
-    transform: scale(1.1);
-  }
-  
-  .cube-face {
-    position: absolute;
-    width: 32px;
-    height: 32px;
-    border: 1px solid #333;
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    gap: 1px;
-    padding: 2px;
-  }
-  
-  .cube-front {
-    transform: rotateY(0deg) translateZ(16px);
-  }
-  
-  .cube-back {
-    transform: rotateY(180deg) translateZ(16px);
-  }
-  
-  .cube-right {
-    transform: rotateY(90deg) translateZ(16px);
-  }
-  
-  .cube-left {
-    transform: rotateY(-90deg) translateZ(16px);
-  }
-  
-  .cube-top {
-    transform: rotateX(90deg) translateZ(16px);
-  }
-  
-  .cube-bottom {
-    transform: rotateX(-90deg) translateZ(16px);
-  }
-  
-  @keyframes rubiksRotate {
-    0% { 
-      transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); 
-    }
-    12.5% { 
-      transform: rotateX(0deg) rotateY(90deg) rotateZ(0deg); 
-    }
-    25% { 
-      transform: rotateX(0deg) rotateY(180deg) rotateZ(0deg); 
-    }
-    37.5% { 
-      transform: rotateX(0deg) rotateY(270deg) rotateZ(0deg); 
-    }
-    50% { 
-      transform: rotateX(90deg) rotateY(0deg) rotateZ(0deg); 
-    }
-    62.5% { 
-      transform: rotateX(90deg) rotateY(90deg) rotateZ(0deg); 
-    }
-    75% { 
-      transform: rotateX(90deg) rotateY(180deg) rotateZ(0deg); 
-    }
-    87.5% { 
-      transform: rotateX(90deg) rotateY(270deg) rotateZ(0deg); 
-    }
-    100% { 
-      transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); 
-    }
-  }
-  
-  /* High performance animation */
-  .rubiks-cube {
-    will-change: transform;
-    backface-visibility: hidden;
-    transform-style: preserve-3d;
-  }
-  .accent { color:#ff3; }
-  .circles { position: fixed; inset:0; pointer-events:none; opacity:.12; }
-  .circle { position:absolute; border:4px solid #fff; border-radius:50%; left:50%; top:50%; transform:translate(-50%,-50%); }
-  .c1 { width:120px; height:120px; animation: r1 12s linear infinite; }
-  .c2 { width:180px; height:180px; animation: r2 18s linear infinite reverse; }
-  .c3 { width:240px; height:240px; animation: r3 24s linear infinite; }
-  @keyframes r1 { from { transform:translate(-50%,-50%) rotate(0) translateX(45px) rotate(0);} to { transform:translate(-50%,-50%) rotate(360deg) translateX(45px) rotate(-360deg);} }
-  @keyframes r2 { from { transform:translate(-50%,-50%) rotate(0) translateX(70px) rotate(0);} to { transform:translate(-50%,-50%) rotate(360deg) translateX(70px) rotate(-360deg);} }
-  @keyframes r3 { from { transform:translate(-50%,-50%) rotate(0) translateX(95px) rotate(0);} to { transform:translate(-50%,-50%) rotate(360deg) translateX(95px) rotate(-360deg);} }
-
-  /* Marangoni-like color flow for UI card (cursor-driven radial blends) */
-  .ui-card { --mx: 50%; --my: 50%; }
-  .ui-card::before {
-    content:""; position:absolute; inset:-20%; pointer-events:none; opacity:0.9;
-    background:
-      radial-gradient(220px 220px at var(--mx) var(--my), rgba(255,255,51,0.35) 0%, rgba(255,255,51,0.18) 28%, transparent 46%),
-      radial-gradient(200px 200px at calc(var(--mx) + 10%) calc(var(--my) - 12%), rgba(59,130,246,0.28) 0%, rgba(59,130,246,0.12) 24%, transparent 44%),
-      radial-gradient(200px 200px at calc(var(--mx) - 12%) calc(var(--my) + 10%), rgba(16,185,129,0.28) 0%, rgba(16,185,129,0.12) 24%, transparent 44%);
-    filter: blur(18px) saturate(1.15);
-    transition: opacity .2s ease;
-  }
-  .ui-card.pulse::after {
-    content:""; position:absolute; inset:0; pointer-events:none; border-radius:16px;
-    background: radial-gradient(260px 260px at var(--mx) var(--my), rgba(255,255,51,0.35), rgba(0,0,0,0) 60%);
-    animation: uiPulse .6s ease-out forwards;
-  }
-  @keyframes uiPulse { from { opacity:.6; transform: scale(0.98);} to { opacity:0; transform: scale(1.05);} }
-
-  /* CLI card: typographic ripple using text gradients and symbols */
-  .cli-card { --mx: 50%; --my: 50%; }
-  .cli-card .title, .cli-card .subtitle {
-    background: radial-gradient(220px 220px at var(--mx) var(--my), #00ff41, #aaffcc 35%, #cccccc 60%, #777777 100%);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-  .cli-card::before {
-    content: ">> :: == ** ## $$ @@ && // ";
-    position:absolute; inset: 8px; pointer-events:none; opacity:.07;
-    font-family: 'Monaco','Menlo',monospace; font-size: clamp(10px, 1.4vw, 12px);
-    letter-spacing: .22em; line-height: 1.8; white-space: pre-wrap;
-    display:block;
-    background: repeating-linear-gradient( to bottom, rgba(255,255,255,0.06) 0 1px, transparent 1px 22px );
-    mix-blend-mode: lighten;
-    border-radius:12px;
-  }
-  .cli-card.pulse::after {
-    content:""; position:absolute; inset:0; pointer-events:none; border-radius:16px;
-    background: radial-gradient(260px 260px at var(--mx) var(--my), rgba(0,255,65,0.25), rgba(0,0,0,0) 60%);
-    animation: cliPulse .6s ease-out forwards;
-  }
-  @keyframes cliPulse { from { opacity:.5; transform: scale(0.98);} to { opacity:0; transform: scale(1.05);} }
-
-  @media (max-width: 768px) {
-    .container { padding:1rem; }
-    .grid { grid-template-columns:1fr; gap:1.5rem; }
-    .card { padding:1.5rem; }
-    .title { font-size:1.75rem; }
-    .main-content { margin-top: 4rem; }
-  }
-  
-  /* Rubik's Cube Squares */
-  .square {
-    border: 1px solid rgba(0,0,0,0.2);
-    border-radius: 1px;
-  }
-  
-  .square.red { background-color: #ff0000; }
-  .square.white { background-color: #ffffff; }
-  .square.green { background-color: #00ff00; }
-  .square.blue { background-color: #0000ff; }
-  .square.yellow { background-color: #ffff00; }
-  .square.orange { background-color: #ff8800; }
-</style>
-</head>
-<style>
-  /* Reset & basic styles */
-  * { margin:0; padding:0; box-sizing:border-box; }
-  html {
-    scroll-behavior: smooth;
-  }
-  
-  /* CSS Variables for theming */
-  :root {
-    --bg-primary: #fff;
-    --bg-secondary: #f8f8f8;
-    --text-primary: #111;
-    --text-secondary: #666;
-    --border-color: #eee;
-    --shadow-color: rgba(0,0,0,0.1);
-    --accent-blue: #007AFF;
-  }
-  
-  [data-theme="dark"] {
-    --bg-primary: #111;
-    --bg-secondary: #1a1a1a;
-    --text-primary: #fff;
-    --text-secondary: #aaa;
-    --border-color: #333;
-    --shadow-color: rgba(255,255,255,0.1);
-  }
-  body { 
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif; 
-    background: var(--bg-primary); 
-    color: var(--text-primary); 
-    line-height:1.5; 
-    font-weight:400;
-    overflow-x:hidden;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-  a { color: inherit; text-decoration: none; }
-  
-  /* Skip Link */
-  .skip-link {
-    position: absolute;
-    top: -40px;
-    left: 0;
-    background: #007AFF;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 0 0 8px 0;
-    text-decoration: none;
-    z-index: 100;
-    transition: top 0.3s ease;
-  }
-  
-  .skip-link:focus {
-    top: 0;
-  }
-
-  /* Hero Section */
-  .hero {
-    display:flex; 
-    flex-direction:column;
-    justify-content:center; 
-    align-items:center; 
-    min-height:100vh;
-    text-align:center; 
-    padding:2rem;
-    gap:3rem;
-  }
-  .hero h1 {
-    font-size:clamp(2.5rem, 8vw, 5rem); 
-    font-weight:900; 
-    letter-spacing:-0.02em; 
-    text-transform:uppercase;
-    max-width:1000px; 
-    margin:0 auto;
-    line-height:0.9;
-    animation: heroFadeIn 2s ease forwards;
-    opacity:0;
-    order:2;
-  }
-
-  /* Circle Animation Container */
-  .circle-container {
-    position:relative; 
-    width:clamp(250px, 35vw, 350px); 
-    height:clamp(250px, 35vw, 350px); 
-    order:1;
-    animation: circlesFadeIn 2s ease forwards 0.5s;
-    opacity:0;
-  }
-
-  .circle {
-    position:absolute; 
-    width:clamp(50px, 8vw, 80px); 
-    height:clamp(50px, 8vw, 80px); 
-    border:4px solid #111; 
-    border-radius:50%;
-    top:50%; 
-    left:50%; 
-    transform-origin:50% 50%;
-    transform:translate(-50%, -50%);
-  }
-
-  .circle:nth-child(1) { 
-    animation: rotateCircle1 12s linear infinite;
-  }
-  .circle:nth-child(2) { 
-    animation: rotateCircle2 18s linear infinite reverse;
-  }
-  .circle:nth-child(3) { 
-    animation: rotateCircle3 24s linear infinite;
-  }
-
-  @keyframes rotateCircle1 {
-    0% { transform: translate(-50%, -50%) rotate(0deg) translateX(clamp(30px, 6vw, 45px)) rotate(0deg); }
-    100% { transform: translate(-50%, -50%) rotate(360deg) translateX(clamp(30px, 6vw, 45px)) rotate(-360deg); }
-  }
-
-  @keyframes rotateCircle2 {
-    0% { transform: translate(-50%, -50%) rotate(0deg) translateX(clamp(50px, 10vw, 70px)) rotate(0deg); }
-    100% { transform: translate(-50%, -50%) rotate(360deg) translateX(clamp(50px, 10vw, 70px)) rotate(-360deg); }
-  }
-
-  @keyframes rotateCircle3 {
-    0% { transform: translate(-50%, -50%) rotate(0deg) translateX(clamp(70px, 14vw, 95px)) rotate(0deg); }
-    100% { transform: translate(-50%, -50%) rotate(360deg) translateX(clamp(70px, 14vw, 95px)) rotate(-360deg); }
-  }
-
-  @keyframes heroFadeIn {
-    0% { opacity:0; transform: translateY(30px); }
-    100% { opacity:1; transform: translateY(0); }
-  }
-
-  @keyframes circlesFadeIn {
-    0% { opacity:0; transform: translateY(-10px); }
-    100% { opacity:0.15; transform: translateY(0); }
-  }
-
-  /* Bio Section */
-  .bio {
-    max-width:700px; 
-    margin:6rem auto; 
-    text-align:center; 
-    font-size:1.125rem; 
-    line-height:1.7;
-    padding:0 2rem;
-    font-weight:300;
-  }
-
-  /* Services Grid */
-  .services {
-    display:grid; 
-    grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
-    gap:1px; 
-    max-width:1200px; 
-    margin:6rem auto; 
-    padding:0 2rem;
-    background:var(--bg-secondary);
-  }
-  .service-card {
-    background:var(--bg-primary);
-    padding:3rem 2rem; 
-    text-align:center; 
-    transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor:pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .service-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--text-primary);
-    transform: translateY(100%);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 0;
-  }
-  
-  .service-card:hover::before {
-    transform: translateY(0);
-  }
-  
-  .service-card:hover { 
-    color:var(--bg-primary);
-    transform: scale(1.05);
-  }
-  
-  .service-card h3,
-  .service-card p {
-    position: relative;
-    z-index: 1;
-    transition: color 0.3s ease;
-  }
-  
-  .service-card:active {
-    transform: scale(1.02);
-    transition: transform 0.1s ease;
-  }
-  .service-card h3 { 
-    font-size:1.25rem; 
-    margin-bottom:1rem; 
-    text-transform:uppercase; 
-    font-weight:700;
-    letter-spacing:0.05em;
-  }
-  .service-card p { 
-    font-size:0.95rem; 
-    opacity:0.8; 
-    font-weight:300;
-  }
-
-  /* Contact Section */
-  .contact {
-    text-align:center; 
-    margin:8rem 0; 
-    font-size:1.25rem;
-    padding:0 2rem;
-  }
-  .contact p {
-    margin-bottom:2rem;
-    font-weight:400;
-    text-transform:uppercase;
-    letter-spacing:0.05em;
-  }
-  .contact a {
-    display:inline-block; 
-    padding:1rem 2rem;
-    background:#ff3; 
-    color:#111; 
-    font-weight:700; 
-    text-transform:uppercase;
-    letter-spacing:0.05em;
-    transition:all 0.2s ease;
-    border:2px solid #ff3;
-  }
-  .contact a:hover { 
-    background:transparent; 
-    color:#ff3; 
-  }
-
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .services {
-      grid-template-columns: 1fr;
-      margin:4rem auto;
-    }
-    .service-card {
-      padding:2rem 1.5rem;
-    }
-    .bio {
-      margin:4rem auto;
-      font-size:1rem;
-    }
-    .contact {
-      margin:6rem 0;
+  <script>
+  // Force HTTPS redirect
+  if (location.protocol !== 'https:') {
+    location.replace('https:' + window.location.href.substring(window.location.protocol.length));
+  }
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://jesserodriguez.me">
+  <link rel="dns-prefetch" href="https://jesserodriguez.me">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'; media-src 'self'; child-src 'self'; form-action 'self'; base-uri 'self';">
+  <title>Liquid Interfaces — Jesse Rodriguez</title>
+  <meta name="description" content="Explore Jesse Rodriguez's portfolio through liquid glass interfaces with immersive physics, morphing slabs, and interactive animations.">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg-outer: #03030f;
+      --bg-inner: #0d1124;
+      --bg-glow: #112341;
+      --text-primary: rgba(247, 249, 255, 0.96);
+      --text-secondary: rgba(209, 216, 255, 0.7);
+      --surface-glass: rgba(20, 26, 46, 0.62);
+      --surface-border: rgba(111, 135, 255, 0.26);
+      --surface-highlight: rgba(255, 255, 255, 0.08);
+      --accent-electric: #6ee7ff;
+      --accent-hologram: #c084fc;
+      --accent-lime: #bef264;
+      --accent-hot: #ff4d8d;
+      --accent-amber: #f97316;
+      --accent-emerald: #34d399;
+      --accent-royal: #60a5fa;
+      --pointer-size: clamp(220px, 24vw, 320px);
+      --pointer-intensity: 0.22;
+      --header-height: 84px;
+      --shadow-strong: 0 20px 58px rgba(14, 20, 37, 0.68);
+      font-family: 'Satoshi', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
     }
 
-    /* Adjust toggle button positions for mobile */
-    .interface-toggle {
-      right: 5rem;
-      width: 45px;
-      height: 45px;
-      font-size: 1.25rem;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    .theme-toggle {
-      right: 1rem;
-      width: 45px;
-      height: 45px;
-      font-size: 1.25rem;
+    html {
+      scroll-behavior: smooth;
     }
-  }
 
-  /* Subtle animations */
-  @keyframes fadeInUp {
-    from {
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% -10%, rgba(110, 231, 255, 0.18), transparent 45%),
+        radial-gradient(circle at 80% 0%, rgba(192, 132, 252, 0.24), transparent 50%),
+        linear-gradient(140deg, var(--bg-outer), var(--bg-inner));
+      color: var(--text-primary);
+      font-family: inherit;
+      overflow-x: hidden;
+      position: relative;
+      transition: background 0.6s ease;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image: radial-gradient(rgba(255,255,255,0.045) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.4;
+      mix-blend-mode: soft-light;
+    }
+
+    .liquid-backdrop {
+      position: fixed;
+      inset: -20vh -20vw;
+      pointer-events: none;
+      filter: blur(0.5px);
+      z-index: -2;
+    }
+
+    .liquid-blob {
+      position: absolute;
+      width: clamp(280px, 42vw, 540px);
+      height: clamp(280px, 42vw, 540px);
+      background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 70%),
+                  radial-gradient(circle at 65% 70%, rgba(94, 234, 212, 0.5), transparent 60%),
+                  radial-gradient(circle at 20% 70%, rgba(129, 140, 248, 0.45), transparent 60%);
+      opacity: 0.35;
+      border-radius: 50% 44% 56% 48% / 52% 42% 58% 48%;
+      animation: blobDrift 28s cubic-bezier(0.52, 0.01, 0.21, 0.99) infinite;
+      mix-blend-mode: screen;
+    }
+
+    .liquid-blob:nth-of-type(1) {
+      top: 6vh;
+      left: -8vw;
+      animation-delay: -4s;
+    }
+
+    .liquid-blob:nth-of-type(2) {
+      top: 40vh;
+      right: -12vw;
+      animation-delay: -12s;
+      animation-duration: 34s;
+      filter: hue-rotate(22deg);
+    }
+
+    .liquid-blob:nth-of-type(3) {
+      bottom: -10vh;
+      left: 18vw;
+      animation-delay: -22s;
+      animation-duration: 40s;
+      filter: hue-rotate(-35deg) saturate(1.2);
+    }
+
+    @keyframes blobDrift {
+      0%, 100% {
+        transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+        border-radius: 52% 48% 58% 42% / 48% 52% 42% 58%;
+      }
+      25% {
+        transform: translate3d(4vw, -3vh, 0) scale(0.94) rotate(6deg);
+        border-radius: 45% 55% 52% 48% / 50% 46% 54% 50%;
+      }
+      50% {
+        transform: translate3d(-6vw, 4vh, 0) scale(1.04) rotate(-8deg);
+        border-radius: 56% 44% 46% 54% / 44% 60% 40% 56%;
+      }
+      75% {
+        transform: translate3d(3vw, 6vh, 0) scale(0.98) rotate(3deg);
+        border-radius: 48% 52% 54% 46% / 58% 42% 58% 42%;
+      }
+    }
+
+    .liquid-pointer {
+      position: fixed;
+      width: var(--pointer-size);
+      height: var(--pointer-size);
+      pointer-events: none;
+      top: calc(var(--pointer-y, 50vh) - var(--pointer-size) * 0.5);
+      left: calc(var(--pointer-x, 50vw) - var(--pointer-size) * 0.5);
+      background: radial-gradient(circle at 50% 50%, rgba(110, 231, 255, 0.35), rgba(192, 132, 252, 0.16) 48%, rgba(30, 64, 175, 0) 75%);
+      mix-blend-mode: screen;
+      opacity: var(--pointer-opacity, 0.15);
+      filter: blur(1px);
+      transition: opacity 0.6s ease;
+      z-index: -1;
+    }
+
+    .scene {
+      width: min(1180px, 92vw);
+      margin: 0 auto;
+      padding: calc(var(--header-height) + 4rem) 0 6rem;
+      position: relative;
+    }
+
+    .liquid-header {
+      position: sticky;
+      top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      width: min(1180px, 92vw);
+      margin: 0 auto;
+      height: var(--header-height);
+      z-index: 10;
+      backdrop-filter: blur(22px);
+      background: rgba(11, 15, 32, 0.54);
+      border: 1px solid rgba(99, 102, 241, 0.18);
+      border-radius: 999px;
+      padding: 1.1rem 1.75rem;
+      box-shadow: 0 12px 28px rgba(7, 11, 29, 0.38);
+      overflow: hidden;
+      transform: translateY(-120%);
       opacity: 0;
-      transform: translateY(30px);
+      transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.4s ease;
     }
-    to {
+
+    body.is-loaded .liquid-header {
+      transform: translateY(0);
       opacity: 1;
+    }
+
+    .liquid-header::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(110, 231, 255, 0.35), rgba(192, 132, 252, 0.38), rgba(110, 231, 255, 0.35));
+      opacity: 0;
+      transform: translateY(90%);
+      transition: transform 1.9s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.9s ease;
+      mix-blend-mode: screen;
+    }
+
+    body.is-loaded .liquid-header::after {
+      opacity: 0.65;
       transform: translateY(0);
     }
-  }
-  
-  /* Scroll Indicator */
-  .scroll-indicator {
-    position: absolute;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 30px;
-    height: 50px;
-    border: 2px solid var(--text-primary);
-    border-radius: 25px;
-    opacity: 0.8;
-    cursor: pointer;
-    transition: opacity 0.3s ease;
-  }
-  
-  .scroll-indicator::before {
-    content: '';
-    position: absolute;
-    top: 8px;
-    left: 50%;
-    width: 6px;
-    height: 6px;
-    background: var(--text-primary);
-    border-radius: 50%;
-    transform: translateX(-50%);
-    animation: scrollDown 2s infinite;
-  }
-  
-  @keyframes scrollDown {
-    0% {
-      transform: translateX(-50%) translateY(0);
-      opacity: 1;
-    }
-    100% {
-      transform: translateX(-50%) translateY(20px);
-      opacity: 0;
-    }
-  }
-  
-  .scroll-indicator:hover {
-    opacity: 1;
-  }
 
-  .bio, .services, .contact {
-    animation: fadeInUp 0.8s ease-out;
-  }
-
-  .bio { animation-delay: 0.4s; }
-  .services { animation-delay: 0.6s; }
-  .contact { animation-delay: 0.8s; }
-
-  /* CLI Terminal Section */
-  .cli-terminal {
-    background: #000;
-    color: #00ff00;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 2rem;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .cli-window {
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    background: #000;
-    border: 1px solid #333;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.1);
-  }
-
-  .cli-header {
-    background: #222;
-    padding: 0.5rem 1rem;
-    border-bottom: 1px solid #333;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    border-radius: 8px 8px 0 0;
-  }
-
-  .cli-dots {
-    display: flex;
-    gap: 0.25rem;
-  }
-
-  .cli-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-  }
-
-  .cli-dot:nth-child(1) { background: #ff5f56; }
-  .cli-dot:nth-child(2) { background: #ffbd2e; }
-  .cli-dot:nth-child(3) { background: #27ca3f; }
-
-  .cli-title {
-    color: #999;
-    font-size: 0.875rem;
-    margin-left: 1rem;
-  }
-
-  .cli-content {
-    padding: 1.5rem;
-    font-size: 0.95rem;
-    line-height: 1.6;
-  }
-
-  .cli-line {
-    display: block;
-    margin-bottom: 0.5rem;
-  }
-
-  .cli-prompt::before {
-    content: "jesse@portfolio:~$ ";
-    color: #00ff00;
-    font-weight: bold;
-  }
-
-  .cli-cursor {
-    display: inline-block;
-    width: 8px;
-    height: 1.2em;
-    background: #00ff00;
-    margin-left: 2px;
-    animation: cli-blink 1.5s infinite;
-  }
-
-  .cli-greeting {
-    color: #00ff00;
-    margin-bottom: 1rem;
-    animation: cli-typewriter 2s ease-out forwards;
-    opacity: 0;
-  }
-
-  .cli-hint {
-    color: #888;
-    font-style: italic;
-    animation: cli-typewriter 2s ease-out forwards 1s;
-    opacity: 0;
-  }
-
-  @keyframes cli-blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
-  }
-
-  @keyframes cli-typewriter {
-    0% { opacity: 0; transform: translateY(10px); }
-    100% { opacity: 1; transform: translateY(0); }
-  }
-
-  .cli-noscript {
-    display: none;
-    background: #111;
-    color: #ccc;
-    padding: 2rem;
-    border-radius: 8px;
-    margin-top: 2rem;
-  }
-
-  .cli-noscript h3 {
-    color: #00ff00;
-    margin-bottom: 1rem;
-    font-family: inherit;
-  }
-
-  .cli-noscript ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .cli-noscript li {
-    margin-bottom: 0.5rem;
-  }
-
-  .cli-noscript a {
-    color: #00ff00;
-    text-decoration: none;
-    font-family: inherit;
-  }
-
-  .cli-noscript a:hover {
-    text-decoration: underline;
-  }
-
-  .cli-noscript a::before {
-    content: "> ";
-    color: #888;
-  }
-
-  /* Show noscript content when JS is disabled */
-  noscript .cli-noscript {
-    display: block;
-  }
-
-  /* Make original hero secondary */
-  .hero-secondary {
-    margin-top: 4rem;
-  }
-
-  /* Responsive adjustments for CLI */
-  @media (max-width: 768px) {
-    .cli-terminal {
-      padding: 1rem;
-    }
-    
-    .cli-content {
-      padding: 1rem;
-      font-size: 0.875rem;
-    }
-  }
-
-  /* Hidden sections for anchor navigation */
-  .hidden-section {
-    display: none;
-  }
-
-  /* Footer styling */
-  .footer {
-    text-align: center;
-    padding: 2rem;
-    font-size: 0.875rem;
-    opacity: 0.6;
-    font-weight: 300;
-  }
-
-  .footer a {
-    color: inherit;
-    text-decoration: underline;
-  }
-
-  /* Interactive CLI Elements */
-  .cli-input-line {
-    display: flex;
-    align-items: center;
-    margin-top: 1rem;
-  }
-
-  .cli-prompt-text {
-    color: #00ff00;
-    font-weight: bold;
-    white-space: nowrap;
-  }
-
-  .cli-input {
-    background: transparent;
-    border: none;
-    color: #00ff00;
-    font-family: inherit;
-    font-size: inherit;
-    outline: none;
-    flex: 1;
-    margin-left: 0.5rem;
-  }
-
-  .cli-input::placeholder {
-    color: #666;
-  }
-
-  .cli-cursor-active {
-    display: inline-block;
-    width: 8px;
-    height: 1.2em;
-    background: #00ff00;
-    margin-left: 2px;
-    animation: cli-blink 1.5s infinite;
-  }
-
-  .cli-output {
-    margin-top: 1rem;
-  }
-
-  .cli-output-line {
-    margin-bottom: 0.5rem;
-    line-height: 1.4;
-  }
-
-  .cli-output-line.command-echo {
-    color: #00ff00;
-    opacity: 0.8;
-  }
-
-  .cli-output-line.error {
-    color: #ff6b6b;
-  }
-
-  .cli-output-line.info {
-    color: #64b5f6;
-  }
-
-  .cli-output-line.welcome {
-    color: #888;
-  }
-
-  .cli-output-line.help {
-    color: #ccc;
-  }
-
-  .cli-output-line.about,
-  .cli-output-line.projects,
-  .cli-output-line.resume,
-  .cli-output-line.contact {
-    color: #e0e0e0;
-  }
-
-  .cli-output-line.security {
-    color: #4caf50;
-  }
-
-  .cli-output-line.headers {
-    color: #ff9800;
-  }
-
-  /* Resume PDF link styling */
-  .cli-output-line.resume a {
-    color: #64b5f6;
-    text-decoration: underline;
-  }
-
-  .cli-output-line.resume a:hover {
-    color: #90caf9;
-  }
-
-  /* Security documentation link styling */
-  .cli-output-line.security a {
-    color: #81c784;
-    text-decoration: underline;
-  }
-
-  .cli-output-line.security a:hover {
-    color: #a5d6a7;
-  }
-
-  /* Palette generator link styling */
-  .cli-output-line.palette a {
-    color: #e91e63;
-    text-decoration: underline;
-  }
-
-  .cli-output-line.palette a:hover {
-    color: #f06292;
-  }
-
-  /* Planner link styling */
-  .cli-output-line.planner a {
-    color: #3b82f6;
-    text-decoration: underline;
-  }
-
-  .cli-output-line.planner a:hover {
-    color: #60a5fa;
-  }
-
-  /* Enhanced scrolling for terminal */
-  .cli-terminal {
-    max-height: 100vh;
-    overflow-y: auto;
-  }
-  
-  /* Interface Toggle */
-  .interface-toggle {
-    position: fixed;
-    bottom: 2rem;
-    right: 5rem;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: var(--text-primary);
-    color: var(--bg-primary);
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    box-shadow: 0 4px 12px var(--shadow-color);
-    transition: all 0.3s ease;
-    z-index: 100;
-  }
-
-  .interface-toggle:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 20px var(--shadow-color);
-  }
-
-  .interface-toggle:active {
-    transform: scale(0.95);
-  }
-
-  /* Dark Mode Toggle */
-  .theme-toggle {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: var(--text-primary);
-    color: var(--bg-primary);
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    box-shadow: 0 4px 12px var(--shadow-color);
-    transition: all 0.3s ease;
-    z-index: 100;
-  }
-
-  .theme-toggle:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 20px var(--shadow-color);
-  }
-
-  .theme-toggle:active {
-    transform: scale(0.95);
-  }
-
-  /* Interface Mode Styles */
-  .interface-mode-cli .traditional-ui {
-    display: none;
-  }
-
-  .interface-mode-ui .cli-terminal {
-    display: none;
-  }
-
-  .interface-mode-cli .hero-secondary {
-    display: none;
-  }
-
-  .interface-mode-cli .bio,
-  .interface-mode-cli .services,
-  .interface-mode-cli .contact {
-    display: none;
-  }
-
-  /* Interface Choice Modal */
-  #interface-choice-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 10000;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  }
-
-  .modal-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(8px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-  }
-
-  .modal-content {
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    border-radius: 16px;
-    padding: 2.5rem;
-    max-width: 600px;
-    width: 100%;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-    border: 1px solid var(--border-color);
-    animation: modalFadeIn 0.3s ease-out;
-  }
-
-  @keyframes modalFadeIn {
-    from {
-      opacity: 0;
-      transform: scale(0.9) translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1) translateY(0);
-    }
-  }
-
-  .modal-content h2 {
-    font-size: 2rem;
-    font-weight: 700;
-    margin: 0 0 0.5rem 0;
-    text-align: center;
-    color: var(--text-primary);
-  }
-
-  .modal-content p {
-    font-size: 1.125rem;
-    text-align: center;
-    margin: 0 0 2rem 0;
-    color: var(--text-secondary);
-    font-weight: 300;
-  }
-
-  .interface-options {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-  }
-
-  .interface-option {
-    background: var(--bg-secondary);
-    border: 2px solid transparent;
-    border-radius: 12px;
-    padding: 2rem 1.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .interface-option:hover {
-    background: var(--text-primary);
-    color: var(--bg-primary);
-    transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  }
-
-  .interface-option:active {
-    transform: translateY(-2px);
-  }
-
-  .option-icon {
-    font-size: 3rem;
-  }
-
-  .option-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-  }
-
-  .option-description {
-    font-size: 0.875rem;
-    line-height: 1.4;
-    opacity: 0.8;
-    font-weight: 300;
-  }
-
-  /* Featured Projects Section */
-  .featured-projects {
-    max-width: 1200px;
-    margin: 3rem auto;
-    padding: 0 2rem;
-  }
-
-  .featured-header {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-
-  .featured-header h2 {
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    margin-bottom: 1rem;
-    color: #fff;
-  }
-
-  .featured-header p {
-    font-size: 1.125rem;
-    color: #bbb;
-    font-weight: 300;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  .featured-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-  }
-
-  .featured-card {
-    position: relative;
-    border: 1px solid #333;
-    border-radius: 16px;
-    padding: 2rem;
-    background: rgba(0,0,0,0.8);
-    transition: all 0.3s ease;
-    overflow: hidden;
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .featured-card:hover {
-    transform: translateY(-4px);
-    border-color: #ff3;
-    background: rgba(255,255,51,0.04);
-    box-shadow: 0 10px 30px rgba(255,255,51,0.1);
-  }
-
-  .featured-badge {
-    display: inline-block;
-    font-size: 0.7rem;
-    letter-spacing: 0.08em;
-    border: 1px solid #444;
-    padding: 4px 8px;
-    border-radius: 999px;
-    color: #ddd;
-    margin-bottom: 1rem;
-  }
-
-  .featured-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 0.75rem;
-    color: #fff;
-  }
-
-  .featured-subtitle {
-    color: #bbb;
-    margin-bottom: 1rem;
-    line-height: 1.5;
-    font-size: 0.95rem;
-  }
-
-  .featured-tech {
-    color: #888;
-    font-size: 0.85rem;
-    font-weight: 500;
-  }
-
-  /* Featured Card Specific Styles */
-  .knock-card {
-    border-left: 4px solid #e91e63;
-  }
-
-  .knock-card:hover {
-    border-color: #e91e63;
-    background: rgba(233,30,99,0.04);
-    box-shadow: 0 10px 30px rgba(233,30,99,0.1);
-  }
-
-  .planner-card {
-    border-left: 4px solid #3b82f6;
-  }
-
-  .planner-card:hover {
-    border-color: #3b82f6;
-    background: rgba(59,130,246,0.04);
-    box-shadow: 0 10px 30px rgba(59,130,246,0.1);
-  }
-
-  .fashion-card {
-    border-left: 4px solid #8b5cf6;
-  }
-
-  .fashion-card:hover {
-    border-color: #8b5cf6;
-    background: rgba(139,92,246,0.04);
-    box-shadow: 0 10px 30px rgba(139,92,246,0.1);
-  }
-
-  .brainwave-card {
-    border-left: 4px solid #10b981;
-  }
-
-  .brainwave-card:hover {
-    border-color: #10b981;
-    background: rgba(16,185,129,0.04);
-    box-shadow: 0 10px 30px rgba(16,185,129,0.1);
-  }
-
-  .philosophy-card {
-    border-left: 4px solid #d97706;
-  }
-
-  .philosophy-card:hover {
-    border-color: #d97706;
-    background: rgba(217,119,6,0.04);
-    box-shadow: 0 10px 30px rgba(217,119,6,0.1);
-  }
-
-  /* Modal Responsive */
-  @media (max-width: 768px) {
-    .modal-content {
-      padding: 2rem 1.5rem;
-      margin: 1rem;
-    }
-
-    .modal-content h2 {
-      font-size: 1.75rem;
-    }
-
-    .interface-options {
-      grid-template-columns: 1fr;
+    .brand {
+      display: flex;
+      align-items: center;
       gap: 1rem;
     }
 
-    .interface-option {
-      padding: 1.5rem 1rem;
-    }
-
-    .option-icon {
-      font-size: 2.5rem;
-    }
-
-    .option-title {
-      font-size: 1.125rem;
-    }
-
-    .featured-projects {
-      margin: 4rem auto;
-      padding: 0 1rem;
-    }
-
-    .featured-grid {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-
-    .featured-card {
-      padding: 1.5rem;
-    }
-
-    .featured-header h2 {
-      font-size: 2rem;
-    }
-
-    .featured-header p {
+    .brand-mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(96, 165, 250, 0.86), rgba(14, 165, 233, 0.68));
+      backdrop-filter: blur(18px);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
       font-size: 1rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(15, 23, 42, 0.92);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.32);
     }
-  }
-</style>
 
-<!-- Structured Data -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "name": "Jesse Rodriguez",
-  "url": "https://jesserodriguez.me",
-  "email": "jesse@jesserodriguez.me",
-  "jobTitle": "Full Stack Developer & Designer",
-  "description": "AI automation specialist, web developer, and designer creating innovative digital experiences at the intersection of technology and design.",
-  "sameAs": [
-    "https://jesserodriguez.me/ios",
-    "https://jesserodriguez.me/planner",
-    "https://jesserodriguez.me/fashion-palette"
-  ],
-  "knowsAbout": ["AI", "Web Development", "Design", "Fashion Technology", "iOS Development", "User Experience"],
-  "offers": {
-    "@type": "Offer",
-    "itemOffered": {
-      "@type": "Service",
-      "name": "Professional Development Services",
-      "description": "AI automation, web development, design, and consulting services"
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
     }
-  }
-}
-</script>
+
+    .brand-title {
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.82rem;
+      color: rgba(244, 244, 255, 0.85);
+    }
+
+    .brand-subtitle {
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(148, 163, 184, 0.68);
+    }
+
+    .header-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.65rem 1.2rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(15, 23, 42, 0.88);
+      background: linear-gradient(135deg, rgba(190, 242, 100, 0.9), rgba(56, 189, 248, 0.92));
+      box-shadow: 0 12px 30px rgba(45, 212, 191, 0.35);
+      border: none;
+      cursor: pointer;
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.5s ease;
+    }
+
+    .header-cta:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 18px 42px rgba(45, 212, 191, 0.4);
+    }
+
+    .hero {
+      padding: 4rem 0 3rem;
+      text-align: center;
+      display: grid;
+      gap: 1.75rem;
+      justify-items: center;
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 1.1rem;
+      border-radius: 999px;
+      background: rgba(49, 46, 129, 0.45);
+      border: 1px solid rgba(129, 140, 248, 0.45);
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      font-size: 0.72rem;
+      color: rgba(199, 210, 254, 0.75);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+
+    .hero-title {
+      font-size: clamp(2.8rem, 6vw, 4.8rem);
+      font-weight: 800;
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+      background: linear-gradient(120deg, rgba(110, 231, 255, 0.85), rgba(190, 242, 100, 0.85), rgba(129, 140, 248, 0.85) 70%, rgba(93, 157, 255, 0.85));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      background-size: 220% 220%;
+      animation: shimmer 11s ease-in-out infinite;
+      filter: drop-shadow(0 12px 24px rgba(46, 169, 223, 0.18));
+    }
+
+    .hero-copy {
+      max-width: 640px;
+      font-size: clamp(1.05rem, 2vw, 1.22rem);
+      color: var(--text-secondary);
+      line-height: 1.7;
+      font-weight: 400;
+    }
+
+    .slab-grid {
+      margin-top: 4.5rem;
+      display: grid;
+      gap: clamp(1.75rem, 3vw, 2.6rem);
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      perspective: 1600px;
+    }
+
+    .liquid-slab {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      padding: clamp(1.8rem, 3vw, 2.6rem);
+      text-decoration: none;
+      color: inherit;
+      border-radius: clamp(22px, 4vw, 34px);
+      background: linear-gradient(160deg, rgba(13, 19, 41, 0.82), rgba(9, 12, 28, 0.92));
+      border: 1px solid rgba(148, 163, 255, 0.16);
+      box-shadow: 0 18px 46px rgba(7, 11, 29, 0.52);
+      overflow: hidden;
+      transform-style: preserve-3d;
+      transform: translate3d(0, 40px, 0) scale3d(0.96, 0.96, 1);
+      opacity: 0;
+      isolation: isolate;
+      transition:
+        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.6s ease,
+        border-color 0.6s ease,
+        filter 0.6s ease,
+        backdrop-filter 0.6s ease;
+      transition-delay: var(--delay, 0s);
+      animation-delay: var(--delay, 0s);
+      animation: slabBreath 6.8s ease-in-out infinite;
+      animation-play-state: paused;
+    }
+
+    .liquid-slab::before,
+    .liquid-slab::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .liquid-slab::before {
+      background: linear-gradient(135deg, rgba(110, 231, 255, 0.12), rgba(192, 132, 252, 0.1));
+      opacity: 0.45;
+      mix-blend-mode: screen;
+    }
+
+    .liquid-slab::after {
+      border: 1px solid rgba(110, 231, 255, 0.18);
+      opacity: 0.25;
+      filter: blur(0.4px);
+    }
+
+    .liquid-slab .slab-trace {
+      position: absolute;
+      inset: 12% 8%;
+      border-radius: 50% 42% 58% 44% / 48% 60% 40% 52%;
+      background: radial-gradient(circle at 30% 30%, rgba(110, 231, 255, 0.22), transparent 65%);
+      opacity: 0.0;
+      filter: blur(12px);
+      transition: transform 0.6s ease, opacity 0.6s ease;
+      mix-blend-mode: screen;
+    }
+
+    .liquid-slab .slab-badge {
+      align-self: flex-start;
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(15, 23, 42, 0.35);
+      color: rgba(226, 232, 240, 0.72);
+      transition: color 0.4s ease, border-color 0.4s ease, background 0.4s ease;
+    }
+
+    .slab-title {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      background: linear-gradient(120deg, rgba(255, 255, 255, 0.9), rgba(148, 163, 255, 0.8));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      background-size: 180% 180%;
+      animation: shimmer 12s ease-in-out infinite;
+      animation-play-state: paused;
+    }
+
+    .slab-copy {
+      color: var(--text-secondary);
+      font-size: 0.98rem;
+      line-height: 1.7;
+    }
+
+    .slab-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: auto;
+      padding-top: 0.4rem;
+    }
+
+    .slab-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.55rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+      background: rgba(15, 23, 42, 0.38);
+      border: 1px solid rgba(148, 163, 255, 0.18);
+      color: rgba(226, 232, 240, 0.7);
+      transition: color 0.4s ease, border-color 0.4s ease, background 0.4s ease;
+    }
+
+    .slab-chip.primary {
+      background: linear-gradient(135deg, rgba(190, 242, 100, 0.92), rgba(56, 189, 248, 0.92));
+      color: rgba(15, 23, 42, 0.92);
+      border-color: rgba(190, 242, 100, 0.6);
+      box-shadow: 0 12px 28px rgba(56, 189, 248, 0.28);
+    }
+
+    .liquid-slab.is-visible {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+      animation-play-state: running;
+    }
+
+    .liquid-slab.is-visible .slab-title {
+      animation-play-state: running;
+    }
+
+    .liquid-slab.is-hovered {
+      box-shadow: 0 26px 68px rgba(12, 18, 38, 0.72), 0 0 32px rgba(110, 231, 255, 0.24);
+      filter: saturate(1.12) brightness(1.05);
+      border-color: rgba(110, 231, 255, 0.35);
+    }
+
+    .liquid-slab.is-hovered .slab-title {
+      animation-duration: 6s;
+      filter: drop-shadow(0 12px 28px rgba(110, 231, 255, 0.25));
+    }
+
+    .liquid-slab.is-hovered::before {
+      opacity: 0.7;
+    }
+
+    .liquid-slab.is-hovered::after {
+      opacity: 0.48;
+    }
+
+    .liquid-slab.is-hovered .slab-trace {
+      opacity: 0.7;
+      transform: scale(1.08) translate3d(0, -8%, 0);
+    }
+
+    .liquid-slab.is-hovered .slab-badge {
+      border-color: rgba(255, 255, 255, 0.32);
+      color: rgba(244, 244, 255, 0.88);
+      background: rgba(112, 122, 255, 0.28);
+    }
+
+    .liquid-slab.is-hovered .slab-chip {
+      border-color: rgba(255, 255, 255, 0.32);
+      color: rgba(244, 244, 255, 0.84);
+      background: rgba(112, 122, 255, 0.18);
+    }
+
+    .liquid-slab.is-hovered .slab-chip.primary {
+      box-shadow: 0 16px 36px rgba(56, 189, 248, 0.42);
+    }
+
+    .liquid-slab[data-theme="md"] {
+      --slab-accent: var(--accent-electric);
+    }
+    .liquid-slab[data-theme="prompt"] {
+      --slab-accent: var(--accent-hot);
+    }
+    .liquid-slab[data-theme="graffiti"] {
+      --slab-accent: var(--accent-hologram);
+    }
+    .liquid-slab[data-theme="wrestling"] {
+      --slab-accent: #f87171;
+    }
+    .liquid-slab[data-theme="knock"] {
+      --slab-accent: var(--accent-amber);
+    }
+    .liquid-slab[data-theme="planner"] {
+      --slab-accent: var(--accent-emerald);
+    }
+    .liquid-slab[data-theme="fashion"] {
+      --slab-accent: #c084fc;
+    }
+    .liquid-slab[data-theme="philosophy"] {
+      --slab-accent: var(--accent-royal);
+    }
+    .liquid-slab[data-theme="brainwave"] {
+      --slab-accent: #facc15;
+    }
+    .liquid-slab[data-theme="timezone"] {
+      --slab-accent: #a855f7;
+    }
+    .liquid-slab[data-theme="startup"] {
+      --slab-accent: #38bdf8;
+    }
+    .liquid-slab[data-theme="game"] {
+      --slab-accent: #f472b6;
+    }
+
+    .liquid-slab::selection,
+    .slab-title::selection,
+    .slab-copy::selection {
+      background: rgba(110, 231, 255, 0.35);
+      color: rgba(17, 24, 39, 0.92);
+    }
+
+    .slab-accent-ring {
+      position: absolute;
+      inset: -120% -30%;
+      background:
+        radial-gradient(circle at center, rgba(255, 255, 255, 0.12) 0%, transparent 52%),
+        radial-gradient(circle at center, var(--slab-accent, rgba(110, 231, 255, 0.45)) 0%, transparent 70%);
+      opacity: 0;
+      transform: scale(0.45);
+      filter: blur(90px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .liquid-slab.is-hovered .slab-accent-ring {
+      opacity: 0.85;
+      transform: scale(1);
+    }
+
+    .slab-ripple {
+      position: absolute;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      transform: translate(-50%, -50%) scale(0.2);
+      opacity: 0.85;
+      pointer-events: none;
+      animation: rippleExpand 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes rippleExpand {
+      to {
+        transform: translate(-50%, -50%) scale(2.4);
+        opacity: 0;
+      }
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    @keyframes slabBreath {
+      0%, 100% {
+        transform-origin: 50% 50%;
+      }
+      50% {
+        transform-origin: 48% 52%;
+      }
+    }
+
+    .hint {
+      text-align: center;
+      margin: 1.5rem 0 4rem;
+      color: rgba(148, 163, 184, 0.55);
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 900px) {
+      .liquid-header {
+        flex-direction: column;
+        height: auto;
+        border-radius: 40px;
+        padding: 1.5rem;
+        gap: 1rem;
+      }
+      .brand {
+        width: 100%;
+        justify-content: center;
+      }
+      .header-cta {
+        width: 100%;
+        justify-content: center;
+      }
+      .scene {
+        padding-top: calc(var(--header-height) + 3rem);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero {
+        padding-top: 3rem;
+      }
+      .hero-title {
+        font-size: clamp(2.4rem, 10vw, 3.2rem);
+      }
+      .hero-copy {
+        font-size: 1rem;
+      }
+      .slab-grid {
+        gap: 1.5rem;
+      }
+      .liquid-slab {
+        padding: 1.8rem;
+      }
+      .liquid-pointer {
+        opacity: 0.05;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+      body::after, .liquid-pointer {
+        display: none;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="header">
-    <div class="logo">
-      JESSE <span class="accent">RODRIGUEZ</span>
-      <div class="rubiks-cube">
-        <div class="cube-face cube-front">
-          <div class="square red"></div>
-          <div class="square red"></div>
-          <div class="square red"></div>
-          <div class="square red"></div>
-          <div class="square red"></div>
-          <div class="square red"></div>
-          <div class="square red"></div>
-          <div class="square red"></div>
-          <div class="square red"></div>
-        </div>
-        <div class="cube-face cube-back">
-          <div class="square white"></div>
-          <div class="square white"></div>
-          <div class="square white"></div>
-          <div class="square white"></div>
-          <div class="square white"></div>
-          <div class="square white"></div>
-          <div class="square white"></div>
-          <div class="square white"></div>
-          <div class="square white"></div>
-        </div>
-        <div class="cube-face cube-right">
-          <div class="square green"></div>
-          <div class="square green"></div>
-          <div class="square green"></div>
-          <div class="square green"></div>
-          <div class="square green"></div>
-          <div class="square green"></div>
-          <div class="square green"></div>
-          <div class="square green"></div>
-          <div class="square green"></div>
-        </div>
-        <div class="cube-face cube-left">
-          <div class="square blue"></div>
-          <div class="square blue"></div>
-          <div class="square blue"></div>
-          <div class="square blue"></div>
-          <div class="square blue"></div>
-          <div class="square blue"></div>
-          <div class="square blue"></div>
-          <div class="square blue"></div>
-          <div class="square blue"></div>
-        </div>
-        <div class="cube-face cube-top">
-          <div class="square yellow"></div>
-          <div class="square yellow"></div>
-          <div class="square yellow"></div>
-          <div class="square yellow"></div>
-          <div class="square yellow"></div>
-          <div class="square yellow"></div>
-          <div class="square yellow"></div>
-          <div class="square yellow"></div>
-          <div class="square yellow"></div>
-        </div>
-        <div class="cube-face cube-bottom">
-          <div class="square orange"></div>
-          <div class="square orange"></div>
-          <div class="square orange"></div>
-          <div class="square orange"></div>
-          <div class="square orange"></div>
-          <div class="square orange"></div>
-          <div class="square orange"></div>
-          <div class="square orange"></div>
-          <div class="square orange"></div>
-        </div>
+  <div class="liquid-backdrop" aria-hidden="true">
+    <div class="liquid-blob"></div>
+    <div class="liquid-blob"></div>
+    <div class="liquid-blob"></div>
+  </div>
+  <div class="liquid-pointer" aria-hidden="true"></div>
+
+  <header class="liquid-header">
+    <div class="brand">
+      <div class="brand-mark">JR</div>
+      <div class="brand-text">
+        <span class="brand-title">Jesse Rodriguez</span>
+        <span class="brand-subtitle">Creative Engineer • Liquid Interfaces</span>
       </div>
     </div>
-  </div>
-  <div class="circles" aria-hidden="true">
-    <div class="circle c1"></div>
-    <div class="circle c2"></div>
-    <div class="circle c3"></div>
-  </div>
-  <div class="main-content">
-    <main class="container" role="main">
-      <div class="grid">
-        <a class="card interface-card md-dashboard-card" href="/md/">
-          <div class="badge">PRODUCTIVITY</div>
-          <div class="title">Markdown Progress Dashboard</div>
-          <div class="subtitle">Award-winning project progress tracker with drag & drop file uploads, real-time parsing, and beautiful Tailwind UI.</div>
-          <div class="actions">
-            <span class="btn primary">Track Progress</span>
-            <span class="btn">Tailwind CSS · File Upload · GitHub Pages</span>
-          </div>
-        </a>
-        <a class="card interface-card prompt-card" href="/prompt/">
-          <div class="badge">NEW</div>
-          <div class="title">Prompt Library</div>
-          <div class="subtitle">Nano Banana prompt recipes from the Awesome Nano Banana Images archive. Copy, remix, and experiment with AI prompts.</div>
-          <div class="actions">
-            <span class="btn primary">Open Library</span>
-            <span class="btn">AI Prompts · Search · Archive</span>
-          </div>
-        </a>
-        <a class="card interface-card graffiti-card" href="/art/">
-          <div class="badge">AWARD-WINNING</div>
-          <div class="title">Digital Graffiti Studio</div>
-          <div class="subtitle">Professional-grade digital art app with advanced particle physics, realistic spray effects, and immersive environments.</div>
-          <div class="actions">
-            <span class="btn primary">Start Creating</span>
-            <span class="btn">React · Three.js · Web Audio</span>
-          </div>
-        </a>
-        <a class="card interface-card wrestling-card" href="/wrestling-news/">
-          <div class="badge">RECOMMENDED</div>
-          <div class="title">Wrestling News Hub</div>
-          <div class="subtitle">Raw vs SmackDown news aggregator with glass UI and automated updates.</div>
-          <div class="actions">
-            <span class="btn primary">Open News</span>
-            <span class="btn">RSS · Glass UI · Auto-Update</span>
-          </div>
-        </a>
-        <a class="card interface-card knock-card" href="/knock.html">
-          <div class="badge">INTERACTIVE</div>
-          <div class="title">Knock Knock Door</div>
-          <div class="subtitle">Web Audio API door experience with 4 customizable styles and realistic sound effects.</div>
-          <div class="actions">
-            <span class="btn primary">Open Door</span>
-            <span class="btn">Web Audio API · CSS Animations</span>
-          </div>
-        </a>
-        <a class="card interface-card planner-card" href="/planner/">
-          <div class="badge">PRODUCTIVITY</div>
-          <div class="title">Circular Daily Planner</div>
-          <div class="subtitle">24-hour visual time wheel with export capabilities for desktop and mobile wallpapers.</div>
-          <div class="actions">
-            <span class="btn primary">Open Planner</span>
-            <span class="btn">Canvas API · PWA · Export</span>
-          </div>
-        </a>
-        <a class="card interface-card fashion-card" href="/fashion-palette/">
-          <div class="badge">AI/ML</div>
-          <div class="title">Fashion Palette Generator</div>
-          <div class="subtitle">Privacy-first AI color extraction with mathematical color theory for fashion design.</div>
-          <div class="actions">
-            <span class="btn primary">Open Generator</span>
-            <span class="btn">React · Canvas API · Color Theory</span>
-          </div>
-        </a>
-        <a class="card interface-card philosophy-card" href="/philosophers-library.html">
-          <div class="badge">LITERATURE</div>
-          <div class="title">The Philosopher's Library</div>
-          <div class="subtitle">Curated collection of 100 essential philosophical texts with interactive exploration and literary design.</div>
-          <div class="actions">
-            <span class="btn primary">Open Library</span>
-            <span class="btn">Three.js · Literary Design · Dark Mode</span>
-          </div>
-        </a>
-        <a class="card interface-card brainwave-card" href="/brainwave-simulator/brainwave-simulator.html">
-          <div class="badge">SCIENTIFIC</div>
-          <div class="title">AI Brainwave Simulator</div>
-          <div class="subtitle">Real-time neural activity visualization based on actual EEG frequency bands.</div>
-          <div class="actions">
-            <span class="btn primary">Open Simulator</span>
-            <span class="btn">Canvas API · Scientific Accuracy · Privacy-First</span>
-          </div>
-        </a>
-        <a class="card interface-card timezone-card" href="/TIME/">
-          <div class="badge">GLOBAL</div>
-          <div class="title">WorldTime Beauty</div>
-          <div class="subtitle">Stunning global timezone display with real-time city clocks and time converter.</div>
-          <div class="actions">
-            <span class="btn primary">Explore Time</span>
-            <span class="btn">Real-time · Multi-zone · Visual</span>
-          </div>
-        </a>
-        <a class="card interface-card startup-card" href="/STARTUP/">
-          <div class="badge">STARTUP</div>
-          <div class="title">Retro Console Hub</div>
-          <div class="subtitle">PlayStation 2 emulator interface with authentic startup sequence and project navigation system.</div>
-          <div class="actions">
-            <span class="btn primary">Boot Console</span>
-            <span class="btn">Web Audio API · CSS Animations · Retro UI</span>
-          </div>
-        </a>
-        <a class="card interface-card game-card" href="/vtrigger/">
-          <div class="badge">GAME</div>
-          <div class="title">Pencil Runner</div>
-          <div class="subtitle">A minimalist side-scrolling adventure with hand-drawn pencil art style and sketchy graphics.</div>
-          <div class="actions">
-            <span class="btn primary">Play Game</span>
-            <span class="btn">React · Canvas API · Pencil Art</span>
-          </div>
-        </a>
-      </div>
-    </main>
-  
-  <!-- Featured Projects Section - Hidden for now -->
-  <!-- <section class="featured-projects">
-    <div class="featured-header">
-      <h2>Featured Projects</h2>
-      <p>Handpicked applications showcasing the intersection of AI, design, and technology</p>
-    </div>
-    <div class="featured-grid">
-      <a class="featured-card knock-card" href="/knock.html">
-        <div class="featured-badge">INTERACTIVE</div>
-        <div class="featured-title">Knock Knock Door</div>
-        <div class="featured-subtitle">Web Audio API door experience with 4 customizable styles and realistic sound effects</div>
-        <div class="featured-tech">Web Audio API · CSS Animations · Vanilla JS</div>
+    <button class="header-cta" type="button" data-scroll="#experiences">Explore Interfaces</button>
+  </header>
+
+  <main class="scene">
+    <section class="hero">
+      <span class="hero-kicker">Choose your experience</span>
+      <h1 class="hero-title">Immersive Liquid Glass Playground</h1>
+      <p class="hero-copy">Morphing slabs, shimmering typography, and living surfaces that respond with fluid physics. Pick a destination and watch it ripple to life with buttery motion and tactile depth.</p>
+    </section>
+
+    <section class="slab-grid" id="experiences">
+      <a class="liquid-slab" href="/jumpingjellybean/" data-theme="game" data-index="0">
+        <div class="slab-accent-ring" aria-hidden="true"></div>
+        <div class="slab-trace" aria-hidden="true"></div>
+        <span class="slab-badge">GAME</span>
+        <h2 class="slab-title">Jumping Jelly Bean</h2>
+        <p class="slab-copy">A delightful React platformer with bouncing jelly beans, colorful candies, and challenging levels. Collect treats, avoid enemies, and master 5 difficulty levels!</p>
+        <div class="slab-actions">
+          <span class="slab-chip primary">Play Game</span>
+          <span class="slab-chip">React · Canvas · Platformer</span>
+        </div>
       </a>
-      
-      <a class="featured-card planner-card" href="/planner/">
-        <div class="featured-badge">PRODUCTIVITY</div>
-        <div class="featured-title">Circular Daily Planner</div>
-        <div class="featured-subtitle">24-hour visual time wheel with export capabilities for desktop and mobile wallpapers</div>
-        <div class="featured-tech">Canvas API · PWA · Responsive Design</div>
+
+      <a class="liquid-slab" href="/md/" data-theme="md" data-index="1">
+        <div class="slab-accent-ring" aria-hidden="true"></div>
+        <div class="slab-trace" aria-hidden="true"></div>
+        <span class="slab-badge">DATA</span>
+        <h2 class="slab-title">MD Analytics Dashboard</h2>
+        <p class="slab-copy">Glass UI for medical insights blending realtime metrics, anomaly detection, and voice-ready briefs for physicians.</p>
+        <div class="slab-actions">
+          <span class="slab-chip primary">Launch Dashboard</span>
+          <span class="slab-chip">Realtime · Voice · HIPAA</span>
+        </div>
       </a>
-      
-      <a class="featured-card fashion-card" href="/fashion-palette/">
-        <div class="featured-badge">AI/ML</div>
-        <div class="featured-title">Fashion Palette Generator</div>
-        <div class="featured-subtitle">Privacy-first AI color extraction with mathematical color theory for fashion design</div>
-        <div class="featured-tech">React · Canvas API · Color Theory</div>
+
+      <a class="liquid-slab" href="/prompt/" data-theme="prompt" data-index="2">
+        <div class="slab-accent-ring" aria-hidden="true"></div>
+        <div class="slab-trace" aria-hidden="true"></div>
+        <span class="slab-badge">AI</span>
+        <h2 class="slab-title">Prompt Architect Studio</h2>
+        <p class="slab-copy">Liquid textures and live prompt sculpting with collaborative AI tools designed for fast ideation and iteration.</p>
+        <div class="slab-actions">
+          <span class="slab-chip primary">Open Studio</span>
+          <span class="slab-chip">LLM · Collaboration · Revisions</span>
+        </div>
       </a>
-      
-      <a class="featured-card brainwave-card" href="/brainwave-simulator/brainwave-simulator.html">
-        <div class="featured-badge">SCIENTIFIC</div>
-        <div class="featured-title">AI Brainwave Simulator</div>
-        <div class="featured-subtitle">Real-time neural activity visualization based on actual EEG frequency bands</div>
-        <div class="featured-tech">Canvas API · Scientific Accuracy · Privacy-First</div>
+
+      <a class="liquid-slab" href="/art/" data-theme="graffiti" data-index="3">
+        <div class="slab-accent-ring" aria-hidden="true"></div>
+        <div class="slab-trace" aria-hidden="true"></div>
+        <span class="slab-badge">ART</span>
+        <h2 class="slab-title">Graffiti Liquid Gallery</h2>
+        <p class="slab-copy">Dynamic mural wall with morphing neon ink, motion-tracked spray bursts, and ripple-triggered sound palettes.</p>
+        <div class="slab-actions">
+          <span class="slab-chip primary">View Gallery</span>
+          <span class="slab-chip">XR · Neon · Reactive Sound</span>
+        </div>
       </a>
-    </div>
-  </section> -->
-  </div>
-  
-  <div class="hint">Interactive portfolio showcasing innovative digital experiences</div>
+
+      <a class="liquid-slab" href="/wrestling-news/" data-theme="wrestling" data-index="4">
+        <div class="slab-accent-ring" aria-hidden="true"></div>
+        <div class="slab-trace" aria-hidden="true"></div>
+        <span class="slab-badge">LIVE</span>
+        <h2 class="slab-title">Wrestling News Engine</h2>
+        <p class="slab-copy">Momentum-based news slabs with realtime heatmaps, auto-refreshing cards, and slammin' liquid borders.</p>
+        <div class="slab-actions">
+          <span class="slab-chip primary">Open Feed</span>
+          <span class="slab-chip">Auto · RSS · Alerts</span>
+        </div>
+      </a>
+
+      <a class="liquid-slab" href="/knock.html" data-theme="knock" data-index="5">
+        <div class="slab-accent-ring" aria-hidden="true"></div>
+        <div class="slab-trace" aria-hidden="true"></div>
+        <span class="slab-badge">INTERACTIVE</span>
+        <h2 class="slab-title">Knock Knock Door</h2>
+        <p class="slab-copy">Web Audio portal with realistic wood resonance, multi-style skins, and motion tilt that follows every knock.</p>
+        <div class="slab-actions">
+          <span class="slab-chip primary">Open Door</span>
+          <span class="slab-chip">Spatial Audio · 3D Tilt</span>
+        </div>
+      </a>
+
+      <a class="liquid-slab" href="/planner/" data-theme="planner" data-index="6">
+        <div class="slab-accent-ring" aria-hidden="true"></div>
+        <div class="slab-trace" aria-hidden="true"></div>
+        <span class="slab-badge">FOCUS</span>
+        <h2 class="slab-title">Circular Daily Planner</h2>
+        <p class="slab-copy">Timewheel orchestrator with glassy strokes, haptic-like snap, and export-ready visuals for every display.</p>
+        <div class="slab-actions">
+          <span class="slab-chip primary">Open Planner</span>
+          <span class="slab-chip">Canvas · PWA · Export</span>
+        </div>
+      </a>
+
+      <a class="liquid-slab" href="/fashion-palette/" data-theme="fashion" data-index="7">
+        <div class="slab-accent-ring" aria-hidden="true"></div>
+        <div class="slab-trace" aria-hidden="true"></div>
+        <span class="slab-badge">FASHION</span>
+        <h2 class="slab-title">Fashion Palette Generator</h2>
+        <p class="slab-copy">Privacy-first AI that spins garments into living gradients with math-driven palettes and fabric-ready exports.</p>
+        <div class="slab-actions">
+          <span class="slab-chip primary">Open Generator</span>
+          <span class="slab-chip">AI · Color Theory · Privacy</span>
+        </div>
+      </a>
+
+      <a class="liquid-slab" href="/philosophers-library.html" data-theme="philosophy" data-index="8">
+        <div class="slab-accent-ring" aria-hidden="true"></div>
+        <div class="slab-trace" aria-hidden="true"></div>
+        <span class="slab-badge">LIBRARY</span>
+        <h2 class="slab-title">Philosopher's Library</h2>
+        <p class="slab-copy">Curated texts in a floating gallery with page glows, parallax folios, and meditative transitions to slow the mind.</p>
+        <div class="slab-actions">
+          <span class="slab-chip primary">Open Library</span>
+          <span class="slab-chip">Literary · Three.js · Dark Mode</span>
+        </div>
+      </a>
+
+      <a class="liquid-slab" href="/brainwave-simulator/brainwave-simulator.html" data-theme="brainwave" data-index="9">
+        <div class="slab-accent-ring" aria-hidden="true"></div>
+        <div class="slab-trace" aria-hidden="true"></div>
+        <span class="slab-badge">SCIENCE</span>
+        <h2 class="slab-title">AI Brainwave Simulator</h2>
+        <p class="slab-copy">Real-time neural visuals pulsating with alpha, beta, and gamma rhythms rendered as spectral glass waves.</p>
+        <div class="slab-actions">
+          <span class="slab-chip primary">Open Simulator</span>
+          <span class="slab-chip">EEG · Canvas · Biofeedback</span>
+        </div>
+      </a>
+
+      <a class="liquid-slab" href="/TIME/" data-theme="timezone" data-index="10">
+        <div class="slab-accent-ring" aria-hidden="true"></div>
+        <div class="slab-trace" aria-hidden="true"></div>
+        <span class="slab-badge">GLOBAL</span>
+        <h2 class="slab-title">WorldTime Beauty</h2>
+        <p class="slab-copy">Sculpted world clock with fluid light bands, city pulses, and cinematic day-night gradients.</p>
+        <div class="slab-actions">
+          <span class="slab-chip primary">Explore Time</span>
+          <span class="slab-chip">Realtime · Converter · Visual</span>
+        </div>
+      </a>
+
+      <a class="liquid-slab" href="/STARTUP/" data-theme="startup" data-index="11">
+        <div class="slab-accent-ring" aria-hidden="true"></div>
+        <div class="slab-trace" aria-hidden="true"></div>
+        <span class="slab-badge">RETRO</span>
+        <h2 class="slab-title">Retro Console Hub</h2>
+        <p class="slab-copy">PS2-inspired boot sequence with liquid scanlines, memory-card glow, and adaptive project switching.</p>
+        <div class="slab-actions">
+          <span class="slab-chip primary">Boot Console</span>
+          <span class="slab-chip">Web Audio · CSS · Nostalgia</span>
+        </div>
+      </a>
+
+      <a class="liquid-slab" href="/vtrigger/" data-theme="game" data-index="12">
+        <div class="slab-accent-ring" aria-hidden="true"></div>
+        <div class="slab-trace" aria-hidden="true"></div>
+        <span class="slab-badge">GAME</span>
+        <h2 class="slab-title">Pencil Runner</h2>
+        <p class="slab-copy">Hand-drawn adventure in a floating sketchbook with liquid graphite trails and responsive canvas speed.</p>
+        <div class="slab-actions">
+          <span class="slab-chip primary">Play Game</span>
+          <span class="slab-chip">React · Canvas · Sketch</span>
+        </div>
+      </a>
+    </section>
+  </main>
+
+  <div class="hint">Every interaction hugs the cursor with liquid physics. Try clicking for ripples.</div>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Jesse Rodriguez",
+    "url": "https://jesserodriguez.me",
+    "email": "jesse@jesserodriguez.me",
+    "jobTitle": "Full Stack Developer & Designer",
+    "description": "AI automation specialist, web developer, and designer creating innovative digital experiences at the intersection of technology and design.",
+    "sameAs": [
+      "https://jesserodriguez.me/ios",
+      "https://jesserodriguez.me/planner",
+      "https://jesserodriguez.me/fashion-palette"
+    ],
+    "knowsAbout": ["AI", "Web Development", "Design", "Fashion Technology", "iOS Development", "User Experience"],
+    "offers": {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Service",
+        "name": "Professional Development Services",
+        "description": "AI automation, web development, design, and consulting services"
+      }
+    }
+  }
+  </script>
+
   <script>
   (function(){
-    'use strict';
+    const body = document.body;
+    const slabs = Array.from(document.querySelectorAll('.liquid-slab'));
+    const headerCta = document.querySelector('[data-scroll]');
 
-    // Mouse tracking for Marangoni effects
-    document.addEventListener('mousemove', function(e){
-      const cards = document.querySelectorAll('.interface-card, .featured-card');
-      cards.forEach(card => {
-        const rect = card.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        card.style.setProperty('--mx', x + '%');
-        card.style.setProperty('--my', y + '%');
+    const pointer = {
+      active: false,
+      x: window.innerWidth * 0.5,
+      y: window.innerHeight * 0.45,
+      targetX: window.innerWidth * 0.5,
+      targetY: window.innerHeight * 0.45,
+      vx: 0,
+      vy: 0
+    };
+
+    const parallaxBlobs = Array.from(document.querySelectorAll('.liquid-blob')).map((blob, index) => ({
+      el: blob,
+      depth: 0.02 + index * 0.015
+    }));
+
+    function resizeHandler(){
+      pointer.targetX = window.innerWidth * 0.5;
+      pointer.targetY = window.innerHeight * 0.45;
+    }
+
+    function trackPointer(event){
+      pointer.active = true;
+      pointer.targetX = event.clientX;
+      pointer.targetY = event.clientY;
+      body.style.setProperty('--pointer-opacity', '0.23');
+    }
+
+    function releasePointer(){
+      pointer.active = false;
+      body.style.setProperty('--pointer-opacity', window.innerWidth < 720 ? '0.06' : '0.15');
+    }
+
+    function pointerPhysics(){
+      const spring = 0.16;
+      const friction = 0.72;
+
+      pointer.vx += (pointer.targetX - pointer.x) * spring;
+      pointer.vy += (pointer.targetY - pointer.y) * spring;
+
+      pointer.vx *= friction;
+      pointer.vy *= friction;
+
+      pointer.x += pointer.vx;
+      pointer.y += pointer.vy;
+
+      body.style.setProperty('--pointer-x', pointer.x + 'px');
+      body.style.setProperty('--pointer-y', pointer.y + 'px');
+      body.style.setProperty('--pointer-vx', pointer.vx.toFixed(2));
+      body.style.setProperty('--pointer-vy', pointer.vy.toFixed(2));
+
+      const intensity = Math.min(1, Math.sqrt(pointer.vx * pointer.vx + pointer.vy * pointer.vy) / 36);
+      body.style.setProperty('--pointer-opacity', pointer.active ? (0.18 + intensity * 0.35).toFixed(3) : (window.innerWidth < 720 ? 0.06 : 0.15));
+
+      parallaxBlobs.forEach(layer => {
+        const dx = (pointer.x - window.innerWidth * 0.5) * layer.depth;
+        const dy = (pointer.y - window.innerHeight * 0.5) * layer.depth;
+        layer.el.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
+      });
+      requestAnimationFrame(pointerPhysics);
+    }
+
+    function setEntranceDelays(){
+      slabs.forEach((slab, index) => {
+        slab.style.setProperty('--delay', (index * 0.08).toFixed(2) + 's');
+        setTimeout(() => slab.classList.add('is-visible'), 220 + index * 90);
+      });
+    }
+
+    let hoveredSlab = null;
+
+    function handleTilt(event){
+      if (!hoveredSlab) return;
+      const rect = hoveredSlab.getBoundingClientRect();
+      const relX = (event.clientX - rect.left) / rect.width;
+      const relY = (event.clientY - rect.top) / rect.height;
+      const tiltX = (0.5 - relY) * 14;
+      const tiltY = (relX - 0.5) * 18;
+      hoveredSlab.style.transform = `perspective(1600px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(16px)`;
+    }
+
+    function resetTilt(slab){
+      slab.style.transform = '';
+    }
+
+    function randomMorph(slab){
+      const radiusA = 35 + Math.random() * 25;
+      const radiusB = 45 + Math.random() * 25;
+      slab.style.setProperty('--radius-a', radiusA.toFixed(1) + '%');
+      slab.style.setProperty('--radius-b', radiusB.toFixed(1) + '%');
+      const trace = slab.querySelector('.slab-trace');
+      if (trace) {
+        trace.style.borderRadius = `${radiusB}% ${100 - radiusB}% ${radiusA}% ${100 - radiusA}% / ${radiusA}% ${radiusB}% ${100 - radiusB}% ${100 - radiusA}%`;
+      }
+    }
+
+    function spawnRipple(event, slab){
+      const ripple = document.createElement('span');
+      ripple.className = 'slab-ripple';
+      const rect = slab.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height) * 1.4;
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = (event.clientX - rect.left) + 'px';
+      ripple.style.top = (event.clientY - rect.top) + 'px';
+      slab.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 900);
+    }
+
+    slabs.forEach((slab) => {
+      randomMorph(slab);
+
+      slab.addEventListener('pointerenter', (event) => {
+        hoveredSlab = slab;
+        slab.classList.add('is-hovered');
+        handleTilt(event);
+      });
+
+      slab.addEventListener('pointermove', handleTilt);
+
+      slab.addEventListener('pointerleave', () => {
+        slab.classList.remove('is-hovered');
+        resetTilt(slab);
+        hoveredSlab = null;
+      });
+
+      slab.addEventListener('click', (event) => {
+        spawnRipple(event, slab);
       });
     });
 
-    // Pulse effect on click
-    document.addEventListener('click', function(e){
-      const card = e.target.closest('.interface-card, .featured-card');
-      if (card) {
-        card.classList.add('pulse');
-        setTimeout(() => card.classList.remove('pulse'), 600);
+    setInterval(() => {
+      slabs.forEach(randomMorph);
+    }, 4800);
+
+    window.addEventListener('pointermove', trackPointer, { passive: true });
+    window.addEventListener('pointerdown', trackPointer, { passive: true });
+    window.addEventListener('pointerup', releasePointer, { passive: true });
+    window.addEventListener('pointerleave', releasePointer, { passive: true });
+    window.addEventListener('resize', resizeHandler);
+
+    headerCta?.addEventListener('click', (event) => {
+      const target = event.currentTarget.getAttribute('data-scroll');
+      const section = target ? document.querySelector(target) : null;
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
 
-    // Mobile detection and Wrestling News recommendation
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    if (isMobile) {
-      const wrestlingCard = document.querySelector('.wrestling-card');
-      if (wrestlingCard) {
-        const badge = wrestlingCard.querySelector('.badge');
-        badge.textContent = 'RECOMMENDED';
-        badge.style.borderColor = '#ff3';
-        badge.style.color = '#ff3';
-      }
-    }
-
-    // Keyboard shortcuts removed - CLI no longer available
+    requestAnimationFrame(() => {
+      body.classList.add('is-loaded');
+      setEntranceDelays();
+      pointerPhysics();
+    });
   })();
   </script>
 </body>
