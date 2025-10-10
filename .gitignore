@@ -36,3 +36,12 @@ logs
 
 nano-banana/
 stem/
+# Ignore virtualenv and generated artifacts
+stem/.venv310/
+stem/outputs/
+stem/uploads/
+stem/pretrained_models/
+**/dist/
+node_modules/
+*.log
+
