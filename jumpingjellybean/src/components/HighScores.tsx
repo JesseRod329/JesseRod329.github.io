@@ -219,21 +219,8 @@ const HighScores: React.FC<HighScoresProps> = ({ scores, isVisible, onClose }) =
           box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
         }
 
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-          from { 
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to { 
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px);} to { opacity: 1; transform: translateY(0);} }
 
         @media (max-width: 600px) {
           .high-scores-container {
@@ -257,6 +244,21 @@ const HighScores: React.FC<HighScoresProps> = ({ scores, isVisible, onClose }) =
 
           .score-value {
             font-size: 1.1rem;
+          }
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+          .high-scores-overlay,
+          .high-scores-container,
+          .score-item {
+            animation: none !important;
+            transition: none !important;
+          }
+
+          .score-item:hover {
+            transform: none !important;
+            box-shadow: none !important;
           }
         }
       `}</style>
