@@ -468,6 +468,10 @@ const App: React.FC = () => {
             justify-content: center;
           }
 
+          .game-main {
+            padding: 1rem;
+          }
+
           .game-menu h2 {
             font-size: 2rem;
           }
@@ -479,6 +483,27 @@ const App: React.FC = () => {
           .game-over-buttons {
             flex-direction: column;
             align-items: center;
+          }
+        }
+
+        /* Respect reduced motion preferences for non-essential UI */
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after {
+            animation: none !important;
+            transition: none !important;
+          }
+
+          .header-button,
+          .play-button,
+          .control-button {
+            transition: none !important;
+          }
+
+          .header-button:hover,
+          .play-button:hover,
+          .control-button:hover {
+            transform: none !important;
+            box-shadow: none !important;
           }
         }
       `}</style>
