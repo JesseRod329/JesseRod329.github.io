@@ -681,7 +681,6 @@
         <span class="brand-subtitle">Creative Engineer • Liquid Interfaces</span>
       </div>
     </div>
-    <button class="header-cta" type="button" data-scroll="#experiences">Explore Interfaces</button>
   </header>
 
   <main class="scene">
@@ -882,7 +881,6 @@
   (function(){
     const body = document.body;
     const slabs = Array.from(document.querySelectorAll('.liquid-slab'));
-    const headerCta = document.querySelector('[data-scroll]');
 
     const pointer = {
       active: false,
@@ -1022,14 +1020,6 @@
     window.addEventListener('pointerup', releasePointer, { passive: true });
     window.addEventListener('pointerleave', releasePointer, { passive: true });
     window.addEventListener('resize', resizeHandler);
-
-    headerCta?.addEventListener('click', (event) => {
-      const target = event.currentTarget.getAttribute('data-scroll');
-      const section = target ? document.querySelector(target) : null;
-      if (section) {
-        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
 
     requestAnimationFrame(() => {
       body.classList.add('is-loaded');
