@@ -33,6 +33,7 @@ const modalElements = {
   title: null,
   meta: null,
   prompt: null,
+  copyButton: null,
   referenceSection: null,
   referenceText: null,
   sourcesSection: null,
@@ -77,6 +78,7 @@ function setupModal() {
   modalElements.title = root.querySelector('#promptModalTitle');
   modalElements.meta = root.querySelector('#promptModalMeta');
   modalElements.prompt = root.querySelector('#promptModalPrompt');
+  modalElements.copyButton = root.querySelector('#copyPromptBtn');
   modalElements.referenceSection = root.querySelector('#promptModalReference');
   modalElements.referenceText = modalElements.referenceSection?.querySelector('.requirement') ?? null;
   modalElements.sourcesSection = root.querySelector('#promptModalSources');
@@ -100,6 +102,54 @@ function setupModal() {
       closeModal();
     }
   });
+
+  if (modalElements.copyButton) {
+    modalElements.copyButton.addEventListener('click', async () => {
+      const text = modalElements.prompt?.textContent ?? '';
+      if (!text) return;
+      let copied = false;
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          copied = true;
+        }
+      } catch (_) {
+        // fall through to execCommand fallback
+      }
+      if (!copied) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'absolute';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        const selection = document.getSelection();
+        const selected = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+        textarea.select();
+        try {
+          document.execCommand('copy');
+          copied = true;
+        } catch (_) {
+          copied = false;
+        }
+        document.body.removeChild(textarea);
+        if (selected && selection) {
+          selection.removeAllRanges();
+          selection.addRange(selected);
+        }
+      }
+
+      if (copied) {
+        const original = modalElements.copyButton.textContent;
+        modalElements.copyButton.textContent = 'Copied!';
+        modalElements.copyButton.classList.add('success');
+        setTimeout(() => {
+          modalElements.copyButton.textContent = original;
+          modalElements.copyButton.classList.remove('success');
+        }, 1200);
+      }
+    });
+  }
 
   modalElements.initialized = true;
 }
