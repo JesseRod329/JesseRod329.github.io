@@ -91,10 +91,28 @@ function init() {
     });
     
     // Handle window resize
-    window.addEventListener('resize', resizeCanvas);
-    window.addEventListener('orientationchange', () => {
+    window.addEventListener('resize', () => {
         setTimeout(resizeCanvas, 100);
     });
+    window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+            resizeCanvas();
+            // Force a repaint
+            requestAnimationFrame(() => {
+                render();
+            });
+        }, 200);
+    });
+    
+    // Handle visual viewport changes (mobile browser UI)
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', () => {
+            setTimeout(resizeCanvas, 50);
+        });
+        window.visualViewport.addEventListener('scroll', () => {
+            setTimeout(resizeCanvas, 50);
+        });
+    }
     
     // Prevent iOS bounce scrolling
     document.addEventListener('touchmove', (e) => {
@@ -103,19 +121,39 @@ function init() {
         }
     }, { passive: false });
     
+    // Initial resize
+    resizeCanvas();
+    
     updateUI();
     gameLoop();
 }
 
 function resizeCanvas() {
     const container = document.querySelector('.game-container');
-    const containerRect = container.getBoundingClientRect();
     
-    // Use container dimensions or viewport for mobile
+    // Use actual viewport dimensions for mobile
     if (isMobile) {
-        canvasWidth = window.innerWidth;
-        canvasHeight = window.innerHeight;
+        // Get actual viewport dimensions accounting for browser UI
+        canvasWidth = window.innerWidth || document.documentElement.clientWidth;
+        canvasHeight = window.innerHeight || document.documentElement.clientHeight;
+        
+        // Account for safe areas on iOS
+        const safeAreaTop = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-top)') || '0');
+        const safeAreaBottom = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-bottom)') || '0');
+        
+        // Use dynamic viewport height if available
+        if (window.visualViewport) {
+            canvasHeight = window.visualViewport.height;
+        } else {
+            // Fallback: use actual innerHeight
+            canvasHeight = window.innerHeight;
+        }
+        
+        // Ensure we don't exceed viewport
+        canvasWidth = Math.min(canvasWidth, screen.width);
+        canvasHeight = Math.min(canvasHeight, screen.height);
     } else {
+        const containerRect = container.getBoundingClientRect();
         canvasWidth = Math.min(CANVAS_WIDTH, containerRect.width);
         canvasHeight = Math.min(CANVAS_HEIGHT, containerRect.height);
     }
