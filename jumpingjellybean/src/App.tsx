@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { User, HighScore, GameState } from './types';
-import UserSignup from './components/UserSignup';
-import HighScores from './components/HighScores';
+import { Pause, Play, Trophy, Star, Sparkles } from 'lucide-react';
 import GameCanvas from './components/GameCanvas';
+import { GameState } from './types';
 
 const App: React.FC = () => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [showSignup, setShowSignup] = useState(true);
-  const [showHighScores, setShowHighScores] = useState(false);
-  const [highScores, setHighScores] = useState<HighScore[]>([]);
-  
   const [gameState, setGameState] = useState<GameState>({
     score: 0,
     level: 1,
@@ -24,464 +18,209 @@ const App: React.FC = () => {
     airTimeRemaining: 0
   });
 
-  // Load high scores from localStorage on mount
-  useEffect(() => {
-    const savedScores = localStorage.getItem('jellybean-highscores');
-    if (savedScores) {
-      try {
-        const scores = JSON.parse(savedScores).map((score: any) => ({
-          ...score,
-          date: new Date(score.date)
-        }));
-        setHighScores(scores);
-      } catch (error) {
-        console.error('Error loading high scores:', error);
+  const [highScore, setHighScore] = useState<number>(0);
+  const [showLevelUp, setShowLevelUp] = useState<boolean>(false);
+  const [combo, setCombo] = useState<number>(0);
+
+  const handleGameStateChange = (newState: Partial<GameState>) => {
+    setGameState(prev => {
+      const updated = { ...prev, ...newState };
+      
+      // Check for level up
+      if (updated.score > 0 && Math.floor(updated.score / 1000) > Math.floor(prev.score / 1000)) {
+        setShowLevelUp(true);
+        setTimeout(() => setShowLevelUp(false), 2000);
+        updated.level = Math.floor(updated.score / 1000) + 1;
       }
+      
+      // Update high score
+      if (updated.isGameOver && updated.score > highScore) {
+        setHighScore(updated.score);
+      }
+      
+      return updated;
+    });
+  };
+
+  const handleScoreUpdate = (newScore: number) => {
+    const scoreDiff = newScore - gameState.score;
+    if (scoreDiff > 0) {
+      setCombo(c => c + 1);
     }
-  }, []);
-
-  // Save high scores to localStorage
-  const saveHighScores = (scores: HighScore[]) => {
-    localStorage.setItem('jellybean-highscores', JSON.stringify(scores));
-    setHighScores(scores);
+    handleGameStateChange({ score: newScore });
   };
 
-  // Handle user signup
-  const handleSignup = (user: User) => {
-    setCurrentUser(user);
-    setGameState(prev => ({ ...prev, currentUser: user }));
-    setShowSignup(false);
+  const startGame = () => {
+    handleGameStateChange({
+      isPlaying: true,
+      isPaused: false,
+      isGameOver: false,
+      score: 0,
+      level: 1,
+      lives: 3
+    });
+    setCombo(0);
   };
 
-  // Handle user login
-  const handleLogin = (user: User) => {
-    setCurrentUser(user);
-    setGameState(prev => ({ ...prev, currentUser: user }));
-    setShowSignup(false);
-  };
-
-  // Start new game
-  const startNewGame = () => {
-    setGameState({
+  const resetGame = () => {
+    handleGameStateChange({
       score: 0,
       level: 1,
       lives: 3,
       isPlaying: true,
       isPaused: false,
-      isGameOver: false,
-      currentUser,
-      powerUps: [],
-      activePowerUps: new Set(),
-      doubleJumpAvailable: false,
-      airTimeRemaining: 0
+      isGameOver: false
     });
+    setCombo(0);
   };
 
-  // Pause/resume game
   const togglePause = () => {
-    setGameState(prev => ({
-      ...prev,
-      isPaused: !prev.isPaused,
-      isPlaying: !prev.isPaused
-    }));
-  };
-
-  // End game
-  const endGame = () => {
-    setGameState(prev => ({
-      ...prev,
-      isPlaying: false,
-      isGameOver: true
-    }));
-
-    // Add score to high scores if user is logged in
-    if (currentUser && gameState.score > 0) {
-      const newScore: HighScore = {
-        id: Date.now().toString(),
-        userId: currentUser.id,
-        username: currentUser.username,
-        score: gameState.score,
-        level: gameState.level,
-        powerUpsUsed: gameState.activePowerUps.size,
-        date: new Date()
-      };
-
-      const updatedScores = [...highScores, newScore]
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 50); // Keep top 50 scores
-
-      saveHighScores(updatedScores);
+    if (gameState.isPlaying && !gameState.isGameOver) {
+      handleGameStateChange({ isPaused: !gameState.isPaused });
     }
   };
 
-  // Update game state
-  const handleGameStateChange = (newState: Partial<GameState>) => {
-    setGameState(prev => ({ ...prev, ...newState }));
-  };
+  useEffect(() => {
+    // Load high score from localStorage
+    const savedHighScore = localStorage.getItem('jellybean-highscore');
+    if (savedHighScore) {
+      setHighScore(parseInt(savedHighScore, 10));
+    }
+  }, []);
 
-  // Update score
-  const handleScoreUpdate = (score: number) => {
-    setGameState(prev => ({ ...prev, score }));
-  };
+  useEffect(() => {
+    // Save high score to localStorage
+    if (highScore > 0) {
+      localStorage.setItem('jellybean-highscore', highScore.toString());
+    }
+  }, [highScore]);
 
-  // Show high scores
-  const showHighScoresModal = () => {
-    setShowHighScores(true);
-  };
-
-  // Close high scores
-  const closeHighScores = () => {
-    setShowHighScores(false);
-  };
-
-  // Logout
-  const handleLogout = () => {
-    setCurrentUser(null);
-    setGameState(prev => ({ ...prev, currentUser: null }));
-    setShowSignup(true);
-  };
+  // Auto-start game on mount
+  useEffect(() => {
+    startGame();
+  }, []);
 
   return (
-    <div className="app">
-      {/* User Signup Modal */}
-      {showSignup && (
-        <UserSignup
-          onSignup={handleSignup}
-          onLogin={handleLogin}
-        />
-      )}
-
-      {/* High Scores Modal */}
-      <HighScores
-        scores={highScores}
-        isVisible={showHighScores}
-        onClose={closeHighScores}
-      />
-
-      {/* Main Game Interface */}
-      {!showSignup && (
-        <div className="game-container">
-          {/* Header */}
-          <header className="game-header">
-            <div className="header-left">
-              <h1>🍭 Jumping Jelly Bean Enhanced</h1>
-              {currentUser && (
-                <div className="user-info">
-                  Welcome, {currentUser.username}!
-                </div>
-              )}
-            </div>
-            <div className="header-right">
-              <button 
-                className="header-button"
-                onClick={showHighScoresModal}
-              >
-                🏆 High Scores
-              </button>
-              <button 
-                className="header-button"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            </div>
-          </header>
-
-          {/* Game Area */}
-          <main className="game-main">
-            {!gameState.isPlaying && !gameState.isGameOver && (
-              <div className="game-menu">
-                <h2>Ready to Jump?</h2>
-                <p>Collect power-ups, master double jumps, and reach new heights!</p>
-                <div className="menu-buttons">
-                  <button 
-                    className="play-button"
-                    onClick={startNewGame}
-                  >
-                    🎮 Start Game
-                  </button>
-                </div>
-                <div className="game-features">
-                  <h3>New Features:</h3>
-                  <ul>
-                    <li>✨ Double Jump ability</li>
-                    <li>🚀 Air Time power-ups</li>
-                    <li>⚡ Speed Boost power-ups</li>
-                    <li>🛡️ Shield protection</li>
-                    <li>🏆 High Score tracking</li>
-                  </ul>
-                </div>
-              </div>
-            )}
-
-            {gameState.isPlaying && (
-              <div className="game-play">
-                <GameCanvas
-                  gameState={gameState}
-                  onGameStateChange={handleGameStateChange}
-                  onScoreUpdate={handleScoreUpdate}
-                />
-                <div className="game-controls">
-                  <button 
-                    className="control-button"
-                    onClick={togglePause}
-                  >
-                    {gameState.isPaused ? '▶️ Resume' : '⏸️ Pause'}
-                  </button>
-                  <button 
-                    className="control-button"
-                    onClick={endGame}
-                  >
-                    🏁 End Game
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {gameState.isGameOver && (
-              <div className="game-over">
-                <h2>Game Over!</h2>
-                <div className="final-score">
-                  <p>Final Score: <span className="score-value">{gameState.score}</span></p>
-                  <p>Level Reached: <span className="level-value">{gameState.level}</span></p>
-                </div>
-                <div className="game-over-buttons">
-                  <button 
-                    className="play-button"
-                    onClick={startNewGame}
-                  >
-                    🔄 Play Again
-                  </button>
-                  <button 
-                    className="header-button"
-                    onClick={showHighScoresModal}
-                  >
-                    🏆 View High Scores
-                  </button>
-                </div>
-              </div>
-            )}
-          </main>
-        </div>
-      )}
-
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-pink-300 via-purple-300 to-blue-300 p-4 font-sans">
       <style>{`
-        .app {
-          min-height: 100vh;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          font-family: 'Arial', sans-serif;
-        }
-
-        .game-container {
-          min-height: 100vh;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .game-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 1rem 2rem;
-          background: rgba(255, 255, 255, 0.1);
-          backdrop-filter: blur(10px);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .header-left h1 {
-          margin: 0;
-          font-size: 1.5rem;
-          font-weight: 700;
-        }
-
-        .user-info {
-          font-size: 0.9rem;
-          opacity: 0.8;
-          margin-top: 0.25rem;
-        }
-
-        .header-right {
-          display: flex;
-          gap: 1rem;
-        }
-
-        .header-button {
-          background: rgba(255, 255, 255, 0.2);
-          border: 1px solid rgba(255, 255, 255, 0.3);
-          color: white;
-          padding: 0.5rem 1rem;
-          border-radius: 8px;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          font-weight: 600;
-        }
-
-        .header-button:hover {
-          background: rgba(255, 255, 255, 0.3);
-          transform: translateY(-2px);
-        }
-
-        .game-main {
-          flex: 1;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 2rem;
-        }
-
-        .game-menu {
-          text-align: center;
-          max-width: 600px;
-        }
-
-        .game-menu h2 {
-          font-size: 2.5rem;
-          margin-bottom: 1rem;
-          font-weight: 700;
-        }
-
-        .game-menu p {
-          font-size: 1.2rem;
-          margin-bottom: 2rem;
-          opacity: 0.9;
-        }
-
-        .menu-buttons {
-          margin-bottom: 3rem;
-        }
-
-        .play-button {
-          background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-          border: none;
-          color: white;
-          padding: 1rem 2rem;
-          border-radius: 12px;
-          font-size: 1.2rem;
-          font-weight: 700;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
-        }
-
-        .play-button:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 12px 30px rgba(255, 107, 107, 0.4);
-        }
-
-        .game-features {
-          text-align: left;
-          background: rgba(255, 255, 255, 0.1);
-          padding: 1.5rem;
-          border-radius: 12px;
-          backdrop-filter: blur(10px);
-        }
-
-        .game-features h3 {
-          margin: 0 0 1rem 0;
-          font-size: 1.3rem;
-        }
-
-        .game-features ul {
-          margin: 0;
-          padding-left: 1.5rem;
-        }
-
-        .game-features li {
-          margin-bottom: 0.5rem;
-          font-size: 1rem;
-        }
-
-        .game-play {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 1rem;
-        }
-
-        .game-controls {
-          display: flex;
-          gap: 1rem;
-        }
-
-        .control-button {
-          background: rgba(255, 255, 255, 0.2);
-          border: 1px solid rgba(255, 255, 255, 0.3);
-          color: white;
-          padding: 0.75rem 1.5rem;
-          border-radius: 8px;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          font-weight: 600;
-        }
-
-        .control-button:hover {
-          background: rgba(255, 255, 255, 0.3);
-          transform: translateY(-2px);
-        }
-
-        .game-over {
-          text-align: center;
-          max-width: 500px;
-        }
-
-        .game-over h2 {
-          font-size: 2.5rem;
-          margin-bottom: 2rem;
-          color: #ff6b6b;
-        }
-
-        .final-score {
-          background: rgba(255, 255, 255, 0.1);
-          padding: 2rem;
-          border-radius: 12px;
-          margin-bottom: 2rem;
-          backdrop-filter: blur(10px);
-        }
-
-        .final-score p {
-          font-size: 1.2rem;
-          margin: 0.5rem 0;
-        }
-
-        .score-value, .level-value {
-          color: #ffd700;
-          font-weight: 700;
-          font-size: 1.5rem;
-        }
-
-        .game-over-buttons {
-          display: flex;
-          gap: 1rem;
-          justify-content: center;
-          flex-wrap: wrap;
-        }
-
         @media (max-width: 768px) {
-          .game-header {
-            flex-direction: column;
-            gap: 1rem;
-            text-align: center;
+          body {
+            padding: 0;
+            margin: 0;
           }
-
-          .header-right {
-            justify-content: center;
+          .flex {
+            padding: 0.5rem;
           }
-
-          .game-menu h2 {
-            font-size: 2rem;
-          }
-
-          .game-over h2 {
-            font-size: 2rem;
-          }
-
-          .game-over-buttons {
-            flex-direction: column;
-            align-items: center;
-          }
+        }
+        html {
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+        }
+        body {
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          position: fixed;
+          touch-action: none;
+          -webkit-overflow-scrolling: touch;
         }
       `}</style>
+      
+      <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-6 max-w-6xl w-full">
+        <div className="flex justify-between items-center mb-4 flex-wrap gap-4">
+          <div className="flex items-center gap-4">
+            <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
+              JUMPING JELLYBEAN
+            </div>
+          </div>
+         
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2 bg-yellow-100 px-4 py-2 rounded-full">
+              <Trophy className="text-yellow-600" size={24} />
+              <div className="text-2xl font-bold text-yellow-700">{gameState.score}</div>
+            </div>
+           
+            <div className="flex items-center gap-2 bg-purple-100 px-4 py-2 rounded-full">
+              <Star className="text-purple-600" size={24} />
+              <div className="text-xl font-bold text-purple-700">LVL {gameState.level}</div>
+            </div>
+
+            {combo > 0 && (
+              <div className="flex items-center gap-2 bg-pink-100 px-4 py-2 rounded-full animate-pulse">
+                <Sparkles className="text-pink-600" size={20} />
+                <div className="text-lg font-bold text-pink-700">x{combo}</div>
+              </div>
+            )}
+          </div>
+
+          <button
+            onClick={togglePause}
+            className="bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-white rounded-full p-3 shadow-lg transition-all active:scale-95"
+          >
+            {gameState.isPaused ? <Play size={24} /> : <Pause size={24} />}
+          </button>
+        </div>
+
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex gap-2">
+            {[...Array(5)].map((_, i) => (
+              <div
+                key={i}
+                className={`w-10 h-10 rounded-full ${
+                  i < gameState.lives ? 'bg-gradient-to-br from-red-400 to-pink-500' : 'bg-gray-300'
+                } shadow-lg flex items-center justify-center text-white font-bold text-2xl`}
+              >
+                {i < gameState.lives && '❤️'}
+              </div>
+            ))}
+          </div>
+         
+          <div className="text-lg font-semibold text-gray-600">
+            High Score: <span className="text-purple-600 font-bold">{highScore}</span>
+          </div>
+        </div>
+
+        <div className="relative">
+          <GameCanvas 
+            gameState={gameState}
+            onGameStateChange={handleGameStateChange}
+            onScoreUpdate={handleScoreUpdate}
+          />
+         
+          {showLevelUp && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-50">
+              <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-6xl font-bold px-16 py-8 rounded-3xl shadow-2xl animate-bounce">
+                ⭐ LEVEL {gameState.level}! ⭐
+              </div>
+            </div>
+          )}
+         
+          {gameState.isPaused && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 rounded-2xl z-40">
+              <div className="bg-white text-5xl font-bold px-16 py-8 rounded-3xl shadow-2xl text-gray-800">
+                ⏸ PAUSED
+              </div>
+            </div>
+          )}
+
+          {gameState.isGameOver && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 rounded-2xl z-40">
+              <div className="bg-white px-12 py-8 rounded-3xl shadow-2xl text-center">
+                <div className="text-5xl font-bold text-red-600 mb-4">GAME OVER!</div>
+                <div className="text-3xl font-semibold text-gray-700 mb-2">Final Score: {gameState.score}</div>
+                <div className="text-2xl text-purple-600 mb-6">High Score: {highScore}</div>
+                <button
+                  onClick={resetGame}
+                  className="bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white text-2xl font-bold py-4 px-12 rounded-full shadow-lg transition-all active:scale-95"
+                >
+                  PLAY AGAIN
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
