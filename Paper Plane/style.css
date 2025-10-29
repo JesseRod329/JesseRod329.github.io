@@ -262,7 +262,6 @@ body {
     z-index: 20;
     pointer-events: all;
     width: 100%;
-    display: flex;
     justify-content: center;
     align-items: center;
     padding: 0 20px;
