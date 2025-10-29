@@ -72,11 +72,175 @@ const levels = [
     }
 ];
 
+// Puzzle definitions for each clue
+const puzzles = {
+    // Level 1 puzzles
+    '1-1': {
+        question: "I speak without a mouth and hear without ears. I have no body, but I come alive with the wind. What am I?",
+        answer: ['echo', 'an echo'],
+        hint: "Think about sounds bouncing back..."
+    },
+    '1-2': {
+        question: "If you multiply this number by itself, you get 64. What is the number?",
+        answer: ['8', 'eight'],
+        hint: "Find the square root of 64..."
+    },
+    '1-3': {
+        question: "What comes next in this sequence? 2, 4, 8, 16, ?",
+        answer: ['32', 'thirty-two'],
+        hint: "Each number is doubled..."
+    },
+    '1-4': {
+        question: "I am taken from a mine and shut up in a wooden case, from which I am never released, and yet I am used by almost every person. What am I?",
+        answer: ['pencil', 'a pencil'],
+        hint: "Graphite from a mine, in wood..."
+    },
+    
+    // Level 2 puzzles
+    '2-1': {
+        question: "A man has 53 socks in his drawer: 21 identical blue, 15 identical black, and 17 identical red. The lights are off and he is completely in the dark. How many socks must he take out to be 100% certain he has at least one pair of black socks?",
+        answer: ['40', 'forty'],
+        hint: "He needs to take out all blue and red socks, then one more..."
+    },
+    '2-2': {
+        question: "What word becomes shorter when you add two letters to it?",
+        answer: ['short', 'shorty'],
+        hint: "Add 'er' to make it shorter..."
+    },
+    '2-3': {
+        question: "If a clock shows 3:15, what is the angle between the hour and minute hands?",
+        answer: ['7.5', '7.5 degrees', '7.5°'],
+        hint: "The hour hand moves 0.5 degrees per minute..."
+    },
+    '2-4': {
+        question: "I am always hungry, I must always be fed. The finger I touch will soon turn red. What am I?",
+        answer: ['fire', 'flame'],
+        hint: "It consumes fuel and burns..."
+    },
+    '2-5': {
+        question: "What number comes next? 1, 1, 2, 3, 5, 8, ?",
+        answer: ['13', 'thirteen'],
+        hint: "Fibonacci sequence: add the two previous numbers..."
+    },
+    
+    // Level 3 puzzles
+    '3-1': {
+        question: "A chemist has one solution that is 30% acid and another that is 50% acid. How much of each should be mixed to get 100ml of a 40% acid solution?",
+        answer: ['50', '50ml'],
+        hint: "Equal amounts of each solution..."
+    },
+    '3-2': {
+        question: "If you rearrange the letters 'CIRCUMSTANCES', what new word can you make?",
+        answer: ['circumstance', 'circumstances'],
+        hint: "Try rearranging 'ACCIRMCSUETN'..."
+    },
+    '3-3': {
+        question: "What is the next number? 1, 4, 9, 16, 25, ?",
+        answer: ['36', 'thirty-six'],
+        hint: "These are perfect squares..."
+    },
+    '3-4': {
+        question: "I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. What am I?",
+        answer: ['map', 'a map'],
+        hint: "Used for navigation..."
+    },
+    '3-5': {
+        question: "If it takes 5 machines 5 minutes to make 5 widgets, how long would it take 100 machines to make 100 widgets?",
+        answer: ['5', '5 minutes', 'five'],
+        hint: "Each machine makes one widget in 5 minutes..."
+    },
+    '3-6': {
+        question: "What word starts with 'E' and ends with 'E', but only has one letter?",
+        answer: ['envelope', 'an envelope'],
+        hint: "Think about mail..."
+    },
+    
+    // Level 4 puzzles
+    '4-1': {
+        question: "A bat and a ball cost $1.10 together. The bat costs $1.00 more than the ball. How much does the ball cost?",
+        answer: ['5', '5 cents', '$0.05', '0.05'],
+        hint: "If the ball costs 5 cents, the bat costs $1.05..."
+    },
+    '4-2': {
+        question: "I am the beginning of the end, the end of time and space. I am essential to creation, and I surround every place. What am I?",
+        answer: ['e', 'the letter e'],
+        hint: "Think about the word 'end'..."
+    },
+    '4-3': {
+        question: "What number should replace the question mark? 1, 4, 9, ?, 25, 36",
+        answer: ['16', 'sixteen'],
+        hint: "Perfect squares..."
+    },
+    '4-4': {
+        question: "Forward I am heavy, backward I am not. What am I?",
+        answer: ['ton', 'a ton'],
+        hint: "Read it backwards..."
+    },
+    '4-5': {
+        question: "How many times can you subtract 5 from 25?",
+        answer: ['1', 'once', 'one'],
+        hint: "After the first subtraction, it's no longer 25..."
+    },
+    '4-6': {
+        question: "I am an odd number. Take away a letter and I become even. What number am I?",
+        answer: ['7', 'seven'],
+        hint: "Take away 's' from 'seven'..."
+    },
+    '4-7': {
+        question: "What comes next? A, E, I, O, ?",
+        answer: ['u', 'U'],
+        hint: "Vowels in order..."
+    },
+    
+    // Level 5 puzzles
+    '5-1': {
+        question: "I have keys but no locks. I have space but no room. You can enter, but you can't go inside. What am I?",
+        answer: ['keyboard', 'a keyboard'],
+        hint: "Used for typing..."
+    },
+    '5-2': {
+        question: "The more you take, the more you leave behind. What are they?",
+        answer: ['footsteps', 'steps'],
+        hint: "Something you leave when walking..."
+    },
+    '5-3': {
+        question: "What number is half of a quarter of a tenth of 400?",
+        answer: ['5', 'five'],
+        hint: "400 ÷ 10 = 40, ÷ 4 = 10, ÷ 2 = 5..."
+    },
+    '5-4': {
+        question: "I am tall when I'm young, and short when I'm old. What am I?",
+        answer: ['candle', 'a candle'],
+        hint: "Burns down over time..."
+    },
+    '5-5': {
+        question: "What is the smallest positive integer that is divisible by both 8 and 12?",
+        answer: ['24', 'twenty-four'],
+        hint: "Find the LCM of 8 and 12..."
+    },
+    '5-6': {
+        question: "I am not alive, but I grow; I don't have lungs, but I need air; I don't have a mouth, but water kills me. What am I?",
+        answer: ['fire', 'flame'],
+        hint: "It grows and needs oxygen..."
+    },
+    '5-7': {
+        question: "What three letters can be placed in front of the letters EAR to make a new word?",
+        answer: ['tea', 'TEA'],
+        hint: "Tea + ear = ..."
+    },
+    '5-8': {
+        question: "If you have it, you want to share it. If you share it, you don't have it. What is it?",
+        answer: ['secret', 'a secret'],
+        hint: "Something you keep to yourself..."
+    }
+};
+
 // Game state
 const gameState = {
     currentLevel: 0,
     cluesFound: [],
-    exitUnlocked: false
+    exitUnlocked: false,
+    currentPuzzle: null
 };
 
 // Performance optimizations
@@ -242,23 +406,118 @@ function setupClues(level) {
     const clues = document.querySelectorAll('.clue');
     
     clues.forEach(clue => {
-        // Use pointer events for better mobile support
         clue.addEventListener('click', () => {
             const clueId = parseInt(clue.getAttribute('data-clue'));
             const clueData = level.clues.find(c => c.id === clueId);
             
-            if (!gameState.cluesFound.includes(clueId)) {
-                gameState.cluesFound.push(clueId);
-                clue.classList.add('found');
-                
-                showMessage(`Found clue ${clueId}!`);
+            if (gameState.cluesFound.includes(clueId)) {
+                // Already solved, show clue text
                 showClueText(clueData.text);
-                
-                updateUI(level);
-                checkWinCondition(level);
+                return;
+            }
+            
+            // Show puzzle for this clue
+            const puzzleKey = `${level.level}-${clueId}`;
+            const puzzle = puzzles[puzzleKey];
+            
+            if (puzzle) {
+                showPuzzle(puzzle, clueId, clueData);
+            } else {
+                // Fallback if no puzzle (shouldn't happen)
+                unlockClue(clueId, clueData, level);
             }
         }, { passive: true });
     });
+}
+
+// Show puzzle modal
+function showPuzzle(puzzle, clueId, clueData) {
+    const modal = document.getElementById('puzzle-modal');
+    const question = document.getElementById('puzzle-question');
+    const answerInput = document.getElementById('puzzle-answer');
+    const hintContainer = document.getElementById('puzzle-hint-container');
+    const feedback = document.getElementById('puzzle-feedback');
+    const submitBtn = document.getElementById('puzzle-submit');
+    const closeBtn = document.getElementById('puzzle-close');
+    
+    gameState.currentPuzzle = { puzzle, clueId, clueData };
+    
+    question.textContent = puzzle.question;
+    answerInput.value = '';
+    answerInput.focus();
+    feedback.textContent = '';
+    feedback.className = '';
+    hintContainer.classList.add('hidden');
+    hintContainer.classList.remove('shown');
+    
+    modal.classList.remove('hidden');
+    
+    // Setup submit handler
+    const submitHandler = () => {
+        checkAnswer(puzzle, answerInput.value.trim().toLowerCase(), clueId, clueData);
+    };
+    
+    answerInput.onkeypress = (e) => {
+        if (e.key === 'Enter') {
+            submitHandler();
+        }
+    };
+    
+    submitBtn.onclick = submitHandler;
+    closeBtn.onclick = () => {
+        modal.classList.add('hidden');
+        gameState.currentPuzzle = null;
+    };
+}
+
+// Check puzzle answer
+function checkAnswer(puzzle, userAnswer, clueId, clueData) {
+    const feedback = document.getElementById('puzzle-feedback');
+    const answerInput = document.getElementById('puzzle-answer');
+    const hintContainer = document.getElementById('puzzle-hint-container');
+    const level = levels[gameState.currentLevel];
+    
+    const correctAnswers = puzzle.answer.map(a => a.toLowerCase());
+    
+    if (correctAnswers.includes(userAnswer)) {
+        // Correct answer!
+        feedback.textContent = '✓ Correct! Clue unlocked!';
+        feedback.className = 'success';
+        
+        setTimeout(() => {
+            document.getElementById('puzzle-modal').classList.add('hidden');
+            unlockClue(clueId, clueData, level);
+            gameState.currentPuzzle = null;
+        }, 1000);
+    } else {
+        // Wrong answer
+        feedback.textContent = '✗ Incorrect. Try again!';
+        feedback.className = 'error';
+        answerInput.value = '';
+        answerInput.focus();
+        
+        // Show hint after first wrong attempt
+        if (!hintContainer.classList.contains('shown')) {
+            hintContainer.classList.remove('hidden');
+            hintContainer.classList.add('shown');
+            document.getElementById('puzzle-hint').textContent = `Hint: ${puzzle.hint}`;
+        }
+    }
+}
+
+// Unlock clue after solving puzzle
+function unlockClue(clueId, clueData, level) {
+    gameState.cluesFound.push(clueId);
+    const clueElement = document.getElementById(`clue${clueId}`);
+    if (clueElement) {
+        clueElement.classList.add('found');
+    }
+    
+    showMessage(`🔓 Clue ${clueId} unlocked!`);
+    showClueText(clueData.text);
+    
+    updateUI(level);
+    checkWinCondition(level);
 }
 
 // Setup exit door

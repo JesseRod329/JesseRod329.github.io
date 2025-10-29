@@ -270,6 +270,197 @@ body {
     }
 }
 
+/* Puzzle Modal Styles */
+#puzzle-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    will-change: opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    transition: opacity 0.3s ease;
+}
+
+#puzzle-modal.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#puzzle-content {
+    background: linear-gradient(160deg, rgba(13, 19, 41, 0.95), rgba(9, 12, 28, 0.98));
+    border: 2px solid rgba(110, 231, 255, 0.3);
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+    transform: translateZ(0);
+    position: relative;
+}
+
+#puzzle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(110, 231, 255, 0.2);
+}
+
+#puzzle-title {
+    color: #FFD700;
+    font-size: 1.8rem;
+    margin: 0;
+}
+
+#puzzle-close {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 2rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+#puzzle-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+#puzzle-body {
+    color: white;
+}
+
+#puzzle-question {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+#puzzle-input-container {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+#puzzle-answer {
+    flex: 1;
+    padding: 0.8rem 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(110, 231, 255, 0.3);
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+#puzzle-answer:focus {
+    border-color: rgba(110, 231, 255, 0.6);
+}
+
+#puzzle-answer::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+#puzzle-submit {
+    padding: 0.8rem 2rem;
+    background: linear-gradient(135deg, rgba(190, 242, 100, 0.9), rgba(56, 189, 248, 0.9));
+    border: none;
+    border-radius: 8px;
+    color: rgba(15, 23, 42, 0.92);
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#puzzle-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(56, 189, 248, 0.4);
+}
+
+#puzzle-submit:active {
+    transform: translateY(0);
+}
+
+#puzzle-hint-container {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 3px solid rgba(255, 215, 0, 0.5);
+    border-radius: 5px;
+}
+
+#puzzle-hint {
+    color: rgba(255, 215, 0, 0.9);
+    font-style: italic;
+    margin: 0;
+}
+
+#puzzle-feedback {
+    margin-top: 1rem;
+    padding: 0.8rem;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#puzzle-feedback.success {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4CAF50;
+    border: 1px solid rgba(76, 175, 80, 0.4);
+}
+
+#puzzle-feedback.error {
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+    border: 1px solid rgba(244, 67, 54, 0.4);
+}
+
+@media (max-width: 768px) {
+    #puzzle-content {
+        padding: 1.5rem;
+        width: 95%;
+    }
+    
+    #puzzle-title {
+        font-size: 1.5rem;
+    }
+    
+    #puzzle-question {
+        font-size: 1rem;
+    }
+    
+    #puzzle-input-container {
+        flex-direction: column;
+    }
+    
+    #puzzle-submit {
+        width: 100%;
+    }
+}
+
 /* Custom cursor - only on desktop */
 @media (hover: hover) and (pointer: fine) {
     body {

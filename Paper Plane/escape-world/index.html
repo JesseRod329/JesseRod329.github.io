@@ -32,6 +32,26 @@
                 <p id="transition-text">Moving to next level...</p>
             </div>
         </div>
+        
+        <div id="puzzle-modal" class="hidden">
+            <div id="puzzle-content">
+                <div id="puzzle-header">
+                    <h2 id="puzzle-title">Puzzle Lock</h2>
+                    <button id="puzzle-close">&times;</button>
+                </div>
+                <div id="puzzle-body">
+                    <p id="puzzle-question"></p>
+                    <div id="puzzle-input-container">
+                        <input type="text" id="puzzle-answer" placeholder="Enter your answer..." autocomplete="off">
+                        <button id="puzzle-submit">Submit</button>
+                    </div>
+                    <div id="puzzle-hint-container" class="hidden">
+                        <p id="puzzle-hint"></p>
+                    </div>
+                    <div id="puzzle-feedback"></div>
+                </div>
+            </div>
+        </div>
     </div>
     
     <script src="game.js"></script>
