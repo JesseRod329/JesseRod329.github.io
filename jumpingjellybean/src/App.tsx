@@ -19,19 +19,11 @@ const App: React.FC = () => {
   });
 
   const [highScore, setHighScore] = useState<number>(0);
-  const [showLevelUp, setShowLevelUp] = useState<boolean>(false);
   const [combo, setCombo] = useState<number>(0);
 
   const handleGameStateChange = (newState: Partial<GameState>) => {
     setGameState(prev => {
       const updated = { ...prev, ...newState };
-      
-      // Check for level up
-      if (updated.score > 0 && Math.floor(updated.score / 1000) > Math.floor(prev.score / 1000)) {
-        setShowLevelUp(true);
-        setTimeout(() => setShowLevelUp(false), 2000);
-        updated.level = Math.floor(updated.score / 1000) + 1;
-      }
       
       // Update high score
       if (updated.isGameOver && updated.score > highScore) {
@@ -187,14 +179,6 @@ const App: React.FC = () => {
             onGameStateChange={handleGameStateChange}
             onScoreUpdate={handleScoreUpdate}
           />
-         
-          {showLevelUp && (
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-50">
-              <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-6xl font-bold px-16 py-8 rounded-3xl shadow-2xl animate-bounce">
-                ⭐ LEVEL {gameState.level}! ⭐
-              </div>
-            </div>
-          )}
          
           {gameState.isPaused && (
             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 rounded-2xl z-40">

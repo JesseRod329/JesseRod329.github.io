@@ -50,54 +50,216 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
   const cameraXRef = useRef<number>(0);
 
   const dprRef = useRef<number>(1);
+  const levelGoalXRef = useRef<number>(0);
+  const showLevelCompleteRef = useRef<boolean>(false);
 
-  const initLevel = useCallback(() => {
+  // Level definitions with increasing difficulty
+  const getLevelData = useCallback((level: number) => {
     const baseY = 550;
-    platformsRef.current = [
-      { x: 0, y: baseY, w: 300, h: 30, color: '#FF69B4', type: 'normal' },
-      { x: 350, y: baseY - 80, w: 180, h: 30, color: '#FFD700', type: 'normal' },
-      { x: 600, y: baseY - 150, w: 160, h: 30, color: '#FF69B4', type: 'bouncy' },
-      { x: 820, y: baseY - 100, w: 180, h: 30, color: '#87CEEB', type: 'normal' },
-      { x: 1050, y: baseY - 180, w: 150, h: 30, color: '#FFD700', type: 'normal' },
-      { x: 1250, y: baseY - 250, w: 200, h: 30, color: '#FF69B4', type: 'bouncy' },
-      { x: 1500, y: baseY - 150, w: 180, h: 30, color: '#87CEEB', type: 'normal' },
-      { x: 1750, y: baseY - 220, w: 160, h: 30, color: '#FFD700', type: 'normal' },
-      { x: 2000, y: baseY - 300, w: 200, h: 30, color: '#FF69B4', type: 'bouncy' },
-      { x: 0, y: baseY + 50, w: 2500, h: 50, color: '#DDA0DD', type: 'ground' }
+    const enemySpeed = 2 + (level - 1) * 0.5;
+    
+    const levels: Array<{
+      platforms: Platform[];
+      candies: Candy[];
+      gummies: GummyBear[];
+      lollipops: Lollipop[];
+      enemies: Enemy[];
+      goalX: number;
+    }> = [
+      // Level 1 - Tutorial (easy)
+      {
+        platforms: [
+          { x: 0, y: baseY, w: 300, h: 30, color: '#FF69B4', type: 'normal' },
+          { x: 350, y: baseY - 80, w: 180, h: 30, color: '#FFD700', type: 'normal' },
+          { x: 600, y: baseY - 150, w: 160, h: 30, color: '#FF69B4', type: 'bouncy' },
+          { x: 820, y: baseY - 100, w: 180, h: 30, color: '#87CEEB', type: 'normal' },
+          { x: 1050, y: baseY - 180, w: 150, h: 30, color: '#FFD700', type: 'normal' },
+          { x: 1250, y: baseY - 250, w: 200, h: 30, color: '#FF69B4', type: 'bouncy' },
+          { x: 1500, y: baseY - 150, w: 180, h: 30, color: '#87CEEB', type: 'normal' },
+          { x: 1750, y: baseY - 220, w: 160, h: 30, color: '#FFD700', type: 'normal' },
+          { x: 2000, y: baseY - 300, w: 200, h: 30, color: '#FF69B4', type: 'bouncy' },
+          { x: 0, y: baseY + 50, w: 2500, h: 50, color: '#DDA0DD', type: 'ground' }
+        ],
+        candies: [
+          { x: 400, y: baseY - 150, collected: false, type: 'pink' },
+          { x: 680, y: baseY - 220, collected: false, type: 'blue' },
+          { x: 900, y: baseY - 170, collected: false, type: 'pink' },
+          { x: 1120, y: baseY - 260, collected: false, type: 'yellow' },
+          { x: 1320, y: baseY - 330, collected: false, type: 'blue' },
+          { x: 1600, y: baseY - 230, collected: false, type: 'pink' },
+          { x: 1850, y: baseY - 300, collected: false, type: 'yellow' },
+          { x: 2100, y: baseY - 380, collected: false, type: 'blue' }
+        ],
+        gummies: [
+          { x: 530, y: baseY - 200, collected: false },
+          { x: 1180, y: baseY - 310, collected: false },
+          { x: 1900, y: baseY - 350, collected: false }
+        ],
+        lollipops: [
+          { x: 750, y: baseY - 250, collected: false },
+          { x: 1400, y: baseY - 380, collected: false }
+        ],
+        enemies: [
+          { x: 500, y: baseY - 110, vx: 2, range: 150, startX: 500 },
+          { x: 1100, y: baseY - 210, vx: -2, range: 120, startX: 1100 },
+        ],
+        goalX: 2200
+      },
+      // Level 2 - Medium difficulty
+      {
+        platforms: [
+          { x: 0, y: baseY, w: 250, h: 25, color: '#FF69B4', type: 'normal' },
+          { x: 300, y: baseY - 100, w: 150, h: 25, color: '#FFD700', type: 'normal' },
+          { x: 500, y: baseY - 200, w: 120, h: 25, color: '#FF69B4', type: 'bouncy' },
+          { x: 680, y: baseY - 120, w: 140, h: 25, color: '#87CEEB', type: 'normal' },
+          { x: 880, y: baseY - 240, w: 100, h: 25, color: '#FFD700', type: 'normal' },
+          { x: 1050, y: baseY - 80, w: 160, h: 25, color: '#FF69B4', type: 'normal' },
+          { x: 1280, y: baseY - 280, w: 120, h: 25, color: '#87CEEB', type: 'bouncy' },
+          { x: 1480, y: baseY - 160, w: 140, h: 25, color: '#FFD700', type: 'normal' },
+          { x: 1700, y: baseY - 320, w: 110, h: 25, color: '#FF69B4', type: 'bouncy' },
+          { x: 1900, y: baseY - 140, w: 150, h: 25, color: '#87CEEB', type: 'normal' },
+          { x: 2130, y: baseY - 260, w: 130, h: 25, color: '#FFD700', type: 'normal' },
+          { x: 0, y: baseY + 50, w: 2500, h: 50, color: '#DDA0DD', type: 'ground' }
+        ],
+        candies: [
+          { x: 350, y: baseY - 180, collected: false, type: 'yellow' },
+          { x: 550, y: baseY - 280, collected: false, type: 'blue' },
+          { x: 730, y: baseY - 200, collected: false, type: 'pink' },
+          { x: 930, y: baseY - 320, collected: false, type: 'yellow' },
+          { x: 1320, y: baseY - 360, collected: false, type: 'blue' },
+          { x: 1530, y: baseY - 240, collected: false, type: 'pink' },
+          { x: 1760, y: baseY - 400, collected: false, type: 'yellow' },
+          { x: 2180, y: baseY - 340, collected: false, type: 'blue' }
+        ],
+        gummies: [
+          { x: 420, y: baseY - 280, collected: false },
+          { x: 960, y: baseY - 320, collected: false },
+          { x: 1590, y: baseY - 240, collected: false },
+          { x: 1970, y: baseY - 220, collected: false }
+        ],
+        lollipops: [
+          { x: 650, y: baseY - 280, collected: false },
+          { x: 1360, y: baseY - 360, collected: false }
+        ],
+        enemies: [
+          { x: 450, y: baseY - 120, vx: 2.5, range: 140, startX: 450 },
+          { x: 920, y: baseY - 260, vx: -2.5, range: 130, startX: 920 },
+          { x: 1520, y: baseY - 180, vx: 2.5, range: 160, startX: 1520 },
+          { x: 1950, y: baseY - 160, vx: -2.5, range: 150, startX: 1950 }
+        ],
+        goalX: 2400
+      },
+      // Level 3 - Hard difficulty
+      {
+        platforms: [
+          { x: 0, y: baseY, w: 200, h: 25, color: '#FF69B4', type: 'normal' },
+          { x: 250, y: baseY - 120, w: 100, h: 25, color: '#FFD700', type: 'normal' },
+          { x: 400, y: baseY - 250, w: 90, h: 25, color: '#FF69B4', type: 'bouncy' },
+          { x: 550, y: baseY - 150, w: 110, h: 25, color: '#87CEEB', type: 'normal' },
+          { x: 720, y: baseY - 280, w: 80, h: 25, color: '#FFD700', type: 'normal' },
+          { x: 860, y: baseY - 100, w: 100, h: 25, color: '#FF69B4', type: 'normal' },
+          { x: 1020, y: baseY - 300, w: 90, h: 25, color: '#87CEEB', type: 'bouncy' },
+          { x: 1180, y: baseY - 140, w: 110, h: 25, color: '#FFD700', type: 'normal' },
+          { x: 1350, y: baseY - 340, w: 85, h: 25, color: '#FF69B4', type: 'bouncy' },
+          { x: 1510, y: baseY - 180, w: 100, h: 25, color: '#87CEEB', type: 'normal' },
+          { x: 1680, y: baseY - 290, w: 90, h: 25, color: '#FFD700', type: 'normal' },
+          { x: 1850, y: baseY - 120, w: 110, h: 25, color: '#FF69B4', type: 'normal' },
+          { x: 2030, y: baseY - 310, w: 85, h: 25, color: '#87CEEB', type: 'bouncy' },
+          { x: 0, y: baseY + 50, w: 2500, h: 50, color: '#DDA0DD', type: 'ground' }
+        ],
+        candies: [
+          { x: 280, y: baseY - 200, collected: false, type: 'yellow' },
+          { x: 445, y: baseY - 330, collected: false, type: 'blue' },
+          { x: 590, y: baseY - 230, collected: false, type: 'pink' },
+          { x: 760, y: baseY - 360, collected: false, type: 'yellow' },
+          { x: 1060, y: baseY - 380, collected: false, type: 'blue' },
+          { x: 1230, y: baseY - 220, collected: false, type: 'pink' },
+          { x: 1390, y: baseY - 420, collected: false, type: 'yellow' },
+          { x: 1560, y: baseY - 260, collected: false, type: 'blue' },
+          { x: 1730, y: baseY - 370, collected: false, type: 'pink' },
+          { x: 2080, y: baseY - 390, collected: false, type: 'yellow' }
+        ],
+        gummies: [
+          { x: 320, y: baseY - 210, collected: false },
+          { x: 780, y: baseY - 360, collected: false },
+          { x: 1280, y: baseY - 280, collected: false },
+          { x: 1610, y: baseY - 260, collected: false },
+          { x: 1900, y: baseY - 200, collected: false }
+        ],
+        lollipops: [
+          { x: 510, y: baseY - 330, collected: false },
+          { x: 1090, y: baseY - 380, collected: false },
+          { x: 1440, y: baseY - 420, collected: false }
+        ],
+        enemies: [
+          { x: 300, y: baseY - 140, vx: 3, range: 130, startX: 300 },
+          { x: 600, y: baseY - 170, vx: -3, range: 125, startX: 600 },
+          { x: 900, y: baseY - 110, vx: 3, range: 140, startX: 900 },
+          { x: 1200, y: baseY - 160, vx: -3, range: 135, startX: 1200 },
+          { x: 1600, y: baseY - 200, vx: 3, range: 150, startX: 1600 },
+          { x: 1920, y: baseY - 140, vx: -3, range: 145, startX: 1920 }
+        ],
+        goalX: 2600
+      }
     ];
 
-    candiesRef.current = [
-      { x: 400, y: baseY - 150, collected: false, type: 'pink' },
-      { x: 680, y: baseY - 220, collected: false, type: 'blue' },
-      { x: 900, y: baseY - 170, collected: false, type: 'pink' },
-      { x: 1120, y: baseY - 260, collected: false, type: 'yellow' },
-      { x: 1320, y: baseY - 330, collected: false, type: 'blue' },
-      { x: 1600, y: baseY - 230, collected: false, type: 'pink' },
-      { x: 1850, y: baseY - 300, collected: false, type: 'yellow' },
-      { x: 2100, y: baseY - 380, collected: false, type: 'blue' }
-    ];
+    // Apply difficulty scaling for levels beyond 3
+    if (level <= 3) {
+      return levels[level - 1];
+    }
 
-    gummyRef.current = [
-      { x: 530, y: baseY - 200, collected: false },
-      { x: 1180, y: baseY - 310, collected: false },
-      { x: 1900, y: baseY - 350, collected: false }
-    ];
+    // Generate procedural levels for level 4+
+    const baseLevel = levels[2]; // Use level 3 as base
+    const scaledEnemySpeed = enemySpeed;
+    const scaledPlatforms = baseLevel.platforms.map(p => ({
+      ...p,
+      w: Math.max(70, p.w * (1 - (level - 3) * 0.05)), // Smaller platforms
+      h: Math.max(20, p.h * (1 - (level - 3) * 0.05))
+    }));
+    
+    const scaledEnemies = baseLevel.enemies.map((e, i) => ({
+      ...e,
+      vx: i % 2 === 0 ? scaledEnemySpeed : -scaledEnemySpeed,
+      range: e.range * (1 + (level - 3) * 0.1) // Longer patrol ranges
+    }));
 
-    lollipopsRef.current = [
-      { x: 750, y: baseY - 250, collected: false },
-      { x: 1400, y: baseY - 380, collected: false }
-    ];
+    // Add more enemies for higher levels
+    const extraEnemies = [];
+    for (let i = 0; i < Math.min(level - 3, 4); i++) {
+      extraEnemies.push({
+        x: 500 + i * 400,
+        y: baseY - 150 - (i % 3) * 60,
+        vx: (i % 2 === 0 ? 1 : -1) * scaledEnemySpeed,
+        range: 120 + i * 20,
+        startX: 500 + i * 400
+      });
+    }
 
-    enemiesRef.current = [
-      { x: 500, y: baseY - 110, vx: 2, range: 150, startX: 500 },
-      { x: 1100, y: baseY - 210, vx: -2, range: 120, startX: 1100 },
-      { x: 1650, y: baseY - 180, vx: 2, range: 180, startX: 1650 }
-    ];
+    return {
+      platforms: scaledPlatforms,
+      candies: baseLevel.candies,
+      gummies: [...baseLevel.gummies, ...baseLevel.gummies.slice(0, Math.floor((level - 3) / 2))],
+      lollipops: baseLevel.lollipops,
+      enemies: [...scaledEnemies, ...extraEnemies],
+      goalX: 2600 + (level - 3) * 200
+    };
+  }, []);
+
+  const initLevel = useCallback((level: number = gameState.level) => {
+    const levelData = getLevelData(level);
+    
+    platformsRef.current = levelData.platforms;
+    candiesRef.current = levelData.candies;
+    gummyRef.current = levelData.gummies;
+    lollipopsRef.current = levelData.lollipops;
+    enemiesRef.current = levelData.enemies;
+    levelGoalXRef.current = levelData.goalX;
 
     const p = playerRef.current;
     p.x = 100; p.y = 300; p.vx = 0; p.vy = 0; p.onGround = false; p.bounceTime = 0;
     cameraXRef.current = 0;
-  }, []);
+    showLevelCompleteRef.current = false;
+  }, [gameState.level, getLevelData]);
 
   const createParticles = useCallback((x: number, y: number, color: string) => {
     const newParticles: Particle[] = [];
@@ -242,6 +404,18 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
       return e;
     });
 
+    // Check if player reached level goal
+    if (!showLevelCompleteRef.current && player.x >= levelGoalXRef.current) {
+      showLevelCompleteRef.current = true;
+      const levelBonus = gameState.level * 500;
+      onScoreUpdate(gameState.score + levelBonus);
+      setTimeout(() => {
+        const nextLevel = gameState.level + 1;
+        onGameStateChange({ level: nextLevel });
+        initLevel(nextLevel);
+      }, 2000);
+    }
+
     // particles
     particlesRef.current = particlesRef.current
       .map(p => ({ ...p, x: p.x + p.vx, y: p.y + p.vy, vy: p.vy + 0.3, life: p.life - 1 }))
@@ -249,9 +423,10 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
 
     // camera follow (using scaled canvas width)
     const scaledCanvasWidth = canvasWidth || CANVAS_WIDTH;
+    const maxLevelWidth = levelGoalXRef.current + 300;
     const target = player.x - scaledCanvasWidth * 0.33;
     cameraXRef.current += (target - cameraXRef.current) * 0.08;
-    cameraXRef.current = Math.max(0, Math.min(cameraXRef.current, 2500 - scaledCanvasWidth));
+    cameraXRef.current = Math.max(0, Math.min(cameraXRef.current, maxLevelWidth - scaledCanvasWidth));
   };
 
   // render world
@@ -418,7 +593,59 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
     ctx.arc(p.x + PLAYER_SIZE / 2, p.y + 28, 10, 0, Math.PI);
     ctx.stroke();
 
+    // Level goal flag
+    if (levelGoalXRef.current > 0) {
+      const flagX = levelGoalXRef.current;
+      const flagY = 200;
+      
+      // Flag pole
+      ctx.strokeStyle = '#654321';
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.moveTo(flagX, flagY);
+      ctx.lineTo(flagX, flagY + 120);
+      ctx.stroke();
+      
+      // Flag
+      ctx.fillStyle = '#FFD700';
+      ctx.shadowColor = '#FFD700';
+      ctx.shadowBlur = 20;
+      ctx.beginPath();
+      ctx.moveTo(flagX, flagY);
+      ctx.lineTo(flagX + 60, flagY + 20);
+      ctx.lineTo(flagX, flagY + 40);
+      ctx.closePath();
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      
+      // Star on flag
+      ctx.fillStyle = '#FF0000';
+      ctx.beginPath();
+      for (let i = 0; i < 5; i++) {
+        const angle = (i * 4 * Math.PI / 5) - Math.PI / 2;
+        const x = flagX + 30 + Math.cos(angle) * 12;
+        const y = flagY + 20 + Math.sin(angle) * 12;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.fill();
+    }
+
     ctx.restore();
+    
+    // Level complete overlay
+    if (showLevelCompleteRef.current) {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      ctx.fillRect(0, 0, scaledWidth, scaledHeight);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = `bold ${Math.min(60, scaledWidth / 20)}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.fillText(`LEVEL ${gameState.level} COMPLETE!`, scaledWidth / 2, scaledHeight / 2 - 30);
+      ctx.fillText(`+${gameState.level * 500} Bonus Points!`, scaledWidth / 2, scaledHeight / 2 + 30);
+      ctx.font = `${Math.min(30, scaledWidth / 30)}px Arial`;
+      ctx.fillText('Loading next level...', scaledWidth / 2, scaledHeight / 2 + 80);
+    }
   };
 
   // Resize canvas for responsiveness
@@ -497,12 +724,12 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
     initLevel();
   }, [initLevel]);
 
-  // detect a fresh new game (avoid triggering on pause/resume)
+  // init level when level changes
   useEffect(() => {
-    if (gameState.isPlaying && gameState.score === 0 && gameState.level === 1 && gameState.lives === 3) {
-      initLevel();
+    if (gameState.isPlaying) {
+      initLevel(gameState.level);
     }
-  }, [gameState.isPlaying, gameState.score, gameState.level, gameState.lives, initLevel]);
+  }, [gameState.level, gameState.isPlaying, initLevel]);
 
   // rAF lifecycle
   useEffect(() => {
