@@ -79,10 +79,73 @@ const gameState = {
     exitUnlocked: false
 };
 
+// Performance optimizations
+let rafId = null;
+
+// Cache DOM elements
+let overlay = null;
+let room = null;
+let windowWidth = window.innerWidth;
+let windowHeight = window.innerHeight;
+
 // Initialize game
 document.addEventListener('DOMContentLoaded', () => {
+    overlay = document.getElementById('flashlight-overlay');
+    room = document.getElementById('room');
+    
+    // Update window dimensions
+    windowWidth = window.innerWidth;
+    windowHeight = window.innerHeight;
+    
     startLevel(0);
+    initFlashlight();
+    setupResizeHandler();
 });
+
+// Setup resize handler
+function setupResizeHandler() {
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            windowWidth = window.innerWidth;
+            windowHeight = window.innerHeight;
+        }, 100);
+    }, { passive: true });
+}
+
+// Optimized flashlight - direct updates with pixel positioning
+function initFlashlight() {
+    let lastUpdate = 0;
+    const throttleMs = 1000 / 60; // 60fps max
+    
+    function handleMove(clientX, clientY) {
+        const now = performance.now();
+        if (now - lastUpdate < throttleMs) return;
+        lastUpdate = now;
+        
+        // Use pixel positioning for better performance
+        overlay.style.setProperty('--mouse-x', `${clientX}px`);
+        overlay.style.setProperty('--mouse-y', `${clientY}px`);
+    }
+    
+    // Use passive listeners
+    room.addEventListener('mousemove', (e) => {
+        handleMove(e.clientX, e.clientY);
+    }, { passive: true });
+    
+    room.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        handleMove(touch.clientX, touch.clientY);
+    }, { passive: false });
+    
+    // Initial position
+    const centerX = windowWidth / 2;
+    const centerY = windowHeight / 2;
+    overlay.style.setProperty('--mouse-x', `${centerX}px`);
+    overlay.style.setProperty('--mouse-y', `${centerY}px`);
+}
 
 // Start a level
 function startLevel(levelIndex) {
@@ -90,16 +153,24 @@ function startLevel(levelIndex) {
     gameState.cluesFound = [];
     gameState.exitUnlocked = false;
     
+    // Cancel any pending animations
+    if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+    }
+    
     const level = levels[levelIndex];
-    const room = document.getElementById('room');
     
     // Clear previous level
     room.innerHTML = '<div id="flashlight-overlay"></div>';
+    overlay = document.getElementById('flashlight-overlay');
     
     // Set background
     room.style.backgroundColor = level.backgroundColor;
     
-    // Create clues
+    // Create clues using document fragment for better performance
+    const fragment = document.createDocumentFragment();
+    
     level.clues.forEach(clue => {
         const clueElement = document.createElement('div');
         clueElement.className = 'clue';
@@ -108,7 +179,7 @@ function startLevel(levelIndex) {
         clueElement.style.left = clue.position.left;
         clueElement.setAttribute('data-clue', clue.id);
         clueElement.innerHTML = `<div class="clue-icon">${clue.icon}</div>`;
-        room.appendChild(clueElement);
+        fragment.appendChild(clueElement);
     });
     
     // Create exit door
@@ -118,10 +189,18 @@ function startLevel(levelIndex) {
     exitDoor.style.left = level.exitPosition.left;
     exitDoor.className = 'locked';
     exitDoor.innerHTML = '<div class="door-icon">🚪</div>';
-    room.appendChild(exitDoor);
+    fragment.appendChild(exitDoor);
+    
+    room.appendChild(fragment);
+    
+    // Reset flashlight position
+    const centerX = windowWidth / 2;
+    const centerY = windowHeight / 2;
+    overlay.style.setProperty('--mouse-x', `${centerX}px`);
+    overlay.style.setProperty('--mouse-y', `${centerY}px`);
     
     // Setup interactions
-    setupFlashlight();
+    initFlashlight();
     setupClues(level);
     setupExit(level);
     updateUI(level);
@@ -133,34 +212,12 @@ function startLevel(levelIndex) {
     showMessage(`Welcome to ${level.name}! Find all clues to escape.`);
 }
 
-// Flashlight follows mouse
-function setupFlashlight() {
-    const overlay = document.getElementById('flashlight-overlay');
-    const room = document.getElementById('room');
-    
-    const handleMove = (clientX, clientY) => {
-        const x = (clientX / window.innerWidth) * 100;
-        const y = (clientY / window.innerHeight) * 100;
-        overlay.style.setProperty('--mouse-x', `${x}%`);
-        overlay.style.setProperty('--mouse-y', `${y}%`);
-    };
-    
-    room.addEventListener('mousemove', (e) => {
-        handleMove(e.clientX, e.clientY);
-    });
-    
-    room.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        const touch = e.touches[0];
-        handleMove(touch.clientX, touch.clientY);
-    });
-}
-
 // Setup clue interactions
 function setupClues(level) {
     const clues = document.querySelectorAll('.clue');
     
     clues.forEach(clue => {
+        // Use pointer events for better mobile support
         clue.addEventListener('click', () => {
             const clueId = parseInt(clue.getAttribute('data-clue'));
             const clueData = level.clues.find(c => c.id === clueId);
@@ -175,7 +232,7 @@ function setupClues(level) {
                 updateUI(level);
                 checkWinCondition(level);
             }
-        });
+        }, { passive: true });
     });
 }
 
@@ -208,7 +265,7 @@ function setupExit(level) {
             const missing = level.clues.length - gameState.cluesFound.length;
             showMessage(`The door is locked! You need ${missing} more clue${missing !== 1 ? 's' : ''}.`);
         }
-    });
+    }, { passive: true });
 }
 
 // Show level transition
@@ -262,3 +319,4 @@ function showClueText(text) {
     clueDisplay.innerHTML = `<div class="clue-text">${text}</div>`;
     clueDisplay.classList.add('show');
 }
+
