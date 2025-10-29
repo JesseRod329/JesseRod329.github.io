@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Paper Plane - Sketch Style Side Scroller</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -22,8 +24,15 @@
             </div>
             <div class="start-screen" id="startScreen">
                 <h1>Paper Plane</h1>
-                <p>Press SPACE to start</p>
-                <p class="controls">Use ↑ ↓ or W/S to control</p>
+                <p class="start-instruction">Tap screen to start</p>
+                <p class="controls">Tap screen to move up</p>
+            </div>
+            <div class="mobile-controls" id="mobileControls">
+                <button class="control-btn up-btn" id="upBtn" aria-label="Move up">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                        <path d="M12 19V5M5 12l7-7 7 7"/>
+                    </svg>
+                </button>
             </div>
         </div>
     </div>
