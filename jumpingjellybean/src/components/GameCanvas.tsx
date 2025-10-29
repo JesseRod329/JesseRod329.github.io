@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import { GameState } from '../types';
 
 interface GameCanvasProps {
@@ -36,8 +36,8 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
   const rafRef = useRef<number | null>(null);
   const lastTimeRef = useRef<number>(0);
 
-  // inputs
-  const [keys, setKeys] = useState<Set<string>>(new Set());
+  // inputs - use refs for immediate access in game loop
+  const keysRef = useRef<Set<string>>(new Set());
 
   // world state kept in refs to avoid React re-renders per frame
   const playerRef = useRef({ x: 100, y: 300, vx: 0, vy: 0, onGround: false, color: '#90EE90', bounceTime: 0 });
@@ -117,16 +117,12 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
   // inputs
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     const k = e.key.toLowerCase();
-    setKeys(prev => new Set(prev).add(k));
-    if (k === ' ') e.preventDefault();
+    keysRef.current.add(k);
+    if (k === ' ' || k === 'arrowup' || k === 'w') e.preventDefault();
   }, []);
   const handleKeyUp = useCallback((e: KeyboardEvent) => {
     const k = e.key.toLowerCase();
-    setKeys(prev => {
-      const n = new Set(prev);
-      n.delete(k);
-      return n;
-    });
+    keysRef.current.delete(k);
   }, []);
 
   // rAF loop with dt
@@ -151,12 +147,13 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
   const update = (_dt: number) => {
     const player = playerRef.current;
     const speed = MOVE_SPEED;
+    const currentKeys = keysRef.current; // Use ref for immediate access
 
-    if (keys.has('arrowleft') || keys.has('a')) player.vx = -speed;
-    else if (keys.has('arrowright') || keys.has('d')) player.vx = speed;
+    if (currentKeys.has('arrowleft') || currentKeys.has('a')) player.vx = -speed;
+    else if (currentKeys.has('arrowright') || currentKeys.has('d')) player.vx = speed;
     else player.vx *= 0.8;
 
-    if ((keys.has(' ') || keys.has('arrowup') || keys.has('w')) && player.onGround) {
+    if ((currentKeys.has(' ') || currentKeys.has('arrowup') || currentKeys.has('w')) && player.onGround) {
       player.vy = JUMP_FORCE;
       player.onGround = false;
     }
@@ -527,11 +524,11 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
 
   // mobile touch controls
   const setKeyHeld = (key: string, held: boolean) => {
-    setKeys(prev => {
-      const n = new Set(prev);
-      if (held) n.add(key); else n.delete(key);
-      return n;
-    });
+    if (held) {
+      keysRef.current.add(key);
+    } else {
+      keysRef.current.delete(key);
+    }
   };
 
   return (
