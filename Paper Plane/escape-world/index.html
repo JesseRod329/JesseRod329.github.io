@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escape World - Flashlight Escape Room</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="room">
+            <div id="flashlight-overlay"></div>
+        </div>
+        
+        <div id="ui">
+            <div id="level-info">
+                <h2>Level <span id="current-level">1</span></h2>
+            </div>
+            <div id="clues-found">
+                <h3>Clues Found: <span id="clue-count">0</span>/<span id="total-clues">4</span></h3>
+            </div>
+            <div id="message"></div>
+            <div id="clue-display"></div>
+        </div>
+        
+        <div id="level-transition" class="hidden">
+            <div id="transition-content">
+                <h1 id="transition-title">Level Complete!</h1>
+                <p id="transition-text">Moving to next level...</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>
+

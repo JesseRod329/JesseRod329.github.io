@@ -1,0 +1,226 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    overflow: hidden;
+    background: #000;
+    cursor: none;
+}
+
+#game-container {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+}
+
+#room {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: #1a1a1a;
+    overflow: hidden;
+}
+
+#flashlight-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+        transparent 0%, 
+        transparent 150px, 
+        rgba(0, 0, 0, 0.95) 200px,
+        rgba(0, 0, 0, 0.98) 100%);
+    pointer-events: none;
+    z-index: 10;
+    transition: background 0.1s ease-out;
+}
+
+.clue {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    z-index: 5;
+    transition: transform 0.2s;
+}
+
+.clue:hover {
+    transform: scale(1.2);
+}
+
+.clue-icon {
+    font-size: 40px;
+    text-align: center;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.clue.found {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+    }
+    50% {
+        filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8));
+    }
+}
+
+#exit-door {
+    position: absolute;
+    width: 100px;
+    height: 150px;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.door-icon {
+    font-size: 80px;
+    text-align: center;
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.3));
+}
+
+#exit-door.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#exit-door.unlocked {
+    animation: glow 1s ease-in-out infinite;
+}
+
+@keyframes glow {
+    0%, 100% {
+        filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.3));
+    }
+    50% {
+        filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.8));
+    }
+}
+
+#ui {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 20;
+    color: white;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    border-radius: 10px;
+    min-width: 200px;
+}
+
+#clues-found h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+#clue-count {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+#message {
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    min-height: 40px;
+    display: none;
+}
+
+#message.show {
+    display: block;
+}
+
+#clue-display {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    min-height: 60px;
+    display: none;
+}
+
+#clue-display.show {
+    display: block;
+}
+
+.clue-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #fff;
+}
+
+#level-info {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+#level-info h2 {
+    font-size: 24px;
+    color: #FFD700;
+}
+
+#level-transition {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s ease;
+}
+
+#level-transition.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#transition-content {
+    text-align: center;
+    color: white;
+}
+
+#transition-title {
+    font-size: 48px;
+    margin-bottom: 20px;
+    color: #FFD700;
+    animation: fadeIn 0.5s ease;
+}
+
+#transition-text {
+    font-size: 24px;
+    animation: fadeIn 0.5s ease 0.3s both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Custom cursor */
+body {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="white" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="white"/></svg>') 12 12, auto;
+}
+

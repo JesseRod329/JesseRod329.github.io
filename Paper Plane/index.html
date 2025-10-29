@@ -2,41 +2,131 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Paper Plane - Sketch Style Side Scroller</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Collection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 48px;
+            margin-bottom: 50px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .game-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .game-card.featured {
+            border: 4px solid #FFD700;
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+        }
+
+        .game-icon {
+            font-size: 64px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .game-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+            text-align: center;
+        }
+
+        .game-description {
+            color: #666;
+            text-align: center;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .featured-badge {
+            display: inline-block;
+            background: #FFD700;
+            color: #333;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 32px;
+            }
+            
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="game-container">
-        <canvas id="gameCanvas"></canvas>
-        <div class="ui-overlay">
-            <div class="score-display">
-                <div class="score">Score: <span id="score">0</span></div>
-                <div class="coins">Coins: <span id="coins">0</span></div>
-                <div class="distance">Distance: <span id="distance">0</span>m</div>
-            </div>
-            <div class="game-over" id="gameOver">
-                <h2>Game Over!</h2>
-                <p>Final Score: <span id="finalScore">0</span></p>
-                <button id="restartBtn">Play Again</button>
-            </div>
-            <div class="start-screen" id="startScreen">
-                <h1>Paper Plane</h1>
-                <p class="start-instruction">Tap screen to start</p>
-                <p class="controls">Tap screen to move up</p>
-            </div>
-            <div class="mobile-controls" id="mobileControls">
-                <button class="control-btn up-btn" id="upBtn" aria-label="Move up">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                        <path d="M12 19V5M5 12l7-7 7 7"/>
-                    </svg>
-                </button>
-            </div>
+    <div class="container">
+        <h1>🎮 Game Collection</h1>
+        
+        <div class="games-grid">
+            <a href="escape-world/index.html" class="game-card featured">
+                <div class="featured-badge">⭐ Featured</div>
+                <div class="game-icon">🔦</div>
+                <div class="game-title">Escape World</div>
+                <div class="game-description">
+                    Navigate through dark rooms with only a flashlight. Find clues to escape through 5 challenging levels. Can you master the darkness?
+                </div>
+            </a>
+
+            <a href="paper-plane/index.html" class="game-card">
+                <div class="game-icon">✈️</div>
+                <div class="game-title">Paper Plane</div>
+                <div class="game-description">
+                    A hand-drawn style endless side-scroller. Pilot your paper plane through a notebook world, collecting coins and avoiding obstacles.
+                </div>
+            </a>
         </div>
     </div>
-    <script src="game.js"></script>
 </body>
 </html>
-
