@@ -114,19 +114,44 @@ function setupResizeHandler() {
     }, { passive: true });
 }
 
-// Optimized flashlight - direct updates with pixel positioning
+// Optimized flashlight - use requestAnimationFrame for smooth updates
 function initFlashlight() {
-    let lastUpdate = 0;
-    const throttleMs = 1000 / 60; // 60fps max
+    let rafId = null;
+    let isAnimating = false;
+    let targetX = 50;
+    let targetY = 50;
+    let currentX = 50;
+    let currentY = 50;
+    
+    function updateFlashlight() {
+        if (!isAnimating) return;
+        
+        // Smooth interpolation
+        const lerp = 0.2;
+        currentX += (targetX - currentX) * lerp;
+        currentY += (targetY - currentY) * lerp;
+        
+        // Update CSS custom property
+        overlay.style.setProperty('--mouse-x', `${currentX}%`);
+        overlay.style.setProperty('--mouse-y', `${currentY}%`);
+        
+        // Continue animation if still needed
+        if (Math.abs(targetX - currentX) > 0.1 || Math.abs(targetY - currentY) > 0.1) {
+            rafId = requestAnimationFrame(updateFlashlight);
+        } else {
+            isAnimating = false;
+            rafId = null;
+        }
+    }
     
     function handleMove(clientX, clientY) {
-        const now = performance.now();
-        if (now - lastUpdate < throttleMs) return;
-        lastUpdate = now;
+        targetX = (clientX / windowWidth) * 100;
+        targetY = (clientY / windowHeight) * 100;
         
-        // Use pixel positioning for better performance
-        overlay.style.setProperty('--mouse-x', `${clientX}px`);
-        overlay.style.setProperty('--mouse-y', `${clientY}px`);
+        if (!isAnimating) {
+            isAnimating = true;
+            rafId = requestAnimationFrame(updateFlashlight);
+        }
     }
     
     // Use passive listeners
@@ -141,10 +166,12 @@ function initFlashlight() {
     }, { passive: false });
     
     // Initial position
-    const centerX = windowWidth / 2;
-    const centerY = windowHeight / 2;
-    overlay.style.setProperty('--mouse-x', `${centerX}px`);
-    overlay.style.setProperty('--mouse-y', `${centerY}px`);
+    overlay.style.setProperty('--mouse-x', '50%');
+    overlay.style.setProperty('--mouse-y', '50%');
+    currentX = 50;
+    currentY = 50;
+    targetX = 50;
+    targetY = 50;
 }
 
 // Start a level
@@ -194,10 +221,8 @@ function startLevel(levelIndex) {
     room.appendChild(fragment);
     
     // Reset flashlight position
-    const centerX = windowWidth / 2;
-    const centerY = windowHeight / 2;
-    overlay.style.setProperty('--mouse-x', `${centerX}px`);
-    overlay.style.setProperty('--mouse-y', `${centerY}px`);
+    overlay.style.setProperty('--mouse-x', '50%');
+    overlay.style.setProperty('--mouse-y', '50%');
     
     // Setup interactions
     initFlashlight();
