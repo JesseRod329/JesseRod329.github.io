@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paper Plane - Sketch Style Side Scroller</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <canvas id="gameCanvas"></canvas>
+        <div class="ui-overlay">
+            <div class="score-display">
+                <div class="score">Score: <span id="score">0</span></div>
+                <div class="coins">Coins: <span id="coins">0</span></div>
+                <div class="distance">Distance: <span id="distance">0</span>m</div>
+            </div>
+            <div class="game-over" id="gameOver">
+                <h2>Game Over!</h2>
+                <p>Final Score: <span id="finalScore">0</span></p>
+                <button id="restartBtn">Play Again</button>
+            </div>
+            <div class="start-screen" id="startScreen">
+                <h1>Paper Plane</h1>
+                <p>Press SPACE to start</p>
+                <p class="controls">Use ↑ ↓ or W/S to control</p>
+            </div>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
+
