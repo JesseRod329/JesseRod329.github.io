@@ -59,6 +59,23 @@ const GameCanvas: React.FC<GameCanvasProps> = ({
     });
   }, []);
 
+  // Mobile/Touch helpers to simulate key presses
+  const pressKey = useCallback((key: string) => {
+    setKeys(prevKeys => {
+      const updated = new Set(prevKeys);
+      updated.add(key);
+      return updated;
+    });
+  }, []);
+
+  const releaseKey = useCallback((key: string) => {
+    setKeys(prevKeys => {
+      const updated = new Set(prevKeys);
+      updated.delete(key);
+      return updated;
+    });
+  }, []);
+
   // Spawn power-ups
   const spawnPowerUp = useCallback(() => {
     const types = Object.keys(powerUpTypes) as Array<keyof typeof powerUpTypes>;
@@ -328,6 +345,54 @@ const GameCanvas: React.FC<GameCanvasProps> = ({
         <p>Space bar for double jump (when available)</p>
         <p>Collect power-ups to enhance your abilities!</p>
       </div>
+
+      {/* Mobile touch controls (shown on coarse pointers) */}
+      <div className="mobile-controls" aria-label="Mobile controls" role="group">
+        <div className="control-pad" role="group" aria-label="Move">
+          <button
+            type="button"
+            className="control-btn"
+            aria-label="Move left"
+            onPointerDown={(e) => { e.preventDefault(); pressKey('arrowleft'); }}
+            onPointerUp={(e) => { e.preventDefault(); releaseKey('arrowleft'); }}
+            onPointerCancel={(e) => { e.preventDefault(); releaseKey('arrowleft'); }}
+            onTouchStart={(e) => { e.preventDefault(); pressKey('arrowleft'); }}
+            onTouchEnd={(e) => { e.preventDefault(); releaseKey('arrowleft'); }}
+            onTouchCancel={(e) => { e.preventDefault(); releaseKey('arrowleft'); }}
+          >
+            ◀
+          </button>
+          <button
+            type="button"
+            className="control-btn"
+            aria-label="Move right"
+            onPointerDown={(e) => { e.preventDefault(); pressKey('arrowright'); }}
+            onPointerUp={(e) => { e.preventDefault(); releaseKey('arrowright'); }}
+            onPointerCancel={(e) => { e.preventDefault(); releaseKey('arrowright'); }}
+            onTouchStart={(e) => { e.preventDefault(); pressKey('arrowright'); }}
+            onTouchEnd={(e) => { e.preventDefault(); releaseKey('arrowright'); }}
+            onTouchCancel={(e) => { e.preventDefault(); releaseKey('arrowright'); }}
+          >
+            ▶
+          </button>
+        </div>
+
+        <div className="jump-pad">
+          <button
+            type="button"
+            className="jump-btn"
+            aria-label="Jump"
+            onPointerDown={(e) => { e.preventDefault(); pressKey(' '); }}
+            onPointerUp={(e) => { e.preventDefault(); releaseKey(' '); }}
+            onPointerCancel={(e) => { e.preventDefault(); releaseKey(' '); }}
+            onTouchStart={(e) => { e.preventDefault(); pressKey(' '); }}
+            onTouchEnd={(e) => { e.preventDefault(); releaseKey(' '); }}
+            onTouchCancel={(e) => { e.preventDefault(); releaseKey(' '); }}
+          >
+            ⤴ Jump
+          </button>
+        </div>
+      </div>
       
       <style>{`
         .game-canvas-container {
@@ -335,6 +400,8 @@ const GameCanvas: React.FC<GameCanvasProps> = ({
           flex-direction: column;
           align-items: center;
           gap: 1rem;
+          width: 100%;
+          padding: 1rem;
         }
 
         .game-canvas {
@@ -342,6 +409,10 @@ const GameCanvas: React.FC<GameCanvasProps> = ({
           border-radius: 10px;
           background: #1a1a2e;
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+          width: 100%;
+          max-width: 800px;
+          height: auto;
+          touch-action: none; /* Prevent scroll during gameplay */
         }
 
         .game-instructions {
@@ -353,6 +424,70 @@ const GameCanvas: React.FC<GameCanvasProps> = ({
 
         .game-instructions p {
           margin: 0.25rem 0;
+        }
+
+        /* Mobile touch controls */
+        .mobile-controls {
+          display: none;
+          width: 100%;
+          max-width: 800px;
+          user-select: none;
+          -webkit-user-select: none;
+          touch-action: none;
+        }
+
+        @media (pointer: coarse) {
+          .mobile-controls {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+            align-items: center;
+          }
+
+          .control-pad {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+          }
+
+          .control-btn {
+            padding: 1rem 0;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            color: #fff;
+            border-radius: 12px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            touch-action: none;
+          }
+
+          .jump-pad {
+            display: flex;
+            justify-content: flex-end;
+          }
+
+          .jump-btn {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border: none;
+            border-radius: 14px;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 800;
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.25);
+            touch-action: none;
+          }
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+          .control-btn,
+          .jump-btn,
+          .game-canvas {
+            transition: none !important;
+            animation: none !important;
+          }
         }
       `}</style>
     </div>
