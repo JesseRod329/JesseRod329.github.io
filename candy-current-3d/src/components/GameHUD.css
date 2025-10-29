@@ -1,0 +1,481 @@
+/* GameHUD Styles - Modern Side-Scrolling UI */
+
+.game-hud {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  font-weight: bold;
+}
+
+/* Top HUD Bar */
+.hud-top {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: auto;
+  gap: 10px;
+}
+
+.score-display, .level-info, .lives-display, .timer-display {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(20, 20, 20, 0.9));
+  padding: 12px 16px;
+  border-radius: 12px;
+  color: white;
+  text-align: center;
+  min-width: 90px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.score-display:hover, .level-info:hover, .lives-display:hover, .timer-display:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.score-label, .level-label, .lives-label, .timer-label {
+  font-size: 11px;
+  font-weight: bold;
+  color: #FFD700;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.score-value, .level-value, .lives-value, .timer-value {
+  font-size: 20px;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.score-value {
+  color: #4ECDC4;
+}
+
+.level-value {
+  color: #FF6B6B;
+}
+
+.lives-value {
+  color: #F9CA24;
+}
+
+.timer-value {
+  color: #9B59B6;
+}
+
+/* Bottom HUD Bar */
+.hud-bottom {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  right: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: auto;
+  gap: 15px;
+}
+
+.progress-section {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(20, 20, 20, 0.9));
+  padding: 18px;
+  border-radius: 12px;
+  color: white;
+  min-width: 250px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.progress-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #FFD700;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 12px;
+  background: linear-gradient(90deg, #333, #444);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4ECDC4, #45B7D1, #96CEB4);
+  border-radius: 6px;
+  transition: width 0.5s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: progressShine 2s ease-in-out infinite;
+}
+
+@keyframes progressShine {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.progress-text {
+  font-size: 12px;
+  color: #FFD700;
+  text-align: center;
+  font-weight: bold;
+}
+
+.controls-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.help-btn, .pause-btn {
+  background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Comic Sans MS', cursive;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.help-btn:hover, .pause-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.help-btn:active, .pause-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Controls Overlay */
+.controls-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(5px);
+}
+
+.controls-content {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 240, 240, 0.95));
+  padding: 30px;
+  border-radius: 20px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.controls-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin-bottom: 25px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.controls-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.control-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 10px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.control-key {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 12px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.control-desc {
+  font-size: 14px;
+  color: #333;
+  text-align: center;
+  font-weight: bold;
+}
+
+.close-controls {
+  background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+  border: none;
+  padding: 15px 30px;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+  width: 100%;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.close-controls:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Pause Overlay */
+.pause-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(5px);
+}
+
+.pause-content {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 240, 240, 0.95));
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.pause-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 25px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pause-stats {
+  background: rgba(255, 255, 255, 0.7);
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 25px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.pause-stats div {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.pause-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pause-btn {
+  background: linear-gradient(135deg, #4ECDC4, #45B7D1);
+  border: none;
+  padding: 15px 25px;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.pause-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.pause-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hud-top {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+    top: 10px;
+  }
+
+  .hud-bottom {
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    bottom: 10px;
+  }
+
+  .score-display, .level-info, .lives-display, .timer-display {
+    min-width: 70px;
+    padding: 8px 12px;
+  }
+
+  .score-value, .level-value, .lives-value, .timer-value {
+    font-size: 16px;
+  }
+
+  .progress-section {
+    min-width: 200px;
+    padding: 15px;
+  }
+
+  .controls-list {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .controls-content {
+    padding: 20px;
+  }
+
+  .controls-title {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hud-top {
+    left: 10px;
+    right: 10px;
+  }
+
+  .hud-bottom {
+    left: 10px;
+    right: 10px;
+  }
+
+  .score-display, .level-info, .lives-display, .timer-display {
+    min-width: 60px;
+    padding: 6px 10px;
+  }
+
+  .score-value, .level-value, .lives-value, .timer-value {
+    font-size: 14px;
+  }
+
+  .progress-section {
+    min-width: 180px;
+    padding: 12px;
+  }
+
+  .controls-content {
+    padding: 15px;
+  }
+
+  .pause-content {
+    padding: 25px;
+  }
+
+  .pause-title {
+    font-size: 24px;
+  }
+}
+
+/* Animation Enhancements */
+.score-display, .level-info, .lives-display, .timer-display {
+  animation: hudFloat 3s ease-in-out infinite;
+}
+
+@keyframes hudFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-2px); }
+}
+
+.progress-fill {
+  animation: progressPulse 2s ease-in-out infinite;
+}
+
+@keyframes progressPulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(78, 205, 196, 0.3); }
+  50% { box-shadow: 0 0 15px rgba(78, 205, 196, 0.6); }
+}
+
+/* High contrast mode for accessibility */
+@media (prefers-contrast: high) {
+  .score-display, .level-info, .lives-display, .timer-display,
+  .progress-section, .controls-content, .pause-content {
+    border: 3px solid #000;
+    background: rgba(255, 255, 255, 0.95);
+  }
+  
+  .score-label, .level-label, .lives-label, .timer-label,
+  .progress-title, .controls-title, .pause-title {
+    color: #000;
+  }
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .score-display, .level-info, .lives-display, .timer-display,
+  .progress-fill {
+    animation: none;
+  }
+  
+  .progress-fill::after {
+    animation: none;
+  }
+}
+
+
+

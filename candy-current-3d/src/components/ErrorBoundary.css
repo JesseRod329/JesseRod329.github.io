@@ -1,0 +1,101 @@
+.error-fallback {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  color: white;
+  font-family: 'Arial', sans-serif;
+}
+
+.error-content {
+  text-align: center;
+  max-width: 500px;
+  padding: 40px;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 12px;
+  border: 2px solid #4CAF50;
+  backdrop-filter: blur(10px);
+}
+
+.error-content h2 {
+  margin: 0 0 20px 0;
+  color: #4CAF50;
+  font-size: 28px;
+}
+
+.error-content p {
+  margin: 0 0 30px 0;
+  color: #B0BEC5;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.error-details {
+  margin: 20px 0;
+  text-align: left;
+}
+
+.error-details summary {
+  cursor: pointer;
+  color: #FFC107;
+  margin-bottom: 10px;
+}
+
+.error-stack {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 15px;
+  border-radius: 6px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: #F44336;
+  white-space: pre-wrap;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.error-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.error-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.error-button.primary {
+  background: #4CAF50;
+  color: white;
+}
+
+.error-button.primary:hover {
+  background: #45a049;
+  transform: translateY(-2px);
+}
+
+.error-button.secondary {
+  background: transparent;
+  color: #FFC107;
+  border: 2px solid #FFC107;
+}
+
+.error-button.secondary:hover {
+  background: #FFC107;
+  color: black;
+  transform: translateY(-2px);
+}
+
+
+
