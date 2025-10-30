@@ -112,6 +112,44 @@ body {
     margin-bottom: 8px;
 }
 
+#powerupStatus {
+    margin-top: 10px;
+}
+
+.powerup-indicators {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.powerup-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.powerup-icon {
+    font-size: 16px;
+}
+
+.powerup-timer-bar {
+    width: 60px;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.powerup-timer-fill {
+    height: 100%;
+    background: #667eea;
+    transition: width 0.1s linear;
+}
+
 @media (max-width: 768px) {
     .score-display {
         top: max(5px, env(safe-area-inset-top, 0px));
@@ -157,6 +195,64 @@ body {
     font-size: 20px;
     margin: 10px 0;
     color: #666;
+}
+
+#planeSelection {
+    margin-top: 20px;
+    max-height: 40vh;
+    overflow-y: auto;
+    pointer-events: all;
+}
+
+.plane-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.plane-card {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #333;
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    pointer-events: all;
+    user-select: none;
+}
+
+.plane-card:hover:not(.locked) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.plane-card.selected {
+    border-color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+}
+
+.plane-card.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(200, 200, 200, 0.5);
+}
+
+.plane-name {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.plane-stats {
+    font-size: 12px;
+    color: #666;
+}
+
+.plane-stats > div {
+    margin: 4px 0;
 }
 
 .start-instruction {
