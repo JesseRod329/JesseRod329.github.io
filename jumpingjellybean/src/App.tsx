@@ -93,23 +93,15 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-pink-300 via-purple-300 to-blue-300 p-4 font-sans">
+    <div className="game-wrapper">
       <style>{`
-        @media (max-width: 768px) {
-          body {
-            padding: 0;
-            margin: 0;
-          }
-          .flex {
-            padding: 0;
-          }
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
         }
-        html {
-          width: 100%;
-          height: 100%;
-          overflow: hidden;
-        }
-        body {
+        
+        html, body {
           width: 100%;
           height: 100%;
           overflow: hidden;
@@ -117,92 +109,404 @@ const App: React.FC = () => {
           touch-action: none;
           -webkit-overflow-scrolling: touch;
         }
+        
+        .game-wrapper {
+          width: 100vw;
+          height: 100vh;
+          height: 100dvh;
+          display: flex;
+          flex-direction: column;
+          background: linear-gradient(180deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+          position: relative;
+          overflow: hidden;
+        }
+        
+        /* Portrait mode */
+        @media (orientation: portrait) {
+          .game-wrapper {
+            flex-direction: column;
+          }
+          
+          .game-header {
+            padding: 0.5rem 0.75rem;
+            min-height: 50px;
+          }
+          
+          .game-content {
+            flex: 1;
+            min-height: 0;
+          }
+        }
+        
+        /* Landscape mode */
+        @media (orientation: landscape) {
+          .game-wrapper {
+            flex-direction: row;
+          }
+          
+          .game-header {
+            width: 120px;
+            flex-direction: column;
+            padding: 0.75rem 0.5rem;
+            justify-content: flex-start;
+            gap: 0.75rem;
+          }
+          
+          .game-content {
+            flex: 1;
+            min-width: 0;
+          }
+        }
+        
+        .game-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          z-index: 10;
+          flex-shrink: 0;
+        }
+        
+        .game-title {
+          font-size: clamp(0.875rem, 2vw, 1.5rem);
+          font-weight: 800;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .stats-grid {
+          display: flex;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+          align-items: center;
+        }
+        
+        @media (orientation: landscape) {
+          .stats-grid {
+            flex-direction: column;
+            width: 100%;
+            gap: 0.5rem;
+          }
+        }
+        
+        .stat-card {
+          display: flex;
+          align-items: center;
+          gap: 0.375rem;
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+          padding: 0.375rem 0.75rem;
+          border-radius: 12px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          min-width: fit-content;
+        }
+        
+        .stat-value {
+          font-size: clamp(0.875rem, 2vw, 1.25rem);
+          font-weight: 700;
+          color: #1f2937;
+        }
+        
+        .stat-icon {
+          flex-shrink: 0;
+        }
+        
+        .game-content {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+        }
+        
+        .game-container {
+          flex: 1;
+          position: relative;
+          min-height: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        @media (orientation: landscape) {
+          .game-container {
+            padding: 0.5rem;
+          }
+        }
+        
+        .canvas-wrapper {
+          width: 100%;
+          height: 100%;
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        /* Pause overlay */
+        .pause-overlay {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(0, 0, 0, 0.75);
+          backdrop-filter: blur(8px);
+          z-index: 50;
+          border-radius: inherit;
+        }
+        
+        .pause-content {
+          background: rgba(255, 255, 255, 0.95);
+          padding: 2rem 3rem;
+          border-radius: 24px;
+          box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+          text-align: center;
+        }
+        
+        .pause-text {
+          font-size: clamp(1.5rem, 5vw, 3rem);
+          font-weight: 800;
+          color: #1f2937;
+          letter-spacing: 0.05em;
+        }
+        
+        /* Game over overlay */
+        .game-over-overlay {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(0, 0, 0, 0.85);
+          backdrop-filter: blur(12px);
+          z-index: 50;
+          border-radius: inherit;
+        }
+        
+        .game-over-content {
+          background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.95) 100%);
+          padding: 2rem;
+          border-radius: 24px;
+          box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+          text-align: center;
+          max-width: 90%;
+          min-width: 280px;
+        }
+        
+        .game-over-title {
+          font-size: clamp(1.75rem, 6vw, 3.5rem);
+          font-weight: 900;
+          background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          margin-bottom: 1rem;
+          letter-spacing: 0.02em;
+        }
+        
+        .game-over-score {
+          font-size: clamp(1.125rem, 4vw, 1.75rem);
+          font-weight: 600;
+          color: #4b5563;
+          margin-bottom: 0.5rem;
+        }
+        
+        .game-over-highscore {
+          font-size: clamp(1rem, 3vw, 1.5rem);
+          font-weight: 700;
+          color: #7c3aed;
+          margin-bottom: 1.5rem;
+        }
+        
+        .restart-button {
+          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          color: white;
+          font-size: clamp(1rem, 3vw, 1.25rem);
+          font-weight: 700;
+          padding: 0.875rem 2rem;
+          border-radius: 16px;
+          border: none;
+          cursor: pointer;
+          box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+          transition: all 0.2s;
+          letter-spacing: 0.02em;
+          text-transform: uppercase;
+          min-height: 48px;
+        }
+        
+        .restart-button:active {
+          transform: scale(0.95);
+          box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        /* Lives display */
+        .lives-display {
+          display: flex;
+          gap: 0.375rem;
+          align-items: center;
+        }
+        
+        .life-heart {
+          width: clamp(20px, 4vw, 32px);
+          height: clamp(20px, 4vw, 32px);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: clamp(0.75rem, 2vw, 1.25rem);
+          box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+          transition: all 0.2s;
+        }
+        
+        .life-heart.active {
+          background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+        }
+        
+        .life-heart.inactive {
+          background: rgba(156, 163, 175, 0.3);
+          opacity: 0.5;
+        }
+        
+        /* High score display */
+        .highscore-display {
+          font-size: clamp(0.75rem, 2vw, 1rem);
+          font-weight: 600;
+          color: rgba(255, 255, 255, 0.9);
+          text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        .highscore-value {
+          color: #fbbf24;
+          font-weight: 800;
+        }
+        
+        /* Pause button */
+        .pause-button {
+          background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+          color: white;
+          border: none;
+          border-radius: 12px;
+          padding: 0.5rem;
+          cursor: pointer;
+          box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+          transition: all 0.2s;
+          min-width: 40px;
+          min-height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        .pause-button:active {
+          transform: scale(0.9);
+        }
+        
+        @media (orientation: landscape) {
+          .pause-button {
+            width: 100%;
+            padding: 0.75rem;
+          }
+        }
+        
+        @media (max-width: 768px) {
+          .game-header {
+            padding: 0.5rem;
+          }
+          
+          .stat-card {
+            padding: 0.25rem 0.5rem;
+          }
+        }
       `}</style>
       
-      <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-4 md:p-6 max-w-6xl w-full mx-auto">
-        <div className="flex justify-between items-center mb-3 md:mb-4 flex-wrap gap-2 md:gap-4">
-          <div className="flex items-center gap-2 md:gap-4">
-            <div className="text-xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
-              JUMPING JELLYBEAN
-            </div>
+      <div className="game-header">
+        <div className="game-title">Jelly Bean</div>
+        
+        <div className="stats-grid">
+          <div className="stat-card">
+            <Trophy className="stat-icon text-yellow-600" size={18} />
+            <div className="stat-value">{gameState.score}</div>
           </div>
-         
-          <div className="flex items-center gap-2 md:gap-6 flex-wrap">
-            <div className="flex items-center gap-1 md:gap-2 bg-yellow-100 px-2 md:px-4 py-1 md:py-2 rounded-full">
-              <Trophy className="text-yellow-600" size={18} />
-              <div className="text-lg md:text-2xl font-bold text-yellow-700">{gameState.score}</div>
-            </div>
-           
-            <div className="flex items-center gap-1 md:gap-2 bg-purple-100 px-2 md:px-4 py-1 md:py-2 rounded-full">
-              <Star className="text-purple-600" size={18} />
-              <div className="text-sm md:text-xl font-bold text-purple-700">LVL {gameState.level}</div>
-            </div>
-
-            {combo > 0 && (
-              <div className="flex items-center gap-1 md:gap-2 bg-pink-100 px-2 md:px-4 py-1 md:py-2 rounded-full animate-pulse">
-                <Sparkles className="text-pink-600" size={16} />
-                <div className="text-sm md:text-lg font-bold text-pink-700">x{combo}</div>
-              </div>
-            )}
+          
+          <div className="stat-card">
+            <Star className="stat-icon text-purple-600" size={18} />
+            <div className="stat-value">L{gameState.level}</div>
           </div>
-
-          <button
-            onClick={togglePause}
-            className="bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-white rounded-full p-2 md:p-3 shadow-lg transition-all active:scale-95"
-          >
-            {gameState.isPaused ? <Play size={20} /> : <Pause size={20} />}
-          </button>
+          
+          {combo > 0 && (
+            <div className="stat-card animate-pulse">
+              <Sparkles className="stat-icon text-pink-600" size={16} />
+              <div className="stat-value">x{combo}</div>
+            </div>
+          )}
         </div>
-
-        <div className="flex justify-between items-center mb-3 md:mb-4 flex-wrap gap-2">
-          <div className="flex gap-1 md:gap-2">
+        
+        <div className="stats-grid">
+          <div className="lives-display">
             {[...Array(5)].map((_, i) => (
               <div
                 key={i}
-                className={`w-6 h-6 md:w-10 md:h-10 rounded-full ${
-                  i < gameState.lives ? 'bg-gradient-to-br from-red-400 to-pink-500' : 'bg-gray-300'
-                } shadow-lg flex items-center justify-center text-white font-bold text-base md:text-2xl`}
+                className={`life-heart ${i < gameState.lives ? 'active' : 'inactive'}`}
               >
                 {i < gameState.lives && '❤️'}
               </div>
             ))}
           </div>
-         
-          <div className="text-sm md:text-lg font-semibold text-gray-600">
-            High Score: <span className="text-purple-600 font-bold">{highScore}</span>
+          
+          <div className="highscore-display">
+            Hi: <span className="highscore-value">{highScore}</span>
           </div>
+          
+          <button
+            onClick={togglePause}
+            className="pause-button"
+          >
+            {gameState.isPaused ? <Play size={20} /> : <Pause size={20} />}
+          </button>
         </div>
+      </div>
 
-        <div className="relative">
-          <GameCanvas 
-            gameState={gameState}
-            onGameStateChange={handleGameStateChange}
-            onScoreUpdate={handleScoreUpdate}
-          />
-         
-          {gameState.isPaused && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 rounded-2xl z-40">
-              <div className="bg-white text-2xl md:text-5xl font-bold px-8 md:px-16 py-4 md:py-8 rounded-3xl shadow-2xl text-gray-800">
-                ⏸ PAUSED
+      <div className="game-content">
+        <div className="game-container">
+          <div className="canvas-wrapper">
+            <GameCanvas 
+              gameState={gameState}
+              onGameStateChange={handleGameStateChange}
+              onScoreUpdate={handleScoreUpdate}
+            />
+            
+            {gameState.isPaused && (
+              <div className="pause-overlay">
+                <div className="pause-content">
+                  <div className="pause-text">⏸ PAUSED</div>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {gameState.isGameOver && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 rounded-2xl z-40">
-              <div className="bg-white px-6 md:px-12 py-4 md:py-8 rounded-3xl shadow-2xl text-center">
-                <div className="text-2xl md:text-5xl font-bold text-red-600 mb-2 md:mb-4">GAME OVER!</div>
-                <div className="text-lg md:text-3xl font-semibold text-gray-700 mb-1 md:mb-2">Final Score: {gameState.score}</div>
-                <div className="text-base md:text-2xl text-purple-600 mb-4 md:mb-6">High Score: {highScore}</div>
-                <button
-                  onClick={resetGame}
-                  className="bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white text-base md:text-2xl font-bold py-2 md:py-4 px-6 md:px-12 rounded-full shadow-lg transition-all active:scale-95"
-                >
-                  PLAY AGAIN
-                </button>
+            {gameState.isGameOver && (
+              <div className="game-over-overlay">
+                <div className="game-over-content">
+                  <div className="game-over-title">GAME OVER!</div>
+                  <div className="game-over-score">Final Score: {gameState.score}</div>
+                  <div className="game-over-highscore">High Score: {highScore}</div>
+                  <button
+                    onClick={resetGame}
+                    className="restart-button"
+                  >
+                    PLAY AGAIN
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
