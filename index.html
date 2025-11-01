@@ -453,6 +453,8 @@
     let dragOffset = { x: 0, y: 0 };
     let containerOffset = { x: 0, y: 0 };
     let animationId = null;
+    let touchStartPos = null;
+    let touchStartTime = null;
 
     function getInitialPosition(index, total) {
       const angle = (index / total) * Math.PI * 2;
@@ -589,32 +591,46 @@
 
       nodes.forEach((node, index) => {
         node.el.addEventListener('touchstart', (e) => {
-          e.preventDefault();
-          isDragging = true;
+          touchStartPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+          touchStartTime = Date.now();
+          isDragging = false;
           activeNode = node;
-          const touch = e.touches[0];
-          dragOffset.x = touch.clientX - node.x;
-          dragOffset.y = touch.clientY - node.y;
-          node.el.classList.add('is-pressed');
-        }, { passive: false });
+          dragOffset.x = e.touches[0].clientX - node.x;
+          dragOffset.y = e.touches[0].clientY - node.y;
+        }, { passive: true });
 
         node.el.addEventListener('touchmove', (e) => {
-          if (activeNode === node) {
-            e.preventDefault();
-            const touch = e.touches[0];
-            node.x = touch.clientX - dragOffset.x;
-            node.y = touch.clientY - dragOffset.y;
-            node.vx = node.vy = 0;
-            node.el.style.transform = `translate(calc(${node.x}px - 50%), calc(${node.y}px - 50%))`;
-            lines.forEach(updateLine);
+          if (activeNode === node && touchStartPos) {
+            const dx = Math.abs(e.touches[0].clientX - touchStartPos.x);
+            const dy = Math.abs(e.touches[0].clientY - touchStartPos.y);
+            
+            if (dx > 5 || dy > 5) {
+              isDragging = true;
+              e.preventDefault();
+              node.el.classList.add('is-pressed');
+              node.x = e.touches[0].clientX - dragOffset.x;
+              node.y = e.touches[0].clientY - dragOffset.y;
+              node.vx = node.vy = 0;
+              node.el.style.transform = `translate(calc(${node.x}px - 50%), calc(${node.y}px - 50%))`;
+              lines.forEach(updateLine);
+            }
           }
         }, { passive: false });
 
-        node.el.addEventListener('touchend', () => {
+        node.el.addEventListener('touchend', (e) => {
           if (activeNode === node) {
+            const wasDrag = isDragging;
+            
+            if (wasDrag) {
+              e.preventDefault();
+              node.el.classList.remove('is-pressed');
+            }
+            // If not dragging, let the <a> tag handle navigation naturally
+            
             activeNode = null;
             isDragging = false;
-            node.el.classList.remove('is-pressed');
+            touchStartPos = null;
+            touchStartTime = null;
           }
         });
 
@@ -631,6 +647,7 @@
         node.el.addEventListener('click', (e) => {
           if (isDragging) {
             e.preventDefault();
+            e.stopPropagation();
             return false;
           }
         });
