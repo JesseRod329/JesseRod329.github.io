@@ -706,19 +706,16 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
     
     // Determine orientation
     const isLandscape = window.innerWidth > window.innerHeight;
+    const isDesktop = window.innerWidth > 768;
     
     // Use actual viewport dimensions for mobile
-    if (isMobile) {
-      canvasWidth = containerRect.width;
-      canvasHeight = containerRect.height;
+    if (isMobile && !isDesktop) {
+      canvasWidth = containerRect.width || window.innerWidth;
+      canvasHeight = containerRect.height || window.innerHeight;
       
       // Use dynamic viewport height if available
       if (window.visualViewport) {
-        if (isLandscape) {
-          canvasHeight = window.visualViewport.height;
-        } else {
-          canvasHeight = window.visualViewport.height;
-        }
+        canvasHeight = window.visualViewport.height;
       }
       
       // Ensure we don't exceed viewport
@@ -740,8 +737,22 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
         }
       }
     } else {
-      canvasWidth = Math.min(CANVAS_WIDTH, containerRect.width);
-      canvasHeight = Math.min(CANVAS_HEIGHT, containerRect.height);
+      // Desktop: maintain aspect ratio, fit to container
+      const maxWidth = containerRect.width;
+      const maxHeight = containerRect.height;
+      const aspectRatio = CANVAS_WIDTH / CANVAS_HEIGHT;
+      
+      if (maxWidth / maxHeight > aspectRatio) {
+        canvasHeight = maxHeight;
+        canvasWidth = maxHeight * aspectRatio;
+      } else {
+        canvasWidth = maxWidth;
+        canvasHeight = maxWidth / aspectRatio;
+      }
+      
+      // Don't exceed original canvas size
+      canvasWidth = Math.min(canvasWidth, CANVAS_WIDTH);
+      canvasHeight = Math.min(canvasHeight, CANVAS_HEIGHT);
     }
 
     scaleX = canvasWidth / CANVAS_WIDTH;
