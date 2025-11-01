@@ -110,6 +110,32 @@ const App: React.FC = () => {
           -webkit-overflow-scrolling: touch;
         }
         
+        body {
+          margin: 0;
+          padding: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        #root {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+          body {
+            align-items: stretch;
+          }
+          
+          #root {
+            align-items: stretch;
+          }
+        }
+        
         .game-wrapper {
           width: 100vw;
           height: 100vh;
@@ -119,6 +145,16 @@ const App: React.FC = () => {
           background: linear-gradient(180deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
           position: relative;
           overflow: hidden;
+        }
+        
+        /* Desktop - center and constrain width */
+        @media (min-width: 769px) {
+          .game-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            height: 100vh;
+            box-shadow: 0 0 40px rgba(0,0,0,0.2);
+          }
         }
         
         /* Portrait mode */
@@ -158,6 +194,19 @@ const App: React.FC = () => {
           }
         }
         
+        /* Desktop landscape - keep header at top */
+        @media (min-width: 769px) and (orientation: landscape) {
+          .game-wrapper {
+            flex-direction: column;
+          }
+          
+          .game-header {
+            width: 100%;
+            flex-direction: row;
+            padding: 0.75rem 1.5rem;
+          }
+        }
+        
         .game-header {
           display: flex;
           align-items: center;
@@ -168,6 +217,19 @@ const App: React.FC = () => {
           border-bottom: 1px solid rgba(255, 255, 255, 0.1);
           z-index: 10;
           flex-shrink: 0;
+        }
+        
+        @media (min-width: 769px) {
+          .game-header {
+            padding: 1rem 1.5rem;
+          }
+        }
+        
+        @media (max-width: 768px) {
+          .game-header {
+            padding: 0.5rem 0.75rem;
+            min-height: 50px;
+          }
         }
         
         .game-title {
@@ -194,6 +256,12 @@ const App: React.FC = () => {
             flex-direction: column;
             width: 100%;
             gap: 0.5rem;
+          }
+        }
+        
+        @media (min-width: 769px) and (orientation: landscape) {
+          .stats-grid {
+            flex-direction: row;
           }
         }
         
@@ -235,9 +303,23 @@ const App: React.FC = () => {
           justify-content: center;
         }
         
+        @media (min-width: 769px) {
+          .game-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+          }
+        }
+        
         @media (orientation: landscape) {
           .game-container {
             padding: 0.5rem;
+          }
+        }
+        
+        @media (min-width: 769px) and (orientation: landscape) {
+          .game-container {
+            padding: 1rem;
           }
         }
         
@@ -413,6 +495,13 @@ const App: React.FC = () => {
           .pause-button {
             width: 100%;
             padding: 0.75rem;
+          }
+        }
+        
+        @media (min-width: 769px) and (orientation: landscape) {
+          .pause-button {
+            width: auto;
+            padding: 0.5rem;
           }
         }
         
