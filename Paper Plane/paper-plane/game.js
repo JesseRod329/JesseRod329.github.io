@@ -857,59 +857,74 @@ function drawPlane() {
         ctx.globalAlpha = 1;
     }
     
-    // Pencil sketch style plane - no fill, just sketchy lines
+    // Classic paper airplane from school days - pencil sketch style
     ctx.strokeStyle = applyColorProgression('#2C1810', intensity); // Dark pencil/charcoal color
     ctx.lineWidth = 2.5 * size;
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
     
-    const planeSize = 20 * size;
-    const wingSize = 8 * size;
+    const planeSize = 25 * size;
+    const wingWidth = 12 * size;
     
-    // Draw plane outline with sketchy, hand-drawn style
-    // Main body outline - make it look like a pencil sketch
+    // Classic folded paper airplane shape
+    // Draw with slight wobble for hand-drawn pencil effect
+    const wobble = Math.sin(gameTime * 2) * 0.3 * size;
+    
     ctx.beginPath();
-    // Top wing
-    ctx.moveTo(-planeSize, 0);
-    const wobble1 = Math.sin(gameTime * 2) * 0.5 * size;
-    ctx.lineTo(-planeSize * 0.5 + wobble1, -wingSize);
-    ctx.lineTo(0, -wingSize * 0.9);
-    // Bottom wing
-    ctx.moveTo(0, wingSize * 0.9);
-    ctx.lineTo(planeSize * 0.5 + wobble1, wingSize);
+    // Nose (pointed front)
+    ctx.moveTo(planeSize, 0);
+    // Top wing - left side
+    ctx.lineTo(planeSize * 0.3 + wobble, -wingWidth * 0.9);
+    ctx.lineTo(planeSize * 0.1 + wobble * 0.5, -wingWidth);
+    // Top wing - right side
+    ctx.lineTo(-planeSize * 0.2 + wobble, -wingWidth * 0.7);
+    ctx.lineTo(-planeSize * 0.1 + wobble * 0.5, -wingWidth * 0.5);
+    // Center body line
+    ctx.lineTo(0, 0);
+    // Bottom wing - left side
+    ctx.lineTo(-planeSize * 0.1 - wobble * 0.5, wingWidth * 0.5);
+    ctx.lineTo(-planeSize * 0.2 - wobble, wingWidth * 0.7);
+    // Bottom wing - right side
+    ctx.lineTo(planeSize * 0.1 - wobble * 0.5, wingWidth);
+    ctx.lineTo(planeSize * 0.3 - wobble, wingWidth * 0.9);
+    // Back to nose
     ctx.lineTo(planeSize, 0);
-    // Close the shape
-    ctx.lineTo(0, wingSize);
-    ctx.lineTo(-planeSize, 0);
     ctx.stroke();
     
-    // Add sketchy detail lines inside
+    // Add fold lines (like creases in folded paper)
     ctx.lineWidth = 1.5 * size;
-    ctx.globalAlpha = 0.7;
+    ctx.globalAlpha = 0.6;
+    ctx.strokeStyle = applyColorProgression('#4A3A2A', intensity); // Slightly lighter for fold lines
+    
+    // Center fold line
     ctx.beginPath();
-    // Center fold line (sketchy)
-    ctx.moveTo(0, 0);
-    const wobble2 = Math.sin(gameTime * 3) * 0.3 * size;
-    ctx.lineTo(wobble2, -wingSize);
+    ctx.moveTo(planeSize, 0);
+    const foldWobble = Math.sin(gameTime * 3) * 0.2 * size;
+    ctx.lineTo(planeSize * 0.2 + foldWobble, 0);
+    ctx.lineTo(0, 0);
     ctx.stroke();
     
-    // Wing detail lines (sketchy)
+    // Wing fold lines
     ctx.beginPath();
-    ctx.moveTo(-15 * size, 2 * size);
-    ctx.lineTo(-10 * size + wobble2, 0);
-    ctx.moveTo(15 * size, 2 * size);
-    ctx.lineTo(10 * size - wobble2, 0);
+    // Top wing fold
+    ctx.moveTo(planeSize * 0.3 + wobble, -wingWidth * 0.9);
+    ctx.lineTo(planeSize * 0.15 + wobble * 0.5, -wingWidth * 0.7);
+    ctx.lineTo(-planeSize * 0.1 + wobble * 0.5, -wingWidth * 0.5);
+    // Bottom wing fold
+    ctx.moveTo(planeSize * 0.3 - wobble, wingWidth * 0.9);
+    ctx.lineTo(planeSize * 0.15 - wobble * 0.5, wingWidth * 0.7);
+    ctx.lineTo(-planeSize * 0.1 - wobble * 0.5, wingWidth * 0.5);
     ctx.stroke();
     
-    // Add some sketchy cross-hatching for texture
+    // Add some sketchy detail lines for texture
     ctx.globalAlpha = 0.4;
     ctx.lineWidth = 0.8 * size;
     ctx.beginPath();
-    // Diagonal hatching
-    ctx.moveTo(-planeSize * 0.7, -wingSize * 0.3);
-    ctx.lineTo(-planeSize * 0.3, -wingSize * 0.7);
-    ctx.moveTo(planeSize * 0.3, wingSize * 0.7);
-    ctx.lineTo(planeSize * 0.7, wingSize * 0.3);
+    // Small details on wings
+    ctx.moveTo(planeSize * 0.2, -wingWidth * 0.6);
+    ctx.lineTo(planeSize * 0.05, -wingWidth * 0.8);
+    ctx.moveTo(planeSize * 0.2, wingWidth * 0.6);
+    ctx.lineTo(planeSize * 0.05, wingWidth * 0.8);
     ctx.stroke();
     
     ctx.globalAlpha = 1;
