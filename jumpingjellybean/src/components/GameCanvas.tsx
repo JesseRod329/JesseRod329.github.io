@@ -885,15 +885,15 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
         
         .mobile-controls {
           display: none;
-          gap: 12px;
+          gap: 8px;
           position: fixed;
-          bottom: max(20px, env(safe-area-inset-bottom, 0px));
+          bottom: max(8px, env(safe-area-inset-bottom, 0px));
           left: 50%;
           transform: translateX(-50%);
           z-index: 100;
-          padding: 0 20px;
+          padding: 0 12px;
           width: 100%;
-          max-width: 400px;
+          max-width: 360px;
           justify-content: center;
         }
         
@@ -905,8 +905,9 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
         
         @media (orientation: landscape) {
           .mobile-controls {
-            bottom: max(10px, env(safe-area-inset-bottom, 0px));
-            max-width: 350px;
+            bottom: max(6px, env(safe-area-inset-bottom, 0px));
+            max-width: 320px;
+            gap: 6px;
           }
         }
         
@@ -915,34 +916,48 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
           backdrop-filter: blur(10px);
           border: 2px solid rgba(255,255,255,0.3);
           color: #1f2937;
-          padding: 14px 20px;
-          border-radius: 16px;
+          padding: 8px 14px;
+          border-radius: 12px;
           font-weight: 700;
-          font-size: 0.875rem;
+          font-size: 0.75rem;
           cursor: pointer;
-          box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.25);
           touch-action: manipulation;
           -webkit-tap-highlight-color: transparent;
-          min-width: 75px;
-          min-height: 50px;
-          transition: all 0.2s;
+          min-width: 60px;
+          min-height: 38px;
+          transition: all 0.15s;
+          flex: 1;
+          max-width: 90px;
         }
         
         @media (orientation: landscape) {
           .btn {
-            padding: 12px 18px;
-            min-width: 70px;
-            min-height: 48px;
-            font-size: 0.8rem;
+            padding: 6px 12px;
+            min-width: 55px;
+            min-height: 36px;
+            font-size: 0.7rem;
+            max-width: 80px;
           }
         }
         
         @media (max-width: 480px) {
           .btn {
-            padding: 12px 16px;
-            font-size: 0.8rem;
-            min-width: 65px;
-            min-height: 46px;
+            padding: 8px 12px;
+            font-size: 0.7rem;
+            min-width: 55px;
+            min-height: 36px;
+            max-width: 85px;
+          }
+        }
+        
+        @media (max-width: 375px) {
+          .btn {
+            padding: 6px 10px;
+            font-size: 0.65rem;
+            min-width: 50px;
+            min-height: 34px;
+            max-width: 75px;
           }
         }
         

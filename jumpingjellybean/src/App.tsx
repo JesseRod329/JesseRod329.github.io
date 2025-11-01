@@ -164,13 +164,25 @@ const App: React.FC = () => {
           }
           
           .game-header {
-            padding: 0.5rem 0.75rem;
-            min-height: 50px;
+            padding: 0.4rem 0.5rem;
+            min-height: 44px;
           }
           
           .game-content {
             flex: 1;
             min-height: 0;
+            padding-bottom: 60px; /* Space for mobile controls */
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .game-header {
+            padding: 0.35rem 0.4rem;
+            min-height: 40px;
+          }
+          
+          .game-content {
+            padding-bottom: 55px;
           }
         }
         
@@ -507,11 +519,53 @@ const App: React.FC = () => {
         
         @media (max-width: 768px) {
           .game-header {
-            padding: 0.5rem;
+            padding: 0.4rem 0.5rem;
+            min-height: 44px;
           }
           
           .stat-card {
-            padding: 0.25rem 0.5rem;
+            padding: 0.2rem 0.4rem;
+            gap: 0.25rem;
+          }
+          
+          .stat-value {
+            font-size: clamp(0.75rem, 2vw, 1rem);
+          }
+          
+          .game-title {
+            font-size: clamp(0.75rem, 2vw, 1.125rem);
+          }
+          
+          .life-heart {
+            width: clamp(18px, 3.5vw, 24px);
+            height: clamp(18px, 3.5vw, 24px);
+            font-size: clamp(0.65rem, 1.5vw, 0.9rem);
+          }
+          
+          .pause-button {
+            min-width: 36px;
+            min-height: 36px;
+            padding: 0.4rem;
+          }
+          
+          .highscore-display {
+            font-size: clamp(0.65rem, 1.5vw, 0.85rem);
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .game-header {
+            padding: 0.35rem 0.4rem;
+            min-height: 40px;
+          }
+          
+          .stat-card {
+            padding: 0.15rem 0.3rem;
+          }
+          
+          .stat-icon {
+            width: 14px;
+            height: 14px;
           }
         }
       `}</style>
