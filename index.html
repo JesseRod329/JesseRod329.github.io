@@ -225,6 +225,20 @@
       overflow: hidden;
     }
 
+    .node-icon {
+      width: 70%;
+      height: 70%;
+      object-fit: contain;
+      border-radius: 50%;
+      opacity: 0.9;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .network-node.is-active .node-icon {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
     .network-node.is-active .node-core {
       transform: scale(1.15);
       border-color: var(--accent-primary);
@@ -234,7 +248,6 @@
     .network-node.is-pressed .node-core {
       transform: scale(0.95);
     }
-
     .node-badge {
       position: absolute;
       top: -8px;
@@ -250,6 +263,7 @@
       color: var(--text-secondary);
       white-space: nowrap;
       z-index: 10;
+      pointer-events: none;
     }
 
     @media (max-width: 640px) {
@@ -406,21 +420,21 @@
     const container = document.getElementById('networkContainer');
 
     const projects = [
-      { href: '/Paper%20Plane/escape-world/', badge: 'GAME', title: 'Escape World', theme: 'game' },
-      { href: '/Paper%20Plane/', badge: 'GAME', title: 'Paper Plane', theme: 'paper' },
-      { href: '/jumpingjellybean/', badge: 'GAME', title: 'Jumping Jelly Bean', theme: 'game' },
-      { href: '/md/', badge: 'DATA', title: 'MD Analytics', theme: 'data' },
-      { href: '/prompt/', badge: 'AI', title: 'Prompt Studio', theme: 'ai' },
-      { href: '/art/', badge: 'ART', title: 'Graffiti Gallery', theme: 'art' },
-      { href: '/wrestling-news/', badge: 'LIVE', title: 'Wrestling News', theme: 'interactive' },
-      { href: '/knock.html', badge: 'INTERACTIVE', title: 'Knock Door', theme: 'interactive' },
-      { href: '/planner/', badge: 'FOCUS', title: 'Daily Planner', theme: 'focus' },
-      { href: '/fashion-palette/', badge: 'FASHION', title: 'Fashion Palette', theme: 'fashion' },
-      { href: '/philosophers-library.html', badge: 'LIBRARY', title: 'Philosopher\'s Library', theme: 'philosophy' },
-      { href: '/brainwave-simulator/brainwave-simulator.html', badge: 'SCIENCE', title: 'Brainwave Sim', theme: 'brainwave' },
-      { href: '/TIME/', badge: 'GLOBAL', title: 'WorldTime', theme: 'timezone' },
-      { href: '/STARTUP/', badge: 'RETRO', title: 'Console Hub', theme: 'startup' },
-      { href: '/vtrigger/', badge: 'GAME', title: 'Pencil Runner', theme: 'game' }
+      { href: '/Paper%20Plane/escape-world/', badge: 'GAME', title: 'Escape World', theme: 'game', icon: null },
+      { href: '/Paper%20Plane/', badge: 'GAME', title: 'Paper Plane', theme: 'paper', icon: null },
+      { href: '/jumpingjellybean/', badge: 'GAME', title: 'Jumping Jelly Bean', theme: 'game', icon: null },
+      { href: '/md/', badge: 'DATA', title: 'MD Analytics', theme: 'data', icon: null },
+      { href: '/prompt/', badge: 'AI', title: 'Prompt Studio', theme: 'ai', icon: '/prompt/apple_touch_icons/apple_touch_icon_180x180.png' },
+      { href: '/art/', badge: 'ART', title: 'Graffiti Gallery', theme: 'art', icon: null },
+      { href: '/wrestling-news/', badge: 'LIVE', title: 'Wrestling News', theme: 'interactive', icon: '/wrestling-news/svgviewer-png-output-4-2.png' },
+      { href: '/knock.html', badge: 'INTERACTIVE', title: 'Knock Door', theme: 'interactive', icon: null },
+      { href: '/planner/', badge: 'FOCUS', title: 'Daily Planner', theme: 'focus', icon: '/planner/svgviewer-png-output.png' },
+      { href: '/fashion-palette/', badge: 'FASHION', title: 'Fashion Palette', theme: 'fashion', icon: '/fashion-palette/aurora_palette_180.png' },
+      { href: '/philosophers-library.html', badge: 'LIBRARY', title: 'Philosopher\'s Library', theme: 'philosophy', icon: '/ios/assets/icons/apple-touch-icon.png' },
+      { href: '/brainwave-simulator/brainwave-simulator.html', badge: 'SCIENCE', title: 'Brainwave Sim', theme: 'brainwave', icon: '/brainwave-simulator/cyberpunk_brain_180px.png' },
+      { href: '/TIME/', badge: 'GLOBAL', title: 'WorldTime', theme: 'timezone', icon: null },
+      { href: '/STARTUP/', badge: 'RETRO', title: 'Console Hub', theme: 'startup', icon: null },
+      { href: '/vtrigger/', badge: 'GAME', title: 'Pencil Runner', theme: 'game', icon: null }
     ];
 
     let nodes = [];
@@ -458,6 +472,7 @@
       node.innerHTML = `
         <div class="node-glow"></div>
         <div class="node-core">
+          ${project.icon ? `<img src="${project.icon}" alt="${project.title}" class="node-icon" />` : ''}
           <span class="node-badge">${project.badge}</span>
         </div>
         <div class="node-title">${project.title}</div>
