@@ -108,6 +108,7 @@ const App: React.FC = () => {
           position: fixed;
           touch-action: none;
           -webkit-overflow-scrolling: touch;
+          background: linear-gradient(180deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
         }
         
         body {
@@ -116,6 +117,7 @@ const App: React.FC = () => {
           display: flex;
           align-items: center;
           justify-content: center;
+          background: linear-gradient(180deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
         }
         
         #root {
@@ -124,6 +126,7 @@ const App: React.FC = () => {
           display: flex;
           align-items: center;
           justify-content: center;
+          background: linear-gradient(180deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
         }
         
         @media (max-width: 768px) {
