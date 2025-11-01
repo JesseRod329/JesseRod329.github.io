@@ -450,17 +450,26 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const scaledWidth = canvasWidth || CANVAS_WIDTH;
-    const scaledHeight = canvasHeight || CANVAS_HEIGHT;
+    // Clear canvas and reset transform
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // sky gradient
-    const gradient = ctx.createLinearGradient(0, 0, 0, scaledHeight);
+    // Get DPR for scaling
+    const dpr = dprRef.current;
+
+    // Scale context: first DPR (for high-DPI), then game coordinate scaling
+    ctx.save();
+    ctx.scale(dpr, dpr);
+    ctx.scale(scaleX, scaleY);
+
+    // sky gradient (using game coordinates)
+    const gradient = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT);
     gradient.addColorStop(0, '#FFE6F0');
     gradient.addColorStop(0.3, '#B0E0E6');
     gradient.addColorStop(0.7, '#E6E6FA');
     gradient.addColorStop(1, '#FFB6C1');
     ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, scaledWidth, scaledHeight);
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     ctx.save();
     ctx.translate(-Math.floor(cameraXRef.current), 0);
@@ -675,20 +684,22 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
       ctx.fill();
     }
 
-    ctx.restore();
+    ctx.restore(); // Restore from camera translate
     
-    // Level complete overlay
+    // Level complete overlay (use game coordinates)
     if (showLevelCompleteRef.current) {
       ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-      ctx.fillRect(0, 0, scaledWidth, scaledHeight);
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
       ctx.fillStyle = '#FFFFFF';
-      ctx.font = `bold ${Math.min(60, scaledWidth / 20)}px Arial`;
+      ctx.font = `bold ${Math.min(60, CANVAS_WIDTH / 20)}px Arial`;
       ctx.textAlign = 'center';
-      ctx.fillText(`LEVEL ${gameState.level} COMPLETE!`, scaledWidth / 2, scaledHeight / 2 - 30);
-      ctx.fillText(`+${gameState.level * 500} Bonus Points!`, scaledWidth / 2, scaledHeight / 2 + 30);
-      ctx.font = `${Math.min(30, scaledWidth / 30)}px Arial`;
-      ctx.fillText('Loading next level...', scaledWidth / 2, scaledHeight / 2 + 80);
+      ctx.fillText(`LEVEL ${gameState.level} COMPLETE!`, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 30);
+      ctx.fillText(`+${gameState.level * 500} Bonus Points!`, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 30);
+      ctx.font = `${Math.min(30, CANVAS_WIDTH / 30)}px Arial`;
+      ctx.fillText('Loading next level...', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 80);
     }
+    
+    ctx.restore(); // Restore from scaleX/scaleY (final restore)
   };
 
   // Resize canvas for responsiveness
@@ -704,38 +715,51 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
 
     const containerRect = container.getBoundingClientRect();
     
-    // Determine orientation
+    // Determine orientation and device type
     const isLandscape = window.innerWidth > window.innerHeight;
     const isDesktop = window.innerWidth > 768;
     
-    // Use actual viewport dimensions for mobile
+    // Use full device pixel ratio (no cap for modern phones with 3x DPR)
+    const dpr = window.devicePixelRatio || 1;
+    dprRef.current = dpr;
+    
+    // For mobile devices, fill the screen properly
     if (isMobile && !isDesktop) {
-      canvasWidth = containerRect.width || window.innerWidth;
-      canvasHeight = containerRect.height || window.innerHeight;
+      // Get actual available viewport dimensions
+      let availableWidth = containerRect.width || window.innerWidth;
+      let availableHeight = containerRect.height || window.innerHeight;
       
-      // Use dynamic viewport height if available
+      // Use visual viewport for accurate mobile dimensions (accounts for browser UI)
       if (window.visualViewport) {
-        canvasHeight = window.visualViewport.height;
+        availableWidth = Math.max(availableWidth, window.visualViewport.width);
+        availableHeight = Math.max(availableHeight, window.visualViewport.height);
+      }
+      
+      // For mobile portrait, fill width and calculate height maintaining aspect ratio
+      if (!isLandscape) {
+        canvasWidth = availableWidth;
+        canvasHeight = (canvasWidth / CANVAS_WIDTH) * CANVAS_HEIGHT;
+        
+        // If calculated height exceeds available space, scale down
+        if (canvasHeight > availableHeight) {
+          canvasHeight = availableHeight;
+          canvasWidth = (canvasHeight / CANVAS_HEIGHT) * CANVAS_WIDTH;
+        }
+      } else {
+        // For mobile landscape, use available space maintaining aspect ratio
+        const aspectRatio = CANVAS_WIDTH / CANVAS_HEIGHT;
+        if (availableWidth / availableHeight > aspectRatio) {
+          canvasHeight = availableHeight;
+          canvasWidth = canvasHeight * aspectRatio;
+        } else {
+          canvasWidth = availableWidth;
+          canvasHeight = canvasWidth / aspectRatio;
+        }
       }
       
       // Ensure we don't exceed viewport
-      canvasWidth = Math.min(canvasWidth, window.innerWidth);
-      canvasHeight = Math.min(canvasHeight, window.innerHeight || containerRect.height);
-      
-      // For landscape, maintain aspect ratio but use available space
-      if (isLandscape) {
-        const maxHeight = containerRect.height;
-        const maxWidth = containerRect.width;
-        const aspectRatio = CANVAS_WIDTH / CANVAS_HEIGHT;
-        
-        if (maxWidth / maxHeight > aspectRatio) {
-          canvasHeight = maxHeight;
-          canvasWidth = maxHeight * aspectRatio;
-        } else {
-          canvasWidth = maxWidth;
-          canvasHeight = maxWidth / aspectRatio;
-        }
-      }
+      canvasWidth = Math.min(canvasWidth, availableWidth);
+      canvasHeight = Math.min(canvasHeight, availableHeight);
     } else {
       // Desktop: maintain aspect ratio, fit to container
       const maxWidth = containerRect.width;
@@ -750,21 +774,26 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
         canvasHeight = maxWidth / aspectRatio;
       }
       
-      // Don't exceed original canvas size
+      // Don't exceed original canvas size on desktop
       canvasWidth = Math.min(canvasWidth, CANVAS_WIDTH);
       canvasHeight = Math.min(canvasHeight, CANVAS_HEIGHT);
     }
 
+    // Calculate scale factors for game coordinate system
     scaleX = canvasWidth / CANVAS_WIDTH;
     scaleY = canvasHeight / CANVAS_HEIGHT;
 
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
-    dprRef.current = dpr;
+    // Set canvas internal size (high-DPI aware)
     canvas.width = canvasWidth * dpr;
     canvas.height = canvasHeight * dpr;
+    
+    // Set canvas display size (CSS pixels)
     canvas.style.width = canvasWidth + 'px';
     canvas.style.height = canvasHeight + 'px';
-    ctx.setTransform(dpr * scaleX, 0, 0, dpr * scaleY, 0, 0);
+    
+    // Scale context for high-DPI rendering (will be reset in render each frame)
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
   }, []);
 
   // set up canvas DPR and responsive sizing
@@ -864,9 +893,8 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
           height: 100%;
           display: block;
           touch-action: none;
-          image-rendering: pixelated;
-          image-rendering: -moz-crisp-edges;
-          image-rendering: crisp-edges;
+          image-rendering: auto;
+          will-change: transform;
         }
         
         @media (orientation: portrait) {
