@@ -704,21 +704,41 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
 
     const containerRect = container.getBoundingClientRect();
     
+    // Determine orientation
+    const isLandscape = window.innerWidth > window.innerHeight;
+    
     // Use actual viewport dimensions for mobile
     if (isMobile) {
-      canvasWidth = window.innerWidth || document.documentElement.clientWidth;
-      canvasHeight = window.innerHeight || document.documentElement.clientHeight;
+      canvasWidth = containerRect.width;
+      canvasHeight = containerRect.height;
       
       // Use dynamic viewport height if available
       if (window.visualViewport) {
-        canvasHeight = window.visualViewport.height;
-      } else {
-        canvasHeight = window.innerHeight;
+        if (isLandscape) {
+          canvasHeight = window.visualViewport.height;
+        } else {
+          canvasHeight = window.visualViewport.height;
+        }
       }
       
       // Ensure we don't exceed viewport
-      canvasWidth = Math.min(canvasWidth, screen.width);
-      canvasHeight = Math.min(canvasHeight, screen.height);
+      canvasWidth = Math.min(canvasWidth, window.innerWidth);
+      canvasHeight = Math.min(canvasHeight, window.innerHeight || containerRect.height);
+      
+      // For landscape, maintain aspect ratio but use available space
+      if (isLandscape) {
+        const maxHeight = containerRect.height;
+        const maxWidth = containerRect.width;
+        const aspectRatio = CANVAS_WIDTH / CANVAS_HEIGHT;
+        
+        if (maxWidth / maxHeight > aspectRatio) {
+          canvasHeight = maxHeight;
+          canvasWidth = maxHeight * aspectRatio;
+        } else {
+          canvasWidth = maxWidth;
+          canvasHeight = maxWidth / aspectRatio;
+        }
+      }
     } else {
       canvasWidth = Math.min(CANVAS_WIDTH, containerRect.width);
       canvasHeight = Math.min(CANVAS_HEIGHT, containerRect.height);
@@ -821,40 +841,37 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
       
       <style>{`
         .game-canvas-container {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 1rem;
           width: 100%;
-          max-width: ${CANVAS_WIDTH}px;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
+        
         .game-canvas {
           width: 100%;
-          max-width: ${CANVAS_WIDTH}px;
-          height: auto;
-          aspect-ratio: ${CANVAS_WIDTH} / ${CANVAS_HEIGHT};
-          border: 4px solid #a78bfa;
-          border-radius: 16px;
-          background: linear-gradient(to bottom, #e0f2fe, #ede9fe);
-          box-shadow: inset 0 0 12px rgba(0,0,0,0.15), 0 20px 40px rgba(0,0,0,0.25);
+          height: 100%;
+          display: block;
           touch-action: none;
+          image-rendering: pixelated;
+          image-rendering: -moz-crisp-edges;
+          image-rendering: crisp-edges;
         }
-        @media (max-width: 768px) {
+        
+        @media (orientation: portrait) {
           .game-canvas {
-            width: 100vw;
-            max-width: 100vw;
-            height: 100vh;
-            height: 100dvh;
-            aspect-ratio: auto;
-            border-radius: 0;
-            border: none;
-          }
-          .game-canvas-container {
-            max-width: 100%;
-            padding: 0;
-            gap: 0.5rem;
+            width: 100%;
+            height: 100%;
           }
         }
+        
+        @media (orientation: landscape) {
+          .game-canvas {
+            width: 100%;
+            height: 100%;
+          }
+        }
+        
         .mobile-controls {
           display: none;
           gap: 12px;
@@ -868,46 +885,83 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
           max-width: 400px;
           justify-content: center;
         }
+        
         @media (max-width: 768px) {
           .mobile-controls {
             display: flex;
           }
         }
+        
+        @media (orientation: landscape) {
+          .mobile-controls {
+            bottom: max(10px, env(safe-area-inset-bottom, 0px));
+            max-width: 350px;
+          }
+        }
+        
         .btn {
-          background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
-          border: 1px solid rgba(0,0,0,0.08);
+          background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+          backdrop-filter: blur(10px);
+          border: 2px solid rgba(255,255,255,0.3);
           color: #1f2937;
-          padding: 12px 16px;
-          border-radius: 9999px;
+          padding: 14px 20px;
+          border-radius: 16px;
           font-weight: 700;
+          font-size: 0.875rem;
           cursor: pointer;
-          box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+          box-shadow: 0 8px 24px rgba(0,0,0,0.2);
           touch-action: manipulation;
           -webkit-tap-highlight-color: transparent;
-          min-width: 70px;
-          min-height: 44px;
+          min-width: 75px;
+          min-height: 50px;
+          transition: all 0.2s;
         }
+        
+        @media (orientation: landscape) {
+          .btn {
+            padding: 12px 18px;
+            min-width: 70px;
+            min-height: 48px;
+            font-size: 0.8rem;
+          }
+        }
+        
         @media (max-width: 480px) {
           .btn {
-            padding: 10px 14px;
-            font-size: 0.9rem;
-            min-width: 60px;
+            padding: 12px 16px;
+            font-size: 0.8rem;
+            min-width: 65px;
+            min-height: 46px;
           }
         }
-        .btn:hover { transform: translateY(-1px); }
-        .btn:active { transform: translateY(1px) scale(0.95); }
-        .jump { background: linear-gradient(135deg, #34d399, #059669); color: white; }
-        .left, .right { background: linear-gradient(135deg, #6b7280, #374151); color: white; }
+        
+        .btn:active { 
+          transform: scale(0.92);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .jump { 
+          background: linear-gradient(135deg, #34d399, #059669); 
+          color: white;
+          box-shadow: 0 8px 24px rgba(52, 211, 153, 0.4);
+        }
+        
+        .jump:active {
+          box-shadow: 0 4px 12px rgba(52, 211, 153, 0.3);
+        }
+        
+        .left, .right { 
+          background: linear-gradient(135deg, #6b7280, #374151); 
+          color: white;
+          box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        
+        .left:active, .right:active {
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
         .game-instructions { 
-          color: #4b5563; 
-          font-size: 0.9rem; 
-          text-align: center;
-          padding: 0 1rem;
-        }
-        @media (max-width: 768px) {
-          .game-instructions {
-            display: none;
-          }
+          display: none;
         }
       `}</style>
     </div>
