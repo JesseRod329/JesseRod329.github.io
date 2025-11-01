@@ -78,7 +78,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
           { x: 1500, y: baseY - 150, w: 180, h: 30, color: '#87CEEB', type: 'normal' },
           { x: 1750, y: baseY - 220, w: 160, h: 30, color: '#FFD700', type: 'normal' },
           { x: 2000, y: baseY - 300, w: 200, h: 30, color: '#FF69B4', type: 'bouncy' },
-          { x: 0, y: baseY + 50, w: 2500, h: 50, color: '#DDA0DD', type: 'ground' }
+          { x: 0, y: baseY + 50, w: 2500, h: 50, color: '#FF4500', type: 'ground' }
         ],
         candies: [
           { x: 400, y: baseY - 150, collected: false, type: 'pink' },
@@ -119,7 +119,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
           { x: 1700, y: baseY - 320, w: 110, h: 25, color: '#FF69B4', type: 'bouncy' },
           { x: 1900, y: baseY - 140, w: 150, h: 25, color: '#87CEEB', type: 'normal' },
           { x: 2130, y: baseY - 260, w: 130, h: 25, color: '#FFD700', type: 'normal' },
-          { x: 0, y: baseY + 50, w: 2500, h: 50, color: '#DDA0DD', type: 'ground' }
+          { x: 0, y: baseY + 50, w: 2500, h: 50, color: '#FF4500', type: 'ground' }
         ],
         candies: [
           { x: 350, y: baseY - 180, collected: false, type: 'yellow' },
@@ -165,7 +165,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
           { x: 1680, y: baseY - 290, w: 90, h: 25, color: '#FFD700', type: 'normal' },
           { x: 1850, y: baseY - 120, w: 110, h: 25, color: '#FF69B4', type: 'normal' },
           { x: 2030, y: baseY - 310, w: 85, h: 25, color: '#87CEEB', type: 'bouncy' },
-          { x: 0, y: baseY + 50, w: 2500, h: 50, color: '#DDA0DD', type: 'ground' }
+          { x: 0, y: baseY + 50, w: 2500, h: 50, color: '#FF4500', type: 'ground' }
         ],
         candies: [
           { x: 280, y: baseY - 200, collected: false, type: 'yellow' },
@@ -337,6 +337,20 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
         player.y + PLAYER_SIZE < pl.y + pl.h + 15 &&
         player.vy > 0
       ) {
+        // Lava floor kills the player
+        if (pl.type === 'ground') {
+          createParticles(player.x + PLAYER_SIZE / 2, player.y + PLAYER_SIZE, '#FF4500');
+          const newLives = Math.max(0, gameState.lives - 1);
+          onGameStateChange({ lives: newLives });
+          if (newLives <= 0) {
+            onGameStateChange({ isPlaying: false, isGameOver: true });
+          } else {
+            // Reset player position
+            player.x = 100; player.y = 300; player.vx = 0; player.vy = 0;
+          }
+          return;
+        }
+        
         player.y = pl.y - PLAYER_SIZE;
         if (pl.type === 'bouncy') {
           player.vy = JUMP_FORCE * 1.3;
@@ -436,34 +450,72 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const scaledWidth = canvasWidth || CANVAS_WIDTH;
-    const scaledHeight = canvasHeight || CANVAS_HEIGHT;
+    // Clear canvas and reset transform
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // sky gradient
-    const gradient = ctx.createLinearGradient(0, 0, 0, scaledHeight);
+    // Get DPR for scaling
+    const dpr = dprRef.current;
+
+    // Scale context: first DPR (for high-DPI), then game coordinate scaling
+    ctx.save();
+    ctx.scale(dpr, dpr);
+    ctx.scale(scaleX, scaleY);
+
+    // sky gradient (using game coordinates)
+    const gradient = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT);
     gradient.addColorStop(0, '#FFE6F0');
     gradient.addColorStop(0.3, '#B0E0E6');
     gradient.addColorStop(0.7, '#E6E6FA');
     gradient.addColorStop(1, '#FFB6C1');
     ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, scaledWidth, scaledHeight);
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     ctx.save();
     ctx.translate(-Math.floor(cameraXRef.current), 0);
 
     // platforms
     platformsRef.current.forEach(pl => {
-      ctx.fillStyle = pl.color;
-      ctx.shadowColor = 'rgba(0,0,0,0.25)';
-      ctx.shadowBlur = 12;
-      ctx.fillRect(pl.x, pl.y, pl.w, pl.h);
-      ctx.shadowBlur = 0;
-      if (pl.type === 'bouncy') {
-        ctx.fillStyle = 'rgba(255,255,255,0.5)';
-        for (let i = 0; i < 3; i++) {
+      if (pl.type === 'ground') {
+        // Lava floor with animated gradient
+        const time = Date.now() * 0.001;
+        const gradient = ctx.createLinearGradient(pl.x, pl.y, pl.x, pl.y + pl.h);
+        gradient.addColorStop(0, '#FF6B35');
+        gradient.addColorStop(0.3, '#FF4500');
+        gradient.addColorStop(0.6, '#DC143C');
+        gradient.addColorStop(1, '#8B0000');
+        ctx.fillStyle = gradient;
+        ctx.shadowColor = '#FF4500';
+        ctx.shadowBlur = 20;
+        ctx.fillRect(pl.x, pl.y, pl.w, pl.h);
+        ctx.shadowBlur = 0;
+        
+        // Add lava bubbles/particles
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+        for (let i = 0; i < 20; i++) {
+          const x = pl.x + (i * pl.w / 20) + Math.sin(time + i) * 5;
+          const y = pl.y + pl.h / 2 + Math.cos(time * 2 + i) * 3;
           ctx.beginPath();
-          ctx.arc(pl.x + pl.w / 4 + i * pl.w / 4, pl.y + 15, 5, 0, Math.PI * 2);
+          ctx.arc(x, y, 3 + Math.sin(time + i) * 2, 0, Math.PI * 2);
           ctx.fill();
+        }
+        
+        // Add glowing effect
+        ctx.fillStyle = 'rgba(255, 69, 0, 0.4)';
+        ctx.fillRect(pl.x, pl.y - 5, pl.w, 5);
+      } else {
+        ctx.fillStyle = pl.color;
+        ctx.shadowColor = 'rgba(0,0,0,0.25)';
+        ctx.shadowBlur = 12;
+        ctx.fillRect(pl.x, pl.y, pl.w, pl.h);
+        ctx.shadowBlur = 0;
+        if (pl.type === 'bouncy') {
+          ctx.fillStyle = 'rgba(255,255,255,0.5)';
+          for (let i = 0; i < 3; i++) {
+            ctx.beginPath();
+            ctx.arc(pl.x + pl.w / 4 + i * pl.w / 4, pl.y + 15, 5, 0, Math.PI * 2);
+            ctx.fill();
+          }
         }
       }
     });
@@ -632,20 +684,22 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
       ctx.fill();
     }
 
-    ctx.restore();
+    ctx.restore(); // Restore from camera translate
     
-    // Level complete overlay
+    // Level complete overlay (use game coordinates)
     if (showLevelCompleteRef.current) {
       ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-      ctx.fillRect(0, 0, scaledWidth, scaledHeight);
+      ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
       ctx.fillStyle = '#FFFFFF';
-      ctx.font = `bold ${Math.min(60, scaledWidth / 20)}px Arial`;
+      ctx.font = `bold ${Math.min(60, CANVAS_WIDTH / 20)}px Arial`;
       ctx.textAlign = 'center';
-      ctx.fillText(`LEVEL ${gameState.level} COMPLETE!`, scaledWidth / 2, scaledHeight / 2 - 30);
-      ctx.fillText(`+${gameState.level * 500} Bonus Points!`, scaledWidth / 2, scaledHeight / 2 + 30);
-      ctx.font = `${Math.min(30, scaledWidth / 30)}px Arial`;
-      ctx.fillText('Loading next level...', scaledWidth / 2, scaledHeight / 2 + 80);
+      ctx.fillText(`LEVEL ${gameState.level} COMPLETE!`, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 30);
+      ctx.fillText(`+${gameState.level * 500} Bonus Points!`, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 30);
+      ctx.font = `${Math.min(30, CANVAS_WIDTH / 30)}px Arial`;
+      ctx.fillText('Loading next level...', CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 + 80);
     }
+    
+    ctx.restore(); // Restore from scaleX/scaleY (final restore)
   };
 
   // Resize canvas for responsiveness
@@ -661,52 +715,85 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
 
     const containerRect = container.getBoundingClientRect();
     
-    // Use actual viewport dimensions for mobile
-    if (isMobile) {
-      canvasWidth = window.innerWidth || document.documentElement.clientWidth;
+    // Determine orientation and device type
+    const isLandscape = window.innerWidth > window.innerHeight;
+    const isDesktop = window.innerWidth > 768;
+    
+    // Use full device pixel ratio (no cap for modern phones with 3x DPR)
+    const dpr = window.devicePixelRatio || 1;
+    dprRef.current = dpr;
+    
+    // For mobile devices, fill the screen properly
+    if (isMobile && !isDesktop) {
+      // Get actual available viewport dimensions
+      let availableWidth = containerRect.width || window.innerWidth;
+      let availableHeight = containerRect.height || window.innerHeight;
       
-      // Use container height if available (accounting for header UI)
-      if (containerRect.height > 0) {
-        canvasHeight = containerRect.height;
-      } else {
-        // Fallback to viewport height
-        canvasHeight = window.innerHeight || document.documentElement.clientHeight;
+      // Use visual viewport for accurate mobile dimensions (accounts for browser UI)
+      if (window.visualViewport) {
+        availableWidth = Math.max(availableWidth, window.visualViewport.width);
+        availableHeight = Math.max(availableHeight, window.visualViewport.height);
+      }
+      
+      // For mobile portrait, fill width and calculate height maintaining aspect ratio
+      if (!isLandscape) {
+        canvasWidth = availableWidth;
+        canvasHeight = (canvasWidth / CANVAS_WIDTH) * CANVAS_HEIGHT;
         
-        // Use dynamic viewport height if available
-        if (window.visualViewport) {
-          canvasHeight = window.visualViewport.height;
+        // If calculated height exceeds available space, scale down
+        if (canvasHeight > availableHeight) {
+          canvasHeight = availableHeight;
+          canvasWidth = (canvasHeight / CANVAS_HEIGHT) * CANVAS_WIDTH;
         }
-        
-        // Account for header UI (approximately 120px)
-        canvasHeight = Math.max(400, canvasHeight - 120);
+      } else {
+        // For mobile landscape, use available space maintaining aspect ratio
+        const aspectRatio = CANVAS_WIDTH / CANVAS_HEIGHT;
+        if (availableWidth / availableHeight > aspectRatio) {
+          canvasHeight = availableHeight;
+          canvasWidth = canvasHeight * aspectRatio;
+        } else {
+          canvasWidth = availableWidth;
+          canvasHeight = canvasWidth / aspectRatio;
+        }
       }
       
       // Ensure we don't exceed viewport
-      canvasWidth = Math.min(canvasWidth, screen.width);
-      canvasHeight = Math.min(canvasHeight, screen.height);
+      canvasWidth = Math.min(canvasWidth, availableWidth);
+      canvasHeight = Math.min(canvasHeight, availableHeight);
     } else {
-      // Use full container width for desktop, maintain aspect ratio
-      canvasWidth = Math.max(CANVAS_WIDTH, containerRect.width || window.innerWidth);
-      canvasHeight = (canvasWidth / CANVAS_WIDTH) * CANVAS_HEIGHT;
+      // Desktop: maintain aspect ratio, fit to container
+      const maxWidth = containerRect.width;
+      const maxHeight = containerRect.height;
+      const aspectRatio = CANVAS_WIDTH / CANVAS_HEIGHT;
       
-      // Ensure we don't exceed viewport height
-      const maxHeight = window.innerHeight * 0.8; // Leave some space for UI
-      if (canvasHeight > maxHeight) {
+      if (maxWidth / maxHeight > aspectRatio) {
         canvasHeight = maxHeight;
-        canvasWidth = (canvasHeight / CANVAS_HEIGHT) * CANVAS_WIDTH;
+        canvasWidth = maxHeight * aspectRatio;
+      } else {
+        canvasWidth = maxWidth;
+        canvasHeight = maxWidth / aspectRatio;
       }
+      
+      // Don't exceed original canvas size on desktop
+      canvasWidth = Math.min(canvasWidth, CANVAS_WIDTH);
+      canvasHeight = Math.min(canvasHeight, CANVAS_HEIGHT);
     }
 
+    // Calculate scale factors for game coordinate system
     scaleX = canvasWidth / CANVAS_WIDTH;
     scaleY = canvasHeight / CANVAS_HEIGHT;
 
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
-    dprRef.current = dpr;
+    // Set canvas internal size (high-DPI aware)
     canvas.width = canvasWidth * dpr;
     canvas.height = canvasHeight * dpr;
+    
+    // Set canvas display size (CSS pixels)
     canvas.style.width = canvasWidth + 'px';
     canvas.style.height = canvasHeight + 'px';
-    ctx.setTransform(dpr * scaleX, 0, 0, dpr * scaleY, 0, 0);
+    
+    // Scale context for high-DPI rendering (will be reset in render each frame)
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
   }, []);
 
   // set up canvas DPR and responsive sizing
@@ -794,95 +881,141 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
       
       <style>{`
         .game-canvas-container {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 1rem;
           width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
+        
         .game-canvas {
           width: 100%;
-          height: auto;
-          aspect-ratio: ${CANVAS_WIDTH} / ${CANVAS_HEIGHT};
-          min-height: 400px;
-          border: 4px solid #a78bfa;
-          border-radius: 16px;
-          background: linear-gradient(to bottom, #e0f2fe, #ede9fe);
-          box-shadow: inset 0 0 12px rgba(0,0,0,0.15), 0 20px 40px rgba(0,0,0,0.25);
+          height: 100%;
+          display: block;
           touch-action: none;
+          image-rendering: auto;
+          will-change: transform;
         }
-        @media (max-width: 768px) {
+        
+        @media (orientation: portrait) {
           .game-canvas {
-            width: 100vw;
-            max-width: 100vw;
-            height: auto;
-            aspect-ratio: auto;
-            border-radius: 0;
-            border: none;
-            min-height: unset;
-          }
-          .game-canvas-container {
-            max-width: 100%;
-            padding: 0;
-            gap: 0;
-            width: 100vw;
+            width: 100%;
             height: 100%;
-            flex: 1;
           }
         }
+        
+        @media (orientation: landscape) {
+          .game-canvas {
+            width: 100%;
+            height: 100%;
+          }
+        }
+        
         .mobile-controls {
           display: none;
-          gap: 12px;
+          gap: 8px;
           position: fixed;
-          bottom: max(20px, env(safe-area-inset-bottom, 0px));
+          bottom: max(8px, env(safe-area-inset-bottom, 0px));
           left: 50%;
           transform: translateX(-50%);
           z-index: 100;
-          padding: 0 20px;
+          padding: 0 12px;
           width: 100%;
-          max-width: 400px;
+          max-width: 360px;
           justify-content: center;
         }
+        
         @media (max-width: 768px) {
           .mobile-controls {
             display: flex;
           }
         }
+        
+        @media (orientation: landscape) {
+          .mobile-controls {
+            bottom: max(6px, env(safe-area-inset-bottom, 0px));
+            max-width: 320px;
+            gap: 6px;
+          }
+        }
+        
         .btn {
-          background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
-          border: 1px solid rgba(0,0,0,0.08);
+          background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+          backdrop-filter: blur(10px);
+          border: 2px solid rgba(255,255,255,0.3);
           color: #1f2937;
-          padding: 12px 16px;
-          border-radius: 9999px;
+          padding: 8px 14px;
+          border-radius: 12px;
           font-weight: 700;
+          font-size: 0.75rem;
           cursor: pointer;
-          box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.25);
           touch-action: manipulation;
           -webkit-tap-highlight-color: transparent;
-          min-width: 70px;
-          min-height: 44px;
+          min-width: 60px;
+          min-height: 38px;
+          transition: all 0.15s;
+          flex: 1;
+          max-width: 90px;
         }
+        
+        @media (orientation: landscape) {
+          .btn {
+            padding: 6px 12px;
+            min-width: 55px;
+            min-height: 36px;
+            font-size: 0.7rem;
+            max-width: 80px;
+          }
+        }
+        
         @media (max-width: 480px) {
           .btn {
-            padding: 10px 14px;
-            font-size: 0.9rem;
-            min-width: 60px;
+            padding: 8px 12px;
+            font-size: 0.7rem;
+            min-width: 55px;
+            min-height: 36px;
+            max-width: 85px;
           }
         }
-        .btn:hover { transform: translateY(-1px); }
-        .btn:active { transform: translateY(1px) scale(0.95); }
-        .jump { background: linear-gradient(135deg, #34d399, #059669); color: white; }
-        .left, .right { background: linear-gradient(135deg, #6b7280, #374151); color: white; }
+        
+        @media (max-width: 375px) {
+          .btn {
+            padding: 6px 10px;
+            font-size: 0.65rem;
+            min-width: 50px;
+            min-height: 34px;
+            max-width: 75px;
+          }
+        }
+        
+        .btn:active { 
+          transform: scale(0.92);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .jump { 
+          background: linear-gradient(135deg, #34d399, #059669); 
+          color: white;
+          box-shadow: 0 8px 24px rgba(52, 211, 153, 0.4);
+        }
+        
+        .jump:active {
+          box-shadow: 0 4px 12px rgba(52, 211, 153, 0.3);
+        }
+        
+        .left, .right { 
+          background: linear-gradient(135deg, #6b7280, #374151); 
+          color: white;
+          box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        
+        .left:active, .right:active {
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
         .game-instructions { 
-          color: #4b5563; 
-          font-size: 0.9rem; 
-          text-align: center;
-          padding: 0 1rem;
-        }
-        @media (max-width: 768px) {
-          .game-instructions {
-            display: none;
-          }
+          display: none;
         }
       `}</style>
     </div>

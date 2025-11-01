@@ -1,0 +1,66 @@
+{
+  "expo": {
+    "name": "WaveOS",
+    "slug": "waveos",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.waveos.app",
+      "infoPlist": {
+        "NSBluetoothAlwaysUsageDescription": "WaveOS needs Bluetooth to detect nearby users and connect.",
+        "NSBluetoothPeripheralUsageDescription": "WaveOS uses Bluetooth to broadcast your presence to nearby users.",
+        "NSLocationWhenInUseUsageDescription": "WaveOS needs location to manage ghost zones where you don't want to be discoverable.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "WaveOS needs location to manage ghost zones where you don't want to be discoverable.",
+        "UIBackgroundModes": [
+          "bluetooth-central",
+          "bluetooth-peripheral",
+          "location"
+        ]
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.waveos.app",
+      "permissions": [
+        "android.permission.BLUETOOTH",
+        "android.permission.BLUETOOTH_ADMIN",
+        "android.permission.BLUETOOTH_SCAN",
+        "android.permission.BLUETOOTH_ADVERTISE",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "WaveOS needs location to manage ghost zones where you don't want to be discoverable."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "YOUR_EAS_PROJECT_ID"
+      }
+    }
+  }
+}
+
+

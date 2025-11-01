@@ -783,21 +783,24 @@ function gameOver() {
 function drawNotebookBackground() {
     const intensity = getColorIntensity();
     
-    // Paper texture
-    ctx.fillStyle = '#fefefe';
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    // Transparent paper - only show lines, not solid background
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     
-    // Sketchy margin line
-    ctx.strokeStyle = applyColorProgression('#ff6b6b', intensity);
-    ctx.lineWidth = 2 * Math.min(scaleX, scaleY);
+    // Sketchy margin line (pencil sketch style)
+    ctx.strokeStyle = applyColorProgression('#8B7355', intensity); // Brown pencil color
+    ctx.lineWidth = 1.5 * Math.min(scaleX, scaleY);
+    ctx.setLineDash([2 * Math.min(scaleX, scaleY), 1 * Math.min(scaleX, scaleY)]);
+    ctx.lineDashOffset = Math.sin(gameTime * 0.1) * 0.5;
     ctx.beginPath();
     ctx.moveTo(MARGIN_X * scaleX, 0);
     ctx.lineTo(MARGIN_X * scaleX, canvasHeight);
     ctx.stroke();
+    ctx.setLineDash([]);
     
-    // Notebook lines (hand-drawn style)
-    ctx.strokeStyle = applyColorProgression('#e0e0e0', intensity);
-    ctx.lineWidth = 1 * Math.min(scaleX, scaleY);
+    // Notebook lines (hand-drawn pencil style)
+    ctx.strokeStyle = applyColorProgression('#D3C9B8', intensity); // Light pencil gray
+    ctx.lineWidth = 0.8 * Math.min(scaleX, scaleY);
+    ctx.globalAlpha = 0.6; // Lighter for transparency
     const scaledSpacing = LINE_SPACING * scaleY;
     for (let y = scaledSpacing; y < canvasHeight; y += scaledSpacing) {
         // Add slight wobble for hand-drawn effect
@@ -810,26 +813,29 @@ function drawNotebookBackground() {
         }
         ctx.stroke();
     }
+    ctx.globalAlpha = 1;
     
-    // Distance markers
+    // Distance markers (pencil style)
     const markerSpacing = 200 * scaleX;
     const currentMarker = Math.floor((canvasWidth - plane.x) / markerSpacing);
+    ctx.strokeStyle = applyColorProgression('#B8A082', intensity);
+    ctx.lineWidth = 0.8 * Math.min(scaleX, scaleY);
+    ctx.globalAlpha = 0.5;
     for (let i = 0; i < 5; i++) {
         const x = plane.x + (currentMarker + i) * markerSpacing;
         if (x > 0 && x < canvasWidth) {
-            ctx.strokeStyle = applyColorProgression('#bbb', intensity);
-            ctx.lineWidth = 1 * Math.min(scaleX, scaleY);
             ctx.beginPath();
             ctx.moveTo(x, 0);
             ctx.lineTo(x, canvasHeight);
             ctx.stroke();
             
             const meters = Math.floor(distance) + Math.floor((x - plane.x) / markerSpacing * 10);
-            ctx.fillStyle = applyColorProgression('#999', intensity);
-            ctx.font = `${12 * Math.min(scaleX, scaleY)}px cursive`;
+            ctx.fillStyle = applyColorProgression('#8B7355', intensity);
+            ctx.font = `${11 * Math.min(scaleX, scaleY)}px cursive`;
             ctx.fillText(meters + 'm', x + 5 * scaleX, 15 * scaleY);
         }
     }
+    ctx.globalAlpha = 1;
 }
 
 function drawPlane() {
@@ -851,38 +857,77 @@ function drawPlane() {
         ctx.globalAlpha = 1;
     }
     
-    // Hand-drawn paper plane
-    ctx.strokeStyle = applyColorProgression('#333', intensity);
-    ctx.fillStyle = applyColorProgression('#fff', intensity);
-    ctx.lineWidth = 2 * size;
+    // Classic paper airplane from school days - pencil sketch style
+    ctx.strokeStyle = applyColorProgression('#2C1810', intensity); // Dark pencil/charcoal color
+    ctx.lineWidth = 2.5 * size;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
     
-    const planeSize = 20 * size;
-    const wingSize = 8 * size;
+    const planeSize = 25 * size;
+    const wingWidth = 12 * size;
     
-    // Main body
+    // Classic folded paper airplane shape
+    // Draw with slight wobble for hand-drawn pencil effect
+    const wobble = Math.sin(gameTime * 2) * 0.3 * size;
+    
     ctx.beginPath();
-    ctx.moveTo(-planeSize, 0);
-    ctx.lineTo(0, -wingSize);
+    // Nose (pointed front)
+    ctx.moveTo(planeSize, 0);
+    // Top wing - left side
+    ctx.lineTo(planeSize * 0.3 + wobble, -wingWidth * 0.9);
+    ctx.lineTo(planeSize * 0.1 + wobble * 0.5, -wingWidth);
+    // Top wing - right side
+    ctx.lineTo(-planeSize * 0.2 + wobble, -wingWidth * 0.7);
+    ctx.lineTo(-planeSize * 0.1 + wobble * 0.5, -wingWidth * 0.5);
+    // Center body line
+    ctx.lineTo(0, 0);
+    // Bottom wing - left side
+    ctx.lineTo(-planeSize * 0.1 - wobble * 0.5, wingWidth * 0.5);
+    ctx.lineTo(-planeSize * 0.2 - wobble, wingWidth * 0.7);
+    // Bottom wing - right side
+    ctx.lineTo(planeSize * 0.1 - wobble * 0.5, wingWidth);
+    ctx.lineTo(planeSize * 0.3 - wobble, wingWidth * 0.9);
+    // Back to nose
     ctx.lineTo(planeSize, 0);
-    ctx.lineTo(0, wingSize);
-    ctx.closePath();
-    ctx.fill();
     ctx.stroke();
+    
+    // Add fold lines (like creases in folded paper)
+    ctx.lineWidth = 1.5 * size;
+    ctx.globalAlpha = 0.6;
+    ctx.strokeStyle = applyColorProgression('#4A3A2A', intensity); // Slightly lighter for fold lines
     
     // Center fold line
     ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(0, -wingSize);
+    ctx.moveTo(planeSize, 0);
+    const foldWobble = Math.sin(gameTime * 3) * 0.2 * size;
+    ctx.lineTo(planeSize * 0.2 + foldWobble, 0);
+    ctx.lineTo(0, 0);
     ctx.stroke();
     
-    // Sketchy details
+    // Wing fold lines
     ctx.beginPath();
-    ctx.moveTo(-15 * size, 2 * size);
-    ctx.lineTo(-10 * size, 0);
-    ctx.moveTo(15 * size, 2 * size);
-    ctx.lineTo(10 * size, 0);
+    // Top wing fold
+    ctx.moveTo(planeSize * 0.3 + wobble, -wingWidth * 0.9);
+    ctx.lineTo(planeSize * 0.15 + wobble * 0.5, -wingWidth * 0.7);
+    ctx.lineTo(-planeSize * 0.1 + wobble * 0.5, -wingWidth * 0.5);
+    // Bottom wing fold
+    ctx.moveTo(planeSize * 0.3 - wobble, wingWidth * 0.9);
+    ctx.lineTo(planeSize * 0.15 - wobble * 0.5, wingWidth * 0.7);
+    ctx.lineTo(-planeSize * 0.1 - wobble * 0.5, wingWidth * 0.5);
     ctx.stroke();
     
+    // Add some sketchy detail lines for texture
+    ctx.globalAlpha = 0.4;
+    ctx.lineWidth = 0.8 * size;
+    ctx.beginPath();
+    // Small details on wings
+    ctx.moveTo(planeSize * 0.2, -wingWidth * 0.6);
+    ctx.lineTo(planeSize * 0.05, -wingWidth * 0.8);
+    ctx.moveTo(planeSize * 0.2, wingWidth * 0.6);
+    ctx.lineTo(planeSize * 0.05, wingWidth * 0.8);
+    ctx.stroke();
+    
+    ctx.globalAlpha = 1;
     ctx.restore();
 }
 
@@ -1100,6 +1145,9 @@ function render() {
 }
 
 function gameLoop() {
+    // Always render, even during start screen
+    render();
+    
     if (gameState === 'playing') {
         const { obstacleSpawnRate, coinSpawnRate, windSpawnRate, powerupSpawnRate } = updateDifficulty();
         
@@ -1144,7 +1192,6 @@ function gameLoop() {
         score = Math.floor(distance / 10) + coins * 10;
     }
     
-    render();
     requestAnimationFrame(gameLoop);
 }
 
