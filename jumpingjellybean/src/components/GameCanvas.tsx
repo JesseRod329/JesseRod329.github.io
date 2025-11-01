@@ -78,7 +78,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
           { x: 1500, y: baseY - 150, w: 180, h: 30, color: '#87CEEB', type: 'normal' },
           { x: 1750, y: baseY - 220, w: 160, h: 30, color: '#FFD700', type: 'normal' },
           { x: 2000, y: baseY - 300, w: 200, h: 30, color: '#FF69B4', type: 'bouncy' },
-          { x: 0, y: baseY + 50, w: 2500, h: 50, color: '#DDA0DD', type: 'ground' }
+          { x: 0, y: baseY + 50, w: 2500, h: 50, color: '#FF4500', type: 'ground' }
         ],
         candies: [
           { x: 400, y: baseY - 150, collected: false, type: 'pink' },
@@ -119,7 +119,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
           { x: 1700, y: baseY - 320, w: 110, h: 25, color: '#FF69B4', type: 'bouncy' },
           { x: 1900, y: baseY - 140, w: 150, h: 25, color: '#87CEEB', type: 'normal' },
           { x: 2130, y: baseY - 260, w: 130, h: 25, color: '#FFD700', type: 'normal' },
-          { x: 0, y: baseY + 50, w: 2500, h: 50, color: '#DDA0DD', type: 'ground' }
+          { x: 0, y: baseY + 50, w: 2500, h: 50, color: '#FF4500', type: 'ground' }
         ],
         candies: [
           { x: 350, y: baseY - 180, collected: false, type: 'yellow' },
@@ -165,7 +165,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
           { x: 1680, y: baseY - 290, w: 90, h: 25, color: '#FFD700', type: 'normal' },
           { x: 1850, y: baseY - 120, w: 110, h: 25, color: '#FF69B4', type: 'normal' },
           { x: 2030, y: baseY - 310, w: 85, h: 25, color: '#87CEEB', type: 'bouncy' },
-          { x: 0, y: baseY + 50, w: 2500, h: 50, color: '#DDA0DD', type: 'ground' }
+          { x: 0, y: baseY + 50, w: 2500, h: 50, color: '#FF4500', type: 'ground' }
         ],
         candies: [
           { x: 280, y: baseY - 200, collected: false, type: 'yellow' },
@@ -337,6 +337,20 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
         player.y + PLAYER_SIZE < pl.y + pl.h + 15 &&
         player.vy > 0
       ) {
+        // Lava floor kills the player
+        if (pl.type === 'ground') {
+          createParticles(player.x + PLAYER_SIZE / 2, player.y + PLAYER_SIZE, '#FF4500');
+          const newLives = Math.max(0, gameState.lives - 1);
+          onGameStateChange({ lives: newLives });
+          if (newLives <= 0) {
+            onGameStateChange({ isPlaying: false, isGameOver: true });
+          } else {
+            // Reset player position
+            player.x = 100; player.y = 300; player.vx = 0; player.vy = 0;
+          }
+          return;
+        }
+        
         player.y = pl.y - PLAYER_SIZE;
         if (pl.type === 'bouncy') {
           player.vy = JUMP_FORCE * 1.3;
@@ -453,17 +467,46 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
 
     // platforms
     platformsRef.current.forEach(pl => {
-      ctx.fillStyle = pl.color;
-      ctx.shadowColor = 'rgba(0,0,0,0.25)';
-      ctx.shadowBlur = 12;
-      ctx.fillRect(pl.x, pl.y, pl.w, pl.h);
-      ctx.shadowBlur = 0;
-      if (pl.type === 'bouncy') {
-        ctx.fillStyle = 'rgba(255,255,255,0.5)';
-        for (let i = 0; i < 3; i++) {
+      if (pl.type === 'ground') {
+        // Lava floor with animated gradient
+        const time = Date.now() * 0.001;
+        const gradient = ctx.createLinearGradient(pl.x, pl.y, pl.x, pl.y + pl.h);
+        gradient.addColorStop(0, '#FF6B35');
+        gradient.addColorStop(0.3, '#FF4500');
+        gradient.addColorStop(0.6, '#DC143C');
+        gradient.addColorStop(1, '#8B0000');
+        ctx.fillStyle = gradient;
+        ctx.shadowColor = '#FF4500';
+        ctx.shadowBlur = 20;
+        ctx.fillRect(pl.x, pl.y, pl.w, pl.h);
+        ctx.shadowBlur = 0;
+        
+        // Add lava bubbles/particles
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+        for (let i = 0; i < 20; i++) {
+          const x = pl.x + (i * pl.w / 20) + Math.sin(time + i) * 5;
+          const y = pl.y + pl.h / 2 + Math.cos(time * 2 + i) * 3;
           ctx.beginPath();
-          ctx.arc(pl.x + pl.w / 4 + i * pl.w / 4, pl.y + 15, 5, 0, Math.PI * 2);
+          ctx.arc(x, y, 3 + Math.sin(time + i) * 2, 0, Math.PI * 2);
           ctx.fill();
+        }
+        
+        // Add glowing effect
+        ctx.fillStyle = 'rgba(255, 69, 0, 0.4)';
+        ctx.fillRect(pl.x, pl.y - 5, pl.w, 5);
+      } else {
+        ctx.fillStyle = pl.color;
+        ctx.shadowColor = 'rgba(0,0,0,0.25)';
+        ctx.shadowBlur = 12;
+        ctx.fillRect(pl.x, pl.y, pl.w, pl.h);
+        ctx.shadowBlur = 0;
+        if (pl.type === 'bouncy') {
+          ctx.fillStyle = 'rgba(255,255,255,0.5)';
+          for (let i = 0; i < 3; i++) {
+            ctx.beginPath();
+            ctx.arc(pl.x + pl.w / 4 + i * pl.w / 4, pl.y + 15, 5, 0, Math.PI * 2);
+            ctx.fill();
+          }
         }
       }
     });
