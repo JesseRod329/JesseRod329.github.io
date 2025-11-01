@@ -1,0 +1,16 @@
+{
+  "name": "wrestling-ratings-scraper",
+  "version": "1.0.0",
+  "description": "Scraper for WWE, AEW, and TNA cable ratings data",
+  "main": "scraper.js",
+  "scripts": {
+    "scrape": "node scraper.js",
+    "update-data": "node scraper.js && node process-data.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.1.2",
+    "fs": "^0.0.1-security",
+    "puppeteer": "^21.11.0"
+  },
+  "type": "module"
+}
