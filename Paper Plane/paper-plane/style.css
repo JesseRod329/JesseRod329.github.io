@@ -15,7 +15,7 @@ html {
 
 body {
     font-family: 'Comic Sans MS', 'Marker Felt', 'Chalkboard', cursive;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #f5f5dc 0%, #fff8dc 50%, #f5f5dc 100%);
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -33,9 +33,9 @@ body {
 
 .game-container {
     position: relative;
-    background: #fff;
+    background: transparent;
     border-radius: 8px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     width: 100%;
     max-width: 1200px;
@@ -46,7 +46,7 @@ body {
 
 #gameCanvas {
     display: block;
-    background: #fefefe;
+    background: transparent;
     width: 100%;
     height: 100%;
     touch-action: none;
