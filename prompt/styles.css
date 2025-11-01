@@ -85,6 +85,43 @@ a:hover {
   box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.1);
 }
 
+.filter-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  appearance: none;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.65);
+  color: var(--text);
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.filter-btn:hover {
+  border-color: var(--accent);
+  background: rgba(250, 204, 21, 0.1);
+  transform: translateY(-1px);
+}
+
+.filter-btn.active {
+  background: linear-gradient(135deg, rgba(250, 204, 21, 0.85), rgba(251, 191, 36, 0.85));
+  color: #0f172a;
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+.filter-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.2);
+}
+
 .cards {
   display: grid;
   gap: 24px;

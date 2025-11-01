@@ -1,9 +1,44 @@
 const state = {
   query: '',
   author: 'all',
+  filter: 'all', // 'all', 'recently-added', 'favorites'
 };
 
 let allCases = [];
+
+// Favorites management
+function getFavorites() {
+  try {
+    const stored = localStorage.getItem('prompt-favorites');
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+}
+
+function setFavorites(favorites) {
+  try {
+    localStorage.setItem('prompt-favorites', JSON.stringify(favorites));
+  } catch {
+    // Ignore localStorage errors
+  }
+}
+
+function toggleFavorite(caseId) {
+  const favorites = getFavorites();
+  const index = favorites.indexOf(caseId);
+  if (index > -1) {
+    favorites.splice(index, 1);
+  } else {
+    favorites.push(caseId);
+  }
+  setFavorites(favorites);
+  return favorites;
+}
+
+function isFavorite(caseId) {
+  return getFavorites().includes(caseId);
+}
 
 function createElement(tag, className, textContent) {
   const el = document.createElement(tag);
@@ -164,6 +199,7 @@ function formatPreviewText(text, limit = 240) {
 
 function renderCard(entry) {
   const card = createElement('article', 'card');
+  card.dataset.caseId = entry.id;
 
   if (entry.image) {
     const figure = createElement('figure', 'preview');
@@ -176,10 +212,60 @@ function renderCard(entry) {
   }
 
   const header = createElement('header', 'card-header');
+  const titleRow = createElement('div');
+  titleRow.style.display = 'flex';
+  titleRow.style.justifyContent = 'space-between';
+  titleRow.style.alignItems = 'flex-start';
+  titleRow.style.gap = '12px';
+  
+  const titleWrapper = createElement('div');
+  titleWrapper.style.flex = '1';
   const title = createElement('h2', null, entry.title || `Case ${entry.id}`);
   const tag = createElement('span', 'tag', `Case ${entry.id}`);
   title.appendChild(tag);
-  header.append(title);
+  titleWrapper.appendChild(title);
+  titleRow.appendChild(titleWrapper);
+
+  // Star button
+  const starButton = document.createElement('button');
+  starButton.type = 'button';
+  starButton.className = 'star-btn';
+  starButton.setAttribute('aria-label', 'Toggle favorite');
+  starButton.innerHTML = isFavorite(entry.id) ? '★' : '☆';
+  starButton.style.cssText = `
+    background: transparent;
+    border: none;
+    color: ${isFavorite(entry.id) ? 'var(--accent)' : 'var(--muted)'};
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s ease, color 0.15s ease;
+    flex-shrink: 0;
+  `;
+  starButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const favorites = toggleFavorite(entry.id);
+    starButton.innerHTML = favorites.includes(entry.id) ? '★' : '☆';
+    starButton.style.color = favorites.includes(entry.id) ? 'var(--accent)' : 'var(--muted)';
+    // If we're on favorites filter, refresh
+    if (state.filter === 'favorites') {
+      applyFilters(document.querySelector('.cards'));
+    }
+  });
+  starButton.addEventListener('mouseenter', () => {
+    starButton.style.transform = 'scale(1.2)';
+  });
+  starButton.addEventListener('mouseleave', () => {
+    starButton.style.transform = 'scale(1)';
+  });
+  titleRow.appendChild(starButton);
+  
+  header.appendChild(titleRow);
 
   const meta = createElement('div', 'meta');
   if (entry.author) {
@@ -223,7 +309,15 @@ async function loadCases() {
     throw new Error(`Failed to load cases.json: ${response.status}`);
   }
   const data = await response.json();
-  return Array.isArray(data?.cases) ? data.cases : [];
+  const cases = Array.isArray(data?.cases) ? data.cases : [];
+  // Sort: new cases (id > 100) first, then by id descending
+  return cases.sort((a, b) => {
+    const aIsNew = a.id > 100;
+    const bIsNew = b.id > 100;
+    if (aIsNew && !bIsNew) return -1;
+    if (!aIsNew && bIsNew) return 1;
+    return b.id - a.id; // Descending by id
+  });
 }
 
 function renderCards(container, entries) {
@@ -262,9 +356,22 @@ function matchesAuthor(entry, author) {
   return authorValue === author.toLowerCase();
 }
 
+function matchesFilter(entry) {
+  if (state.filter === 'recently-added') {
+    return entry.id > 100;
+  }
+  if (state.filter === 'favorites') {
+    return isFavorite(entry.id);
+  }
+  return true; // 'all'
+}
+
 function applyFilters(container) {
   const results = allCases.filter(
-    (entry) => matchesQuery(entry, state.query) && matchesAuthor(entry, state.author)
+    (entry) => 
+      matchesQuery(entry, state.query) && 
+      matchesAuthor(entry, state.author) &&
+      matchesFilter(entry)
   );
   renderCards(container, results);
 }
@@ -371,6 +478,7 @@ async function init() {
   const grid = document.querySelector('.cards');
   const searchInput = document.getElementById('promptSearch');
   const authorSelect = document.getElementById('authorFilter');
+  const filterButtons = document.querySelectorAll('.filter-btn');
   if (!grid) return;
 
   grid.innerHTML = '<p class="status">Loading prompt library…</p>';
@@ -396,6 +504,24 @@ async function init() {
         state.query = event.target.value.trim();
         applyFilters(grid);
       });
+    }
+
+    // Filter buttons
+    filterButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter || 'all';
+        state.filter = filter;
+        // Update active state
+        filterButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        applyFilters(grid);
+      });
+    });
+
+    // Set initial active filter
+    const activeBtn = document.querySelector(`[data-filter="${state.filter}"]`);
+    if (activeBtn) {
+      activeBtn.classList.add('active');
     }
 
     applyFilters(grid);
