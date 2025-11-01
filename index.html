@@ -234,7 +234,16 @@
       transition: opacity 0.3s ease, transform 0.3s ease;
     }
 
-    .network-node.is-active .node-icon {
+    .node-emoji {
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1;
+      opacity: 0.9;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      display: block;
+    }
+
+    .network-node.is-active .node-icon,
+    .network-node.is-active .node-emoji {
       opacity: 1;
       transform: scale(1.1);
     }
@@ -420,21 +429,21 @@
     const container = document.getElementById('networkContainer');
 
     const projects = [
-      { href: '/Paper%20Plane/escape-world/', badge: 'GAME', title: 'Escape World', theme: 'game', icon: null },
-      { href: '/Paper%20Plane/', badge: 'GAME', title: 'Paper Plane', theme: 'paper', icon: null },
-      { href: '/jumpingjellybean/', badge: 'GAME', title: 'Jumping Jelly Bean', theme: 'game', icon: null },
-      { href: '/md/', badge: 'DATA', title: 'MD Analytics', theme: 'data', icon: null },
-      { href: '/prompt/', badge: 'AI', title: 'Prompt Studio', theme: 'ai', icon: '/prompt/apple_touch_icons/apple_touch_icon_180x180.png' },
-      { href: '/art/', badge: 'ART', title: 'Graffiti Gallery', theme: 'art', icon: null },
-      { href: '/wrestling-news/', badge: 'LIVE', title: 'Wrestling News', theme: 'interactive', icon: '/wrestling-news/svgviewer-png-output-4-2.png' },
-      { href: '/knock.html', badge: 'INTERACTIVE', title: 'Knock Door', theme: 'interactive', icon: null },
-      { href: '/planner/', badge: 'FOCUS', title: 'Daily Planner', theme: 'focus', icon: '/planner/svgviewer-png-output.png' },
-      { href: '/fashion-palette/', badge: 'FASHION', title: 'Fashion Palette', theme: 'fashion', icon: '/fashion-palette/aurora_palette_180.png' },
-      { href: '/philosophers-library.html', badge: 'LIBRARY', title: 'Philosopher\'s Library', theme: 'philosophy', icon: '/ios/assets/icons/apple-touch-icon.png' },
-      { href: '/brainwave-simulator/brainwave-simulator.html', badge: 'SCIENCE', title: 'Brainwave Sim', theme: 'brainwave', icon: '/brainwave-simulator/cyberpunk_brain_180px.png' },
-      { href: '/TIME/', badge: 'GLOBAL', title: 'WorldTime', theme: 'timezone', icon: null },
-      { href: '/STARTUP/', badge: 'RETRO', title: 'Console Hub', theme: 'startup', icon: null },
-      { href: '/vtrigger/', badge: 'GAME', title: 'Pencil Runner', theme: 'game', icon: null }
+      { href: '/Paper%20Plane/escape-world/', badge: 'GAME', title: 'Escape World', theme: 'game', icon: null, emoji: '🔦' },
+      { href: '/Paper%20Plane/', badge: 'GAME', title: 'Paper Plane', theme: 'paper', icon: null, emoji: '✈️' },
+      { href: '/jumpingjellybean/', badge: 'GAME', title: 'Jumping Jelly Bean', theme: 'game', icon: null, emoji: '🫘' },
+      { href: '/md/', badge: 'DATA', title: 'MD Analytics', theme: 'data', icon: null, emoji: '📊' },
+      { href: '/prompt/', badge: 'AI', title: 'Prompt Studio', theme: 'ai', icon: '/prompt/apple_touch_icons/apple_touch_icon_180x180.png', emoji: null },
+      { href: '/art/', badge: 'ART', title: 'Graffiti Gallery', theme: 'art', icon: null, emoji: '🎨' },
+      { href: '/wrestling-news/', badge: 'LIVE', title: 'Wrestling News', theme: 'interactive', icon: '/wrestling-news/svgviewer-png-output-4-2.png', emoji: null },
+      { href: '/knock.html', badge: 'INTERACTIVE', title: 'Knock Door', theme: 'interactive', icon: null, emoji: '🚪' },
+      { href: '/planner/', badge: 'FOCUS', title: 'Daily Planner', theme: 'focus', icon: '/planner/svgviewer-png-output.png', emoji: null },
+      { href: '/fashion-palette/', badge: 'FASHION', title: 'Fashion Palette', theme: 'fashion', icon: '/fashion-palette/aurora_palette_180.png', emoji: null },
+      { href: '/philosophers-library.html', badge: 'LIBRARY', title: 'Philosopher\'s Library', theme: 'philosophy', icon: null, emoji: '📚' },
+      { href: '/brainwave-simulator/brainwave-simulator.html', badge: 'SCIENCE', title: 'Brainwave Sim', theme: 'brainwave', icon: '/brainwave-simulator/cyberpunk_brain_180px.png', emoji: null },
+      { href: '/TIME/', badge: 'GLOBAL', title: 'WorldTime', theme: 'timezone', icon: null, emoji: '🕐' },
+      { href: '/STARTUP/', badge: 'RETRO', title: 'Console Hub', theme: 'startup', icon: null, emoji: '🎮' },
+      { href: '/vtrigger/', badge: 'GAME', title: 'Pencil Runner', theme: 'game', icon: null, emoji: '✏️' }
     ];
 
     let nodes = [];
@@ -472,7 +481,7 @@
       node.innerHTML = `
         <div class="node-glow"></div>
         <div class="node-core">
-          ${project.icon ? `<img src="${project.icon}" alt="${project.title}" class="node-icon" />` : ''}
+          ${project.icon ? `<img src="${project.icon}" alt="${project.title}" class="node-icon" />` : project.emoji ? `<span class="node-emoji">${project.emoji}</span>` : ''}
           <span class="node-badge">${project.badge}</span>
         </div>
         <div class="node-title">${project.title}</div>
