@@ -331,21 +331,26 @@
       padding: clamp(1.8rem, 3vw, 2.6rem);
       text-decoration: none;
       color: inherit;
-      border-radius: clamp(22px, 4vw, 34px);
-      background: linear-gradient(160deg, rgba(13, 19, 41, 0.82), rgba(9, 12, 28, 0.92));
-      border: 1px solid rgba(148, 163, 255, 0.16);
-      box-shadow: 0 18px 46px rgba(7, 11, 29, 0.52);
+      border-radius: clamp(28px, 5vw, 40px);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(40px) saturate(180%);
+      -webkit-backdrop-filter: blur(40px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
       overflow: hidden;
       transform-style: preserve-3d;
       transform: translate3d(0, 40px, 0) scale3d(0.96, 0.96, 1);
       opacity: 0;
       isolation: isolate;
       transition:
-        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-        box-shadow 0.6s ease,
+        transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        box-shadow 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
         border-color 0.6s ease,
         filter 0.6s ease,
-        backdrop-filter 0.6s ease;
+        backdrop-filter 0.6s ease,
+        background 0.6s ease;
       transition-delay: var(--delay, 0s);
       animation-delay: var(--delay, 0s);
       animation: slabBreath 6.8s ease-in-out infinite;
@@ -359,30 +364,30 @@
       inset: 0;
       border-radius: inherit;
       pointer-events: none;
-      transition: opacity 0.6s ease, transform 0.6s ease;
+      transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     .liquid-slab::before {
-      background: linear-gradient(135deg, rgba(110, 231, 255, 0.12), rgba(192, 132, 252, 0.1));
-      opacity: 0.45;
-      mix-blend-mode: screen;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+      opacity: 0.6;
+      mix-blend-mode: overlay;
     }
 
     .liquid-slab::after {
-      border: 1px solid rgba(110, 231, 255, 0.18);
-      opacity: 0.25;
-      filter: blur(0.4px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      opacity: 0.4;
+      filter: blur(0.5px);
     }
 
     .liquid-slab .slab-trace {
       position: absolute;
       inset: 12% 8%;
       border-radius: 50% 42% 58% 44% / 48% 60% 40% 52%;
-      background: radial-gradient(circle at 30% 30%, rgba(110, 231, 255, 0.22), transparent 65%);
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15), transparent 65%);
       opacity: 0.0;
-      filter: blur(12px);
-      transition: transform 0.6s ease, opacity 0.6s ease;
-      mix-blend-mode: screen;
+      filter: blur(20px);
+      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      mix-blend-mode: overlay;
     }
 
     .liquid-slab .slab-badge {
@@ -393,10 +398,12 @@
       letter-spacing: 0.24em;
       text-transform: uppercase;
       font-weight: 600;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      background: rgba(15, 23, 42, 0.35);
-      color: rgba(226, 232, 240, 0.72);
-      transition: color 0.4s ease, border-color 0.4s ease, background 0.4s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: rgba(255, 255, 255, 0.9);
+      transition: color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), background 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     .slab-title {
@@ -437,17 +444,21 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       font-weight: 600;
-      background: rgba(15, 23, 42, 0.38);
-      border: 1px solid rgba(148, 163, 255, 0.18);
-      color: rgba(226, 232, 240, 0.7);
-      transition: color 0.4s ease, border-color 0.4s ease, background 0.4s ease;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: rgba(255, 255, 255, 0.85);
+      transition: color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), background 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     .slab-chip.primary {
-      background: linear-gradient(135deg, rgba(190, 242, 100, 0.92), rgba(56, 189, 248, 0.92));
-      color: rgba(15, 23, 42, 0.92);
-      border-color: rgba(190, 242, 100, 0.6);
-      box-shadow: 0 12px 28px rgba(56, 189, 248, 0.28);
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      color: rgba(15, 23, 42, 0.95);
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     }
 
     .liquid-slab.is-visible {
@@ -461,9 +472,16 @@
     }
 
     .liquid-slab.is-hovered {
-      box-shadow: 0 26px 68px rgba(12, 18, 38, 0.72), 0 0 32px rgba(110, 231, 255, 0.24);
-      filter: saturate(1.12) brightness(1.05);
-      border-color: rgba(110, 231, 255, 0.35);
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(50px) saturate(200%);
+      -webkit-backdrop-filter: blur(50px) saturate(200%);
+      box-shadow: 
+        0 16px 48px rgba(0, 0, 0, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.15);
+      filter: saturate(1.08) brightness(1.08);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-4px);
     }
 
     .liquid-slab.is-hovered .slab-title {
@@ -472,32 +490,35 @@
     }
 
     .liquid-slab.is-hovered::before {
-      opacity: 0.7;
+      opacity: 0.85;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
     }
 
     .liquid-slab.is-hovered::after {
-      opacity: 0.48;
+      opacity: 0.6;
+      border-color: rgba(255, 255, 255, 0.35);
     }
 
     .liquid-slab.is-hovered .slab-trace {
-      opacity: 0.7;
-      transform: scale(1.08) translate3d(0, -8%, 0);
+      opacity: 0.5;
+      transform: scale(1.12) translate3d(0, -8%, 0);
     }
 
     .liquid-slab.is-hovered .slab-badge {
-      border-color: rgba(255, 255, 255, 0.32);
-      color: rgba(244, 244, 255, 0.88);
-      background: rgba(112, 122, 255, 0.28);
+      border-color: rgba(255, 255, 255, 0.35);
+      color: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 0.15);
     }
 
     .liquid-slab.is-hovered .slab-chip {
-      border-color: rgba(255, 255, 255, 0.32);
-      color: rgba(244, 244, 255, 0.84);
-      background: rgba(112, 122, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.12);
     }
 
     .liquid-slab.is-hovered .slab-chip.primary {
-      box-shadow: 0 16px 36px rgba(56, 189, 248, 0.42);
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
     }
 
     .liquid-slab[data-theme="md"] {
@@ -551,18 +572,18 @@
       position: absolute;
       inset: -120% -30%;
       background:
-        radial-gradient(circle at center, rgba(255, 255, 255, 0.12) 0%, transparent 52%),
-        radial-gradient(circle at center, var(--slab-accent, rgba(110, 231, 255, 0.45)) 0%, transparent 70%);
+        radial-gradient(circle at center, rgba(255, 255, 255, 0.08) 0%, transparent 52%),
+        radial-gradient(circle at center, var(--slab-accent, rgba(255, 255, 255, 0.15)) 0%, transparent 70%);
       opacity: 0;
       transform: scale(0.45);
-      filter: blur(90px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
+      filter: blur(100px);
+      transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       pointer-events: none;
-      mix-blend-mode: screen;
+      mix-blend-mode: overlay;
     }
 
     .liquid-slab.is-hovered .slab-accent-ring {
-      opacity: 0.85;
+      opacity: 0.4;
       transform: scale(1);
     }
 

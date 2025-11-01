@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wrestling Ratings - WWE, AEW & TNA</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>Wrestling Ratings Tracker</h1>
+            <p class="subtitle">52 Weeks of Cable Viewership Data</p>
+        </header>
+        
+        <div class="controls">
+            <div class="filter-group">
+                <label>Show:</label>
+                <div class="show-toggles">
+                    <button class="show-toggle active" data-show="all">All Shows</button>
+                    <button class="show-toggle" data-show="WWE">WWE</button>
+                    <button class="show-toggle" data-show="AEW">AEW</button>
+                    <button class="show-toggle" data-show="TNA">TNA</button>
+                </div>
+            </div>
+            <div class="view-toggle">
+                <button id="view-chart" class="active">Chart</button>
+                <button id="view-table">Table</button>
+            </div>
+        </div>
+        
+        <div id="chart-container">
+            <canvas id="ratings-chart"></canvas>
+        </div>
+        
+        <div id="table-container" class="hidden">
+            <table id="ratings-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>WWE</th>
+                        <th>AEW</th>
+                        <th>TNA</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <h3>WWE</h3>
+                <div class="stat-value" id="wwe-avg">-</div>
+                <div class="stat-label">Average Viewers</div>
+            </div>
+            <div class="stat-card">
+                <h3>AEW</h3>
+                <div class="stat-value" id="aew-avg">-</div>
+                <div class="stat-label">Average Viewers</div>
+            </div>
+            <div class="stat-card">
+                <h3>TNA</h3>
+                <div class="stat-value" id="tna-avg">-</div>
+                <div class="stat-label">Average Viewers</div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+
