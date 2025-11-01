@@ -620,14 +620,12 @@
         node.el.addEventListener('touchend', (e) => {
           if (activeNode === node) {
             const wasDrag = isDragging;
-            const timeDiff = Date.now() - touchStartTime;
             
             if (wasDrag) {
               e.preventDefault();
               node.el.classList.remove('is-pressed');
-            } else if (timeDiff < 300) {
-              window.location.href = node.el.href;
             }
+            // If not dragging, let the <a> tag handle navigation naturally
             
             activeNode = null;
             isDragging = false;
@@ -651,9 +649,6 @@
             e.preventDefault();
             e.stopPropagation();
             return false;
-          }
-          if (e.pointerType === 'mouse') {
-            window.location.href = node.el.href;
           }
         });
       });
