@@ -93,7 +93,7 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-pink-300 via-purple-300 to-blue-300 p-4 font-sans">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-pink-300 via-purple-300 to-blue-300 p-4 max-md:p-0 font-sans">
       <style>{`
         @media (max-width: 768px) {
           body {
@@ -119,7 +119,7 @@ const App: React.FC = () => {
         }
       `}</style>
       
-      <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-6 max-w-6xl w-full">
+      <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-6 max-md:p-0 max-md:rounded-none w-full max-md:h-screen max-md:flex max-md:flex-col">
         <div className="flex justify-between items-center mb-4 flex-wrap gap-4">
           <div className="flex items-center gap-4">
             <div className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
@@ -173,7 +173,7 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        <div className="relative">
+        <div className="relative flex-1 w-full max-md:h-full">
           <GameCanvas 
             gameState={gameState}
             onGameStateChange={handleGameStateChange}

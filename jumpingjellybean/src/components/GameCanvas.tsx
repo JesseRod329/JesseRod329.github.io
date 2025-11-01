@@ -664,21 +664,37 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
     // Use actual viewport dimensions for mobile
     if (isMobile) {
       canvasWidth = window.innerWidth || document.documentElement.clientWidth;
-      canvasHeight = window.innerHeight || document.documentElement.clientHeight;
       
-      // Use dynamic viewport height if available
-      if (window.visualViewport) {
-        canvasHeight = window.visualViewport.height;
+      // Use container height if available (accounting for header UI)
+      if (containerRect.height > 0) {
+        canvasHeight = containerRect.height;
       } else {
-        canvasHeight = window.innerHeight;
+        // Fallback to viewport height
+        canvasHeight = window.innerHeight || document.documentElement.clientHeight;
+        
+        // Use dynamic viewport height if available
+        if (window.visualViewport) {
+          canvasHeight = window.visualViewport.height;
+        }
+        
+        // Account for header UI (approximately 120px)
+        canvasHeight = Math.max(400, canvasHeight - 120);
       }
       
       // Ensure we don't exceed viewport
       canvasWidth = Math.min(canvasWidth, screen.width);
       canvasHeight = Math.min(canvasHeight, screen.height);
     } else {
-      canvasWidth = Math.min(CANVAS_WIDTH, containerRect.width);
-      canvasHeight = Math.min(CANVAS_HEIGHT, containerRect.height);
+      // Use full container width for desktop, maintain aspect ratio
+      canvasWidth = Math.max(CANVAS_WIDTH, containerRect.width || window.innerWidth);
+      canvasHeight = (canvasWidth / CANVAS_WIDTH) * CANVAS_HEIGHT;
+      
+      // Ensure we don't exceed viewport height
+      const maxHeight = window.innerHeight * 0.8; // Leave some space for UI
+      if (canvasHeight > maxHeight) {
+        canvasHeight = maxHeight;
+        canvasWidth = (canvasHeight / CANVAS_HEIGHT) * CANVAS_WIDTH;
+      }
     }
 
     scaleX = canvasWidth / CANVAS_WIDTH;
@@ -783,13 +799,12 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
           align-items: center;
           gap: 1rem;
           width: 100%;
-          max-width: ${CANVAS_WIDTH}px;
         }
         .game-canvas {
           width: 100%;
-          max-width: ${CANVAS_WIDTH}px;
           height: auto;
           aspect-ratio: ${CANVAS_WIDTH} / ${CANVAS_HEIGHT};
+          min-height: 400px;
           border: 4px solid #a78bfa;
           border-radius: 16px;
           background: linear-gradient(to bottom, #e0f2fe, #ede9fe);
@@ -800,16 +815,19 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ gameState, onGameStateChange, o
           .game-canvas {
             width: 100vw;
             max-width: 100vw;
-            height: 100vh;
-            height: 100dvh;
+            height: auto;
             aspect-ratio: auto;
             border-radius: 0;
             border: none;
+            min-height: unset;
           }
           .game-canvas-container {
             max-width: 100%;
             padding: 0;
-            gap: 0.5rem;
+            gap: 0;
+            width: 100vw;
+            height: 100%;
+            flex: 1;
           }
         }
         .mobile-controls {
