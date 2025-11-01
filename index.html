@@ -8,38 +8,39 @@
   }
   </script>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
   <link rel="preconnect" href="https://jesserodriguez.me">
   <link rel="dns-prefetch" href="https://jesserodriguez.me">
   <meta http-equiv="X-Frame-Options" content="DENY">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'; media-src 'self'; child-src 'self'; form-action 'self'; base-uri 'self';">
-  <title>Liquid Interfaces — Jesse Rodriguez</title>
-  <meta name="description" content="Explore Jesse Rodriguez's portfolio through liquid glass interfaces with immersive physics, morphing slabs, and interactive animations.">
+  <title>Jesse Rodriguez — Creative Engineer</title>
+  <meta name="description" content="Explore Jesse Rodriguez's portfolio through an interactive physics-based network of projects. Touch and drag to explore connections.">
   <style>
     :root {
       color-scheme: dark;
-      --bg-outer: #03030f;
-      --bg-inner: #0d1124;
-      --bg-glow: #112341;
-      --text-primary: rgba(247, 249, 255, 0.96);
-      --text-secondary: rgba(209, 216, 255, 0.7);
-      --surface-glass: rgba(20, 26, 46, 0.62);
-      --surface-border: rgba(111, 135, 255, 0.26);
-      --surface-highlight: rgba(255, 255, 255, 0.08);
-      --accent-electric: #6ee7ff;
-      --accent-hologram: #c084fc;
-      --accent-lime: #bef264;
-      --accent-hot: #ff4d8d;
-      --accent-amber: #f97316;
-      --accent-emerald: #34d399;
-      --accent-royal: #60a5fa;
-      --pointer-size: clamp(220px, 24vw, 320px);
-      --pointer-intensity: 0.22;
-      --header-height: 84px;
-      --shadow-strong: 0 20px 58px rgba(14, 20, 37, 0.68);
-      font-family: 'Satoshi', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+      --bg-outer: #0a0a0f;
+      --bg-inner: #111116;
+      --bg-surface: #1a1a20;
+      --text-primary: rgba(250, 250, 252, 0.95);
+      --text-secondary: rgba(200, 200, 210, 0.7);
+      --text-muted: rgba(150, 150, 160, 0.6);
+      --surface-border: rgba(255, 255, 255, 0.08);
+      --accent-primary: #4ade80;
+      --accent-secondary: #60a5fa;
+      --accent-tertiary: #fbbf24;
+      --accent-game: #f472b6;
+      --accent-data: #34d399;
+      --accent-ai: #ff4d8d;
+      --accent-art: #a78bfa;
+      --accent-interactive: #f97316;
+      --accent-focus: #06b6d4;
+      --node-size: clamp(80px, 12vw, 120px);
+      --node-size-mobile: clamp(60px, 15vw, 90px);
+      --header-height: 64px;
+      --header-height-mobile: 56px;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', sans-serif;
     }
 
     * {
@@ -54,15 +55,13 @@
 
     body {
       min-height: 100vh;
-      background:
-        radial-gradient(circle at 20% -10%, rgba(110, 231, 255, 0.18), transparent 45%),
-        radial-gradient(circle at 80% 0%, rgba(192, 132, 252, 0.24), transparent 50%),
-        linear-gradient(140deg, var(--bg-outer), var(--bg-inner));
+      background: linear-gradient(180deg, var(--bg-outer) 0%, var(--bg-inner) 100%);
       color: var(--text-primary);
       font-family: inherit;
       overflow-x: hidden;
       position: relative;
-      transition: background 0.6s ease;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: pan-y pinch-zoom;
     }
 
     body::after {
@@ -70,137 +69,84 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
-      background-image: radial-gradient(rgba(255,255,255,0.045) 1px, transparent 1px);
-      background-size: 60px 60px;
-      opacity: 0.4;
-      mix-blend-mode: soft-light;
+      background-image: radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.6;
+      z-index: 0;
     }
 
-    .liquid-backdrop {
+    .network-canvas {
       position: fixed;
-      inset: -20vh -20vw;
+      inset: 0;
       pointer-events: none;
-      filter: blur(0.5px);
-      z-index: -2;
+      z-index: 1;
+      overflow: hidden;
     }
 
-    .liquid-blob {
+    .network-line {
       position: absolute;
-      width: clamp(280px, 42vw, 540px);
-      height: clamp(280px, 42vw, 540px);
-      background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 70%),
-                  radial-gradient(circle at 65% 70%, rgba(94, 234, 212, 0.5), transparent 60%),
-                  radial-gradient(circle at 20% 70%, rgba(129, 140, 248, 0.45), transparent 60%);
-      opacity: 0.35;
-      border-radius: 50% 44% 56% 48% / 52% 42% 58% 48%;
-      animation: blobDrift 28s cubic-bezier(0.52, 0.01, 0.21, 0.99) infinite;
-      mix-blend-mode: screen;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+      opacity: 0;
+      transform-origin: left center;
+      transition: opacity 0.3s ease;
     }
 
-    .liquid-blob:nth-of-type(1) {
-      top: 6vh;
-      left: -8vw;
-      animation-delay: -4s;
+    .network-line.is-visible {
+      opacity: 1;
     }
 
-    .liquid-blob:nth-of-type(2) {
-      top: 40vh;
-      right: -12vw;
-      animation-delay: -12s;
-      animation-duration: 34s;
-      filter: hue-rotate(22deg);
-    }
-
-    .liquid-blob:nth-of-type(3) {
-      bottom: -10vh;
-      left: 18vw;
-      animation-delay: -22s;
-      animation-duration: 40s;
-      filter: hue-rotate(-35deg) saturate(1.2);
-    }
-
-    @keyframes blobDrift {
-      0%, 100% {
-        transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
-        border-radius: 52% 48% 58% 42% / 48% 52% 42% 58%;
-      }
-      25% {
-        transform: translate3d(4vw, -3vh, 0) scale(0.94) rotate(6deg);
-        border-radius: 45% 55% 52% 48% / 50% 46% 54% 50%;
-      }
-      50% {
-        transform: translate3d(-6vw, 4vh, 0) scale(1.04) rotate(-8deg);
-        border-radius: 56% 44% 46% 54% / 44% 60% 40% 56%;
-      }
-      75% {
-        transform: translate3d(3vw, 6vh, 0) scale(0.98) rotate(3deg);
-        border-radius: 48% 52% 54% 46% / 58% 42% 58% 42%;
-      }
-    }
-
-    .liquid-pointer {
-      position: fixed;
-      width: var(--pointer-size);
-      height: var(--pointer-size);
-      pointer-events: none;
-      top: calc(var(--pointer-y, 50vh) - var(--pointer-size) * 0.5);
-      left: calc(var(--pointer-x, 50vw) - var(--pointer-size) * 0.5);
-      background: radial-gradient(circle at 50% 50%, rgba(110, 231, 255, 0.35), rgba(192, 132, 252, 0.16) 48%, rgba(30, 64, 175, 0) 75%);
-      mix-blend-mode: screen;
-      opacity: var(--pointer-opacity, 0.15);
-      filter: blur(1px);
-      transition: opacity 0.6s ease;
-      z-index: -1;
-    }
-
-    .scene {
-      width: min(1180px, 92vw);
-      margin: 0 auto;
-      padding: calc(var(--header-height) + 4rem) 0 6rem;
+    .network-container {
       position: relative;
+      width: 100%;
+      height: calc(100vh - var(--header-height-mobile));
+      min-height: 600px;
+      overflow: hidden;
+      z-index: 2;
+      touch-action: none;
+      -webkit-overflow-scrolling: touch;
     }
 
-    .liquid-header {
+    @media (min-width: 768px) {
+      .network-container {
+        height: calc(100vh - var(--header-height));
+      }
+    }
+
+    .network-nodes {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .network-header {
       position: sticky;
       top: 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1.5rem;
-      width: min(1180px, 92vw);
-      margin: 0 auto;
-      height: var(--header-height);
-      z-index: 10;
-      backdrop-filter: blur(22px);
-      background: rgba(11, 15, 32, 0.54);
-      border: 1px solid rgba(99, 102, 241, 0.18);
-      border-radius: 999px;
-      padding: 1.1rem 1.75rem;
-      box-shadow: 0 12px 28px rgba(7, 11, 29, 0.38);
-      overflow: hidden;
-      transform: translateY(-120%);
-      opacity: 0;
-      transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.4s ease;
+      gap: 1rem;
+      width: 100%;
+      padding: 0.75rem 1rem;
+      height: var(--header-height-mobile);
+      z-index: 100;
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      background: rgba(26, 26, 32, 0.7);
+      border-bottom: 1px solid var(--surface-border);
+      transition: transform 0.3s ease;
     }
 
-    body.is-loaded .liquid-header {
-      transform: translateY(0);
-      opacity: 1;
+    @media (min-width: 768px) {
+      .network-header {
+        height: var(--header-height);
+        padding: 1rem 1.5rem;
+      }
     }
 
-    .liquid-header::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(120deg, rgba(110, 231, 255, 0.35), rgba(192, 132, 252, 0.38), rgba(110, 231, 255, 0.35));
-      opacity: 0;
-      transform: translateY(90%);
-      transition: transform 1.9s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.9s ease;
-      mix-blend-mode: screen;
-    }
-
-    body.is-loaded .liquid-header::after {
-      opacity: 0.65;
+    body.is-loaded .network-header {
       transform: translateY(0);
     }
 
@@ -211,19 +157,18 @@
     }
 
     .brand-mark {
-      width: 46px;
-      height: 46px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, rgba(96, 165, 250, 0.86), rgba(14, 165, 233, 0.68));
-      backdrop-filter: blur(18px);
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--surface-border);
       display: grid;
       place-items: center;
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 0.875rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: rgba(15, 23, 42, 0.92);
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.32);
+      color: var(--text-primary);
     }
 
     .brand-text {
@@ -237,422 +182,162 @@
       text-transform: uppercase;
       letter-spacing: 0.16em;
       font-size: 0.82rem;
-      color: rgba(244, 244, 255, 0.85);
+      color: var(--text-primary);
     }
 
     .brand-subtitle {
       font-size: 0.78rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: rgba(148, 163, 184, 0.68);
+      color: var(--text-secondary);
     }
 
-    .header-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.65rem 1.2rem;
-      border-radius: 999px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: rgba(15, 23, 42, 0.88);
-      background: linear-gradient(135deg, rgba(190, 242, 100, 0.9), rgba(56, 189, 248, 0.92));
-      box-shadow: 0 12px 30px rgba(45, 212, 191, 0.35);
-      border: none;
+
+    .network-node {
+      position: absolute;
+      width: var(--node-size-mobile);
+      height: var(--node-size-mobile);
+      transform: translate(-50%, -50%);
+      will-change: transform;
       cursor: pointer;
-      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.5s ease;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .header-cta:hover {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 18px 42px rgba(45, 212, 191, 0.4);
+    @media (min-width: 768px) {
+      .network-node {
+        width: var(--node-size);
+        height: var(--node-size);
+      }
     }
 
-    .hero {
-      padding: 4rem 0 3rem;
-      text-align: center;
-      display: grid;
-      gap: 1.75rem;
-      justify-items: center;
-    }
-
-    .hero-kicker {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.45rem 1.1rem;
-      border-radius: 999px;
-      background: rgba(49, 46, 129, 0.45);
-      border: 1px solid rgba(129, 140, 248, 0.45);
-      text-transform: uppercase;
-      letter-spacing: 0.22em;
-      font-size: 0.72rem;
-      color: rgba(199, 210, 254, 0.75);
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-    }
-
-    .hero-title {
-      font-size: clamp(2.8rem, 6vw, 4.8rem);
-      font-weight: 800;
-      line-height: 1.04;
-      letter-spacing: -0.02em;
-      background: linear-gradient(120deg, rgba(110, 231, 255, 0.85), rgba(190, 242, 100, 0.85), rgba(129, 140, 248, 0.85) 70%, rgba(93, 157, 255, 0.85));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      background-size: 220% 220%;
-      animation: shimmer 11s ease-in-out infinite;
-      filter: drop-shadow(0 12px 24px rgba(46, 169, 223, 0.18));
-    }
-
-    .hero-copy {
-      max-width: 640px;
-      font-size: clamp(1.05rem, 2vw, 1.22rem);
-      color: var(--text-secondary);
-      line-height: 1.7;
-      font-weight: 400;
-    }
-
-    .slab-grid {
-      margin-top: 4.5rem;
-      display: grid;
-      gap: clamp(1.75rem, 3vw, 2.6rem);
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      perspective: 1600px;
-    }
-
-    .liquid-slab {
+    .node-core {
       position: relative;
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-      padding: clamp(1.8rem, 3vw, 2.6rem);
-      text-decoration: none;
-      color: inherit;
-      border-radius: clamp(22px, 4vw, 34px);
-      background: linear-gradient(160deg, rgba(13, 19, 41, 0.82), rgba(9, 12, 28, 0.92));
-      border: 1px solid rgba(148, 163, 255, 0.16);
-      box-shadow: 0 18px 46px rgba(7, 11, 29, 0.52);
-      overflow: hidden;
-      transform-style: preserve-3d;
-      transform: translate3d(0, 40px, 0) scale3d(0.96, 0.96, 1);
-      opacity: 0;
-      isolation: isolate;
-      transition:
-        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-        box-shadow 0.6s ease,
-        border-color 0.6s ease,
-        filter 0.6s ease,
-        backdrop-filter 0.6s ease;
-      transition-delay: var(--delay, 0s);
-      animation-delay: var(--delay, 0s);
-      animation: slabBreath 6.8s ease-in-out infinite;
-      animation-play-state: paused;
-    }
-
-    .liquid-slab::before,
-    .liquid-slab::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      pointer-events: none;
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-
-    .liquid-slab::before {
-      background: linear-gradient(135deg, rgba(110, 231, 255, 0.12), rgba(192, 132, 252, 0.1));
-      opacity: 0.45;
-      mix-blend-mode: screen;
-    }
-
-    .liquid-slab::after {
-      border: 1px solid rgba(110, 231, 255, 0.18);
-      opacity: 0.25;
-      filter: blur(0.4px);
-    }
-
-    .liquid-slab .slab-trace {
-      position: absolute;
-      inset: 12% 8%;
-      border-radius: 50% 42% 58% 44% / 48% 60% 40% 52%;
-      background: radial-gradient(circle at 30% 30%, rgba(110, 231, 255, 0.22), transparent 65%);
-      opacity: 0.0;
-      filter: blur(12px);
-      transition: transform 0.6s ease, opacity 0.6s ease;
-      mix-blend-mode: screen;
-    }
-
-    .liquid-slab .slab-badge {
-      align-self: flex-start;
-      padding: 0.35rem 0.9rem;
-      border-radius: 999px;
-      font-size: 0.72rem;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      font-weight: 600;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      background: rgba(15, 23, 42, 0.35);
-      color: rgba(226, 232, 240, 0.72);
-      transition: color 0.4s ease, border-color 0.4s ease, background 0.4s ease;
-    }
-
-    .slab-title {
-      font-size: clamp(1.5rem, 3vw, 2rem);
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      line-height: 1.2;
-      background: linear-gradient(120deg, rgba(255, 255, 255, 0.9), rgba(148, 163, 255, 0.8));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      background-size: 180% 180%;
-      animation: shimmer 12s ease-in-out infinite;
-      animation-play-state: paused;
-    }
-
-    .slab-copy {
-      color: var(--text-secondary);
-      font-size: 0.98rem;
-      line-height: 1.7;
-    }
-
-    .slab-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-      margin-top: auto;
-      padding-top: 0.4rem;
-    }
-
-    .slab-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.55rem 0.9rem;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-weight: 600;
-      background: rgba(15, 23, 42, 0.38);
-      border: 1px solid rgba(148, 163, 255, 0.18);
-      color: rgba(226, 232, 240, 0.7);
-      transition: color 0.4s ease, border-color 0.4s ease, background 0.4s ease;
-    }
-
-    .slab-chip.primary {
-      background: linear-gradient(135deg, rgba(190, 242, 100, 0.92), rgba(56, 189, 248, 0.92));
-      color: rgba(15, 23, 42, 0.92);
-      border-color: rgba(190, 242, 100, 0.6);
-      box-shadow: 0 12px 28px rgba(56, 189, 248, 0.28);
-    }
-
-    .liquid-slab.is-visible {
-      opacity: 1;
-      transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
-      animation-play-state: running;
-    }
-
-    .liquid-slab.is-visible .slab-title {
-      animation-play-state: running;
-    }
-
-    .liquid-slab.is-hovered {
-      box-shadow: 0 26px 68px rgba(12, 18, 38, 0.72), 0 0 32px rgba(110, 231, 255, 0.24);
-      filter: saturate(1.12) brightness(1.05);
-      border-color: rgba(110, 231, 255, 0.35);
-    }
-
-    .liquid-slab.is-hovered .slab-title {
-      animation-duration: 6s;
-      filter: drop-shadow(0 12px 28px rgba(110, 231, 255, 0.25));
-    }
-
-    .liquid-slab.is-hovered::before {
-      opacity: 0.7;
-    }
-
-    .liquid-slab.is-hovered::after {
-      opacity: 0.48;
-    }
-
-    .liquid-slab.is-hovered .slab-trace {
-      opacity: 0.7;
-      transform: scale(1.08) translate3d(0, -8%, 0);
-    }
-
-    .liquid-slab.is-hovered .slab-badge {
-      border-color: rgba(255, 255, 255, 0.32);
-      color: rgba(244, 244, 255, 0.88);
-      background: rgba(112, 122, 255, 0.28);
-    }
-
-    .liquid-slab.is-hovered .slab-chip {
-      border-color: rgba(255, 255, 255, 0.32);
-      color: rgba(244, 244, 255, 0.84);
-      background: rgba(112, 122, 255, 0.18);
-    }
-
-    .liquid-slab.is-hovered .slab-chip.primary {
-      box-shadow: 0 16px 36px rgba(56, 189, 248, 0.42);
-    }
-
-    .liquid-slab[data-theme="md"] {
-      --slab-accent: var(--accent-electric);
-    }
-    .liquid-slab[data-theme="prompt"] {
-      --slab-accent: var(--accent-hot);
-    }
-    .liquid-slab[data-theme="graffiti"] {
-      --slab-accent: var(--accent-hologram);
-    }
-    .liquid-slab[data-theme="wrestling"] {
-      --slab-accent: #f87171;
-    }
-    .liquid-slab[data-theme="knock"] {
-      --slab-accent: var(--accent-amber);
-    }
-    .liquid-slab[data-theme="planner"] {
-      --slab-accent: var(--accent-emerald);
-    }
-    .liquid-slab[data-theme="fashion"] {
-      --slab-accent: #c084fc;
-    }
-    .liquid-slab[data-theme="philosophy"] {
-      --slab-accent: var(--accent-royal);
-    }
-    .liquid-slab[data-theme="brainwave"] {
-      --slab-accent: #facc15;
-    }
-    .liquid-slab[data-theme="timezone"] {
-      --slab-accent: #a855f7;
-    }
-    .liquid-slab[data-theme="startup"] {
-      --slab-accent: #38bdf8;
-    }
-    .liquid-slab[data-theme="game"] {
-      --slab-accent: #f472b6;
-    }
-    .liquid-slab[data-theme="paper"] {
-      --slab-accent: #fbbf24;
-    }
-
-    .liquid-slab::selection,
-    .slab-title::selection,
-    .slab-copy::selection {
-      background: rgba(110, 231, 255, 0.35);
-      color: rgba(17, 24, 39, 0.92);
-    }
-
-    .slab-accent-ring {
-      position: absolute;
-      inset: -120% -30%;
-      background:
-        radial-gradient(circle at center, rgba(255, 255, 255, 0.12) 0%, transparent 52%),
-        radial-gradient(circle at center, var(--slab-accent, rgba(110, 231, 255, 0.45)) 0%, transparent 70%);
-      opacity: 0;
-      transform: scale(0.45);
-      filter: blur(90px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-      pointer-events: none;
-      mix-blend-mode: screen;
-    }
-
-    .liquid-slab.is-hovered .slab-accent-ring {
-      opacity: 0.85;
-      transform: scale(1);
-    }
-
-    .slab-ripple {
-      position: absolute;
+      width: 100%;
+      height: 100%;
       border-radius: 50%;
-      border: 2px solid rgba(255, 255, 255, 0.35);
-      transform: translate(-50%, -50%) scale(0.2);
-      opacity: 0.85;
-      pointer-events: none;
-      animation: rippleExpand 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      background: var(--bg-surface);
+      border: 2px solid var(--surface-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      overflow: hidden;
     }
 
-    @keyframes rippleExpand {
-      to {
-        transform: translate(-50%, -50%) scale(2.4);
-        opacity: 0;
-      }
+    .network-node.is-active .node-core {
+      transform: scale(1.15);
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 24px rgba(74, 222, 128, 0.4);
     }
 
-    @keyframes shimmer {
-      0% {
-        background-position: 0% 50%;
-      }
-      50% {
-        background-position: 100% 50%;
-      }
-      100% {
-        background-position: 0% 50%;
-      }
+    .network-node.is-pressed .node-core {
+      transform: scale(0.95);
     }
 
-    @keyframes slabBreath {
-      0%, 100% {
-        transform-origin: 50% 50%;
-      }
-      50% {
-        transform-origin: 48% 52%;
-      }
-    }
-
-    .hint {
-      text-align: center;
-      margin: 1.5rem 0 4rem;
-      color: rgba(148, 163, 184, 0.55);
-      font-size: 0.9rem;
-      letter-spacing: 0.08em;
+    .node-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      padding: 0.2rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
-    }
-
-    @media (max-width: 900px) {
-      .liquid-header {
-        flex-direction: column;
-        height: auto;
-        border-radius: 40px;
-        padding: 1.5rem;
-        gap: 1rem;
-      }
-      .brand {
-        width: 100%;
-        justify-content: center;
-      }
-      .header-cta {
-        width: 100%;
-        justify-content: center;
-      }
-      .scene {
-        padding-top: calc(var(--header-height) + 3rem);
-      }
+      background: var(--bg-surface);
+      border: 1px solid var(--surface-border);
+      color: var(--text-secondary);
+      white-space: nowrap;
+      z-index: 10;
     }
 
     @media (max-width: 640px) {
-      .hero {
-        padding-top: 3rem;
+      .node-badge {
+        font-size: 0.55rem;
+        padding: 0.15rem 0.4rem;
       }
-      .hero-title {
-        font-size: clamp(2.4rem, 10vw, 3.2rem);
+    }
+
+    .node-title {
+      position: absolute;
+      bottom: -32px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      text-align: center;
+      width: max-content;
+      max-width: 200px;
+    }
+
+    @media (max-width: 640px) {
+      .node-title {
+        font-size: 0.75rem;
+        bottom: -28px;
+        max-width: 150px;
       }
-      .hero-copy {
-        font-size: 1rem;
-      }
-      .slab-grid {
-        gap: 1.5rem;
-      }
-      .liquid-slab {
-        padding: 1.8rem;
-      }
-      .liquid-pointer {
-        opacity: 0.05;
-      }
+    }
+
+    .network-node.is-active .node-title {
+      opacity: 1;
+    }
+
+    .node-glow {
+      position: absolute;
+      inset: -20%;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--node-accent, var(--accent-primary)) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      filter: blur(12px);
+    }
+
+    .network-node.is-active .node-glow {
+      opacity: 0.3;
+    }
+
+    .network-node[data-theme="game"] {
+      --node-accent: var(--accent-game);
+    }
+    .network-node[data-theme="data"] {
+      --node-accent: var(--accent-data);
+    }
+    .network-node[data-theme="ai"] {
+      --node-accent: var(--accent-ai);
+    }
+    .network-node[data-theme="art"] {
+      --node-accent: var(--accent-art);
+    }
+    .network-node[data-theme="interactive"] {
+      --node-accent: var(--accent-interactive);
+    }
+    .network-node[data-theme="focus"] {
+      --node-accent: var(--accent-focus);
+    }
+    .network-node[data-theme="fashion"] {
+      --node-accent: var(--accent-art);
+    }
+    .network-node[data-theme="philosophy"] {
+      --node-accent: var(--accent-secondary);
+    }
+    .network-node[data-theme="brainwave"] {
+      --node-accent: var(--accent-tertiary);
+    }
+    .network-node[data-theme="timezone"] {
+      --node-accent: var(--accent-art);
+    }
+    .network-node[data-theme="startup"] {
+      --node-accent: var(--accent-secondary);
+    }
+    .network-node[data-theme="paper"] {
+      --node-accent: var(--accent-tertiary);
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -662,221 +347,29 @@
         transition-duration: 0.001ms !important;
         scroll-behavior: auto !important;
       }
-      body::after, .liquid-pointer {
-        display: none;
+      .network-node {
+        transition: none !important;
       }
     }
+
   </style>
 </head>
 <body>
-  <div class="liquid-backdrop" aria-hidden="true">
-    <div class="liquid-blob"></div>
-    <div class="liquid-blob"></div>
-    <div class="liquid-blob"></div>
-  </div>
-  <div class="liquid-pointer" aria-hidden="true"></div>
+  <div class="network-canvas" id="networkCanvas" aria-hidden="true"></div>
 
-  <header class="liquid-header">
+  <header class="network-header">
     <div class="brand">
       <div class="brand-mark">JR</div>
       <div class="brand-text">
         <span class="brand-title">Jesse Rodriguez</span>
-        <span class="brand-subtitle">Creative Engineer • Liquid Interfaces</span>
+        <span class="brand-subtitle">Creative Engineer</span>
       </div>
     </div>
   </header>
 
-  <main class="scene">
-    <section class="hero">
-      <span class="hero-kicker">Choose your experience</span>
-      <h1 class="hero-title">Immersive Liquid Glass Playground</h1>
-      <p class="hero-copy">Morphing slabs, shimmering typography, and living surfaces that respond with fluid physics. Pick a destination and watch it ripple to life with buttery motion and tactile depth.</p>
-    </section>
-
-    <section class="slab-grid" id="experiences">
-      <a class="liquid-slab" href="/Paper%20Plane/escape-world/" data-theme="game" data-index="0">
-        <div class="slab-accent-ring" aria-hidden="true"></div>
-        <div class="slab-trace" aria-hidden="true"></div>
-        <span class="slab-badge">GAME</span>
-        <h2 class="slab-title">Escape World</h2>
-        <p class="slab-copy">Navigate through dark rooms with only a flashlight. Find clues to escape through 5 challenging levels. Can you master the darkness?</p>
-        <div class="slab-actions">
-          <span class="slab-chip primary">Play Game</span>
-          <span class="slab-chip">Flashlight · Escape Room · 5 Levels</span>
-        </div>
-      </a>
-
-      <a class="liquid-slab" href="/Paper%20Plane/" data-theme="paper" data-index="1">
-        <div class="slab-accent-ring" aria-hidden="true"></div>
-        <div class="slab-trace" aria-hidden="true"></div>
-        <span class="slab-badge">GAME</span>
-        <h2 class="slab-title">Paper Plane</h2>
-        <p class="slab-copy">Sketch-style 2D side-scroller where you pilot a hand-drawn paper plane through an endless notebook world. Collect coins, dodge hazards, and ride wind currents as difficulty ramps smoothly.</p>
-        <div class="slab-actions">
-          <span class="slab-chip primary">Play Game</span>
-          <span class="slab-chip">Canvas · Physics · Endless</span>
-        </div>
-      </a>
-
-      <a class="liquid-slab" href="/jumpingjellybean/" data-theme="game" data-index="2">
-        <div class="slab-accent-ring" aria-hidden="true"></div>
-        <div class="slab-trace" aria-hidden="true"></div>
-        <span class="slab-badge">GAME</span>
-        <h2 class="slab-title">Jumping Jelly Bean</h2>
-        <p class="slab-copy">An enhanced React platformer with double jumps, power-ups, and high score tracking! Master air time boosts, speed boosts, and compete for the top spot on the leaderboard!</p>
-        <div class="slab-actions">
-          <span class="slab-chip primary">Play Game</span>
-          <span class="slab-chip">React · Power-ups · High Scores</span>
-        </div>
-      </a>
-
-      <a class="liquid-slab" href="/md/" data-theme="md" data-index="3">
-        <div class="slab-accent-ring" aria-hidden="true"></div>
-        <div class="slab-trace" aria-hidden="true"></div>
-        <span class="slab-badge">DATA</span>
-        <h2 class="slab-title">MD Analytics Dashboard</h2>
-        <p class="slab-copy">Glass UI for medical insights blending realtime metrics, anomaly detection, and voice-ready briefs for physicians.</p>
-        <div class="slab-actions">
-          <span class="slab-chip primary">Launch Dashboard</span>
-          <span class="slab-chip">Realtime · Voice · HIPAA</span>
-        </div>
-      </a>
-
-      <a class="liquid-slab" href="/prompt/" data-theme="prompt" data-index="4">
-        <div class="slab-accent-ring" aria-hidden="true"></div>
-        <div class="slab-trace" aria-hidden="true"></div>
-        <span class="slab-badge">AI</span>
-        <h2 class="slab-title">Prompt Architect Studio</h2>
-        <p class="slab-copy">Liquid textures and live prompt sculpting with collaborative AI tools designed for fast ideation and iteration.</p>
-        <div class="slab-actions">
-          <span class="slab-chip primary">Open Studio</span>
-          <span class="slab-chip">LLM · Collaboration · Revisions</span>
-        </div>
-      </a>
-
-      <a class="liquid-slab" href="/art/" data-theme="graffiti" data-index="5">
-        <div class="slab-accent-ring" aria-hidden="true"></div>
-        <div class="slab-trace" aria-hidden="true"></div>
-        <span class="slab-badge">ART</span>
-        <h2 class="slab-title">Graffiti Liquid Gallery</h2>
-        <p class="slab-copy">Dynamic mural wall with morphing neon ink, motion-tracked spray bursts, and ripple-triggered sound palettes.</p>
-        <div class="slab-actions">
-          <span class="slab-chip primary">View Gallery</span>
-          <span class="slab-chip">XR · Neon · Reactive Sound</span>
-        </div>
-      </a>
-
-      <a class="liquid-slab" href="/wrestling-news/" data-theme="wrestling" data-index="6">
-        <div class="slab-accent-ring" aria-hidden="true"></div>
-        <div class="slab-trace" aria-hidden="true"></div>
-        <span class="slab-badge">LIVE</span>
-        <h2 class="slab-title">Wrestling News Engine</h2>
-        <p class="slab-copy">Momentum-based news slabs with realtime heatmaps, auto-refreshing cards, and slammin' liquid borders.</p>
-        <div class="slab-actions">
-          <span class="slab-chip primary">Open Feed</span>
-          <span class="slab-chip">Auto · RSS · Alerts</span>
-        </div>
-      </a>
-
-      <a class="liquid-slab" href="/knock.html" data-theme="knock" data-index="7">
-        <div class="slab-accent-ring" aria-hidden="true"></div>
-        <div class="slab-trace" aria-hidden="true"></div>
-        <span class="slab-badge">INTERACTIVE</span>
-        <h2 class="slab-title">Knock Knock Door</h2>
-        <p class="slab-copy">Web Audio portal with realistic wood resonance, multi-style skins, and motion tilt that follows every knock.</p>
-        <div class="slab-actions">
-          <span class="slab-chip primary">Open Door</span>
-          <span class="slab-chip">Spatial Audio · 3D Tilt</span>
-        </div>
-      </a>
-
-      <a class="liquid-slab" href="/planner/" data-theme="planner" data-index="8">
-        <div class="slab-accent-ring" aria-hidden="true"></div>
-        <div class="slab-trace" aria-hidden="true"></div>
-        <span class="slab-badge">FOCUS</span>
-        <h2 class="slab-title">Circular Daily Planner</h2>
-        <p class="slab-copy">Timewheel orchestrator with glassy strokes, haptic-like snap, and export-ready visuals for every display.</p>
-        <div class="slab-actions">
-          <span class="slab-chip primary">Open Planner</span>
-          <span class="slab-chip">Canvas · PWA · Export</span>
-        </div>
-      </a>
-
-      <a class="liquid-slab" href="/fashion-palette/" data-theme="fashion" data-index="9">
-        <div class="slab-accent-ring" aria-hidden="true"></div>
-        <div class="slab-trace" aria-hidden="true"></div>
-        <span class="slab-badge">FASHION</span>
-        <h2 class="slab-title">Fashion Palette Generator</h2>
-        <p class="slab-copy">Privacy-first AI that spins garments into living gradients with math-driven palettes and fabric-ready exports.</p>
-        <div class="slab-actions">
-          <span class="slab-chip primary">Open Generator</span>
-          <span class="slab-chip">AI · Color Theory · Privacy</span>
-        </div>
-      </a>
-
-      <a class="liquid-slab" href="/philosophers-library.html" data-theme="philosophy" data-index="10">
-        <div class="slab-accent-ring" aria-hidden="true"></div>
-        <div class="slab-trace" aria-hidden="true"></div>
-        <span class="slab-badge">LIBRARY</span>
-        <h2 class="slab-title">Philosopher's Library</h2>
-        <p class="slab-copy">Curated texts in a floating gallery with page glows, parallax folios, and meditative transitions to slow the mind.</p>
-        <div class="slab-actions">
-          <span class="slab-chip primary">Open Library</span>
-          <span class="slab-chip">Literary · Three.js · Dark Mode</span>
-        </div>
-      </a>
-
-      <a class="liquid-slab" href="/brainwave-simulator/brainwave-simulator.html" data-theme="brainwave" data-index="11">
-        <div class="slab-accent-ring" aria-hidden="true"></div>
-        <div class="slab-trace" aria-hidden="true"></div>
-        <span class="slab-badge">SCIENCE</span>
-        <h2 class="slab-title">AI Brainwave Simulator</h2>
-        <p class="slab-copy">Real-time neural visuals pulsating with alpha, beta, and gamma rhythms rendered as spectral glass waves.</p>
-        <div class="slab-actions">
-          <span class="slab-chip primary">Open Simulator</span>
-          <span class="slab-chip">EEG · Canvas · Biofeedback</span>
-        </div>
-      </a>
-
-      <a class="liquid-slab" href="/TIME/" data-theme="timezone" data-index="12">
-        <div class="slab-accent-ring" aria-hidden="true"></div>
-        <div class="slab-trace" aria-hidden="true"></div>
-        <span class="slab-badge">GLOBAL</span>
-        <h2 class="slab-title">WorldTime Beauty</h2>
-        <p class="slab-copy">Sculpted world clock with fluid light bands, city pulses, and cinematic day-night gradients.</p>
-        <div class="slab-actions">
-          <span class="slab-chip primary">Explore Time</span>
-          <span class="slab-chip">Realtime · Converter · Visual</span>
-        </div>
-      </a>
-
-      <a class="liquid-slab" href="/STARTUP/" data-theme="startup" data-index="13">
-        <div class="slab-accent-ring" aria-hidden="true"></div>
-        <div class="slab-trace" aria-hidden="true"></div>
-        <span class="slab-badge">RETRO</span>
-        <h2 class="slab-title">Retro Console Hub</h2>
-        <p class="slab-copy">PS2-inspired boot sequence with liquid scanlines, memory-card glow, and adaptive project switching.</p>
-        <div class="slab-actions">
-          <span class="slab-chip primary">Boot Console</span>
-          <span class="slab-chip">Web Audio · CSS · Nostalgia</span>
-        </div>
-      </a>
-
-      <a class="liquid-slab" href="/vtrigger/" data-theme="game" data-index="14">
-        <div class="slab-accent-ring" aria-hidden="true"></div>
-        <div class="slab-trace" aria-hidden="true"></div>
-        <span class="slab-badge">GAME</span>
-        <h2 class="slab-title">Pencil Runner</h2>
-        <p class="slab-copy">Hand-drawn adventure in a floating sketchbook with liquid graphite trails and responsive canvas speed.</p>
-        <div class="slab-actions">
-          <span class="slab-chip primary">Play Game</span>
-          <span class="slab-chip">React · Canvas · Sketch</span>
-        </div>
-      </a>
-    </section>
+  <main class="network-container" id="networkContainer">
+    <div class="network-nodes" id="networkNodes"></div>
   </main>
-
-  <div class="hint">Every interaction hugs the cursor with liquid physics. Try clicking for ripples.</div>
 
   <script type="application/ld+json">
   {
@@ -906,153 +399,248 @@
 
   <script>
   (function(){
+    'use strict';
     const body = document.body;
-    const slabs = Array.from(document.querySelectorAll('.liquid-slab'));
+    const networkNodes = document.getElementById('networkNodes');
+    const networkCanvas = document.getElementById('networkCanvas');
+    const container = document.getElementById('networkContainer');
 
-    const pointer = {
-      active: false,
-      x: window.innerWidth * 0.5,
-      y: window.innerHeight * 0.45,
-      targetX: window.innerWidth * 0.5,
-      targetY: window.innerHeight * 0.45,
-      vx: 0,
-      vy: 0
-    };
+    const projects = [
+      { href: '/Paper%20Plane/escape-world/', badge: 'GAME', title: 'Escape World', theme: 'game' },
+      { href: '/Paper%20Plane/', badge: 'GAME', title: 'Paper Plane', theme: 'paper' },
+      { href: '/jumpingjellybean/', badge: 'GAME', title: 'Jumping Jelly Bean', theme: 'game' },
+      { href: '/md/', badge: 'DATA', title: 'MD Analytics', theme: 'data' },
+      { href: '/prompt/', badge: 'AI', title: 'Prompt Studio', theme: 'ai' },
+      { href: '/art/', badge: 'ART', title: 'Graffiti Gallery', theme: 'art' },
+      { href: '/wrestling-news/', badge: 'LIVE', title: 'Wrestling News', theme: 'interactive' },
+      { href: '/knock.html', badge: 'INTERACTIVE', title: 'Knock Door', theme: 'interactive' },
+      { href: '/planner/', badge: 'FOCUS', title: 'Daily Planner', theme: 'focus' },
+      { href: '/fashion-palette/', badge: 'FASHION', title: 'Fashion Palette', theme: 'fashion' },
+      { href: '/philosophers-library.html', badge: 'LIBRARY', title: 'Philosopher\'s Library', theme: 'philosophy' },
+      { href: '/brainwave-simulator/brainwave-simulator.html', badge: 'SCIENCE', title: 'Brainwave Sim', theme: 'brainwave' },
+      { href: '/TIME/', badge: 'GLOBAL', title: 'WorldTime', theme: 'timezone' },
+      { href: '/STARTUP/', badge: 'RETRO', title: 'Console Hub', theme: 'startup' },
+      { href: '/vtrigger/', badge: 'GAME', title: 'Pencil Runner', theme: 'game' }
+    ];
 
-    const parallaxBlobs = Array.from(document.querySelectorAll('.liquid-blob')).map((blob, index) => ({
-      el: blob,
-      depth: 0.02 + index * 0.015
-    }));
+    let nodes = [];
+    let lines = [];
+    let activeNode = null;
+    let isDragging = false;
+    let dragOffset = { x: 0, y: 0 };
+    let containerOffset = { x: 0, y: 0 };
+    let animationId = null;
 
-    function resizeHandler(){
-      pointer.targetX = window.innerWidth * 0.5;
-      pointer.targetY = window.innerHeight * 0.45;
+    function getInitialPosition(index, total) {
+      const angle = (index / total) * Math.PI * 2;
+      const radius = Math.min(window.innerWidth, window.innerHeight) * 0.25;
+      const centerX = window.innerWidth * 0.5;
+      const centerY = window.innerHeight * 0.5;
+      return {
+        x: centerX + Math.cos(angle) * radius,
+        y: centerY + Math.sin(angle) * radius,
+        vx: 0,
+        vy: 0
+      };
     }
 
-    function trackPointer(event){
-      pointer.active = true;
-      pointer.targetX = event.clientX;
-      pointer.targetY = event.clientY;
-      body.style.setProperty('--pointer-opacity', '0.23');
+    function createNode(project, index) {
+      const node = document.createElement('a');
+      node.href = project.href;
+      node.className = 'network-node';
+      node.setAttribute('data-theme', project.theme);
+
+      const pos = getInitialPosition(index, projects.length);
+      node.dataset.x = pos.x;
+      node.dataset.y = pos.y;
+      node.style.cssText = `transform: translate(calc(${pos.x}px - 50%), calc(${pos.y}px - 50%)); will-change: transform;`;
+
+      node.innerHTML = `
+        <div class="node-glow"></div>
+        <div class="node-core">
+          <span class="node-badge">${project.badge}</span>
+        </div>
+        <div class="node-title">${project.title}</div>
+      `;
+
+      networkNodes.appendChild(node);
+      return { el: node, x: pos.x, y: pos.y, vx: pos.vx, vy: pos.vy, fx: 0, fy: 0 };
     }
 
-    function releasePointer(){
-      pointer.active = false;
-      body.style.setProperty('--pointer-opacity', window.innerWidth < 720 ? '0.06' : '0.15');
+    function createLine(fromNode, toNode) {
+      const line = document.createElement('div');
+      line.className = 'network-line';
+      line.dataset.from = fromNode.el.dataset.index;
+      line.dataset.to = toNode.el.dataset.index;
+      networkCanvas.appendChild(line);
+      return { el: line, from: fromNode, to: toNode };
     }
 
-    function pointerPhysics(){
-      const spring = 0.16;
-      const friction = 0.72;
+    function updateLine(line) {
+      const dx = line.to.x - line.from.x;
+      const dy = line.to.y - line.from.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const maxDist = Math.min(window.innerWidth, window.innerHeight) * 0.6;
 
-      pointer.vx += (pointer.targetX - pointer.x) * spring;
-      pointer.vy += (pointer.targetY - pointer.y) * spring;
-
-      pointer.vx *= friction;
-      pointer.vy *= friction;
-
-      pointer.x += pointer.vx;
-      pointer.y += pointer.vy;
-
-      body.style.setProperty('--pointer-x', pointer.x + 'px');
-      body.style.setProperty('--pointer-y', pointer.y + 'px');
-      body.style.setProperty('--pointer-vx', pointer.vx.toFixed(2));
-      body.style.setProperty('--pointer-vy', pointer.vy.toFixed(2));
-
-      const intensity = Math.min(1, Math.sqrt(pointer.vx * pointer.vx + pointer.vy * pointer.vy) / 36);
-      body.style.setProperty('--pointer-opacity', pointer.active ? (0.18 + intensity * 0.35).toFixed(3) : (window.innerWidth < 720 ? 0.06 : 0.15));
-
-      parallaxBlobs.forEach(layer => {
-        const dx = (pointer.x - window.innerWidth * 0.5) * layer.depth;
-        const dy = (pointer.y - window.innerHeight * 0.5) * layer.depth;
-        layer.el.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
-      });
-      requestAnimationFrame(pointerPhysics);
-    }
-
-    function setEntranceDelays(){
-      slabs.forEach((slab, index) => {
-        slab.style.setProperty('--delay', (index * 0.08).toFixed(2) + 's');
-        setTimeout(() => slab.classList.add('is-visible'), 220 + index * 90);
-      });
-    }
-
-    let hoveredSlab = null;
-
-    function handleTilt(event){
-      if (!hoveredSlab) return;
-      const rect = hoveredSlab.getBoundingClientRect();
-      const relX = (event.clientX - rect.left) / rect.width;
-      const relY = (event.clientY - rect.top) / rect.height;
-      const tiltX = (0.5 - relY) * 14;
-      const tiltY = (relX - 0.5) * 18;
-      hoveredSlab.style.transform = `perspective(1600px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(16px)`;
-    }
-
-    function resetTilt(slab){
-      slab.style.transform = '';
-    }
-
-    function randomMorph(slab){
-      const radiusA = 35 + Math.random() * 25;
-      const radiusB = 45 + Math.random() * 25;
-      slab.style.setProperty('--radius-a', radiusA.toFixed(1) + '%');
-      slab.style.setProperty('--radius-b', radiusB.toFixed(1) + '%');
-      const trace = slab.querySelector('.slab-trace');
-      if (trace) {
-        trace.style.borderRadius = `${radiusB}% ${100 - radiusB}% ${radiusA}% ${100 - radiusA}% / ${radiusA}% ${radiusB}% ${100 - radiusB}% ${100 - radiusA}%`;
+      if (dist > maxDist) {
+        line.el.classList.remove('is-visible');
+        return;
       }
+
+      line.el.classList.add('is-visible');
+      const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+      line.el.style.width = dist + 'px';
+      line.el.style.left = line.from.x + 'px';
+      line.el.style.top = line.from.y + 'px';
+      line.el.style.transform = `rotate(${angle}deg)`;
     }
 
-    function spawnRipple(event, slab){
-      const ripple = document.createElement('span');
-      ripple.className = 'slab-ripple';
-      const rect = slab.getBoundingClientRect();
-      const size = Math.max(rect.width, rect.height) * 1.4;
-      ripple.style.width = ripple.style.height = size + 'px';
-      ripple.style.left = (event.clientX - rect.left) + 'px';
-      ripple.style.top = (event.clientY - rect.top) + 'px';
-      slab.appendChild(ripple);
-      setTimeout(() => ripple.remove(), 900);
+    function physicsStep() {
+      const repulsion = 8000;
+      const attraction = 0.001;
+      const damping = 0.85;
+      const centerX = window.innerWidth * 0.5 + containerOffset.x;
+      const centerY = window.innerHeight * 0.5 + containerOffset.y;
+
+      nodes.forEach((node, i) => {
+        node.fx = 0;
+        node.fy = 0;
+
+        const centerForce = 0.0003;
+        node.fx += (centerX - node.x) * centerForce;
+        node.fy += (centerY - node.y) * centerForce;
+
+        nodes.forEach((other, j) => {
+          if (i === j) return;
+          const dx = node.x - other.x;
+          const dy = node.y - other.y;
+          const distSq = dx * dx + dy * dy + 100;
+          const dist = Math.sqrt(distSq);
+          const force = repulsion / distSq;
+          node.fx += (dx / dist) * force;
+          node.fy += (dy / dist) * force;
+        });
+
+        node.vx = (node.vx + node.fx) * damping;
+        node.vy = (node.vy + node.fy) * damping;
+        node.x += node.vx;
+        node.y += node.vy;
+
+        const bounds = 100;
+        if (node.x < bounds) { node.x = bounds; node.vx *= -0.5; }
+        if (node.x > window.innerWidth - bounds) { node.x = window.innerWidth - bounds; node.vx *= -0.5; }
+        if (node.y < bounds) { node.y = bounds; node.vy *= -0.5; }
+        if (node.y > window.innerHeight - bounds) { node.y = window.innerHeight - bounds; node.vy *= -0.5; }
+
+        node.el.style.transform = `translate(calc(${node.x}px - 50%), calc(${node.y}px - 50%))`;
+        node.el.dataset.x = node.x;
+        node.el.dataset.y = node.y;
+      });
+
+      lines.forEach(updateLine);
     }
 
-    slabs.forEach((slab) => {
-      randomMorph(slab);
+    function animate() {
+      if (!isDragging) {
+        physicsStep();
+      }
+      animationId = requestAnimationFrame(animate);
+    }
 
-      slab.addEventListener('pointerenter', (event) => {
-        hoveredSlab = slab;
-        slab.classList.add('is-hovered');
-        handleTilt(event);
+    function initNetwork() {
+      nodes = projects.map((project, index) => {
+        const node = createNode(project, index);
+        node.el.dataset.index = index;
+        return node;
       });
 
-      slab.addEventListener('pointermove', handleTilt);
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dist = Math.random();
+          if (dist < 0.3 || Math.abs(i - j) === 1) {
+            lines.push(createLine(nodes[i], nodes[j]));
+          }
+        }
+      }
 
-      slab.addEventListener('pointerleave', () => {
-        slab.classList.remove('is-hovered');
-        resetTilt(slab);
-        hoveredSlab = null;
+      nodes.forEach((node, index) => {
+        node.el.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          isDragging = true;
+          activeNode = node;
+          const touch = e.touches[0];
+          dragOffset.x = touch.clientX - node.x;
+          dragOffset.y = touch.clientY - node.y;
+          node.el.classList.add('is-pressed');
+        }, { passive: false });
+
+        node.el.addEventListener('touchmove', (e) => {
+          if (activeNode === node) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            node.x = touch.clientX - dragOffset.x;
+            node.y = touch.clientY - dragOffset.y;
+            node.vx = node.vy = 0;
+            node.el.style.transform = `translate(calc(${node.x}px - 50%), calc(${node.y}px - 50%))`;
+            lines.forEach(updateLine);
+          }
+        }, { passive: false });
+
+        node.el.addEventListener('touchend', () => {
+          if (activeNode === node) {
+            activeNode = null;
+            isDragging = false;
+            node.el.classList.remove('is-pressed');
+          }
+        });
+
+        node.el.addEventListener('pointerenter', () => {
+          node.el.classList.add('is-active');
+        });
+
+        node.el.addEventListener('pointerleave', () => {
+          if (activeNode !== node) {
+            node.el.classList.remove('is-active');
+          }
+        });
+
+        node.el.addEventListener('click', (e) => {
+          if (isDragging) {
+            e.preventDefault();
+            return false;
+          }
+        });
       });
 
-      slab.addEventListener('click', (event) => {
-        spawnRipple(event, slab);
+      let touchStart = null;
+      container.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        }
+      }, { passive: true });
+
+      container.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 1 && touchStart && !activeNode) {
+          containerOffset.x += e.touches[0].clientX - touchStart.x;
+          containerOffset.y += e.touches[0].clientY - touchStart.y;
+          touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        }
+      }, { passive: true });
+
+      window.addEventListener('resize', () => {
+        const headerHeight = window.innerWidth < 768 ? 56 : 64;
+        container.style.height = (window.innerHeight - headerHeight) + 'px';
       });
-    });
 
-    setInterval(() => {
-      slabs.forEach(randomMorph);
-    }, 4800);
-
-    window.addEventListener('pointermove', trackPointer, { passive: true });
-    window.addEventListener('pointerdown', trackPointer, { passive: true });
-    window.addEventListener('pointerup', releasePointer, { passive: true });
-    window.addEventListener('pointerleave', releasePointer, { passive: true });
-    window.addEventListener('resize', resizeHandler);
-
-    requestAnimationFrame(() => {
       body.classList.add('is-loaded');
-      setEntranceDelays();
-      pointerPhysics();
-    });
+      animate();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initNetwork);
+    } else {
+      initNetwork();
+    }
   })();
   </script>
 </body>
