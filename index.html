@@ -55,25 +55,14 @@
 
     body {
       min-height: 100vh;
-      background: linear-gradient(180deg, var(--bg-outer) 0%, var(--bg-inner) 100%);
+      background: var(--bg-inner);
       color: var(--text-primary);
       font-family: inherit;
       overflow-x: hidden;
       position: relative;
       -webkit-tap-highlight-color: transparent;
-      touch-action: pan-y pinch-zoom;
     }
 
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image: radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
-      background-size: 40px 40px;
-      opacity: 0.6;
-      z-index: 0;
-    }
 
     .network-canvas {
       position: fixed;
@@ -394,177 +383,164 @@
       }
     }
 
-    /* Game Bar Styles - Desktop Only */
-    .game-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      background: rgba(26, 26, 32, 0.95);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border-bottom: 1px solid var(--surface-border);
-      transition: height 0.3s ease, transform 0.3s ease;
-      overflow: hidden;
-      display: none;
-    }
-
-    @media (min-width: 769px) {
-      .game-bar {
-        display: block;
-      }
-    }
-
-    .game-bar.collapsed {
-      height: 48px;
-    }
-
-    .game-bar.expanded {
-      height: 700px;
-    }
-
-    .game-bar-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 1rem;
-      height: 48px;
-      border-bottom: 1px solid var(--surface-border);
-      background: rgba(26, 26, 32, 0.98);
-    }
-
-    .game-bar-title {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      font-size: 0.9rem;
-    }
-
-    .game-bar-title-emoji {
-      font-size: 1.25rem;
-    }
-
-    .game-bar-controls {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .game-bar-btn {
-      appearance: none;
-      border: 1px solid var(--surface-border);
-      background: rgba(26, 26, 32, 0.8);
-      color: var(--text-secondary);
-      padding: 0.4rem 0.8rem;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .game-bar-btn:hover {
-      border-color: var(--accent-primary);
-      color: var(--text-primary);
-      background: rgba(26, 26, 32, 0.95);
-    }
-
-    .game-bar-btn:active {
-      transform: scale(0.95);
-    }
-
-    .game-bar-content {
+    /* Game Section - jessezhang.org style */
+    .game-section {
       width: 100%;
-      height: calc(100% - 48px);
+      height: 70vh;
+      min-height: 500px;
+      max-height: 800px;
+      background: #000;
       position: relative;
       overflow: hidden;
     }
 
-    .game-bar-iframe {
+    .game-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .game-iframe {
       width: 100%;
       height: 100%;
       border: none;
-      background: transparent;
-      transform-origin: top left;
       display: block;
       pointer-events: auto;
     }
 
-    /* Ensure iframe content scales properly */
-    .game-bar-iframe-wrapper {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      overflow: hidden;
+    /* Site Content */
+    .site-content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 60px 20px;
     }
 
-    .game-bar-placeholder {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
+    .site-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .site-title {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+
+    .about-section,
+    .projects-section {
+      margin-bottom: 80px;
+    }
+
+    .about-section h2,
+    .projects-section h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 24px;
+      letter-spacing: -0.01em;
+    }
+
+    .about-section p {
+      font-size: 1.1rem;
+      line-height: 1.8;
       color: var(--text-secondary);
-      font-size: 0.9rem;
+      margin-bottom: 16px;
     }
 
-    .body-with-game-bar {
-      padding-top: 48px;
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 32px;
     }
 
-    .body-with-game-bar.expanded {
-      padding-top: 700px;
+    .project-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 12px;
+      padding: 24px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .project-card:hover {
+      border-color: var(--accent-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .project-card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .project-card-description {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 768px) {
+      .game-section {
+        height: 50vh;
+        min-height: 400px;
+      }
+
+      .site-title {
+        font-size: 2rem;
+      }
+
+      .about-section h2,
+      .projects-section h2 {
+        font-size: 1.5rem;
+      }
+
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
   </style>
 </head>
 <body>
-  <div class="game-bar collapsed" id="gameBar">
-    <div class="game-bar-header">
-      <div class="game-bar-title">
-        <span class="game-bar-title-emoji">✏️</span>
-        <span>Pencil Runner</span>
-      </div>
-      <div class="game-bar-controls">
-        <button type="button" class="game-bar-btn" id="gameBarToggle" aria-label="Toggle game">
-          <span id="gameBarToggleText">Play</span>
-        </button>
-      </div>
-    </div>
-    <div class="game-bar-content" id="gameBarContent">
-      <div class="game-bar-iframe-wrapper">
-        <iframe 
-          class="game-bar-iframe" 
-          id="gameBarIframe" 
-          src="/vtrigger/" 
-          title="Pencil Runner Game"
-          allow="autoplay; fullscreen"
-          loading="lazy"
-          scrolling="no">
-        </iframe>
-      </div>
+  <div class="game-section" id="gameSection">
+    <div class="game-container" id="gameContainer">
+      <iframe 
+        class="game-iframe" 
+        id="gameIframe" 
+        src="/Paper%20Plane/paper-plane/" 
+        title="Paper Plane Game"
+        allow="autoplay; fullscreen"
+        loading="eager">
+      </iframe>
     </div>
   </div>
 
-  <div class="network-canvas" id="networkCanvas" aria-hidden="true"></div>
+  <div class="site-content">
+    <header class="site-header">
+      <h1 class="site-title">Jesse Rodriguez</h1>
+    </header>
 
-  <header class="network-header">
-    <div class="brand">
-      <div class="brand-mark">JR</div>
-      <div class="brand-text">
-        <span class="brand-title">Jesse Rodriguez</span>
-        <span class="brand-subtitle">Creative Engineer</span>
+    <section class="about-section" id="about">
+      <h2>About</h2>
+      <p>I'm Jesse — welcome to my site 🙂.</p>
+      <p>I'm a creative engineer working at the intersection of AI, design, and technology. I build interactive experiences, tools, and applications that blend technical precision with thoughtful design.</p>
+      <p>In my free time, I like creating games, exploring new technologies, and working on projects that push creative boundaries.</p>
+    </section>
+
+    <section class="projects-section" id="projects">
+      <h2>Fun Projects</h2>
+      <div class="projects-grid" id="projectsGrid">
+        <!-- Projects will be populated by JavaScript -->
       </div>
-    </div>
-  </header>
-
-  <main class="network-container" id="networkContainer">
-    <div class="network-nodes" id="networkNodes"></div>
-  </main>
+    </section>
+  </div>
 
   <script type="application/ld+json">
   {
@@ -851,41 +827,14 @@
 
     function initGameBar() {
       const gameBar = document.getElementById('gameBar');
-      const gameBarToggle = document.getElementById('gameBarToggle');
-      const gameBarToggleText = document.getElementById('gameBarToggleText');
       const gameBarContent = document.getElementById('gameBarContent');
       const body = document.body;
 
-      if (!gameBar || !gameBarToggle) return;
+      if (!gameBar) return;
 
-      // Load saved state from localStorage
-      const savedState = localStorage.getItem('gameBarExpanded');
-      const isExpanded = savedState === 'true';
-
-      function updateGameBarState(expanded) {
-        if (expanded) {
-          gameBar.classList.remove('collapsed');
-          gameBar.classList.add('expanded');
-          body.classList.add('body-with-game-bar', 'expanded');
-          gameBarToggleText.textContent = 'Hide';
-        } else {
-          gameBar.classList.remove('expanded');
-          gameBar.classList.add('collapsed');
-          body.classList.remove('expanded');
-          body.classList.add('body-with-game-bar');
-          gameBarToggleText.textContent = 'Play';
-        }
-        localStorage.setItem('gameBarExpanded', expanded.toString());
-      }
-
-      // Set initial state
-      updateGameBarState(isExpanded);
-
-      // Toggle on button click
-      gameBarToggle.addEventListener('click', () => {
-        const currentlyExpanded = gameBar.classList.contains('expanded');
-        updateGameBarState(!currentlyExpanded);
-      });
+      // Always expanded - no toggle needed
+      gameBar.classList.add('expanded');
+      body.classList.add('body-with-game-bar', 'expanded');
 
       // Handle iframe load
       const iframe = document.getElementById('gameBarIframe');
@@ -900,14 +849,71 @@
       }
     }
 
+    function initProjects() {
+      const projectsGrid = document.getElementById('projectsGrid');
+      if (!projectsGrid) return;
+
+      // Filter out Paper Plane since it's the main game, and format for display
+      const displayProjects = projects
+        .filter(p => p.href !== '/Paper%20Plane/')
+        .map(project => ({
+          title: project.title,
+          href: project.href,
+          description: getProjectDescription(project.title)
+        }));
+
+      displayProjects.forEach(project => {
+        const card = document.createElement('a');
+        card.href = project.href;
+        card.className = 'project-card';
+        card.innerHTML = `
+          <div class="project-card-title">${project.title}</div>
+          <div class="project-card-description">${project.description}</div>
+        `;
+        projectsGrid.appendChild(card);
+      });
+    }
+
+    function getProjectDescription(title) {
+      const descriptions = {
+        'Escape World': 'Navigate through dark rooms with only a flashlight. Find clues to escape through challenging levels.',
+        'Jumping Jelly Bean': 'A fun jumping game with jelly bean physics.',
+        'MD Analytics': 'Data visualization and analytics dashboard.',
+        'Prompt Studio': 'AI prompt library with search and filtering capabilities.',
+        'Graffiti Gallery': 'Interactive graffiti art gallery and showcase.',
+        'Wrestling News': 'Live wrestling news and updates hub.',
+        'Knock Door': 'Interactive door knocking experience with sound effects.',
+        'Daily Planner': 'Circular daily planner with task management.',
+        'Fashion Palette': 'Fashion color palette generator and analyzer.',
+        'Philosopher\'s Library': 'Curated collection of philosophical texts.',
+        'Brainwave Sim': 'Scientific brainwave simulator with EEG visualization.',
+        'WorldTime': 'Global timezone viewer and converter.',
+        'Console Hub': 'Retro console-style interface hub.',
+        'Pencil Runner': 'Minimalist side-scrolling runner game.'
+      };
+      return descriptions[title] || 'Interactive project and experience.';
+    }
+
+    function initGame() {
+      const iframe = document.getElementById('gameIframe');
+      if (iframe) {
+        iframe.addEventListener('load', () => {
+          console.log('Game loaded successfully');
+        });
+        iframe.addEventListener('error', () => {
+          console.error('Game failed to load');
+        });
+      }
+    }
+
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => {
-        initNetwork();
-        initGameBar();
+        initGame();
+        initProjects();
       });
     } else {
-      initNetwork();
-      initGameBar();
+      initGame();
+      initProjects();
     }
   })();
   </script>
