@@ -510,3 +510,138 @@ a:hover {
     padding: 24px;
   }
 }
+
+/* Splash Screen */
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.splash-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.splash-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  z-index: 2;
+  backdrop-filter: blur(1px);
+}
+
+.splash-content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.enter-button {
+  position: relative;
+  appearance: none;
+  border: 2px solid var(--accent);
+  background: rgba(15, 23, 42, 0.75);
+  color: var(--accent);
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding: 20px 48px;
+  border-radius: 50px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 0 20px rgba(250, 204, 21, 0.5),
+    0 0 40px rgba(250, 204, 21, 0.3),
+    inset 0 0 20px rgba(250, 204, 21, 0.1);
+}
+
+.enter-button:hover {
+  transform: scale(1.05);
+  box-shadow: 
+    0 0 30px rgba(250, 204, 21, 0.7),
+    0 0 60px rgba(250, 204, 21, 0.5),
+    inset 0 0 30px rgba(250, 204, 21, 0.2);
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.enter-button:active {
+  transform: scale(0.98);
+}
+
+.enter-text {
+  position: relative;
+  z-index: 2;
+  display: block;
+  text-shadow: 
+    0 0 10px rgba(250, 204, 21, 0.8),
+    0 0 20px rgba(250, 204, 21, 0.6);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    text-shadow: 
+      0 0 10px rgba(250, 204, 21, 0.8),
+      0 0 20px rgba(250, 204, 21, 0.6);
+  }
+  50% {
+    text-shadow: 
+      0 0 20px rgba(250, 204, 21, 1),
+      0 0 40px rgba(250, 204, 21, 0.8),
+      0 0 60px rgba(250, 204, 21, 0.4);
+  }
+}
+
+.enter-glow {
+  position: absolute;
+  inset: -50%;
+  background: radial-gradient(
+    circle,
+    rgba(250, 204, 21, 0.3) 0%,
+    transparent 70%
+  );
+  z-index: 1;
+  animation: rotate-glow 4s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes rotate-glow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.main-content {
+  /* Main content will be shown after splash */
+}
+
+.splash-screen.hidden {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .enter-button {
+    font-size: 1.2rem;
+    padding: 16px 36px;
+  }
+}

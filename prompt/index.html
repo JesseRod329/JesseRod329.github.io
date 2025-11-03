@@ -6,7 +6,7 @@
   <meta http-equiv="X-Frame-Options" content="DENY">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://nanobananaprompt.org https://*.r2.dev https://pub-*.r2.dev; font-src 'self'; connect-src 'self'; script-src 'self'; object-src 'none'; media-src 'none'; child-src 'none'; form-action 'none'; base-uri 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://nanobananaprompt.org https://*.r2.dev https://pub-*.r2.dev; font-src 'self'; connect-src 'self'; script-src 'self'; object-src 'none'; media-src 'self'; child-src 'none'; form-action 'none'; base-uri 'self';">
   <title>Prompt Library — Jesse Rodriguez</title>
   <link rel="stylesheet" href="./styles.css">
   <link rel="apple-touch-icon" sizes="180x180" href="./apple_touch_icons/apple_touch_icon_180x180.png">
@@ -16,6 +16,20 @@
   <link rel="apple-touch-icon" href="./apple_touch_icons/apple_touch_icon_180x180.png">
 </head>
 <body>
+  <div id="splashScreen" class="splash-screen">
+    <video id="splashVideo" class="splash-video" autoplay muted loop playsinline>
+      <source src="./Psychedelic_Kaleidoscope_Video_Generated.mp4" type="video/mp4">
+    </video>
+    <div class="splash-overlay"></div>
+    <div class="splash-content">
+      <button id="enterButton" class="enter-button" type="button">
+        <span class="enter-text">Enter Now</span>
+        <span class="enter-glow"></span>
+      </button>
+    </div>
+  </div>
+
+  <div id="mainContent" class="main-content" hidden>
   <header class="site-header">
     <div class="brand"><a href="/">Jesse</a></div>
   </header>
@@ -55,6 +69,7 @@
   <footer class="site-footer">
     <a href="/">Back to home</a>
   </footer>
+  </div>
 
   <script type="module" src="./main.js"></script>
 
