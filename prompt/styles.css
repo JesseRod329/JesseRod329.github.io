@@ -191,6 +191,7 @@ a:hover {
   color: rgba(226, 232, 240, 0.88);
   display: -webkit-box;
   -webkit-line-clamp: 4;
+  line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -632,7 +633,7 @@ a:hover {
 }
 
 .main-content {
-  /* Main content will be shown after splash */
+  /* Main content will be shown after splash screen is dismissed */
 }
 
 .splash-screen.hidden {
