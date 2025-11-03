@@ -481,12 +481,6 @@ async function init() {
   const filterButtons = document.querySelectorAll('.filter-btn');
   if (!grid) return;
 
-  // Don't initialize if still on splash screen
-  const splashScreen = document.getElementById('splashScreen');
-  if (splashScreen && !splashScreen.classList.contains('hidden')) {
-    return;
-  }
-
   grid.innerHTML = '<p class="status">Loading prompt library…</p>';
 
   try {
@@ -537,36 +531,4 @@ async function init() {
   }
 }
 
-function initSplashScreen() {
-  const splashScreen = document.getElementById('splashScreen');
-  const mainContent = document.getElementById('mainContent');
-  const enterButton = document.getElementById('enterButton');
-  const video = document.getElementById('splashVideo');
-
-  if (!splashScreen || !mainContent || !enterButton) return;
-
-  // Ensure video is playing
-  if (video) {
-    video.play().catch(err => {
-      console.warn('Video autoplay failed:', err);
-    });
-  }
-
-  enterButton.addEventListener('click', () => {
-    splashScreen.classList.add('hidden');
-    mainContent.hidden = false;
-    // Initialize main app after splash is hidden
-    init();
-  });
-
-  // Allow Enter key to proceed
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !splashScreen.classList.contains('hidden')) {
-      enterButton.click();
-    }
-  });
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  initSplashScreen();
-});
+document.addEventListener('DOMContentLoaded', init);

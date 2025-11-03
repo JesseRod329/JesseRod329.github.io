@@ -15,6 +15,147 @@
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'; media-src 'self'; child-src 'self'; form-action 'self'; base-uri 'self';">
+  <style>
+    /* Splash Screen Styles */
+    .splash-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .splash-video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    .splash-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 10, 15, 0.4);
+      z-index: 2;
+      backdrop-filter: blur(1px);
+    }
+
+    .splash-content {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .enter-button {
+      position: relative;
+      appearance: none;
+      border: 2px solid #fbbf24;
+      background: rgba(26, 26, 32, 0.75);
+      color: #fbbf24;
+      font-size: 1.5rem;
+      font-weight: 700;
+      padding: 20px 48px;
+      border-radius: 50px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      box-shadow: 
+        0 0 20px rgba(251, 191, 36, 0.5),
+        0 0 40px rgba(251, 191, 36, 0.3),
+        inset 0 0 20px rgba(251, 191, 36, 0.1);
+    }
+
+    .enter-button:hover {
+      transform: scale(1.05);
+      box-shadow: 
+        0 0 30px rgba(251, 191, 36, 0.7),
+        0 0 60px rgba(251, 191, 36, 0.5),
+        inset 0 0 30px rgba(251, 191, 36, 0.2);
+      background: rgba(26, 26, 32, 0.9);
+    }
+
+    .enter-button:active {
+      transform: scale(0.98);
+    }
+
+    .enter-text {
+      position: relative;
+      z-index: 2;
+      display: block;
+      text-shadow: 
+        0 0 10px rgba(251, 191, 36, 0.8),
+        0 0 20px rgba(251, 191, 36, 0.6);
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% {
+        text-shadow: 
+          0 0 10px rgba(251, 191, 36, 0.8),
+          0 0 20px rgba(251, 191, 36, 0.6);
+      }
+      50% {
+        text-shadow: 
+          0 0 20px rgba(251, 191, 36, 1),
+          0 0 40px rgba(251, 191, 36, 0.8),
+          0 0 60px rgba(251, 191, 36, 0.4);
+      }
+    }
+
+    .enter-glow {
+      position: absolute;
+      inset: -50%;
+      background: radial-gradient(
+        circle,
+        rgba(251, 191, 36, 0.3) 0%,
+        transparent 70%
+      );
+      z-index: 1;
+      animation: rotate-glow 4s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes rotate-glow {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .splash-screen.hidden {
+      display: none;
+    }
+
+    .main-content {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .main-content.visible {
+      opacity: 1;
+    }
+
+    @media (max-width: 640px) {
+      .enter-button {
+        font-size: 1.2rem;
+        padding: 16px 36px;
+      }
+    }
+  </style>
   <title>Jesse Rodriguez — Creative Engineer</title>
   <meta name="description" content="Explore Jesse Rodriguez's portfolio through an interactive physics-based network of projects. Touch and drag to explore connections.">
   <style>
@@ -378,6 +519,20 @@
   </style>
 </head>
 <body>
+  <div id="splashScreen" class="splash-screen">
+    <video id="splashVideo" class="splash-video" autoplay muted loop playsinline>
+      <source src="./Psychedelic_Kaleidoscope_Video_Generated.mp4" type="video/mp4">
+    </video>
+    <div class="splash-overlay"></div>
+    <div class="splash-content">
+      <button id="enterButton" class="enter-button" type="button">
+        <span class="enter-text">Enter Now</span>
+        <span class="enter-glow"></span>
+      </button>
+    </div>
+  </div>
+
+  <div id="mainContent" class="main-content">
   <div class="network-canvas" id="networkCanvas" aria-hidden="true"></div>
 
   <header class="network-header">
@@ -677,12 +832,58 @@
       animate();
     }
 
+    function initSplashScreen() {
+      const splashScreen = document.getElementById('splashScreen');
+      const mainContent = document.getElementById('mainContent');
+      const enterButton = document.getElementById('enterButton');
+      const video = document.getElementById('splashVideo');
+
+      if (!splashScreen || !mainContent || !enterButton) {
+        // If splash elements don't exist, just initialize network
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initNetwork);
+        } else {
+          initNetwork();
+        }
+        return;
+      }
+
+      // Ensure video is playing
+      if (video) {
+        video.play().catch(err => {
+          console.warn('Video autoplay failed:', err);
+        });
+      }
+
+      enterButton.addEventListener('click', () => {
+        splashScreen.classList.add('hidden');
+        mainContent.classList.add('visible');
+        // Initialize network after splash is hidden
+        setTimeout(() => {
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initNetwork);
+          } else {
+            initNetwork();
+          }
+        }, 100);
+      });
+
+      // Allow Enter key to proceed
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !splashScreen.classList.contains('hidden')) {
+          enterButton.click();
+        }
+      });
+    }
+
+    // Initialize splash screen first
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initNetwork);
+      document.addEventListener('DOMContentLoaded', initSplashScreen);
     } else {
-      initNetwork();
+      initSplashScreen();
     }
   })();
   </script>
+  </div>
 </body>
 </html>
