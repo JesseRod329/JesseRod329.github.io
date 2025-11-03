@@ -520,8 +520,9 @@
 </head>
 <body>
   <div id="splashScreen" class="splash-screen">
-    <video id="splashVideo" class="splash-video" autoplay muted loop playsinline>
+    <video id="splashVideo" class="splash-video" autoplay muted loop playsinline webkit-playsinline preload="auto">
       <source src="./Psychedelic_Kaleidoscope_Video_Generated.mp4" type="video/mp4">
+      Your browser does not support the video tag.
     </video>
     <div class="splash-overlay"></div>
     <div class="splash-content">
@@ -848,16 +849,67 @@
         return;
       }
 
-      // Ensure video is playing
-      if (video) {
-        video.play().catch(err => {
-          console.warn('Video autoplay failed:', err);
-        });
+      // Enhanced mobile video handling
+      function ensureVideoPlay() {
+        if (!video) return;
+        
+        // Set video properties for mobile
+        video.muted = true;
+        video.playsInline = true;
+        video.setAttribute('playsinline', '');
+        video.setAttribute('webkit-playsinline', '');
+        
+        // Try to play the video
+        const playPromise = video.play();
+        
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              console.log('Video playing successfully');
+            })
+            .catch(error => {
+              console.warn('Video autoplay failed:', error);
+              // On mobile, try to play on first user interaction
+              const tryPlayOnInteraction = () => {
+                video.play().catch(() => {
+                  // If still fails, video might need user gesture
+                  console.warn('Video requires user interaction');
+                });
+                document.removeEventListener('touchstart', tryPlayOnInteraction);
+                document.removeEventListener('click', tryPlayOnInteraction);
+              };
+              document.addEventListener('touchstart', tryPlayOnInteraction, { once: true });
+              document.addEventListener('click', tryPlayOnInteraction, { once: true });
+            });
+        }
       }
+
+      // Wait for video to be ready
+      if (video.readyState >= 2) {
+        // Video already loaded
+        ensureVideoPlay();
+      } else {
+        // Wait for video to load
+        video.addEventListener('loadeddata', ensureVideoPlay, { once: true });
+        video.addEventListener('canplay', ensureVideoPlay, { once: true });
+        // Also try immediately
+        ensureVideoPlay();
+      }
+
+      // Ensure video plays when entering button is clicked (for mobile)
+      enterButton.addEventListener('touchstart', () => {
+        if (video && video.paused) {
+          video.play().catch(() => {});
+        }
+      }, { once: true });
 
       enterButton.addEventListener('click', () => {
         splashScreen.classList.add('hidden');
         mainContent.classList.add('visible');
+        // Pause video when leaving splash
+        if (video) {
+          video.pause();
+        }
         // Initialize network after splash is hidden
         setTimeout(() => {
           if (document.readyState === 'loading') {
