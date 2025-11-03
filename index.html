@@ -427,16 +427,21 @@
       transform: translate(-50%, -50%);
       z-index: 2;
       pointer-events: none;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: var(--bg-inner);
+      border: 25px solid var(--bg-inner);
+      box-sizing: border-box;
     }
 
     .profile-picture {
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
+      width: 100%;
+      height: 100%;
       display: block;
       object-fit: cover;
-      border: 3px solid rgba(255, 255, 255, 0.95);
-      box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+      border-radius: 0;
       transition: transform 0.3s ease;
     }
 
@@ -538,9 +543,10 @@
         min-height: 400px;
       }
 
-      .profile-picture {
-        width: 140px;
-        height: 140px;
+      .profile-picture-container {
+        width: 200px;
+        height: 200px;
+        border-width: 20px;
       }
 
       .site-title {
