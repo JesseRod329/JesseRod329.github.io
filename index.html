@@ -105,11 +105,21 @@
       z-index: 2;
       touch-action: none;
       -webkit-overflow-scrolling: touch;
+      transition: height 0.3s ease;
     }
 
     @media (min-width: 768px) {
       .network-container {
         height: calc(100vh - var(--header-height));
+      }
+    }
+
+    @media (min-width: 769px) {
+      .body-with-game-bar .network-container {
+        height: calc(100vh - var(--header-height) - 48px);
+      }
+      .body-with-game-bar.expanded .network-container {
+        height: calc(100vh - var(--header-height) - 500px);
       }
     }
 
@@ -136,13 +146,22 @@
       -webkit-backdrop-filter: blur(20px) saturate(180%);
       background: rgba(26, 26, 32, 0.7);
       border-bottom: 1px solid var(--surface-border);
-      transition: transform 0.3s ease;
+      transition: transform 0.3s ease, top 0.3s ease;
     }
 
     @media (min-width: 768px) {
       .network-header {
         height: var(--header-height);
         padding: 1rem 1.5rem;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .body-with-game-bar .network-header {
+        top: 48px;
+      }
+      .body-with-game-bar.expanded .network-header {
+        top: 500px;
       }
     }
 
@@ -375,9 +394,147 @@
       }
     }
 
+    /* Game Bar Styles - Desktop Only */
+    .game-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(26, 26, 32, 0.95);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid var(--surface-border);
+      transition: height 0.3s ease, transform 0.3s ease;
+      overflow: hidden;
+      display: none;
+    }
+
+    @media (min-width: 769px) {
+      .game-bar {
+        display: block;
+      }
+    }
+
+    .game-bar.collapsed {
+      height: 48px;
+    }
+
+    .game-bar.expanded {
+      height: 500px;
+    }
+
+    .game-bar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1rem;
+      height: 48px;
+      border-bottom: 1px solid var(--surface-border);
+      background: rgba(26, 26, 32, 0.98);
+    }
+
+    .game-bar-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+    }
+
+    .game-bar-title-emoji {
+      font-size: 1.25rem;
+    }
+
+    .game-bar-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .game-bar-btn {
+      appearance: none;
+      border: 1px solid var(--surface-border);
+      background: rgba(26, 26, 32, 0.8);
+      color: var(--text-secondary);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .game-bar-btn:hover {
+      border-color: var(--accent-primary);
+      color: var(--text-primary);
+      background: rgba(26, 26, 32, 0.95);
+    }
+
+    .game-bar-btn:active {
+      transform: scale(0.95);
+    }
+
+    .game-bar-content {
+      width: 100%;
+      height: calc(100% - 48px);
+      position: relative;
+    }
+
+    .game-bar-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: transparent;
+    }
+
+    .game-bar-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .body-with-game-bar {
+      padding-top: 48px;
+    }
+
+    .body-with-game-bar.expanded {
+      padding-top: 500px;
+    }
+
   </style>
 </head>
 <body>
+  <div class="game-bar collapsed" id="gameBar">
+    <div class="game-bar-header">
+      <div class="game-bar-title">
+        <span class="game-bar-title-emoji">✏️</span>
+        <span>Pencil Runner</span>
+      </div>
+      <div class="game-bar-controls">
+        <button type="button" class="game-bar-btn" id="gameBarToggle" aria-label="Toggle game">
+          <span id="gameBarToggleText">Play</span>
+        </button>
+      </div>
+    </div>
+    <div class="game-bar-content" id="gameBarContent">
+      <iframe 
+        class="game-bar-iframe" 
+        id="gameBarIframe" 
+        src="/vtrigger/" 
+        title="Pencil Runner Game"
+        allow="autoplay; fullscreen"
+        loading="lazy">
+      </iframe>
+    </div>
+  </div>
+
   <div class="network-canvas" id="networkCanvas" aria-hidden="true"></div>
 
   <header class="network-header">
@@ -677,13 +834,67 @@
       animate();
     }
 
+    function initGameBar() {
+      const gameBar = document.getElementById('gameBar');
+      const gameBarToggle = document.getElementById('gameBarToggle');
+      const gameBarToggleText = document.getElementById('gameBarToggleText');
+      const gameBarContent = document.getElementById('gameBarContent');
+      const body = document.body;
+
+      if (!gameBar || !gameBarToggle) return;
+
+      // Load saved state from localStorage
+      const savedState = localStorage.getItem('gameBarExpanded');
+      const isExpanded = savedState === 'true';
+
+      function updateGameBarState(expanded) {
+        if (expanded) {
+          gameBar.classList.remove('collapsed');
+          gameBar.classList.add('expanded');
+          body.classList.add('body-with-game-bar', 'expanded');
+          gameBarToggleText.textContent = 'Hide';
+        } else {
+          gameBar.classList.remove('expanded');
+          gameBar.classList.add('collapsed');
+          body.classList.remove('expanded');
+          body.classList.add('body-with-game-bar');
+          gameBarToggleText.textContent = 'Play';
+        }
+        localStorage.setItem('gameBarExpanded', expanded.toString());
+      }
+
+      // Set initial state
+      updateGameBarState(isExpanded);
+
+      // Toggle on button click
+      gameBarToggle.addEventListener('click', () => {
+        const currentlyExpanded = gameBar.classList.contains('expanded');
+        updateGameBarState(!currentlyExpanded);
+      });
+
+      // Handle iframe load
+      const iframe = document.getElementById('gameBarIframe');
+      if (iframe) {
+        iframe.addEventListener('load', () => {
+          console.log('Game loaded successfully');
+        });
+        iframe.addEventListener('error', () => {
+          console.error('Game failed to load');
+          gameBarContent.innerHTML = '<div class="game-bar-placeholder">Failed to load game</div>';
+        });
+      }
+    }
+
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initNetwork);
+      document.addEventListener('DOMContentLoaded', () => {
+        initNetwork();
+        initGameBar();
+      });
     } else {
       initNetwork();
+      initGameBar();
     }
   })();
   </script>
-  </div>
 </body>
 </html>
