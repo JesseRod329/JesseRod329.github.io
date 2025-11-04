@@ -15,15 +15,32 @@
   
   // Canvas sizing
   function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    if (!canvas) return;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
     // Reinitialize stars on resize if game is running
     if (isRunning) {
       initStars();
+      if (ship) {
+        ship.x = canvas.width / (2 * dpr);
+        ship.y = canvas.height / (2 * dpr);
+      }
     }
   }
   
-  resizeCanvas();
+  // Wait for DOM to be ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      resizeCanvas();
+    });
+  } else {
+    resizeCanvas();
+  }
   window.addEventListener('resize', resizeCanvas);
   
   // Star class
@@ -47,10 +64,13 @@
     }
     
     draw() {
-      const x = (this.x / this.z) * canvas.width + canvas.width / 2;
-      const y = (this.y / this.z) * canvas.height + canvas.height / 2;
+      if (!canvas || !ctx) return;
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      const x = (this.x / this.z) * rect.width + rect.width / 2;
+      const y = (this.y / this.z) * rect.height + rect.height / 2;
       
-      if (x < 0 || x > canvas.width || y < 0 || y > canvas.height) {
+      if (x < 0 || x > rect.width || y < 0 || y > rect.height) {
         return;
       }
       
@@ -78,6 +98,8 @@
     }
     
     update() {
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
       // Handle keyboard input
       if (keys['ArrowLeft'] || keys['a'] || keys['A']) {
         this.x -= this.speed;
@@ -93,21 +115,24 @@
       }
       
       // Keep ship within bounds
-      this.x = Math.max(this.size, Math.min(canvas.width - this.size, this.x));
-      this.y = Math.max(this.size, Math.min(canvas.height - this.size, this.y));
+      this.x = Math.max(this.size, Math.min(rect.width - this.size, this.x));
+      this.y = Math.max(this.size, Math.min(rect.height - this.size, this.y));
     }
     
     draw() {
+      if (!canvas || !ctx) return;
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
       ctx.save();
-      ctx.translate(this.x, this.y);
+      ctx.translate(this.x * dpr, this.y * dpr);
       ctx.rotate(this.angle);
       
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 2 * dpr;
       ctx.beginPath();
-      ctx.moveTo(0, -this.size);
-      ctx.lineTo(-this.size * 0.7, this.size);
-      ctx.lineTo(this.size * 0.7, this.size);
+      ctx.moveTo(0, -this.size * dpr);
+      ctx.lineTo(-this.size * 0.7 * dpr, this.size * dpr);
+      ctx.lineTo(this.size * 0.7 * dpr, this.size * dpr);
       ctx.closePath();
       ctx.stroke();
       
@@ -117,8 +142,10 @@
   
   // Initialize stars
   function initStars() {
+    if (!canvas) return;
     stars = [];
-    const starCount = Math.min(150, Math.floor((canvas.width * canvas.height) / 10000));
+    const rect = canvas.getBoundingClientRect();
+    const starCount = Math.min(150, Math.floor((rect.width * rect.height) / 10000));
     for (let i = 0; i < starCount; i++) {
       stars.push(new Star());
     }
@@ -126,21 +153,29 @@
   
   // Initialize ship
   function initShip() {
+    if (!canvas) return;
     ship = new Ship();
+    const rect = canvas.getBoundingClientRect();
+    ship.x = rect.width / 2;
+    ship.y = rect.height / 2;
   }
   
   // Animation loop
   function animate() {
-    if (!isRunning) return;
+    if (!isRunning || !canvas || !ctx) return;
     
     // Clear canvas with fade effect for trails
-    ctx.fillStyle = 'rgba(17, 17, 17, 0.1)';
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    const clearWidth = rect.width * dpr;
+    const clearHeight = rect.height * dpr;
+    
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
       ctx.fillStyle = 'rgba(17, 17, 17, 0.1)';
     } else {
       ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
     }
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, clearWidth, clearHeight);
     
     // Update and draw stars
     stars.forEach(star => {
@@ -159,10 +194,15 @@
   
   // Start game
   function startGame() {
-    if (isRunning) return;
+    if (isRunning || !canvas || !ctx) return;
+    
+    // Ensure canvas is properly sized
+    resizeCanvas();
     
     isRunning = true;
-    overlay.classList.add('hidden');
+    if (overlay) {
+      overlay.classList.add('hidden');
+    }
     initStars();
     initShip();
     animate();
@@ -195,14 +235,28 @@
     keys[e.key] = false;
   });
   
-  // Start button click
-  startButton.addEventListener('click', startGame);
-  startButton.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
+  // Start button click - only if elements exist
+  if (startButton) {
+    startButton.addEventListener('click', (e) => {
       e.preventDefault();
       startGame();
-    }
-  });
+    });
+    startButton.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        startGame();
+      }
+    });
+  }
+  
+  // Also allow clicking anywhere on overlay to start
+  if (overlay) {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay || e.target === startButton) {
+        startGame();
+      }
+    });
+  }
   
   // Smooth scroll for anchor links
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {

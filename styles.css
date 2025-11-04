@@ -85,6 +85,7 @@ body {
   height: 100%;
   z-index: 1;
   background: var(--bg-primary);
+  display: block;
 }
 
 .hero-overlay {
@@ -99,7 +100,7 @@ body {
   z-index: 2;
   background: rgba(0, 0, 0, 0.1);
   transition: opacity 0.5s ease, visibility 0.5s ease;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .hero-overlay.hidden {
@@ -120,6 +121,8 @@ body {
   transition: transform 0.2s ease, opacity 0.2s ease;
   pointer-events: auto;
   font-family: inherit;
+  margin: 0 auto;
+  display: block;
 }
 
 .start-button:hover {
@@ -137,11 +140,15 @@ body {
 }
 
 .hero-content {
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 3;
   text-align: center;
   color: var(--text-primary);
   pointer-events: none;
+  width: 100%;
 }
 
 .site-title {
