@@ -88,6 +88,58 @@ body {
   display: block;
 }
 
+/* Profile Picture Frame - jessezhang.org style */
+.profile-picture-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  pointer-events: none;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--bg-primary);
+  border: 25px solid var(--bg-primary);
+  box-sizing: border-box;
+}
+
+/* Hide profile picture when overlay is visible */
+.hero-overlay:not(.hidden) ~ .profile-picture-container {
+  opacity: 0.3;
+}
+
+.profile-picture {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+@media (max-width: 768px) {
+  .profile-picture-container {
+    width: 200px;
+    height: 200px;
+    border-width: 20px;
+  }
+  
+  .hero-content {
+    padding: 30px 20px 15px;
+  }
+  
+  .site-title {
+    font-size: clamp(1.5rem, 6vw, 2.5rem);
+    margin-bottom: 12px;
+  }
+  
+  .hero-nav {
+    margin-top: 12px;
+    gap: 16px;
+  }
+}
+
 .hero-overlay {
   position: absolute;
   top: 0;
@@ -97,8 +149,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2;
-  background: rgba(0, 0, 0, 0.1);
+  z-index: 10; /* above content */
+  background: rgba(0, 0, 0, 0.5);
   transition: opacity 0.5s ease, visibility 0.5s ease;
   pointer-events: auto;
 }
@@ -110,19 +162,18 @@ body {
 }
 
 .start-button {
-  padding: 16px 32px;
-  font-size: 18px;
-  font-weight: 500;
-  color: var(--text-primary);
-  background: var(--bg-primary);
-  border: 2px solid var(--text-primary);
-  border-radius: 4px;
+  padding: 20px 40px;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--bg-primary);
+  background: var(--text-primary);
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
   transition: transform 0.2s ease, opacity 0.2s ease;
   pointer-events: auto;
   font-family: inherit;
-  margin: 0 auto;
-  display: block;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .start-button:hover {
@@ -131,8 +182,8 @@ body {
 }
 
 .start-button:focus {
-  outline: 2px solid var(--link-color);
-  outline-offset: 2px;
+  outline: 3px solid var(--link-color);
+  outline-offset: 3px;
 }
 
 .start-button:active {
@@ -141,14 +192,23 @@ body {
 
 .hero-content {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 3;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 40px 20px 20px;
+  z-index: 5; /* below overlay */
   text-align: center;
   color: var(--text-primary);
   pointer-events: none;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Hide the title and nav when overlay is visible */
+.hero-overlay:not(.hidden) ~ .hero-content {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .site-title {
@@ -164,7 +224,7 @@ body {
   gap: 24px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 32px;
+  margin-top: 16px;
 }
 
 .hero-nav a {

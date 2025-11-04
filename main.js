@@ -11,7 +11,10 @@
   let isRunning = false;
   let stars = [];
   let ship = null;
+  let bullets = [];
   let keys = {};
+  let score = 0;
+  let lastShot = 0;
   
   // Canvas sizing
   function resizeCanvas() {
@@ -43,23 +46,25 @@
   }
   window.addEventListener('resize', resizeCanvas);
   
-  // Star class
+  // Star class for side-scrolling
   class Star {
     constructor() {
-      this.reset();
-      this.z = Math.random() * 2000; // Start at random depth
-    }
-    
-    reset() {
-      this.x = (Math.random() - 0.5) * 2000;
-      this.y = (Math.random() - 0.5) * 2000;
-      this.z = 2000; // Start at max depth
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      this.x = rect.width + Math.random() * 100;
+      this.y = Math.random() * rect.height;
+      this.speed = 1 + Math.random() * 3;
+      this.size = 1 + Math.random() * 2;
+      this.opacity = 0.5 + Math.random() * 0.5;
     }
     
     update() {
-      this.z -= 5; // Move toward camera
-      if (this.z <= 0) {
-        this.reset();
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      this.x -= this.speed;
+      if (this.x < -10) {
+        this.x = rect.width + 10;
+        this.y = Math.random() * rect.height;
       }
     }
     
@@ -67,46 +72,33 @@
       if (!canvas || !ctx) return;
       const dpr = window.devicePixelRatio || 1;
       const rect = canvas.getBoundingClientRect();
-      const x = (this.x / this.z) * rect.width + rect.width / 2;
-      const y = (this.y / this.z) * rect.height + rect.height / 2;
-      
-      if (x < 0 || x > rect.width || y < 0 || y > rect.height) {
-        return;
-      }
-      
-      const size = (1 - this.z / 2000) * 2;
-      const opacity = 1 - this.z / 2000;
       
       ctx.save();
-      ctx.globalAlpha = opacity;
+      ctx.globalAlpha = this.opacity;
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.arc(x, y, size, 0, Math.PI * 2);
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
     }
   }
   
-  // Ship class (optional triangle ship)
+  // Ship class for side-scrolling
   class Ship {
     constructor() {
-      this.x = canvas.width / 2;
-      this.y = canvas.height / 2;
-      this.size = 8;
-      this.speed = 3;
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      this.x = 80;
+      this.y = rect.height / 2;
+      this.size = 12;
+      this.speed = 4;
       this.angle = 0;
     }
     
     update() {
       if (!canvas) return;
       const rect = canvas.getBoundingClientRect();
-      // Handle keyboard input
-      if (keys['ArrowLeft'] || keys['a'] || keys['A']) {
-        this.x -= this.speed;
-      }
-      if (keys['ArrowRight'] || keys['d'] || keys['D']) {
-        this.x += this.speed;
-      }
+      // Handle keyboard input - only up/down movement for side-scroller
       if (keys['ArrowUp'] || keys['w'] || keys['W']) {
         this.y -= this.speed;
       }
@@ -114,40 +106,83 @@
         this.y += this.speed;
       }
       
-      // Keep ship within bounds
-      this.x = Math.max(this.size, Math.min(rect.width - this.size, this.x));
+      // Keep ship within vertical bounds
       this.y = Math.max(this.size, Math.min(rect.height - this.size, this.y));
     }
     
     draw() {
       if (!canvas || !ctx) return;
       const dpr = window.devicePixelRatio || 1;
-      const rect = canvas.getBoundingClientRect();
+      
       ctx.save();
-      ctx.translate(this.x * dpr, this.y * dpr);
+      ctx.translate(this.x, this.y);
       ctx.rotate(this.angle);
       
+      // Ship body (triangle pointing right)
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2 * dpr;
+      ctx.fillStyle = '#ffffff';
+      ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.moveTo(0, -this.size * dpr);
-      ctx.lineTo(-this.size * 0.7 * dpr, this.size * dpr);
-      ctx.lineTo(this.size * 0.7 * dpr, this.size * dpr);
+      ctx.moveTo(this.size, 0);
+      ctx.lineTo(-this.size * 0.6, -this.size * 0.8);
+      ctx.lineTo(-this.size * 0.6, this.size * 0.8);
       ctx.closePath();
+      ctx.fill();
       ctx.stroke();
+      
+      // Ship exhaust
+      ctx.fillStyle = '#ff4444';
+      ctx.beginPath();
+      ctx.arc(-this.size * 0.8, -this.size * 0.4, 2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(-this.size * 0.8, this.size * 0.4, 2, 0, Math.PI * 2);
+      ctx.fill();
       
       ctx.restore();
     }
   }
   
-  // Initialize stars
+  // Bullet class
+  class Bullet {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.speed = 8;
+      this.size = 3;
+      this.active = true;
+    }
+    
+    update() {
+      this.x += this.speed;
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      if (this.x > rect.width + 10) {
+        this.active = false;
+      }
+    }
+    
+    draw() {
+      if (!canvas || !ctx || !this.active) return;
+      ctx.save();
+      ctx.fillStyle = '#ffff00';
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+  
+  // Initialize stars for side-scrolling
   function initStars() {
     if (!canvas) return;
     stars = [];
     const rect = canvas.getBoundingClientRect();
-    const starCount = Math.min(150, Math.floor((rect.width * rect.height) / 10000));
+    const starCount = Math.min(200, Math.floor((rect.width * rect.height) / 8000));
     for (let i = 0; i < starCount; i++) {
-      stars.push(new Star());
+      const star = new Star();
+      star.x = Math.random() * rect.width;
+      stars.push(star);
     }
   }
   
@@ -155,25 +190,22 @@
   function initShip() {
     if (!canvas) return;
     ship = new Ship();
-    const rect = canvas.getBoundingClientRect();
-    ship.x = rect.width / 2;
-    ship.y = rect.height / 2;
   }
   
   // Animation loop
   function animate() {
     if (!isRunning || !canvas || !ctx) return;
     
-    // Clear canvas with fade effect for trails
+    // Clear canvas
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
     const clearWidth = rect.width * dpr;
     const clearHeight = rect.height * dpr;
     
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      ctx.fillStyle = 'rgba(17, 17, 17, 0.1)';
+      ctx.fillStyle = 'rgba(17, 17, 17, 0.15)';
     } else {
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
     }
     ctx.fillRect(0, 0, clearWidth, clearHeight);
     
@@ -183,7 +215,17 @@
       star.draw();
     });
     
-    // Update and draw ship if enabled
+    // Update and draw bullets
+    bullets = bullets.filter(bullet => {
+      bullet.update();
+      if (bullet.active) {
+        bullet.draw();
+        return true;
+      }
+      return false;
+    });
+    
+    // Update and draw ship
     if (ship) {
       ship.update();
       ship.draw();
@@ -223,9 +265,19 @@
   // Keyboard controls
   document.addEventListener('keydown', (e) => {
     keys[e.key] = true;
-    if (isRunning && ship && (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || 
-        e.key === 'ArrowUp' || e.key === 'ArrowDown' || 
-        e.key === 'a' || e.key === 'A' || e.key === 'd' || e.key === 'D' ||
+    
+    // Shooting
+    if (isRunning && ship && (e.key === ' ' || e.key === 'Spacebar')) {
+      e.preventDefault();
+      const now = Date.now();
+      if (now - lastShot > 150) { // Rate limit shooting
+        bullets.push(new Bullet(ship.x + ship.size, ship.y));
+        lastShot = now;
+      }
+    }
+    
+    // Movement
+    if (isRunning && ship && (e.key === 'ArrowUp' || e.key === 'ArrowDown' || 
         e.key === 'w' || e.key === 'W' || e.key === 's' || e.key === 'S')) {
       e.preventDefault();
     }
