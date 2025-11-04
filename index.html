@@ -1,131 +1,1004 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+  // Force HTTPS redirect
+  if (location.protocol !== 'https:') {
+    location.replace('https:' + window.location.href.substring(window.location.protocol.length));
+  }
+  </script>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Jesse Rodriguez - Creative Engineer. Building interactive experiences at the intersection of AI, design, and technology.">
-  
-  <!-- Open Graph / Social -->
-  <meta property="og:title" content="Jesse Rodriguez - Creative Engineer">
-  <meta property="og:description" content="Building interactive experiences at the intersection of AI, design, and technology.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://jesserodriguez.me">
-  <meta name="twitter:card" content="summary_large_image">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+  <link rel="preconnect" href="https://jesserodriguez.me">
+  <link rel="dns-prefetch" href="https://jesserodriguez.me">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'; media-src 'self'; child-src 'self'; form-action 'self'; base-uri 'self';">
   <title>Jesse Rodriguez — Creative Engineer</title>
-  
-  <link rel="stylesheet" href="styles.css">
+  <meta name="description" content="Explore Jesse Rodriguez's portfolio through an interactive physics-based network of projects. Touch and drag to explore connections.">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg-outer: #0a0a0f;
+      --bg-inner: #111116;
+      --bg-surface: #1a1a20;
+      --text-primary: rgba(250, 250, 252, 0.95);
+      --text-secondary: rgba(200, 200, 210, 0.7);
+      --text-muted: rgba(150, 150, 160, 0.6);
+      --surface-border: rgba(255, 255, 255, 0.08);
+      --accent-primary: #4ade80;
+      --accent-secondary: #60a5fa;
+      --accent-tertiary: #fbbf24;
+      --accent-game: #f472b6;
+      --accent-data: #34d399;
+      --accent-ai: #ff4d8d;
+      --accent-art: #a78bfa;
+      --accent-interactive: #f97316;
+      --accent-focus: #06b6d4;
+      --node-size: clamp(80px, 12vw, 120px);
+      --node-size-mobile: clamp(60px, 15vw, 90px);
+      --header-height: 64px;
+      --header-height-mobile: 56px;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg-inner);
+      color: var(--text-primary);
+      font-family: inherit;
+      overflow-x: hidden;
+      position: relative;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+
+    .network-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .network-line {
+      position: absolute;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+      opacity: 0;
+      transform-origin: left center;
+      transition: opacity 0.3s ease;
+    }
+
+    .network-line.is-visible {
+      opacity: 1;
+    }
+
+    .network-container {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - var(--header-height-mobile));
+      min-height: 600px;
+      overflow: hidden;
+      z-index: 2;
+      touch-action: none;
+      -webkit-overflow-scrolling: touch;
+      transition: height 0.3s ease;
+    }
+
+    @media (min-width: 768px) {
+      .network-container {
+        height: calc(100vh - var(--header-height));
+      }
+    }
+
+    @media (min-width: 769px) {
+      .body-with-game-bar .network-container {
+        height: calc(100vh - var(--header-height) - 48px);
+      }
+      .body-with-game-bar.expanded .network-container {
+        height: calc(100vh - var(--header-height) - 700px);
+      }
+    }
+
+    .network-nodes {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .network-header {
+      position: sticky;
+      top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      width: 100%;
+      padding: 0.75rem 1rem;
+      height: var(--header-height-mobile);
+      z-index: 100;
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      background: rgba(26, 26, 32, 0.7);
+      border-bottom: 1px solid var(--surface-border);
+      transition: transform 0.3s ease, top 0.3s ease;
+    }
+
+    @media (min-width: 768px) {
+      .network-header {
+        height: var(--header-height);
+        padding: 1rem 1.5rem;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .body-with-game-bar .network-header {
+        top: 48px;
+      }
+      .body-with-game-bar.expanded .network-header {
+        top: 700px;
+      }
+    }
+
+    body.is-loaded .network-header {
+      transform: translateY(0);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--surface-border);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 0.875rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .brand-title {
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.82rem;
+      color: var(--text-primary);
+    }
+
+    .brand-subtitle {
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+
+    .network-node {
+      position: absolute;
+      width: var(--node-size-mobile);
+      height: var(--node-size-mobile);
+      transform: translate(-50%, -50%);
+      will-change: transform;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    @media (min-width: 768px) {
+      .network-node {
+        width: var(--node-size);
+        height: var(--node-size);
+      }
+    }
+
+    .node-core {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--bg-surface);
+      border: 2px solid var(--surface-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      overflow: hidden;
+    }
+
+    .node-icon {
+      width: 70%;
+      height: 70%;
+      object-fit: contain;
+      border-radius: 50%;
+      opacity: 0.9;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .node-emoji {
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1;
+      opacity: 0.9;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      display: block;
+    }
+
+    .network-node.is-active .node-icon,
+    .network-node.is-active .node-emoji {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
+    .network-node.is-active .node-core {
+      transform: scale(1.15);
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 24px rgba(74, 222, 128, 0.4);
+    }
+
+    .network-node.is-pressed .node-core {
+      transform: scale(0.95);
+    }
+    .node-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      padding: 0.2rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: var(--bg-surface);
+      border: 1px solid var(--surface-border);
+      color: var(--text-secondary);
+      white-space: nowrap;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    @media (max-width: 640px) {
+      .node-badge {
+        font-size: 0.55rem;
+        padding: 0.15rem 0.4rem;
+      }
+    }
+
+    .node-title {
+      position: absolute;
+      bottom: -32px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      text-align: center;
+      width: max-content;
+      max-width: 200px;
+    }
+
+    @media (max-width: 640px) {
+      .node-title {
+        font-size: 0.75rem;
+        bottom: -28px;
+        max-width: 150px;
+      }
+    }
+
+    .network-node.is-active .node-title {
+      opacity: 1;
+    }
+
+    .node-glow {
+      position: absolute;
+      inset: -20%;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--node-accent, var(--accent-primary)) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      filter: blur(12px);
+    }
+
+    .network-node.is-active .node-glow {
+      opacity: 0.3;
+    }
+
+    .network-node[data-theme="game"] {
+      --node-accent: var(--accent-game);
+    }
+    .network-node[data-theme="data"] {
+      --node-accent: var(--accent-data);
+    }
+    .network-node[data-theme="ai"] {
+      --node-accent: var(--accent-ai);
+    }
+    .network-node[data-theme="art"] {
+      --node-accent: var(--accent-art);
+    }
+    .network-node[data-theme="interactive"] {
+      --node-accent: var(--accent-interactive);
+    }
+    .network-node[data-theme="focus"] {
+      --node-accent: var(--accent-focus);
+    }
+    .network-node[data-theme="fashion"] {
+      --node-accent: var(--accent-art);
+    }
+    .network-node[data-theme="philosophy"] {
+      --node-accent: var(--accent-secondary);
+    }
+    .network-node[data-theme="brainwave"] {
+      --node-accent: var(--accent-tertiary);
+    }
+    .network-node[data-theme="timezone"] {
+      --node-accent: var(--accent-art);
+    }
+    .network-node[data-theme="startup"] {
+      --node-accent: var(--accent-secondary);
+    }
+    .network-node[data-theme="paper"] {
+      --node-accent: var(--accent-tertiary);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+      .network-node {
+        transition: none !important;
+      }
+    }
+
+    /* Game Section with Profile Picture - jessezhang.org style */
+    .game-section {
+      width: 100%;
+      height: 70vh;
+      min-height: 500px;
+      max-height: 800px;
+      background: radial-gradient(120% 140% at 50% 0%, #0e1220 0%, #0a0f1a 45%, #070b12 100%);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--surface-border);
+      border-top: none;
+      /* Large elliptical rounding to match the concave arc style */
+      border-bottom-left-radius: 50% 14%;
+      border-bottom-right-radius: 50% 14%;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.45) inset, 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    .game-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Subtle faux-border following the curve */
+    .game-section::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 20px;
+      pointer-events: none;
+      border-bottom-left-radius: 50% 14%;
+      border-bottom-right-radius: 50% 14%;
+      box-shadow: 0 1px 0 0 var(--surface-border) inset, 0 -1px 0 0 rgba(255,255,255,0.06) inset;
+    }
+
+    .game-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      pointer-events: auto;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+    }
+
+    .profile-picture-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      pointer-events: none;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: var(--bg-inner);
+      border: 25px solid var(--bg-inner);
+      box-sizing: border-box;
+    }
+
+    .profile-picture {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      border-radius: 0;
+      transition: transform 0.3s ease;
+    }
+
+    .profile-picture:hover {
+      transform: scale(1.05);
+    }
+
+    /* Site Content */
+    .site-content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+
+    .site-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .site-header .profile-picture {
+      width: 120px;
+      height: 120px;
+      border: 3px solid var(--surface-border);
+      margin: 0 auto 24px;
+      box-shadow: none;
+      position: relative;
+      pointer-events: auto;
+    }
+
+    .site-title {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+
+    .about-section,
+    .projects-section {
+      margin-bottom: 80px;
+    }
+
+    .about-section h2,
+    .projects-section h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 24px;
+      letter-spacing: -0.01em;
+    }
+
+    .about-section p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 32px;
+    }
+
+    .project-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 12px;
+      padding: 24px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .project-card:hover {
+      border-color: var(--accent-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .project-card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .project-card-description {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 768px) {
+      .game-section {
+        height: 50vh;
+        min-height: 400px;
+        border-bottom-left-radius: 50% 18%;
+        border-bottom-right-radius: 50% 18%;
+      }
+
+      .profile-picture-container {
+        width: 200px;
+        height: 200px;
+        border-width: 20px;
+      }
+
+      .site-title {
+        font-size: 2rem;
+      }
+
+      .about-section h2,
+      .projects-section h2 {
+        font-size: 1.5rem;
+      }
+
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+  </style>
 </head>
 <body>
-  <a href="#main-content" class="skip-link">Skip to content</a>
-  
-  <header class="hero" id="hero">
-    <canvas id="gameCanvas" class="game-canvas"></canvas>
-    <div class="profile-picture-container">
-      <img src="/0sBykTmz_400x400-3.jpg" alt="Jesse Rodriguez" class="profile-picture" loading="eager">
+  <div class="game-section" id="gameSection">
+    <div class="game-container" id="gameContainer">
+      <iframe 
+        class="game-iframe" 
+        id="gameIframe" 
+        src="/Paper%20Plane/paper-plane/" 
+        title="Paper Plane Game"
+        allow="autoplay; fullscreen"
+        loading="eager"
+        allowfullscreen>
+      </iframe>
+      <div class="profile-picture-container">
+        <img src="/0sBykTmz_400x400-3.jpg" alt="Jesse Rodriguez" class="profile-picture" loading="eager">
+      </div>
     </div>
-    <div class="hero-overlay" id="heroOverlay">
-      <button class="start-button" id="startButton" type="button">
-        Click to start game
-      </button>
-    </div>
-    <div class="hero-content">
+  </div>
+
+  <div class="site-content">
+    <header class="site-header">
       <h1 class="site-title">Jesse Rodriguez</h1>
-      <nav class="hero-nav" aria-label="Main navigation">
-        <a href="#about">About</a>
-        <a href="#projects">Projects</a>
-        <a href="#current">Current</a>
-        <a href="#investments">Investments</a>
-        <a href="#contact">Contact</a>
-      </nav>
-    </div>
-  </header>
+    </header>
 
-  <main id="main-content">
-    <section id="about" class="section">
-      <h2 class="section-heading">About</h2>
-      <div class="section-content">
-        <p>I'm Jesse — welcome to my site 🙂.</p>
-        <p>I'm a creative engineer working at the intersection of AI, design, and technology. I build interactive experiences, tools, and applications that blend technical precision with thoughtful design.</p>
-        <p>In my free time, I like creating games, exploring new technologies, and working on projects that push creative boundaries.</p>
-        <!-- TODO: Personalize your about section -->
-      </div>
+    <section class="about-section" id="about">
+      <h2>About</h2>
+      <p>I'm Jesse — welcome to my site 🙂.</p>
+      <p>I'm a creative engineer working at the intersection of AI, design, and technology. I build interactive experiences, tools, and applications that blend technical precision with thoughtful design.</p>
+      <p>In my free time, I like creating games, exploring new technologies, and working on projects that push creative boundaries.</p>
     </section>
 
-    <section id="projects" class="section">
-      <h2 class="section-heading">Fun Projects</h2>
-      <div class="section-content">
-        <div class="projects-grid">
-          <!-- TODO: Replace with your actual projects -->
-          <a href="/Paper%20Plane/paper-plane/" class="project-card">
-            <div class="project-card-title">Paper Plane</div>
-            <div class="project-card-description">A minimalist side-scrolling game with smooth physics and unlockable plane types.</div>
-          </a>
-          <a href="/prompt/" class="project-card">
-            <div class="project-card-title">Prompt Studio</div>
-            <div class="project-card-description">AI prompt library with search, filtering, and favorites functionality.</div>
-          </a>
-          <a href="/Paper%20Plane/escape-world/" class="project-card">
-            <div class="project-card-title">Escape World</div>
-            <div class="project-card-description">Navigate through dark rooms with only a flashlight. Find clues to escape.</div>
-          </a>
-          <a href="/jumpingjellybean/" class="project-card">
-            <div class="project-card-title">Jumping Jelly Bean</div>
-            <div class="project-card-description">A fun jumping game with jelly bean physics.</div>
-          </a>
-          <a href="/md/" class="project-card">
-            <div class="project-card-title">MD Analytics</div>
-            <div class="project-card-description">Data visualization and analytics dashboard.</div>
-          </a>
-          <a href="/art/" class="project-card">
-            <div class="project-card-title">Graffiti Gallery</div>
-            <div class="project-card-description">Interactive graffiti art gallery and showcase.</div>
-          </a>
+    <section class="projects-section" id="projects">
+      <h2>Fun Projects</h2>
+      <div class="projects-grid" id="projectsGrid">
+        <!-- Projects will be populated by JavaScript -->
+      </div>
+    </section>
+  </div>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Jesse Rodriguez",
+    "url": "https://jesserodriguez.me",
+    "email": "jesse@jesserodriguez.me",
+    "jobTitle": "Full Stack Developer & Designer",
+    "description": "AI automation specialist, web developer, and designer creating innovative digital experiences at the intersection of technology and design.",
+    "sameAs": [
+      "https://jesserodriguez.me/ios",
+      "https://jesserodriguez.me/planner",
+      "https://jesserodriguez.me/fashion-palette"
+    ],
+    "knowsAbout": ["AI", "Web Development", "Design", "Fashion Technology", "iOS Development", "User Experience"],
+    "offers": {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Service",
+        "name": "Professional Development Services",
+        "description": "AI automation, web development, design, and consulting services"
+      }
+    }
+  }
+  </script>
+
+  <script>
+  (function(){
+    'use strict';
+    const body = document.body;
+    const networkNodes = document.getElementById('networkNodes');
+    const networkCanvas = document.getElementById('networkCanvas');
+    const container = document.getElementById('networkContainer');
+
+    const projects = [
+      { href: '/Paper%20Plane/escape-world/', badge: 'GAME', title: 'Escape World', theme: 'game', icon: null, emoji: '🔦' },
+      { href: '/Paper%20Plane/', badge: 'GAME', title: 'Paper Plane', theme: 'paper', icon: null, emoji: '✈️' },
+      { href: '/jumpingjellybean/', badge: 'GAME', title: 'Jumping Jelly Bean', theme: 'game', icon: null, emoji: '🫘' },
+      { href: '/md/', badge: 'DATA', title: 'MD Analytics', theme: 'data', icon: null, emoji: '📊' },
+      { href: '/prompt/', badge: 'AI', title: 'Prompt Studio', theme: 'ai', icon: '/prompt/apple_touch_icons/apple_touch_icon_180x180.png', emoji: null },
+      { href: '/art/', badge: 'ART', title: 'Graffiti Gallery', theme: 'art', icon: null, emoji: '🎨' },
+      { href: '/wrestling-news/', badge: 'LIVE', title: 'Wrestling News', theme: 'interactive', icon: '/wrestling-news/svgviewer-png-output-4-2.png', emoji: null },
+      { href: '/knock.html', badge: 'INTERACTIVE', title: 'Knock Door', theme: 'interactive', icon: null, emoji: '🚪' },
+      { href: '/planner/', badge: 'FOCUS', title: 'Daily Planner', theme: 'focus', icon: '/planner/svgviewer-png-output.png', emoji: null },
+      { href: '/fashion-palette/', badge: 'FASHION', title: 'Fashion Palette', theme: 'fashion', icon: '/fashion-palette/aurora_palette_180.png', emoji: null },
+      { href: '/philosophers-library.html', badge: 'LIBRARY', title: 'Philosopher\'s Library', theme: 'philosophy', icon: null, emoji: '📚' },
+      { href: '/brainwave-simulator/brainwave-simulator.html', badge: 'SCIENCE', title: 'Brainwave Sim', theme: 'brainwave', icon: '/brainwave-simulator/cyberpunk_brain_180px.png', emoji: null },
+      { href: '/TIME/', badge: 'GLOBAL', title: 'WorldTime', theme: 'timezone', icon: null, emoji: '🕐' },
+      { href: '/STARTUP/', badge: 'RETRO', title: 'Console Hub', theme: 'startup', icon: null, emoji: '🎮' },
+      { href: '/vtrigger/', badge: 'GAME', title: 'Pencil Runner', theme: 'game', icon: null, emoji: '✏️' }
+    ];
+
+    let nodes = [];
+    let lines = [];
+    let activeNode = null;
+    let isDragging = false;
+    let dragOffset = { x: 0, y: 0 };
+    let containerOffset = { x: 0, y: 0 };
+    let animationId = null;
+    let touchStartPos = null;
+    let touchStartTime = null;
+
+    function getInitialPosition(index, total) {
+      const angle = (index / total) * Math.PI * 2;
+      const radius = Math.min(window.innerWidth, window.innerHeight) * 0.25;
+      const centerX = window.innerWidth * 0.5;
+      const centerY = window.innerHeight * 0.5;
+      return {
+        x: centerX + Math.cos(angle) * radius,
+        y: centerY + Math.sin(angle) * radius,
+        vx: 0,
+        vy: 0
+      };
+    }
+
+    function createNode(project, index) {
+      const node = document.createElement('a');
+      node.href = project.href;
+      node.className = 'network-node';
+      node.setAttribute('data-theme', project.theme);
+
+      const pos = getInitialPosition(index, projects.length);
+      node.dataset.x = pos.x;
+      node.dataset.y = pos.y;
+      node.style.cssText = `transform: translate(calc(${pos.x}px - 50%), calc(${pos.y}px - 50%)); will-change: transform;`;
+
+      node.innerHTML = `
+        <div class="node-glow"></div>
+        <div class="node-core">
+          ${project.icon ? `<img src="${project.icon}" alt="${project.title}" class="node-icon" />` : project.emoji ? `<span class="node-emoji">${project.emoji}</span>` : ''}
+          <span class="node-badge">${project.badge}</span>
         </div>
-      </div>
-    </section>
+        <div class="node-title">${project.title}</div>
+      `;
 
-    <section id="current" class="section">
-      <h2 class="section-heading">Current</h2>
-      <div class="section-content">
-        <p>I'm currently working on new projects and exploring creative technologies. You can follow me on <a href="https://twitter.com/yourhandle" target="_blank" rel="noopener noreferrer">Twitter</a> and <a href="https://linkedin.com/in/yourprofile" target="_blank" rel="noopener noreferrer">LinkedIn</a>.</p>
-        <!-- TODO: Update with your current status and social links -->
-      </div>
-    </section>
+      networkNodes.appendChild(node);
+      return { el: node, x: pos.x, y: pos.y, vx: pos.vx, vy: pos.vy, fx: 0, fy: 0 };
+    }
 
-    <section id="investments" class="section">
-      <h2 class="section-heading">Angel Investments</h2>
-      <div class="section-content">
-        <ul class="investments-list">
-          <!-- TODO: Replace with your actual investments -->
-          <li><a href="https://example.com" target="_blank" rel="noopener noreferrer">Example Company</a></li>
-          <li><a href="https://example.com" target="_blank" rel="noopener noreferrer">Another Startup</a></li>
-          <li><a href="https://example.com" target="_blank" rel="noopener noreferrer">Tech Innovation</a></li>
-          <li><a href="https://example.com" target="_blank" rel="noopener noreferrer">Creative Platform</a></li>
-        </ul>
-      </div>
-    </section>
+    function createLine(fromNode, toNode) {
+      const line = document.createElement('div');
+      line.className = 'network-line';
+      line.dataset.from = fromNode.el.dataset.index;
+      line.dataset.to = toNode.el.dataset.index;
+      networkCanvas.appendChild(line);
+      return { el: line, from: fromNode, to: toNode };
+    }
 
-    <section id="contact" class="section">
-      <h2 class="section-heading">Contact</h2>
-      <div class="section-content">
-        <p>
-          <a href="mailto:jesse@jesserodriguez.me">jesse@jesserodriguez.me</a>
-        </p>
-        <nav class="social-links" aria-label="Social links">
-          <a href="https://twitter.com/yourhandle" target="_blank" rel="noopener noreferrer">Twitter</a>
-          <a href="https://linkedin.com/in/yourprofile" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-          <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer">GitHub</a>
-        </nav>
-        <!-- TODO: Update with your actual email and social links -->
-      </div>
-    </section>
-  </main>
+    function updateLine(line) {
+      const dx = line.to.x - line.from.x;
+      const dy = line.to.y - line.from.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const maxDist = Math.min(window.innerWidth, window.innerHeight) * 0.6;
 
-  <footer class="footer">
-    <p>&copy; 2024 Jesse Rodriguez</p>
-  </footer>
+      if (dist > maxDist) {
+        line.el.classList.remove('is-visible');
+        return;
+      }
 
-  <script src="main.js"></script>
+      line.el.classList.add('is-visible');
+      const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+      line.el.style.width = dist + 'px';
+      line.el.style.left = line.from.x + 'px';
+      line.el.style.top = line.from.y + 'px';
+      line.el.style.transform = `rotate(${angle}deg)`;
+    }
+
+    function physicsStep() {
+      const repulsion = 8000;
+      const attraction = 0.001;
+      const damping = 0.85;
+      const centerX = window.innerWidth * 0.5 + containerOffset.x;
+      const centerY = window.innerHeight * 0.5 + containerOffset.y;
+
+      nodes.forEach((node, i) => {
+        node.fx = 0;
+        node.fy = 0;
+
+        const centerForce = 0.0003;
+        node.fx += (centerX - node.x) * centerForce;
+        node.fy += (centerY - node.y) * centerForce;
+
+        nodes.forEach((other, j) => {
+          if (i === j) return;
+          const dx = node.x - other.x;
+          const dy = node.y - other.y;
+          const distSq = dx * dx + dy * dy + 100;
+          const dist = Math.sqrt(distSq);
+          const force = repulsion / distSq;
+          node.fx += (dx / dist) * force;
+          node.fy += (dy / dist) * force;
+        });
+
+        node.vx = (node.vx + node.fx) * damping;
+        node.vy = (node.vy + node.fy) * damping;
+        node.x += node.vx;
+        node.y += node.vy;
+
+        const bounds = 100;
+        if (node.x < bounds) { node.x = bounds; node.vx *= -0.5; }
+        if (node.x > window.innerWidth - bounds) { node.x = window.innerWidth - bounds; node.vx *= -0.5; }
+        if (node.y < bounds) { node.y = bounds; node.vy *= -0.5; }
+        if (node.y > window.innerHeight - bounds) { node.y = window.innerHeight - bounds; node.vy *= -0.5; }
+
+        node.el.style.transform = `translate(calc(${node.x}px - 50%), calc(${node.y}px - 50%))`;
+        node.el.dataset.x = node.x;
+        node.el.dataset.y = node.y;
+      });
+
+      lines.forEach(updateLine);
+    }
+
+    function animate() {
+      if (!isDragging) {
+        physicsStep();
+      }
+      animationId = requestAnimationFrame(animate);
+    }
+
+    function initNetwork() {
+      nodes = projects.map((project, index) => {
+        const node = createNode(project, index);
+        node.el.dataset.index = index;
+        return node;
+      });
+
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dist = Math.random();
+          if (dist < 0.3 || Math.abs(i - j) === 1) {
+            lines.push(createLine(nodes[i], nodes[j]));
+          }
+        }
+      }
+
+      nodes.forEach((node, index) => {
+        node.el.addEventListener('touchstart', (e) => {
+          touchStartPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+          touchStartTime = Date.now();
+          isDragging = false;
+          activeNode = node;
+          dragOffset.x = e.touches[0].clientX - node.x;
+          dragOffset.y = e.touches[0].clientY - node.y;
+        }, { passive: true });
+
+        node.el.addEventListener('touchmove', (e) => {
+          if (activeNode === node && touchStartPos) {
+            const dx = Math.abs(e.touches[0].clientX - touchStartPos.x);
+            const dy = Math.abs(e.touches[0].clientY - touchStartPos.y);
+            
+            if (dx > 5 || dy > 5) {
+              isDragging = true;
+              e.preventDefault();
+              node.el.classList.add('is-pressed');
+              node.x = e.touches[0].clientX - dragOffset.x;
+              node.y = e.touches[0].clientY - dragOffset.y;
+              node.vx = node.vy = 0;
+              node.el.style.transform = `translate(calc(${node.x}px - 50%), calc(${node.y}px - 50%))`;
+              lines.forEach(updateLine);
+            }
+          }
+        }, { passive: false });
+
+        node.el.addEventListener('touchend', (e) => {
+          if (activeNode === node) {
+            const wasDrag = isDragging;
+            
+            if (wasDrag) {
+              e.preventDefault();
+              node.el.classList.remove('is-pressed');
+            }
+            // If not dragging, let the <a> tag handle navigation naturally
+            
+            activeNode = null;
+            isDragging = false;
+            touchStartPos = null;
+            touchStartTime = null;
+          }
+        });
+
+        node.el.addEventListener('pointerenter', () => {
+          node.el.classList.add('is-active');
+        });
+
+        node.el.addEventListener('pointerleave', () => {
+          if (activeNode !== node) {
+            node.el.classList.remove('is-active');
+          }
+        });
+
+        node.el.addEventListener('click', (e) => {
+          if (isDragging) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+          }
+        });
+      });
+
+      let touchStart = null;
+      container.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        }
+      }, { passive: true });
+
+      container.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 1 && touchStart && !activeNode) {
+          containerOffset.x += e.touches[0].clientX - touchStart.x;
+          containerOffset.y += e.touches[0].clientY - touchStart.y;
+          touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        }
+      }, { passive: true });
+
+      window.addEventListener('resize', () => {
+        const headerHeight = window.innerWidth < 768 ? 56 : 64;
+        container.style.height = (window.innerHeight - headerHeight) + 'px';
+      });
+
+      body.classList.add('is-loaded');
+      animate();
+    }
+
+    function initGameBar() {
+      const gameBar = document.getElementById('gameBar');
+      const gameBarContent = document.getElementById('gameBarContent');
+      const body = document.body;
+
+      if (!gameBar) return;
+
+      // Always expanded - no toggle needed
+      gameBar.classList.add('expanded');
+      body.classList.add('body-with-game-bar', 'expanded');
+
+      // Handle iframe load
+      const iframe = document.getElementById('gameBarIframe');
+      if (iframe) {
+        iframe.addEventListener('load', () => {
+          console.log('Game loaded successfully');
+        });
+        iframe.addEventListener('error', () => {
+          console.error('Game failed to load');
+          gameBarContent.innerHTML = '<div class="game-bar-placeholder">Failed to load game</div>';
+        });
+      }
+    }
+
+    function initProjects() {
+      const projectsGrid = document.getElementById('projectsGrid');
+      if (!projectsGrid) return;
+
+      // Filter out Paper Plane since it's the main game, and format for display
+      const displayProjects = projects
+        .filter(p => p.href !== '/Paper%20Plane/')
+        .map(project => ({
+          title: project.title,
+          href: project.href,
+          description: getProjectDescription(project.title)
+        }));
+
+      displayProjects.forEach(project => {
+        const card = document.createElement('a');
+        card.href = project.href;
+        card.className = 'project-card';
+        card.innerHTML = `
+          <div class="project-card-title">${project.title}</div>
+          <div class="project-card-description">${project.description}</div>
+        `;
+        projectsGrid.appendChild(card);
+      });
+    }
+
+    function getProjectDescription(title) {
+      const descriptions = {
+        'Escape World': 'Navigate through dark rooms with only a flashlight. Find clues to escape through challenging levels.',
+        'Jumping Jelly Bean': 'A fun jumping game with jelly bean physics.',
+        'MD Analytics': 'Data visualization and analytics dashboard.',
+        'Prompt Studio': 'AI prompt library with search and filtering capabilities.',
+        'Graffiti Gallery': 'Interactive graffiti art gallery and showcase.',
+        'Wrestling News': 'Live wrestling news and updates hub.',
+        'Knock Door': 'Interactive door knocking experience with sound effects.',
+        'Daily Planner': 'Circular daily planner with task management.',
+        'Fashion Palette': 'Fashion color palette generator and analyzer.',
+        'Philosopher\'s Library': 'Curated collection of philosophical texts.',
+        'Brainwave Sim': 'Scientific brainwave simulator with EEG visualization.',
+        'WorldTime': 'Global timezone viewer and converter.',
+        'Console Hub': 'Retro console-style interface hub.',
+        'Pencil Runner': 'Minimalist side-scrolling runner game.'
+      };
+      return descriptions[title] || 'Interactive project and experience.';
+    }
+
+    function initGame() {
+      const iframe = document.getElementById('gameIframe');
+      if (iframe) {
+        iframe.addEventListener('load', () => {
+          console.log('Game loaded successfully');
+        });
+        iframe.addEventListener('error', () => {
+          console.error('Game failed to load');
+        });
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        initGame();
+        initProjects();
+      });
+    } else {
+      initGame();
+      initProjects();
+    }
+  })();
+  </script>
 </body>
 </html>
