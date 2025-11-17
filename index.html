@@ -16,37 +16,21 @@
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'; media-src 'self'; child-src 'self'; form-action 'self'; base-uri 'self';">
   <title>Jesse Rodriguez — Creative Engineer</title>
-  <meta name="description" content="Explore Jesse Rodriguez's portfolio through an interactive physics-based network of projects. Touch and drag to explore connections.">
+  <meta name="description" content="Explore Jesse Rodriguez's portfolio of interactive experiences, AI tools, games, and creative projects.">
   <style>
-    :root {
-      color-scheme: dark;
-      --bg-outer: #0a0a0f;
-      --bg-inner: #111116;
-      --bg-surface: #1a1a20;
-      --text-primary: rgba(250, 250, 252, 0.95);
-      --text-secondary: rgba(200, 200, 210, 0.7);
-      --text-muted: rgba(150, 150, 160, 0.6);
-      --surface-border: rgba(255, 255, 255, 0.08);
-      --accent-primary: #4ade80;
-      --accent-secondary: #60a5fa;
-      --accent-tertiary: #fbbf24;
-      --accent-game: #f472b6;
-      --accent-data: #34d399;
-      --accent-ai: #ff4d8d;
-      --accent-art: #a78bfa;
-      --accent-interactive: #f97316;
-      --accent-focus: #06b6d4;
-      --node-size: clamp(80px, 12vw, 120px);
-      --node-size-mobile: clamp(60px, 15vw, 90px);
-      --header-height: 64px;
-      --header-height-mobile: 56px;
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', sans-serif;
-    }
-
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --apple-black: #1d1d1f;
+      --apple-gray: #86868b;
+      --apple-blue: #0071e3;
+      --apple-white: #fbfbfd;
+      --apple-text: #1d1d1f;
+      --apple-text-secondary: #86868b;
     }
 
     html {
@@ -54,574 +38,373 @@
     }
 
     body {
-      min-height: 100vh;
-      background: var(--bg-inner);
-      color: var(--text-primary);
-      font-family: inherit;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background: var(--apple-white);
+      color: var(--apple-text);
+      line-height: 1.47059;
+      font-weight: 400;
+      letter-spacing: -0.022em;
       overflow-x: hidden;
-      position: relative;
-      -webkit-tap-highlight-color: transparent;
     }
 
-
-    .network-canvas {
+    /* Navigation */
+    nav {
       position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-      overflow: hidden;
-    }
-
-    .network-line {
-      position: absolute;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
-      opacity: 0;
-      transform-origin: left center;
-      transition: opacity 0.3s ease;
-    }
-
-    .network-line.is-visible {
-      opacity: 1;
-    }
-
-    .network-container {
-      position: relative;
-      width: 100%;
-      height: calc(100vh - var(--header-height-mobile));
-      min-height: 600px;
-      overflow: hidden;
-      z-index: 2;
-      touch-action: none;
-      -webkit-overflow-scrolling: touch;
-      transition: height 0.3s ease;
-    }
-
-    @media (min-width: 768px) {
-      .network-container {
-        height: calc(100vh - var(--header-height));
-      }
-    }
-
-    @media (min-width: 769px) {
-      .body-with-game-bar .network-container {
-        height: calc(100vh - var(--header-height) - 48px);
-      }
-      .body-with-game-bar.expanded .network-container {
-        height: calc(100vh - var(--header-height) - 700px);
-      }
-    }
-
-    .network-nodes {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      transform-style: preserve-3d;
-      will-change: transform;
-    }
-
-    .network-header {
-      position: sticky;
       top: 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      width: 100%;
-      padding: 0.75rem 1rem;
-      height: var(--header-height-mobile);
-      z-index: 100;
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      background: rgba(26, 26, 32, 0.7);
-      border-bottom: 1px solid var(--surface-border);
-      transition: transform 0.3s ease, top 0.3s ease;
-    }
-
-    @media (min-width: 768px) {
-      .network-header {
-        height: var(--header-height);
-        padding: 1rem 1.5rem;
-      }
-    }
-
-    @media (min-width: 769px) {
-      .body-with-game-bar .network-header {
-        top: 48px;
-      }
-      .body-with-game-bar.expanded .network-header {
-        top: 700px;
-      }
-    }
-
-    body.is-loaded .network-header {
-      transform: translateY(0);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .brand-mark {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      background: var(--bg-surface);
-      border: 1px solid var(--surface-border);
-      display: grid;
-      place-items: center;
-      font-weight: 700;
-      font-size: 0.875rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-primary);
-    }
-
-    .brand-text {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .brand-title {
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      font-size: 0.82rem;
-      color: var(--text-primary);
-    }
-
-    .brand-subtitle {
-      font-size: 0.78rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-    }
-
-
-    .network-node {
-      position: absolute;
-      width: var(--node-size-mobile);
-      height: var(--node-size-mobile);
-      transform: translate(-50%, -50%);
-      will-change: transform;
-      cursor: pointer;
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    @media (min-width: 768px) {
-      .network-node {
-        width: var(--node-size);
-        height: var(--node-size);
-      }
-    }
-
-    .node-core {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background: var(--bg-surface);
-      border: 2px solid var(--surface-border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.2s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-      overflow: hidden;
-    }
-
-    .node-icon {
-      width: 70%;
-      height: 70%;
-      object-fit: contain;
-      border-radius: 50%;
-      opacity: 0.9;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-
-    .node-emoji {
-      font-size: clamp(2rem, 5vw, 3rem);
-      line-height: 1;
-      opacity: 0.9;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      display: block;
-    }
-
-    .network-node.is-active .node-icon,
-    .network-node.is-active .node-emoji {
-      opacity: 1;
-      transform: scale(1.1);
-    }
-
-    .network-node.is-active .node-core {
-      transform: scale(1.15);
-      border-color: var(--accent-primary);
-      box-shadow: 0 0 24px rgba(74, 222, 128, 0.4);
-    }
-
-    .network-node.is-pressed .node-core {
-      transform: scale(0.95);
-    }
-    .node-badge {
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      padding: 0.2rem 0.5rem;
-      border-radius: 12px;
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      background: var(--bg-surface);
-      border: 1px solid var(--surface-border);
-      color: var(--text-secondary);
-      white-space: nowrap;
-      z-index: 10;
-      pointer-events: none;
-    }
-
-    @media (max-width: 640px) {
-      .node-badge {
-        font-size: 0.55rem;
-        padding: 0.15rem 0.4rem;
-      }
-    }
-
-    .node-title {
-      position: absolute;
-      bottom: -32px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      white-space: nowrap;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
-      text-align: center;
-      width: max-content;
-      max-width: 200px;
-    }
-
-    @media (max-width: 640px) {
-      .node-title {
-        font-size: 0.75rem;
-        bottom: -28px;
-        max-width: 150px;
-      }
-    }
-
-    .network-node.is-active .node-title {
-      opacity: 1;
-    }
-
-    .node-glow {
-      position: absolute;
-      inset: -20%;
-      border-radius: 50%;
-      background: radial-gradient(circle, var(--node-accent, var(--accent-primary)) 0%, transparent 70%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
-      filter: blur(12px);
-    }
-
-    .network-node.is-active .node-glow {
-      opacity: 0.3;
-    }
-
-    .network-node[data-theme="game"] {
-      --node-accent: var(--accent-game);
-    }
-    .network-node[data-theme="data"] {
-      --node-accent: var(--accent-data);
-    }
-    .network-node[data-theme="ai"] {
-      --node-accent: var(--accent-ai);
-    }
-    .network-node[data-theme="art"] {
-      --node-accent: var(--accent-art);
-    }
-    .network-node[data-theme="interactive"] {
-      --node-accent: var(--accent-interactive);
-    }
-    .network-node[data-theme="focus"] {
-      --node-accent: var(--accent-focus);
-    }
-    .network-node[data-theme="fashion"] {
-      --node-accent: var(--accent-art);
-    }
-    .network-node[data-theme="philosophy"] {
-      --node-accent: var(--accent-secondary);
-    }
-    .network-node[data-theme="brainwave"] {
-      --node-accent: var(--accent-tertiary);
-    }
-    .network-node[data-theme="timezone"] {
-      --node-accent: var(--accent-art);
-    }
-    .network-node[data-theme="startup"] {
-      --node-accent: var(--accent-secondary);
-    }
-    .network-node[data-theme="paper"] {
-      --node-accent: var(--accent-tertiary);
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.001ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.001ms !important;
-        scroll-behavior: auto !important;
-      }
-      .network-node {
-        transition: none !important;
-      }
-    }
-
-    /* Game Section with Profile Picture - jessezhang.org style */
-    .game-section {
-      width: 100%;
-      height: 70vh;
-      min-height: 500px;
-      max-height: 800px;
-      background: radial-gradient(120% 140% at 50% 0%, #0e1220 0%, #0a0f1a 45%, #070b12 100%);
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--surface-border);
-      border-top: none;
-      /* Large elliptical rounding to match the concave arc style */
-      border-bottom-left-radius: 50% 14%;
-      border-bottom-right-radius: 50% 14%;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.45) inset, 0 10px 30px rgba(0,0,0,0.35);
-    }
-
-    .game-container {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* Subtle faux-border following the curve */
-    .game-section::after {
-      content: "";
-      position: absolute;
       left: 0;
       right: 0;
-      bottom: 0;
-      height: 20px;
-      pointer-events: none;
-      border-bottom-left-radius: 50% 14%;
-      border-bottom-right-radius: 50% 14%;
-      box-shadow: 0 1px 0 0 var(--surface-border) inset, 0 -1px 0 0 rgba(255,255,255,0.06) inset;
+      background: rgba(251, 251, 253, 0.8);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .game-iframe {
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      padding: 0 2rem;
+      max-width: 1200px;
       width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
-      pointer-events: auto;
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 1;
-      transform: translateZ(0);
-      backface-visibility: hidden;
+      justify-content: center;
     }
 
-    .profile-picture-container {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 2;
-      pointer-events: none;
-      width: 250px;
-      height: 250px;
-      border-radius: 50%;
-      overflow: hidden;
-      background: var(--bg-inner);
-      border: 25px solid var(--bg-inner);
-      box-sizing: border-box;
-    }
-
-    .profile-picture {
-      width: 100%;
-      height: 100%;
-      display: block;
-      object-fit: cover;
-      border-radius: 0;
-      transition: transform 0.3s ease;
-    }
-
-    .profile-picture:hover {
-      transform: scale(1.05);
-    }
-
-    /* Site Content */
-    .site-content {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 60px 20px;
-    }
-
-    .site-header {
-      text-align: center;
-      margin-bottom: 60px;
-    }
-
-    .site-header .profile-picture {
-      width: 120px;
-      height: 120px;
-      border: 3px solid var(--surface-border);
-      margin: 0 auto 24px;
-      box-shadow: none;
-      position: relative;
-      pointer-events: auto;
-    }
-
-    .site-title {
-      font-size: 3rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin: 0;
-      letter-spacing: -0.02em;
-    }
-
-    .about-section,
-    .projects-section {
-      margin-bottom: 80px;
-    }
-
-    .about-section h2,
-    .projects-section h2 {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 24px;
+    nav li {
+      font-size: 12px;
+      font-weight: 400;
       letter-spacing: -0.01em;
     }
 
-    .about-section p {
-      font-size: 1.1rem;
-      line-height: 1.8;
-      color: var(--text-secondary);
-      margin-bottom: 16px;
+    nav a {
+      color: var(--apple-text);
+      text-decoration: none;
+      opacity: 0.8;
+      transition: opacity 0.3s ease;
     }
 
+    nav a:hover {
+      opacity: 1;
+    }
+
+    nav .logo {
+      font-size: 17px;
+      font-weight: 600;
+      opacity: 1;
+      margin-right: auto;
+    }
+
+    /* Hero Sections */
+    .hero-section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 20px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-title {
+      font-size: clamp(48px, 8vw, 80px);
+      font-weight: 600;
+      letter-spacing: -0.003em;
+      line-height: 1.05;
+      margin-bottom: 12px;
+      color: var(--apple-text);
+    }
+
+    .hero-subtitle {
+      font-size: clamp(21px, 3vw, 28px);
+      font-weight: 400;
+      letter-spacing: 0.007em;
+      line-height: 1.14286;
+      color: var(--apple-text-secondary);
+      margin-bottom: 24px;
+      max-width: 600px;
+    }
+
+    .hero-description {
+      font-size: clamp(17px, 2vw, 21px);
+      font-weight: 400;
+      letter-spacing: -0.011em;
+      line-height: 1.381;
+      color: var(--apple-text-secondary);
+      margin-bottom: 40px;
+      max-width: 500px;
+    }
+
+    .hero-image {
+      width: 100%;
+      max-width: 800px;
+      height: auto;
+      margin-top: 60px;
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .hero-image:hover {
+      transform: translateY(-10px);
+    }
+
+    .cta-link {
+      display: inline-block;
+      color: var(--apple-blue);
+      text-decoration: none;
+      font-size: 17px;
+      font-weight: 400;
+      letter-spacing: -0.022em;
+      margin-top: 20px;
+      transition: opacity 0.3s ease;
+    }
+
+    .cta-link:hover {
+      opacity: 0.8;
+    }
+
+    .cta-link::after {
+      content: ' →';
+    }
+
+    /* Project Grid Section */
     .projects-grid {
+      padding: 120px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: clamp(40px, 6vw, 56px);
+      font-weight: 600;
+      letter-spacing: -0.003em;
+      text-align: center;
+      margin-bottom: 60px;
+      color: var(--apple-text);
+    }
+
+    .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-      margin-top: 32px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 60px;
     }
 
     .project-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--surface-border);
-      border-radius: 12px;
-      padding: 24px;
-      transition: all 0.2s ease;
+      background: var(--apple-white);
+      border-radius: 18px;
+      overflow: hidden;
       text-decoration: none;
       color: inherit;
-      display: block;
+      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     }
 
     .project-card:hover {
-      border-color: var(--accent-primary);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      transform: translateY(-8px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .project-card-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .project-card-content {
+      padding: 24px;
     }
 
     .project-card-title {
-      font-size: 1.25rem;
+      font-size: 21px;
       font-weight: 600;
-      color: var(--text-primary);
+      letter-spacing: -0.011em;
       margin-bottom: 8px;
+      color: var(--apple-text);
     }
 
     .project-card-description {
-      font-size: 0.95rem;
-      line-height: 1.6;
-      color: var(--text-secondary);
+      font-size: 17px;
+      font-weight: 400;
+      letter-spacing: -0.022em;
+      color: var(--apple-text-secondary);
+      line-height: 1.47059;
     }
 
+    /* Footer */
+    footer {
+      background: var(--apple-black);
+      color: var(--apple-white);
+      padding: 60px 20px 40px;
+      text-align: center;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer-title {
+      font-size: 21px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .footer-text {
+      font-size: 17px;
+      opacity: 0.8;
+      margin-bottom: 24px;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-top: 40px;
+    }
+
+    .footer-links a {
+      color: var(--apple-white);
+      text-decoration: none;
+      font-size: 12px;
+      opacity: 0.8;
+      transition: opacity 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      opacity: 1;
+    }
+
+    /* Responsive */
     @media (max-width: 768px) {
-      .game-section {
-        height: 50vh;
-        min-height: 400px;
-        border-bottom-left-radius: 50% 18%;
-        border-bottom-right-radius: 50% 18%;
+      nav ul {
+        gap: 1rem;
+        padding: 0 1rem;
+        flex-wrap: wrap;
       }
 
-      .profile-picture-container {
-        width: 200px;
-        height: 200px;
-        border-width: 20px;
+      nav .logo {
+        margin-right: 0;
+        width: 100%;
+        text-align: center;
+        margin-bottom: 8px;
       }
 
-      .site-title {
-        font-size: 2rem;
+      nav {
+        height: auto;
+        padding: 12px 0;
       }
 
-      .about-section h2,
-      .projects-section h2 {
-        font-size: 1.5rem;
+      .hero-section {
+        padding: 100px 20px 60px;
       }
 
-      .projects-grid {
+      .grid {
         grid-template-columns: 1fr;
       }
     }
 
+    /* Smooth reveal animations */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
   </style>
 </head>
 <body>
-  <div class="game-section" id="gameSection">
-    <div class="game-container" id="gameContainer">
-      <iframe 
-        class="game-iframe" 
-        id="gameIframe" 
-        src="/Paper%20Plane/paper-plane/" 
-        title="Paper Plane Game"
-        allow="autoplay; fullscreen"
-        loading="eager"
-        allowfullscreen>
-      </iframe>
+  <!-- Navigation -->
+  <nav>
+    <ul>
+      <li><a href="#" class="logo">Jesse Rodriguez</a></li>
+      <li><a href="#planner">Planner</a></li>
+      <li><a href="#fashion">Fashion</a></li>
+      <li><a href="#brainwave">Brainwave</a></li>
+      <li><a href="#art">Art</a></li>
+      <li><a href="#games">Games</a></li>
+      <li><a href="#ai">AI Tools</a></li>
+      <li><a href="#projects">All Projects</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero: Daily Planner -->
+  <section class="hero-section" id="planner">
+    <h1 class="hero-title fade-in">Daily Planner</h1>
+    <p class="hero-subtitle fade-in">Organize your day with elegance</p>
+    <p class="hero-description fade-in">A beautiful circular planner that helps you focus on what matters most.</p>
+    <img src="/planner/svgviewer-png-output.png" alt="Daily Planner" class="hero-image fade-in">
+    <a href="/planner/" class="cta-link fade-in">Learn more</a>
+  </section>
+
+  <!-- Hero: Fashion Palette -->
+  <section class="hero-section" id="fashion" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <h1 class="hero-title fade-in" style="color: white;">Fashion Palette</h1>
+    <p class="hero-subtitle fade-in" style="color: rgba(255,255,255,0.9);">Discover colors that inspire</p>
+    <p class="hero-description fade-in" style="color: rgba(255,255,255,0.8);">Generate beautiful color palettes from your favorite fashion images.</p>
+    <img src="/fashion-palette/aurora_palette_180.png" alt="Fashion Palette" class="hero-image fade-in">
+    <a href="/fashion-palette/" class="cta-link fade-in" style="color: white;">Explore palettes</a>
+  </section>
+
+  <!-- Hero: Brainwave Simulator -->
+  <section class="hero-section" id="brainwave">
+    <h1 class="hero-title fade-in">Brainwave Simulator</h1>
+    <p class="hero-subtitle fade-in">Visualize neural activity</p>
+    <p class="hero-description fade-in">An interactive scientific tool for exploring brainwave patterns and EEG frequencies.</p>
+    <img src="/brainwave-simulator/cyberpunk_brain_180px.png" alt="Brainwave Simulator" class="hero-image fade-in">
+    <a href="/brainwave-simulator/brainwave-simulator.html" class="cta-link fade-in">Try it now</a>
+  </section>
+
+  <!-- Hero: Graffiti Gallery -->
+  <section class="hero-section" id="art" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+    <h1 class="hero-title fade-in" style="color: white;">Graffiti Gallery</h1>
+    <p class="hero-subtitle fade-in" style="color: rgba(255,255,255,0.9);">Interactive art experience</p>
+    <p class="hero-description fade-in" style="color: rgba(255,255,255,0.8);">Explore and interact with digital graffiti art in an immersive gallery.</p>
+    <div style="width: 100%; max-width: 600px; height: 400px; background: rgba(255,255,255,0.1); border-radius: 18px; margin-top: 60px; display: flex; align-items: center; justify-content: center; color: white; font-size: 48px;" class="fade-in">🎨</div>
+    <a href="/art/" class="cta-link fade-in" style="color: white;">View gallery</a>
+  </section>
+
+  <!-- All Projects Grid -->
+  <section class="projects-grid" id="projects">
+    <h2 class="section-title fade-in">All Projects</h2>
+    <div class="grid" id="projectsGrid">
+      <!-- Projects will be populated by JavaScript -->
     </div>
-  </div>
+  </section>
 
-  <div class="site-content">
-    <header class="site-header">
-      <h1 class="site-title">Jesse Rodriguez</h1>
-      <img src="/0sBykTmz_400x400-3.jpg" alt="Jesse Rodriguez" class="profile-picture" loading="eager">
-    </header>
-
-    <section class="about-section" id="about">
-      <h2>About</h2>
-      <p>I'm Jesse — welcome to my site 🙂.</p>
-      <p>I'm a creative engineer working at the intersection of AI, design, and technology. I build interactive experiences, tools, and applications that blend technical precision with thoughtful design.</p>
-      <p>In my free time, I like creating games, exploring new technologies, and working on projects that push creative boundaries.</p>
-    </section>
-
-    <section class="projects-section" id="projects">
-      <h2>Fun Projects</h2>
-      <div class="projects-grid" id="projectsGrid">
-        <!-- Projects will be populated by JavaScript -->
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <h3 class="footer-title">Jesse Rodriguez</h3>
+      <p class="footer-text">Creative Engineer • AI • Design • Technology</p>
+      <div class="footer-links">
+        <a href="/planner/">Planner</a>
+        <a href="/fashion-palette/">Fashion Palette</a>
+        <a href="/brainwave-simulator/brainwave-simulator.html">Brainwave Sim</a>
+        <a href="/art/">Graffiti Gallery</a>
+        <a href="/Paper%20Plane/">Paper Plane</a>
+        <a href="/jumpingjellybean/">Jumping Jelly Bean</a>
+        <a href="/prompt/">Prompt Studio</a>
+        <a href="/wrestling-news/">Wrestling News</a>
+        <a href="/philosophers-library.html">Philosopher's Library</a>
+        <a href="/knock.html">Knock Door</a>
+        <a href="/TIME/">WorldTime</a>
       </div>
-    </section>
-  </div>
+    </div>
+  </footer>
 
   <script type="application/ld+json">
   {
@@ -633,370 +416,168 @@
     "jobTitle": "Full Stack Developer & Designer",
     "description": "AI automation specialist, web developer, and designer creating innovative digital experiences at the intersection of technology and design.",
     "sameAs": [
-      "https://jesserodriguez.me/ios",
       "https://jesserodriguez.me/planner",
-      "https://jesserodriguez.me/fashion-palette"
+      "https://jesserodriguez.me/fashion-palette",
+      "https://jesserodriguez.me/brainwave-simulator"
     ],
-    "knowsAbout": ["AI", "Web Development", "Design", "Fashion Technology", "iOS Development", "User Experience"],
-    "offers": {
-      "@type": "Offer",
-      "itemOffered": {
-        "@type": "Service",
-        "name": "Professional Development Services",
-        "description": "AI automation, web development, design, and consulting services"
-      }
-    }
+    "knowsAbout": ["AI", "Web Development", "Design", "Fashion Technology", "iOS Development", "User Experience"]
   }
   </script>
 
   <script>
-  (function(){
-    'use strict';
-    const body = document.body;
-    const networkNodes = document.getElementById('networkNodes');
-    const networkCanvas = document.getElementById('networkCanvas');
-    const container = document.getElementById('networkContainer');
-
+    // Projects data
     const projects = [
-      { href: '/Paper%20Plane/escape-world/', badge: 'GAME', title: 'Escape World', theme: 'game', icon: null, emoji: '🔦' },
-      { href: '/Paper%20Plane/', badge: 'GAME', title: 'Paper Plane', theme: 'paper', icon: null, emoji: '✈️' },
-      { href: '/jumpingjellybean/', badge: 'GAME', title: 'Jumping Jelly Bean', theme: 'game', icon: null, emoji: '🫘' },
-      { href: '/md/', badge: 'DATA', title: 'MD Analytics', theme: 'data', icon: null, emoji: '📊' },
-      { href: '/prompt/', badge: 'AI', title: 'Prompt Studio', theme: 'ai', icon: '/prompt/apple_touch_icons/apple_touch_icon_180x180.png', emoji: null },
-      { href: '/art/', badge: 'ART', title: 'Graffiti Gallery', theme: 'art', icon: null, emoji: '🎨' },
-      { href: '/wrestling-news/', badge: 'LIVE', title: 'Wrestling News', theme: 'interactive', icon: '/wrestling-news/svgviewer-png-output-4-2.png', emoji: null },
-      { href: '/knock.html', badge: 'INTERACTIVE', title: 'Knock Door', theme: 'interactive', icon: null, emoji: '🚪' },
-      { href: '/planner/', badge: 'FOCUS', title: 'Daily Planner', theme: 'focus', icon: '/planner/svgviewer-png-output.png', emoji: null },
-      { href: '/fashion-palette/', badge: 'FASHION', title: 'Fashion Palette', theme: 'fashion', icon: '/fashion-palette/aurora_palette_180.png', emoji: null },
-      { href: '/philosophers-library.html', badge: 'LIBRARY', title: 'Philosopher\'s Library', theme: 'philosophy', icon: null, emoji: '📚' },
-      { href: '/brainwave-simulator/brainwave-simulator.html', badge: 'SCIENCE', title: 'Brainwave Sim', theme: 'brainwave', icon: '/brainwave-simulator/cyberpunk_brain_180px.png', emoji: null },
-      { href: '/TIME/', badge: 'GLOBAL', title: 'WorldTime', theme: 'timezone', icon: null, emoji: '🕐' },
-      { href: '/STARTUP/', badge: 'RETRO', title: 'Console Hub', theme: 'startup', icon: null, emoji: '🎮' },
-      { href: '/vtrigger/', badge: 'GAME', title: 'Pencil Runner', theme: 'game', icon: null, emoji: '✏️' }
+      { 
+        href: '/planner/', 
+        title: 'Daily Planner', 
+        description: 'Circular daily planner with elegant task management.',
+        image: '/planner/svgviewer-png-output.png'
+      },
+      { 
+        href: '/fashion-palette/', 
+        title: 'Fashion Palette', 
+        description: 'Generate beautiful color palettes from fashion images.',
+        image: '/fashion-palette/aurora_palette_180.png'
+      },
+      { 
+        href: '/brainwave-simulator/brainwave-simulator.html', 
+        title: 'Brainwave Simulator', 
+        description: 'Interactive scientific tool for exploring EEG frequencies.',
+        image: '/brainwave-simulator/cyberpunk_brain_180px.png'
+      },
+      { 
+        href: '/art/', 
+        title: 'Graffiti Gallery', 
+        description: 'Interactive digital graffiti art gallery experience.',
+        image: null,
+        emoji: '🎨'
+      },
+      { 
+        href: '/Paper%20Plane/', 
+        title: 'Paper Plane', 
+        description: 'Physics-based paper plane flying game.',
+        image: null,
+        emoji: '✈️'
+      },
+      { 
+        href: '/jumpingjellybean/', 
+        title: 'Jumping Jelly Bean', 
+        description: 'Fun jumping game with jelly bean physics.',
+        image: null,
+        emoji: '🫘'
+      },
+      { 
+        href: '/prompt/', 
+        title: 'Prompt Studio', 
+        description: 'AI prompt library with search and filtering.',
+        image: '/prompt/apple_touch_icons/apple_touch_icon_180x180.png'
+      },
+      { 
+        href: '/wrestling-news/', 
+        title: 'Wrestling News', 
+        description: 'Live wrestling news and updates hub.',
+        image: '/wrestling-news/svgviewer-png-output-4-2.png'
+      },
+      { 
+        href: '/philosophers-library.html', 
+        title: 'Philosopher\'s Library', 
+        description: 'Curated collection of philosophical texts.',
+        image: null,
+        emoji: '📚'
+      },
+      { 
+        href: '/knock.html', 
+        title: 'Knock Door', 
+        description: 'Interactive door knocking experience.',
+        image: null,
+        emoji: '🚪'
+      },
+      { 
+        href: '/TIME/', 
+        title: 'WorldTime', 
+        description: 'Global timezone viewer and converter.',
+        image: null,
+        emoji: '🕐'
+      },
+      { 
+        href: '/Paper%20Plane/escape-world/', 
+        title: 'Escape World', 
+        description: 'Navigate dark rooms with only a flashlight.',
+        image: null,
+        emoji: '🔦'
+      }
     ];
 
-    let nodes = [];
-    let lines = [];
-    let activeNode = null;
-    let isDragging = false;
-    let dragOffset = { x: 0, y: 0 };
-    let containerOffset = { x: 0, y: 0 };
-    let animationId = null;
-    let touchStartPos = null;
-    let touchStartTime = null;
-
-    function getInitialPosition(index, total) {
-      const angle = (index / total) * Math.PI * 2;
-      const radius = Math.min(window.innerWidth, window.innerHeight) * 0.25;
-      const centerX = window.innerWidth * 0.5;
-      const centerY = window.innerHeight * 0.5;
-      return {
-        x: centerX + Math.cos(angle) * radius,
-        y: centerY + Math.sin(angle) * radius,
-        vx: 0,
-        vy: 0
-      };
-    }
-
-    function createNode(project, index) {
-      const node = document.createElement('a');
-      node.href = project.href;
-      node.className = 'network-node';
-      node.setAttribute('data-theme', project.theme);
-
-      const pos = getInitialPosition(index, projects.length);
-      node.dataset.x = pos.x;
-      node.dataset.y = pos.y;
-      node.style.cssText = `transform: translate(calc(${pos.x}px - 50%), calc(${pos.y}px - 50%)); will-change: transform;`;
-
-      node.innerHTML = `
-        <div class="node-glow"></div>
-        <div class="node-core">
-          ${project.icon ? `<img src="${project.icon}" alt="${project.title}" class="node-icon" />` : project.emoji ? `<span class="node-emoji">${project.emoji}</span>` : ''}
-          <span class="node-badge">${project.badge}</span>
-        </div>
-        <div class="node-title">${project.title}</div>
-      `;
-
-      networkNodes.appendChild(node);
-      return { el: node, x: pos.x, y: pos.y, vx: pos.vx, vy: pos.vy, fx: 0, fy: 0 };
-    }
-
-    function createLine(fromNode, toNode) {
-      const line = document.createElement('div');
-      line.className = 'network-line';
-      line.dataset.from = fromNode.el.dataset.index;
-      line.dataset.to = toNode.el.dataset.index;
-      networkCanvas.appendChild(line);
-      return { el: line, from: fromNode, to: toNode };
-    }
-
-    function updateLine(line) {
-      const dx = line.to.x - line.from.x;
-      const dy = line.to.y - line.from.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      const maxDist = Math.min(window.innerWidth, window.innerHeight) * 0.6;
-
-      if (dist > maxDist) {
-        line.el.classList.remove('is-visible');
-        return;
-      }
-
-      line.el.classList.add('is-visible');
-      const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-      line.el.style.width = dist + 'px';
-      line.el.style.left = line.from.x + 'px';
-      line.el.style.top = line.from.y + 'px';
-      line.el.style.transform = `rotate(${angle}deg)`;
-    }
-
-    function physicsStep() {
-      const repulsion = 8000;
-      const attraction = 0.001;
-      const damping = 0.85;
-      const centerX = window.innerWidth * 0.5 + containerOffset.x;
-      const centerY = window.innerHeight * 0.5 + containerOffset.y;
-
-      nodes.forEach((node, i) => {
-        node.fx = 0;
-        node.fy = 0;
-
-        const centerForce = 0.0003;
-        node.fx += (centerX - node.x) * centerForce;
-        node.fy += (centerY - node.y) * centerForce;
-
-        nodes.forEach((other, j) => {
-          if (i === j) return;
-          const dx = node.x - other.x;
-          const dy = node.y - other.y;
-          const distSq = dx * dx + dy * dy + 100;
-          const dist = Math.sqrt(distSq);
-          const force = repulsion / distSq;
-          node.fx += (dx / dist) * force;
-          node.fy += (dy / dist) * force;
-        });
-
-        node.vx = (node.vx + node.fx) * damping;
-        node.vy = (node.vy + node.fy) * damping;
-        node.x += node.vx;
-        node.y += node.vy;
-
-        const bounds = 100;
-        if (node.x < bounds) { node.x = bounds; node.vx *= -0.5; }
-        if (node.x > window.innerWidth - bounds) { node.x = window.innerWidth - bounds; node.vx *= -0.5; }
-        if (node.y < bounds) { node.y = bounds; node.vy *= -0.5; }
-        if (node.y > window.innerHeight - bounds) { node.y = window.innerHeight - bounds; node.vy *= -0.5; }
-
-        node.el.style.transform = `translate(calc(${node.x}px - 50%), calc(${node.y}px - 50%))`;
-        node.el.dataset.x = node.x;
-        node.el.dataset.y = node.y;
-      });
-
-      lines.forEach(updateLine);
-    }
-
-    function animate() {
-      if (!isDragging) {
-        physicsStep();
-      }
-      animationId = requestAnimationFrame(animate);
-    }
-
-    function initNetwork() {
-      nodes = projects.map((project, index) => {
-        const node = createNode(project, index);
-        node.el.dataset.index = index;
-        return node;
-      });
-
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const dist = Math.random();
-          if (dist < 0.3 || Math.abs(i - j) === 1) {
-            lines.push(createLine(nodes[i], nodes[j]));
-          }
-        }
-      }
-
-      nodes.forEach((node, index) => {
-        node.el.addEventListener('touchstart', (e) => {
-          touchStartPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-          touchStartTime = Date.now();
-          isDragging = false;
-          activeNode = node;
-          dragOffset.x = e.touches[0].clientX - node.x;
-          dragOffset.y = e.touches[0].clientY - node.y;
-        }, { passive: true });
-
-        node.el.addEventListener('touchmove', (e) => {
-          if (activeNode === node && touchStartPos) {
-            const dx = Math.abs(e.touches[0].clientX - touchStartPos.x);
-            const dy = Math.abs(e.touches[0].clientY - touchStartPos.y);
-            
-            if (dx > 5 || dy > 5) {
-              isDragging = true;
-              e.preventDefault();
-              node.el.classList.add('is-pressed');
-              node.x = e.touches[0].clientX - dragOffset.x;
-              node.y = e.touches[0].clientY - dragOffset.y;
-              node.vx = node.vy = 0;
-              node.el.style.transform = `translate(calc(${node.x}px - 50%), calc(${node.y}px - 50%))`;
-              lines.forEach(updateLine);
-            }
-          }
-        }, { passive: false });
-
-        node.el.addEventListener('touchend', (e) => {
-          if (activeNode === node) {
-            const wasDrag = isDragging;
-            
-            if (wasDrag) {
-              e.preventDefault();
-              node.el.classList.remove('is-pressed');
-            }
-            // If not dragging, let the <a> tag handle navigation naturally
-            
-            activeNode = null;
-            isDragging = false;
-            touchStartPos = null;
-            touchStartTime = null;
-          }
-        });
-
-        node.el.addEventListener('pointerenter', () => {
-          node.el.classList.add('is-active');
-        });
-
-        node.el.addEventListener('pointerleave', () => {
-          if (activeNode !== node) {
-            node.el.classList.remove('is-active');
-          }
-        });
-
-        node.el.addEventListener('click', (e) => {
-          if (isDragging) {
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
-          }
-        });
-      });
-
-      let touchStart = null;
-      container.addEventListener('touchstart', (e) => {
-        if (e.touches.length === 1) {
-          touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-        }
-      }, { passive: true });
-
-      container.addEventListener('touchmove', (e) => {
-        if (e.touches.length === 1 && touchStart && !activeNode) {
-          containerOffset.x += e.touches[0].clientX - touchStart.x;
-          containerOffset.y += e.touches[0].clientY - touchStart.y;
-          touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-        }
-      }, { passive: true });
-
-      window.addEventListener('resize', () => {
-        const headerHeight = window.innerWidth < 768 ? 56 : 64;
-        container.style.height = (window.innerHeight - headerHeight) + 'px';
-      });
-
-      body.classList.add('is-loaded');
-      animate();
-    }
-
-    function initGameBar() {
-      const gameBar = document.getElementById('gameBar');
-      const gameBarContent = document.getElementById('gameBarContent');
-      const body = document.body;
-
-      if (!gameBar) return;
-
-      // Always expanded - no toggle needed
-      gameBar.classList.add('expanded');
-      body.classList.add('body-with-game-bar', 'expanded');
-
-      // Handle iframe load
-      const iframe = document.getElementById('gameBarIframe');
-      if (iframe) {
-        iframe.addEventListener('load', () => {
-          console.log('Game loaded successfully');
-        });
-        iframe.addEventListener('error', () => {
-          console.error('Game failed to load');
-          gameBarContent.innerHTML = '<div class="game-bar-placeholder">Failed to load game</div>';
-        });
-      }
-    }
-
+    // Populate projects grid
     function initProjects() {
-      const projectsGrid = document.getElementById('projectsGrid');
-      if (!projectsGrid) return;
+      const grid = document.getElementById('projectsGrid');
+      if (!grid) return;
 
-      // Filter out Paper Plane since it's the main game, and format for display
-      const displayProjects = projects
-        .filter(p => p.href !== '/Paper%20Plane/')
-        .map(project => ({
-          title: project.title,
-          href: project.href,
-          description: getProjectDescription(project.title)
-        }));
-
-      displayProjects.forEach(project => {
+      projects.forEach(project => {
         const card = document.createElement('a');
         card.href = project.href;
-        card.className = 'project-card';
+        card.className = 'project-card fade-in';
+        
+        const imageHtml = project.image 
+          ? `<img src="${project.image}" alt="${project.title}" class="project-card-image">`
+          : `<div class="project-card-image" style="display: flex; align-items: center; justify-content: center; font-size: 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">${project.emoji || '✨'}</div>`;
+        
         card.innerHTML = `
-          <div class="project-card-title">${project.title}</div>
-          <div class="project-card-description">${project.description}</div>
+          ${imageHtml}
+          <div class="project-card-content">
+            <h3 class="project-card-title">${project.title}</h3>
+            <p class="project-card-description">${project.description}</p>
+          </div>
         `;
-        projectsGrid.appendChild(card);
+        
+        grid.appendChild(card);
       });
     }
 
-    function getProjectDescription(title) {
-      const descriptions = {
-        'Escape World': 'Navigate through dark rooms with only a flashlight. Find clues to escape through challenging levels.',
-        'Jumping Jelly Bean': 'A fun jumping game with jelly bean physics.',
-        'MD Analytics': 'Data visualization and analytics dashboard.',
-        'Prompt Studio': 'AI prompt library with search and filtering capabilities.',
-        'Graffiti Gallery': 'Interactive graffiti art gallery and showcase.',
-        'Wrestling News': 'Live wrestling news and updates hub.',
-        'Knock Door': 'Interactive door knocking experience with sound effects.',
-        'Daily Planner': 'Circular daily planner with task management.',
-        'Fashion Palette': 'Fashion color palette generator and analyzer.',
-        'Philosopher\'s Library': 'Curated collection of philosophical texts.',
-        'Brainwave Sim': 'Scientific brainwave simulator with EEG visualization.',
-        'WorldTime': 'Global timezone viewer and converter.',
-        'Console Hub': 'Retro console-style interface hub.',
-        'Pencil Runner': 'Minimalist side-scrolling runner game.'
+    // Smooth scroll reveal animation
+    function initScrollAnimations() {
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
       };
-      return descriptions[title] || 'Interactive project and experience.';
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll('.fade-in').forEach(el => {
+        observer.observe(el);
+      });
     }
 
-    function initGame() {
-      const iframe = document.getElementById('gameIframe');
-      if (iframe) {
-        iframe.addEventListener('load', () => {
-          console.log('Game loaded successfully');
-        });
-        iframe.addEventListener('error', () => {
-          console.error('Game failed to load');
-        });
-      }
-    }
+    // Smooth navigation scrolling
+    document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
 
+    // Initialize on load
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => {
-        initGame();
         initProjects();
+        initScrollAnimations();
       });
     } else {
-      initGame();
       initProjects();
+      initScrollAnimations();
     }
-  })();
   </script>
 </body>
 </html>
