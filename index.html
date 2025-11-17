@@ -90,6 +90,11 @@
       align-items: center;
       justify-content: center;
       font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    nav.hidden {
+      transform: translateY(-100%);
     }
 
     /* Fallback for browsers without backdrop-filter */
@@ -816,15 +821,54 @@
       });
     });
 
+    // Hide/show nav on scroll
+    function initScrollHideNav() {
+      const nav = document.querySelector('nav');
+      if (!nav) return;
+
+      let lastScrollY = window.scrollY;
+      let ticking = false;
+
+      function updateNav() {
+        const currentScrollY = window.scrollY;
+        
+        // Only hide if scrolled down more than 50px
+        if (currentScrollY > 50) {
+          if (currentScrollY > lastScrollY) {
+            // Scrolling down - hide nav
+            nav.classList.add('hidden');
+          } else {
+            // Scrolling up - show nav
+            nav.classList.remove('hidden');
+          }
+        } else {
+          // Near top - always show nav
+          nav.classList.remove('hidden');
+        }
+
+        lastScrollY = currentScrollY;
+        ticking = false;
+      }
+
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          window.requestAnimationFrame(updateNav);
+          ticking = true;
+        }
+      }, { passive: true });
+    }
+
     // Initialize on load
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => {
         initProjects();
         initScrollAnimations();
+        initScrollHideNav();
       });
     } else {
       initProjects();
       initScrollAnimations();
+      initScrollHideNav();
     }
   </script>
 </body>
