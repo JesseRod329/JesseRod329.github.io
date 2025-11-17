@@ -221,10 +221,11 @@
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
       transform: translateZ(0);
+      will-change: transform;
     }
 
     .hero-image:hover {
-      transform: translateY(-10px) translateZ(0);
+      transform: translateY(-10px) translateZ(0) !important;
     }
 
     /* Ensure images are crisp on retina displays */
@@ -591,12 +592,75 @@
     .fade-in {
       opacity: 0;
       transform: translateY(20px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
+      transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                  transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: opacity, transform;
     }
 
     .fade-in.visible {
       opacity: 1;
       transform: translateY(0);
+    }
+
+    /* Slide up animation */
+    .slide-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                  transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: opacity, transform;
+    }
+
+    .slide-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Scale in animation */
+    .scale-in {
+      opacity: 0;
+      transform: scale(0.95);
+      transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                  transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: opacity, transform;
+    }
+
+    .scale-in.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Fade slide animation */
+    .fade-slide {
+      opacity: 0;
+      transform: translateY(25px) scale(0.98);
+      transition: opacity 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                  transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: opacity, transform;
+    }
+
+    .fade-slide.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    /* Staggered delay classes */
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
+    .delay-4 { transition-delay: 0.4s; }
+    .delay-5 { transition-delay: 0.5s; }
+
+    /* Respect reduced motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      .fade-in,
+      .slide-up,
+      .scale-in,
+      .fade-slide {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
     }
   </style>
 </head>
@@ -617,43 +681,43 @@
 
   <!-- Hero: Daily Planner -->
   <section class="hero-section" id="planner">
-    <h1 class="hero-title fade-in">Daily Planner</h1>
-    <p class="hero-subtitle fade-in">Organize your day with elegance</p>
-    <p class="hero-description fade-in">A beautiful circular planner that helps you focus on what matters most.</p>
-    <img src="/planner/svgviewer-png-output.png" alt="Daily Planner" class="hero-image fade-in" loading="eager" width="1024" height="1024">
-    <a href="/planner/" class="cta-link fade-in">Learn more</a>
+    <h1 class="hero-title slide-up">Daily Planner</h1>
+    <p class="hero-subtitle fade-in delay-1">Organize your day with elegance</p>
+    <p class="hero-description fade-in delay-2">A beautiful circular planner that helps you focus on what matters most.</p>
+    <img src="/planner/svgviewer-png-output.png" alt="Daily Planner" class="hero-image scale-in delay-3" loading="eager" width="1024" height="1024">
+    <a href="/planner/" class="cta-link fade-in delay-4">Learn more</a>
   </section>
 
   <!-- Hero: Fashion Palette -->
   <section class="hero-section" id="fashion" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-    <h1 class="hero-title fade-in" style="color: white;">Fashion Palette</h1>
-    <p class="hero-subtitle fade-in" style="color: rgba(255,255,255,0.9);">Discover colors that inspire</p>
-    <p class="hero-description fade-in" style="color: rgba(255,255,255,0.8);">Generate beautiful color palettes from your favorite fashion images.</p>
-    <img src="/fashion-palette/aurora_palette_180.png" alt="Fashion Palette" class="hero-image fade-in" loading="eager" width="180" height="180" style="max-width: 400px; image-rendering: -webkit-optimize-contrast;">
-    <a href="/fashion-palette/" class="cta-link fade-in" style="color: white;">Explore palettes</a>
+    <h1 class="hero-title slide-up" style="color: white;">Fashion Palette</h1>
+    <p class="hero-subtitle fade-in delay-1" style="color: rgba(255,255,255,0.9);">Discover colors that inspire</p>
+    <p class="hero-description fade-in delay-2" style="color: rgba(255,255,255,0.8);">Generate beautiful color palettes from your favorite fashion images.</p>
+    <img src="/fashion-palette/aurora_palette_180.png" alt="Fashion Palette" class="hero-image scale-in delay-3" loading="eager" width="180" height="180" style="max-width: 400px; image-rendering: -webkit-optimize-contrast;">
+    <a href="/fashion-palette/" class="cta-link fade-in delay-4" style="color: white;">Explore palettes</a>
   </section>
 
   <!-- Hero: Brainwave Simulator -->
   <section class="hero-section" id="brainwave">
-    <h1 class="hero-title fade-in">Brainwave Simulator</h1>
-    <p class="hero-subtitle fade-in">Visualize neural activity</p>
-    <p class="hero-description fade-in">An interactive scientific tool for exploring brainwave patterns and EEG frequencies.</p>
-    <img src="/brainwave-simulator/cyberpunk_brain_180px.png" alt="Brainwave Simulator" class="hero-image fade-in" loading="eager" width="180" height="180" style="max-width: 400px; image-rendering: -webkit-optimize-contrast;">
-    <a href="/brainwave-simulator/brainwave-simulator.html" class="cta-link fade-in">Try it now</a>
+    <h1 class="hero-title slide-up">Brainwave Simulator</h1>
+    <p class="hero-subtitle fade-in delay-1">Visualize neural activity</p>
+    <p class="hero-description fade-in delay-2">An interactive scientific tool for exploring brainwave patterns and EEG frequencies.</p>
+    <img src="/brainwave-simulator/cyberpunk_brain_180px.png" alt="Brainwave Simulator" class="hero-image scale-in delay-3" loading="eager" width="180" height="180" style="max-width: 400px; image-rendering: -webkit-optimize-contrast;">
+    <a href="/brainwave-simulator/brainwave-simulator.html" class="cta-link fade-in delay-4">Try it now</a>
   </section>
 
   <!-- Hero: Graffiti Gallery -->
   <section class="hero-section" id="art" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-    <h1 class="hero-title fade-in" style="color: white;">Graffiti Gallery</h1>
-    <p class="hero-subtitle fade-in" style="color: rgba(255,255,255,0.9);">Interactive art experience</p>
-    <p class="hero-description fade-in" style="color: rgba(255,255,255,0.8);">Explore and interact with digital graffiti art in an immersive gallery.</p>
-    <div style="width: 100%; max-width: 600px; height: 400px; background: rgba(255,255,255,0.1); border-radius: 18px; margin-top: 60px; display: flex; align-items: center; justify-content: center; color: white; font-size: 48px;" class="fade-in">🎨</div>
-    <a href="/art/" class="cta-link fade-in" style="color: white;">View gallery</a>
+    <h1 class="hero-title slide-up" style="color: white;">Graffiti Gallery</h1>
+    <p class="hero-subtitle fade-in delay-1" style="color: rgba(255,255,255,0.9);">Interactive art experience</p>
+    <p class="hero-description fade-in delay-2" style="color: rgba(255,255,255,0.8);">Explore and interact with digital graffiti art in an immersive gallery.</p>
+    <div style="width: 100%; max-width: 600px; height: 400px; background: rgba(255,255,255,0.1); border-radius: 18px; margin-top: 60px; display: flex; align-items: center; justify-content: center; color: white; font-size: 48px;" class="scale-in delay-3">🎨</div>
+    <a href="/art/" class="cta-link fade-in delay-4" style="color: white;">View gallery</a>
   </section>
 
   <!-- All Projects Grid -->
   <section class="projects-grid" id="projects">
-    <h2 class="section-title fade-in">All Projects</h2>
+    <h2 class="section-title slide-up">All Projects</h2>
     <div class="grid" id="projectsGrid">
       <!-- Projects will be populated by JavaScript -->
     </div>
@@ -787,10 +851,11 @@
       const grid = document.getElementById('projectsGrid');
       if (!grid) return;
 
-      projects.forEach(project => {
+      projects.forEach((project, index) => {
         const card = document.createElement('a');
         card.href = project.href;
-        card.className = 'project-card fade-in';
+        // Use fade-slide for project cards with staggered delays
+        card.className = `project-card fade-slide delay-${(index % 5) + 1}`;
         
         const imageHtml = project.image 
           ? `<img src="${project.image}" alt="${project.title}" class="project-card-image" loading="lazy" width="400" height="200">`
@@ -808,24 +873,78 @@
       });
     }
 
-    // Smooth scroll reveal animation
+    // Smooth scroll reveal animation with enhanced effects
     function initScrollAnimations() {
+      // Check for reduced motion preference
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion) {
+        // Skip animations if user prefers reduced motion
+        document.querySelectorAll('.fade-in, .slide-up, .scale-in, .fade-slide').forEach(el => {
+          el.classList.add('visible');
+        });
+        return;
+      }
+
       const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
+        threshold: 0.15,
+        rootMargin: '0px 0px -30px 0px'
       };
 
       const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+        entries.forEach((entry, index) => {
           if (entry.isIntersecting) {
+            // Add staggered delay for project cards
+            if (entry.target.classList.contains('project-card')) {
+              const delay = (index % 5) * 0.1;
+              entry.target.style.transitionDelay = `${delay}s`;
+            }
             entry.target.classList.add('visible');
+            // Unobserve after animation triggers to improve performance
+            observer.unobserve(entry.target);
           }
         });
       }, observerOptions);
 
-      document.querySelectorAll('.fade-in').forEach(el => {
+      // Observe all animation elements
+      document.querySelectorAll('.fade-in, .slide-up, .scale-in, .fade-slide').forEach(el => {
         observer.observe(el);
       });
+    }
+
+    // Subtle parallax effect for hero images
+    function initParallax() {
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion) return;
+
+      const heroImages = document.querySelectorAll('.hero-image');
+      let ticking = false;
+
+      function updateParallax() {
+        const scrollY = window.scrollY;
+        
+        heroImages.forEach((img, index) => {
+          const rect = img.getBoundingClientRect();
+          const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+          
+          if (isVisible) {
+            // Subtle parallax: move image slightly slower than scroll
+            const parallaxSpeed = 0.15;
+            const offset = (scrollY - rect.top) * parallaxSpeed;
+            // Limit parallax range to 20px
+            const limitedOffset = Math.max(-20, Math.min(20, offset));
+            img.style.transform = `translateY(${limitedOffset}px) translateZ(0)`;
+          }
+        });
+
+        ticking = false;
+      }
+
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          window.requestAnimationFrame(updateParallax);
+          ticking = true;
+        }
+      }, { passive: true });
     }
 
     // Smooth navigation scrolling
@@ -885,11 +1004,13 @@
         initProjects();
         initScrollAnimations();
         initScrollHideNav();
+        initParallax();
       });
     } else {
       initProjects();
       initScrollAnimations();
       initScrollHideNav();
+      initParallax();
     }
   </script>
 </body>
