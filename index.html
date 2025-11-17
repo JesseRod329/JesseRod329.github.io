@@ -445,6 +445,14 @@
       opacity: 1;
     }
 
+    /* Dark mode footer - swap colors */
+    @media (prefers-color-scheme: dark) {
+      footer {
+        background: var(--apple-white);
+        color: var(--apple-black);
+      }
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       nav ul {
