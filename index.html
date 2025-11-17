@@ -175,6 +175,10 @@
       line-height: 1.05;
       margin-bottom: 8px;
       color: var(--apple-text);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+      padding: 0 10px;
     }
 
     .hero-subtitle {
@@ -185,6 +189,9 @@
       color: var(--apple-text-secondary);
       margin-bottom: 16px;
       max-width: 600px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      padding: 0 10px;
     }
 
     .hero-description {
@@ -195,6 +202,9 @@
       color: var(--apple-text-secondary);
       margin-bottom: 30px;
       max-width: 500px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      padding: 0 10px;
     }
 
     .hero-image {
@@ -480,23 +490,30 @@
 
       /* Hero Sections Mobile Optimization */
       .hero-section {
-        padding: 40px 20px 30px !important;
+        padding: 50px 15px 30px !important;
         min-height: auto;
+        overflow-x: hidden;
       }
 
       .hero-title {
         font-size: clamp(20px, 5vw, 28px) !important;
         margin-bottom: 4px;
+        padding: 0 5px !important;
+        line-height: 1.1 !important;
       }
 
       .hero-subtitle {
         font-size: clamp(14px, 2vw, 18px) !important;
         margin-bottom: 8px;
+        padding: 0 5px !important;
+        line-height: 1.2 !important;
       }
 
       .hero-description {
         font-size: clamp(12px, 1.5vw, 14px) !important;
         margin-bottom: 16px;
+        padding: 0 5px !important;
+        line-height: 1.4 !important;
       }
 
       .hero-image {
@@ -504,6 +521,10 @@
         max-width: 100%;
         max-height: 200px;
         object-fit: contain;
+      }
+
+      .cta-link {
+        padding: 0 5px;
       }
 
       /* Projects Grid Mobile Optimization */
