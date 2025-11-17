@@ -149,10 +149,25 @@
       border-radius: 18px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
       transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+      image-rendering: high-quality;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      transform: translateZ(0);
     }
 
     .hero-image:hover {
-      transform: translateY(-10px);
+      transform: translateY(-10px) translateZ(0);
+    }
+
+    /* Ensure images are crisp on retina displays */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .hero-image,
+      .project-card-image {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+      }
     }
 
     .cta-link {
@@ -217,6 +232,11 @@
       height: 200px;
       object-fit: cover;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+      image-rendering: high-quality;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
     }
 
     .project-card-content {
@@ -346,7 +366,7 @@
     <h1 class="hero-title fade-in">Daily Planner</h1>
     <p class="hero-subtitle fade-in">Organize your day with elegance</p>
     <p class="hero-description fade-in">A beautiful circular planner that helps you focus on what matters most.</p>
-    <img src="/planner/svgviewer-png-output.png" alt="Daily Planner" class="hero-image fade-in">
+    <img src="/planner/svgviewer-png-output.png" alt="Daily Planner" class="hero-image fade-in" loading="eager" width="1024" height="1024">
     <a href="/planner/" class="cta-link fade-in">Learn more</a>
   </section>
 
@@ -355,7 +375,7 @@
     <h1 class="hero-title fade-in" style="color: white;">Fashion Palette</h1>
     <p class="hero-subtitle fade-in" style="color: rgba(255,255,255,0.9);">Discover colors that inspire</p>
     <p class="hero-description fade-in" style="color: rgba(255,255,255,0.8);">Generate beautiful color palettes from your favorite fashion images.</p>
-    <img src="/fashion-palette/aurora_palette_180.png" alt="Fashion Palette" class="hero-image fade-in">
+    <img src="/fashion-palette/aurora_palette_180.png" alt="Fashion Palette" class="hero-image fade-in" loading="eager" width="180" height="180" style="max-width: 400px; image-rendering: -webkit-optimize-contrast;">
     <a href="/fashion-palette/" class="cta-link fade-in" style="color: white;">Explore palettes</a>
   </section>
 
@@ -364,7 +384,7 @@
     <h1 class="hero-title fade-in">Brainwave Simulator</h1>
     <p class="hero-subtitle fade-in">Visualize neural activity</p>
     <p class="hero-description fade-in">An interactive scientific tool for exploring brainwave patterns and EEG frequencies.</p>
-    <img src="/brainwave-simulator/cyberpunk_brain_180px.png" alt="Brainwave Simulator" class="hero-image fade-in">
+    <img src="/brainwave-simulator/cyberpunk_brain_180px.png" alt="Brainwave Simulator" class="hero-image fade-in" loading="eager" width="180" height="180" style="max-width: 400px; image-rendering: -webkit-optimize-contrast;">
     <a href="/brainwave-simulator/brainwave-simulator.html" class="cta-link fade-in">Try it now</a>
   </section>
 
@@ -470,7 +490,7 @@
         href: '/prompt/', 
         title: 'Prompt Studio', 
         description: 'AI prompt library with search and filtering.',
-        image: '/prompt/apple_touch_icons/apple_touch_icon_180x180.png'
+        image: '/prompt/apple_touch_icons/apple_touch_icon_1024x1024.png'
       },
       { 
         href: '/wrestling-news/', 
@@ -519,7 +539,7 @@
         card.className = 'project-card fade-in';
         
         const imageHtml = project.image 
-          ? `<img src="${project.image}" alt="${project.title}" class="project-card-image">`
+          ? `<img src="${project.image}" alt="${project.title}" class="project-card-image" loading="lazy" width="400" height="200">`
           : `<div class="project-card-image" style="display: flex; align-items: center; justify-content: center; font-size: 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">${project.emoji || '✨'}</div>`;
         
         card.innerHTML = `
