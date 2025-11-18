@@ -95,12 +95,35 @@ class PadController {
     const pad = this.pads[padIndex];
     if (!pad.sample) return;
 
-    // Stop any currently playing sample on this pad
-    this.stopPad(padIndex);
+    // Stop ALL currently playing pads
+    this.stopAll();
 
-    // Create new source
+    // Create a 1-second buffer from the sample
+    const sampleBuffer = pad.sample.buffer;
+    const sampleRate = sampleBuffer.sampleRate;
+    const oneSecondSamples = Math.floor(sampleRate * 1.0); // Exactly 1 second
+    const playLength = Math.min(oneSecondSamples, sampleBuffer.length);
+    
+    // Create 1-second buffer
+    const oneSecondBuffer = this.audioContext.createBuffer(
+      sampleBuffer.numberOfChannels,
+      playLength,
+      sampleRate
+    );
+
+    // Copy up to 1 second of audio data
+    for (let channel = 0; channel < sampleBuffer.numberOfChannels; channel++) {
+      const inputData = sampleBuffer.getChannelData(channel);
+      const outputData = oneSecondBuffer.getChannelData(channel);
+      
+      for (let i = 0; i < playLength; i++) {
+        outputData[i] = inputData[i];
+      }
+    }
+
+    // Create new source with 1-second buffer
     const source = this.audioContext.createBufferSource();
-    source.buffer = pad.sample.buffer;
+    source.buffer = oneSecondBuffer;
     source.connect(this.masterGainNode);
     source.start(0);
 
