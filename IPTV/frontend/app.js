@@ -21,7 +21,20 @@ class App {
         }
         
         // Auto-detect API URL based on current hostname, but allow override from localStorage
-        this.apiBaseUrl = localStorage.getItem('apiBaseUrl') || defaultApiUrl || 'http://localhost:5001/api';
+        let storedApiUrl = localStorage.getItem('apiBaseUrl');
+        
+        // If we're on a web domain and the stored URL still points to localhost, ignore it
+        if (isWebDomain && storedApiUrl && (storedApiUrl.includes('localhost') || storedApiUrl.includes('127.0.0.1'))) {
+            console.log('Ignoring stored localhost API URL on web domain:', storedApiUrl);
+            storedApiUrl = null;
+        }
+        
+        this.apiBaseUrl = storedApiUrl || defaultApiUrl || 'http://localhost:5001/api';
+        
+        // If we are on a web domain and we had to override a bad stored URL, update localStorage
+        if (isWebDomain && this.apiBaseUrl && this.apiBaseUrl !== storedApiUrl) {
+            localStorage.setItem('apiBaseUrl', this.apiBaseUrl);
+        }
         
         if (isWebDomain && !localStorage.getItem('apiBaseUrl') && !window.IPTV_REMOTE_API_BASE) {
             // Show web access instructions when on a web domain and no hosted backend URL is configured
@@ -459,15 +472,22 @@ class App {
             });
         }
         
-        // Auto-detect IP button
+        // Auto-detect IP / API button
         const autoDetectBtn = document.getElementById('auto-detect-api-btn');
         if (autoDetectBtn) {
             autoDetectBtn.addEventListener('click', () => {
                 const hostname = window.location.hostname;
                 const port = '5001';
                 let detectedUrl;
-                
-                if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+
+                const isWebDomain = (hostname.includes('.me') || hostname.includes('.com') || hostname.includes('.io') || hostname.includes('.net')) && 
+                                   hostname !== 'localhost' && 
+                                   !hostname.match(/^\d+\.\d+\.\d+\.\d+$/);
+
+                // On web domains, prefer the hosted backend URL if available
+                if (isWebDomain && window.IPTV_REMOTE_API_BASE) {
+                    detectedUrl = window.IPTV_REMOTE_API_BASE.replace(/\/$/, '');
+                } else if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
                     detectedUrl = `http://${hostname}:${port}/api`;
                 } else {
                     // Fallback: try to get from current URL or suggest common IP
