@@ -9,7 +9,43 @@ When accessing the IPTV Player from `jesserodriguez.me`, you get a connection er
 
 ## Solutions
 
-### Option 1: Use ngrok (Quick & Easy) ⚡
+### Option 1: Deploy backend to Railway (Recommended) 🚀
+
+**Best for:** Permanent web access with minimal setup
+
+1. **Sign up at [Railway](https://railway.app)** and connect your GitHub.
+2. **Create new project:**
+   - Click "New Project"
+   - Select "Deploy from GitHub repo"
+   - Choose your `JesseRod329/JesseRod329.github.io` repo
+3. **Configure service root to `IPTV/backend`:**
+   - In the service settings, set the project path / root to `IPTV/backend`
+4. **Configure build & start:**
+   - Build command (if needed):  
+     `pip install -r IPTV/backend/requirements.txt`
+   - Start command:  
+     `cd IPTV/backend && python app.py`
+5. **Set environment variables in Railway:**
+   - `ENVIRONMENT=prod`
+   - `IPTV_PASSWORD=12345678`
+6. **Deploy** and copy the public URL, e.g.:  
+   `https://iptv-backend.up.railway.app`
+7. **Wire the frontend to Railway:**
+   - Edit `IPTV/frontend/index.html` and set:
+   ```html
+   <script>
+       window.IPTV_REMOTE_API_BASE = 'https://iptv-backend.up.railway.app/api';
+   </script>
+   ```
+   - Commit and push these changes.
+8. **Verify from `jesserodriguez.me`:**
+   - Open the IPTV card
+   - Enter password `12345678`
+   - "Test Connection" should succeed and channels should load.
+
+---
+
+### Option 2: Use ngrok (Quick & Easy) ⚡
 
 **Best for:** Quick testing and temporary access
 
@@ -44,31 +80,9 @@ When accessing the IPTV Player from `jesserodriguez.me`, you get a connection er
 
 ### Option 2: Deploy Backend to Cloud Server (Permanent) 🚀
 
-**Best for:** Permanent web access
+**Best for:** Permanent web access when you prefer other providers
 
-#### Option 2A: Railway.app (Recommended - Easy)
-
-1. **Sign up at [Railway.app](https://railway.app)**
-
-2. **Create new project:**
-   - Click "New Project"
-   - Select "Deploy from GitHub repo"
-   - Choose your `JesseRod329.github.io` repo
-   - Select the `IPTV/backend` folder
-
-3. **Configure environment:**
-   - Add environment variable: `IPTV_PASSWORD=12345678`
-   - Set `PORT=5001` (Railway auto-assigns, check settings)
-
-4. **Deploy:**
-   - Railway will auto-detect Python and install dependencies
-   - Get your Railway URL (e.g., `https://iptv-backend.railway.app`)
-
-5. **Update frontend:**
-   - In Settings, enter: `https://iptv-backend.railway.app/api`
-   - Test connection
-
-#### Option 2B: Heroku
+#### Option 2A: Heroku
 
 1. **Install Heroku CLI:**
    ```bash
@@ -98,7 +112,7 @@ When accessing the IPTV Player from `jesserodriguez.me`, you get a connection er
    # Use: https://iptv-backend.herokuapp.com/api
    ```
 
-#### Option 2C: DigitalOcean / VPS
+#### Option 2B: DigitalOcean / VPS
 
 1. **Create a droplet/server**
 2. **SSH into server**

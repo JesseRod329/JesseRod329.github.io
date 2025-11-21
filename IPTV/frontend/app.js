@@ -2,19 +2,29 @@
 class App {
     constructor() {
         this.currentView = 'channels';
-        // Auto-detect API URL based on current hostname
-        const defaultApiUrl = this.detectApiUrl();
-        // If null (web domain), check localStorage, otherwise use default
-        this.apiBaseUrl = localStorage.getItem('apiBaseUrl') || defaultApiUrl || 'http://localhost:5001/api';
-        
-        // Check if we're on a web domain without a configured API URL
         const hostname = window.location.hostname;
         const isWebDomain = (hostname.includes('.me') || hostname.includes('.com') || hostname.includes('.io') || hostname.includes('.net')) && 
                            hostname !== 'localhost' && 
                            !hostname.match(/^\d+\.\d+\.\d+\.\d+$/);
         
-        if (isWebDomain && !localStorage.getItem('apiBaseUrl')) {
-            // Show web access instructions
+        // Determine default API URL
+        let defaultApiUrl = null;
+        
+        // If we're on a web domain (like jesserodriguez.me), prefer a hosted backend URL
+        if (isWebDomain && window.IPTV_REMOTE_API_BASE) {
+            // Strip trailing slash if present
+            defaultApiUrl = window.IPTV_REMOTE_API_BASE.replace(/\/$/, '');
+            console.log('Using hosted backend API URL from IPTV_REMOTE_API_BASE:', defaultApiUrl);
+        } else {
+            // Fallback to local / LAN detection
+            defaultApiUrl = this.detectApiUrl();
+        }
+        
+        // Auto-detect API URL based on current hostname, but allow override from localStorage
+        this.apiBaseUrl = localStorage.getItem('apiBaseUrl') || defaultApiUrl || 'http://localhost:5001/api';
+        
+        if (isWebDomain && !localStorage.getItem('apiBaseUrl') && !window.IPTV_REMOTE_API_BASE) {
+            // Show web access instructions when on a web domain and no hosted backend URL is configured
             this.showWebAccessInstructions();
         }
         
@@ -76,22 +86,15 @@ class App {
     }
     
     detectApiUrl() {
-        // If accessing via IP address (like from iPhone), use that IP
+        // Detect a sensible default API URL for local / LAN usage.
+        // Web domains (like jesserodriguez.me) are handled separately in the constructor.
         const hostname = window.location.hostname;
         const port = '5001';
         
         console.log('Detected hostname:', hostname);
         
-        // Special handling for web domains - backend is not accessible from web
-        // For jesserodriguez.me or other web domains, show instructions
-        if (hostname.includes('.me') || hostname.includes('.com') || hostname.includes('.io') || hostname.includes('.net')) {
-            // Web domain - backend is not accessible, return null to show instructions
-            console.log('Web domain detected - backend not accessible from web');
-            return null;
-        }
-        
-        // If hostname is an IP address or not localhost, use it
-        if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+        // If hostname is an IP address, use it directly (local network / iPhone on WiFi)
+        if (/^\d+\.\d+\.\d+\.\d+$/.test(hostname)) {
             const detectedUrl = `http://${hostname}:${port}/api`;
             console.log('Using detected API URL:', detectedUrl);
             return detectedUrl;

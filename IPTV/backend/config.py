@@ -37,6 +37,7 @@ class Config:
     DATABASE_PATH = str(DATABASE_PATH)
     # CORS origins: localhost for local dev, plus regex for local network access
     # Allows access from iPhone and other devices on the same WiFi network
+    # Also explicitly allow hosted frontend domains for cloud deployment
     CORS_ORIGINS = [
         'http://localhost:8000',
         'http://127.0.0.1:8000',
@@ -44,6 +45,9 @@ class Config:
         r'http://192\.168\.\d+\.\d+:8000',  # 192.168.x.x
         r'http://10\.\d+\.\d+\.\d+:8000',   # 10.x.x.x
         r'http://172\.(1[6-9]|2[0-9]|3[0-1])\.\d+\.\d+:8000',  # 172.16-31.x.x
+        # Hosted portfolio / GitHub Pages
+        'https://jesserodriguez.me',
+        'https://jesserod329.github.io',
     ]
     
     # IPTV-org playlist URLs

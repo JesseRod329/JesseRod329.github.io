@@ -58,6 +58,27 @@ python app.py
 
 The API will be available at `http://localhost:5000`
 
+### Cloud Deployment (Railway)
+
+To make IPTV work directly from `jesserodriguez.me`, deploy the backend to Railway:
+
+1. Push this repo (with `IPTV/` folder) to GitHub (already done in `JesseRod329/JesseRod329.github.io`).
+2. In Railway, create a new project from that repo and set the service root to `IPTV/backend`.
+3. Configure:
+   - Build: `pip install -r IPTV/backend/requirements.txt`
+   - Start: `cd IPTV/backend && python app.py`
+4. Set environment variables:
+   - `ENVIRONMENT=prod`
+   - `IPTV_PASSWORD=12345678`
+5. Deploy and copy the public URL, e.g. `https://iptv-backend.up.railway.app`.
+6. In `IPTV/frontend/index.html`, set:
+   ```html
+   <script>
+       window.IPTV_REMOTE_API_BASE = 'https://iptv-backend.up.railway.app/api';
+   </script>
+   ```
+7. Commit and push. The IPTV card on `jesserodriguez.me` will then talk to the hosted backend by default.
+
 ### Frontend Setup
 
 1. Open the frontend directory in your browser or use a local server:
