@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shader Playground</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="gradient-bg"></div>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Shader Playground</h1>
+            <p class="subtitle">Live GLSL shader editor with real-time preview</p>
+        </header>
+
+        <div class="main-grid">
+            <!-- Shader Editor -->
+            <div class="editor-panel">
+                <div class="panel-header">
+                    <h2>Fragment Shader</h2>
+                    <div class="controls">
+                        <select id="presetSelect" class="preset-select">
+                            <option value="">Load Preset...</option>
+                            <option value="gradient">Rainbow Gradient</option>
+                            <option value="plasma">Plasma Effect</option>
+                            <option value="waves">Wave Pattern</option>
+                            <option value="mandelbrot">Mandelbrot Set</option>
+                            <option value="noise">Perlin Noise</option>
+                        </select>
+                        <button id="compileBtn" class="btn btn-primary">
+                            <span>▶</span> Compile
+                        </button>
+                    </div>
+                </div>
+                <textarea id="shaderCode" class="shader-editor" spellcheck="false"></textarea>
+                <div class="error-display" id="errorDisplay"></div>
+            </div>
+
+            <!-- Preview Canvas -->
+            <div class="preview-panel">
+                <div class="panel-header">
+                    <h2>Live Preview</h2>
+                    <div class="uniforms-info">
+                        <span>Time: <code id="timeValue">0.00</code>s</span>
+                        <span>Resolution: <code id="resValue">800x600</code></span>
+                    </div>
+                </div>
+                <canvas id="glCanvas"></canvas>
+                <div class="controls-grid">
+                    <label class="control">
+                        <span>Speed</span>
+                        <input type="range" id="speedControl" min="0" max="2" step="0.1" value="1">
+                    </label>
+                    <label class="control">
+                        <span>Mouse X</span>
+                        <input type="range" id="mouseXControl" min="0" max="1" step="0.01" value="0.5">
+                    </label>
+                    <label class="control">
+                        <span>Mouse Y</span>
+                        <input type="range" id="mouseYControl" min="0" max="1" step="0.01" value="0.5">
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="info-section">
+            <h3>Available Uniforms</h3>
+            <div class="uniforms-list">
+                <div class="uniform-item">
+                    <code>uniform float u_time;</code>
+                    <span>Elapsed time in seconds</span>
+                </div>
+                <div class="uniform-item">
+                    <code>uniform vec2 u_resolution;</code>
+                    <span>Canvas resolution (width, height)</span>
+                </div>
+                <div class="uniform-item">
+                    <code>uniform vec2 u_mouse;</code>
+                    <span>Mouse position (normalized 0-1)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
