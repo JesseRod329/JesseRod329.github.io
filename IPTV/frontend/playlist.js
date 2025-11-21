@@ -1,13 +1,18 @@
 /** Playlist management and channel loading */
 class PlaylistManager {
     constructor() {
-        // Try to get API URL from app first, then localStorage, then default
+        // Try to get API URL from app first, then localStorage, then global hook, then default
         let apiUrl = 'http://localhost:5001/api';
+        
         if (window.app && window.app.apiBaseUrl) {
             apiUrl = window.app.apiBaseUrl;
+        } else if (window.IPTV_REMOTE_API_BASE && 
+                  (window.location.hostname.includes('.me') || window.location.hostname.includes('.io'))) {
+             apiUrl = window.IPTV_REMOTE_API_BASE;
         } else {
             apiUrl = localStorage.getItem('apiBaseUrl') || apiUrl;
         }
+        
         this.apiBaseUrl = apiUrl;
         this.channels = [];
         this.categories = [];
