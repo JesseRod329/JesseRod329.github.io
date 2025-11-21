@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Formula Visualizer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="gradient-bg"></div>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Math Formula Visualizer</h1>
+            <p class="subtitle">Type equations and see them visualized in 2D space</p>
+        </header>
+        <div class="main-grid">
+            <div class="input-panel">
+                <h2>Equation</h2>
+                <input type="text" id="equationInput" placeholder="y = sin(x) * cos(x)" value="y = sin(x) * cos(x)">
+                <div class="presets">
+                    <button class="preset-btn" data-eq="y = x^2">Parabola</button>
+                    <button class="preset-btn" data-eq="y = sin(x)">Sine Wave</button>
+                    <button class="preset-btn" data-eq="y = 1/x">Hyperbola</button>
+                    <button class="preset-btn" data-eq="r = sin(theta * 3)">Rose</button>
+                </div>
+            </div>
+            <div class="viz-panel">
+                <canvas id="mathCanvas"></canvas>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
