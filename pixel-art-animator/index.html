@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Art Animator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="gradient-bg"></div>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Pixel Art Animator</h1>
+            <p class="subtitle">Create pixel art with frame-by-frame animation</p>
+        </header>
+        <div class="main-content">
+            <div class="canvas-panel">
+                <canvas id="pixelCanvas"></canvas>
+                <div class="tools">
+                    <input type="color" id="colorPicker" value="#6366f1">
+                    <button id="clearBtn" class="btn">Clear</button>
+                    <button id="exportBtn" class="btn btn-primary">Export GIF</button>
+                </div>
+            </div>
+            <div class="frames-panel">
+                <h3>Frames</h3>
+                <div id="framesList"></div>
+                <button id="addFrameBtn" class="btn btn-primary">+ Add Frame</button>
+                <button id="playBtn" class="btn">▶ Play</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
