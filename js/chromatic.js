@@ -117,16 +117,40 @@ function initCanvas() {
 function initScrollObserver() {
     const nodes = document.querySelectorAll('.timeline-node');
 
+    // Palette for cycling colors
+    const palette = [
+        '#6366f1', // Indigo
+        '#8b5cf6', // Purple
+        '#14b8a6', // Teal
+        '#f59e0b', // Amber
+        '#f43f5e', // Rose
+        '#06b6d4', // Cyan
+        '#ec4899', // Pink
+        '#84cc16'  // Lime
+    ];
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
+            const content = entry.target.querySelector('.timeline-content');
+
             if (entry.isIntersecting) {
                 entry.target.style.opacity = '1';
                 entry.target.style.transform = 'translateY(0)';
+
+                // Add active glow class
+                if (content) {
+                    content.classList.add('active-glow');
+                }
+            } else {
+                // Optional: Remove glow when out of view to re-trigger
+                if (content) {
+                    content.classList.remove('active-glow');
+                }
             }
         });
     }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
+        threshold: 0.4, // Trigger when 40% visible
+        rootMargin: '0px 0px -10% 0px'
     });
 
     nodes.forEach((node, index) => {
@@ -136,6 +160,19 @@ function initScrollObserver() {
         node.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
         // Stagger delay slightly
         node.style.transitionDelay = `${index * 0.05}s`;
+
+        // Assign color
+        const color = palette[index % palette.length];
+        const content = node.querySelector('.timeline-content');
+        const marker = node.querySelector('.timeline-marker');
+
+        if (content) {
+            content.style.setProperty('--glow-color', color);
+        }
+        if (marker) {
+            marker.style.borderColor = color;
+            marker.style.boxShadow = `0 0 10px ${color}`;
+        }
 
         observer.observe(node);
     });
