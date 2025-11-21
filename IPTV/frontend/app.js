@@ -4,9 +4,75 @@ class App {
         this.currentView = 'channels';
         // Auto-detect API URL based on current hostname
         const defaultApiUrl = this.detectApiUrl();
-        this.apiBaseUrl = localStorage.getItem('apiBaseUrl') || defaultApiUrl;
+        // If null (web domain), check localStorage, otherwise use default
+        this.apiBaseUrl = localStorage.getItem('apiBaseUrl') || defaultApiUrl || 'http://localhost:5001/api';
+        
+        // Check if we're on a web domain without a configured API URL
+        const hostname = window.location.hostname;
+        const isWebDomain = (hostname.includes('.me') || hostname.includes('.com') || hostname.includes('.io') || hostname.includes('.net')) && 
+                           hostname !== 'localhost' && 
+                           !hostname.match(/^\d+\.\d+\.\d+\.\d+$/);
+        
+        if (isWebDomain && !localStorage.getItem('apiBaseUrl')) {
+            // Show web access instructions
+            this.showWebAccessInstructions();
+        }
         
         this.init();
+    }
+    
+    showWebAccessInstructions() {
+        // Create a modal with instructions for web access
+        const instructions = `
+            <div style="padding: 20px; max-width: 600px; margin: 50px auto; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border-color);">
+                <h2 style="margin-top: 0; color: var(--text-primary);">🌐 Web Access Setup Required</h2>
+                <p style="color: var(--text-secondary); line-height: 1.6;">
+                    The IPTV backend server is running on your local machine and is not accessible from the web.
+                </p>
+                <p style="color: var(--text-secondary); line-height: 1.6;">
+                    <strong>To access from jesserodriguez.me, you have two options:</strong>
+                </p>
+                <div style="margin: 20px 0;">
+                    <h3 style="color: var(--primary-color); font-size: 16px; margin-bottom: 10px;">Option 1: Use a Tunnel Service (Quick)</h3>
+                    <ol style="color: var(--text-secondary); line-height: 1.8; padding-left: 20px;">
+                        <li>Install <a href="https://ngrok.com" target="_blank" style="color: var(--info-color);">ngrok</a> or similar tunnel service</li>
+                        <li>Run: <code style="background: var(--bg-tertiary); padding: 2px 6px; border-radius: 4px;">ngrok http 5001</code></li>
+                        <li>Copy the ngrok URL (e.g., https://abc123.ngrok.io)</li>
+                        <li>Enter it in Settings as: <code style="background: var(--bg-tertiary); padding: 2px 6px; border-radius: 4px;">https://abc123.ngrok.io/api</code></li>
+                    </ol>
+                </div>
+                <div style="margin: 20px 0;">
+                    <h3 style="color: var(--primary-color); font-size: 16px; margin-bottom: 10px;">Option 2: Host Backend on a Server</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">
+                        Deploy the backend to a cloud server (Heroku, Railway, DigitalOcean, etc.) and update the API URL in Settings.
+                    </p>
+                </div>
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                    <button onclick="window.app.showSettings(); document.getElementById('web-instructions')?.remove();" class="btn-primary" style="width: 100%;">
+                        Open Settings to Configure API URL
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        const container = document.getElementById('app-container') || document.body;
+        const instructionsDiv = document.createElement('div');
+        instructionsDiv.id = 'web-instructions';
+        instructionsDiv.innerHTML = instructions;
+        instructionsDiv.style.position = 'fixed';
+        instructionsDiv.style.top = '0';
+        instructionsDiv.style.left = '0';
+        instructionsDiv.style.width = '100%';
+        instructionsDiv.style.height = '100%';
+        instructionsDiv.style.background = 'var(--bg-overlay)';
+        instructionsDiv.style.zIndex = '10000';
+        instructionsDiv.style.display = 'flex';
+        instructionsDiv.style.alignItems = 'center';
+        instructionsDiv.style.justifyContent = 'center';
+        instructionsDiv.style.padding = '20px';
+        instructionsDiv.style.overflow = 'auto';
+        
+        container.appendChild(instructionsDiv);
     }
     
     detectApiUrl() {
@@ -15,6 +81,14 @@ class App {
         const port = '5001';
         
         console.log('Detected hostname:', hostname);
+        
+        // Special handling for web domains - backend is not accessible from web
+        // For jesserodriguez.me or other web domains, show instructions
+        if (hostname.includes('.me') || hostname.includes('.com') || hostname.includes('.io') || hostname.includes('.net')) {
+            // Web domain - backend is not accessible, return null to show instructions
+            console.log('Web domain detected - backend not accessible from web');
+            return null;
+        }
         
         // If hostname is an IP address or not localhost, use it
         if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
