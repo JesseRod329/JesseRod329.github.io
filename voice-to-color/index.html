@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice to Color</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="color-bg" id="colorBg"></div>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Voice to Color</h1>
+            <p class="subtitle">Speak and watch colors emerge from your voice</p>
+        </header>
+
+        <div class="main-content">
+            <div class="visualizer" id="visualizer">
+                <canvas id="waveCanvas"></canvas>
+                <div class="color-display" id="colorDisplay">
+                    <div class="color-hex" id="colorHex">#6366f1</div>
+                    <div class="color-name" id="colorName">Indigo</div>
+                </div>
+            </div>
+
+            <div class="controls-panel">
+                <button id="startBtn" class="btn btn-primary">
+                    <span class="btn-icon">🎤</span>
+                    Start Listening
+                </button>
+                <button id="stopBtn" class="btn btn-secondary" disabled>
+                    <span class="btn-icon">⏹</span>
+                    Stop
+                </button>
+
+                <div class="stats">
+                    <div class="stat">
+                        <span class="stat-label">Pitch</span>
+                        <span class="stat-value" id="pitchValue">--</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Volume</span>
+                        <span class="stat-value" id="volumeValue">--</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Emotion</span>
+                        <span class="stat-value" id="emotionValue">Neutral</span>
+                    </div>
+                </div>
+
+                <div class="color-history" id="colorHistory">
+                    <h3>Color History</h3>
+                    <div class="history-grid" id="historyGrid"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>How It Works</h3>
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">🎵</div>
+                    <h4>Pitch → Hue</h4>
+                    <p>Higher pitches create warmer colors, lower pitches create cooler tones</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">📊</div>
+                    <h4>Volume → Saturation</h4>
+                    <p>Louder sounds create more vibrant, saturated colors</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">💫</div>
+                    <h4>Tone → Brightness</h4>
+                    <p>Voice quality affects the lightness and darkness of colors</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
