@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gesture Drawing Canvas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="gradient-bg"></div>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Gesture Drawing Canvas</h1>
+            <p class="subtitle">Draw with your hands - no mouse needed</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Camera Feed & Canvas -->
+            <div class="canvas-container">
+                <video id="webcam" autoplay playsinline></video>
+                <canvas id="drawingCanvas"></canvas>
+                <div class="status" id="status">
+                    <div class="status-dot"></div>
+                    <span id="statusText">Click "Start Camera" to begin</span>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls-panel">
+                <div class="control-section">
+                    <h3>Camera</h3>
+                    <button id="startBtn" class="btn btn-primary">
+                        <span class="btn-icon">📷</span>
+                        Start Camera
+                    </button>
+                    <button id="stopBtn" class="btn btn-secondary" disabled>
+                        <span class="btn-icon">⏹</span>
+                        Stop Camera
+                    </button>
+                </div>
+
+                <div class="control-section">
+                    <h3>Drawing Tools</h3>
+                    <div class="color-picker">
+                        <button class="color-btn" data-color="#6366f1" style="background: #6366f1;"></button>
+                        <button class="color-btn" data-color="#8b5cf6" style="background: #8b5cf6;"></button>
+                        <button class="color-btn active" data-color="#f59e0b" style="background: #f59e0b;"></button>
+                        <button class="color-btn" data-color="#14b8a6" style="background: #14b8a6;"></button>
+                        <button class="color-btn" data-color="#f43f5e" style="background: #f43f5e;"></button>
+                        <button class="color-btn" data-color="#ffffff" style="background: #ffffff;"></button>
+                    </div>
+                    <label class="slider-control">
+                        <span>Brush Size</span>
+                        <input type="range" id="brushSize" min="2" max="20" value="5">
+                        <span id="brushSizeValue">5px</span>
+                    </label>
+                </div>
+
+                <div class="control-section">
+                    <h3>Actions</h3>
+                    <button id="clearBtn" class="btn btn-secondary">
+                        <span class="btn-icon">🗑️</span>
+                        Clear Canvas
+                    </button>
+                    <button id="downloadBtn" class="btn btn-primary">
+                        <span class="btn-icon">💾</span>
+                        Download Art
+                    </button>
+                </div>
+
+                <div class="control-section">
+                    <h3>Instructions</h3>
+                    <ul class="instructions">
+                        <li>✋ Show your hand to the camera</li>
+                        <li>☝️ Point with index finger to draw</li>
+                        <li>✌️ Make peace sign to pause</li>
+                        <li>✊ Close fist to erase</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/handpose@0.0.7"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
