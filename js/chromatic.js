@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initIntro();
     initCanvas();
     initScrollObserver();
+    initTimelineFade();
 });
 
 // 1. Intro Sequence
@@ -146,7 +147,30 @@ function initScrollObserver() {
     });
 }
 
-// 4. Scratch to Reveal Cards
+// 4. Timeline Fade on Scroll
+function initTimelineFade() {
+    const timeline = document.querySelector('.timeline-line');
+    if (!timeline) return;
+
+    let ticking = false;
+
+    function updateTimelineOpacity() {
+        const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+        // Fade out as user scrolls down (starts fading at 60% scroll)
+        const opacity = Math.max(0, 1 - (scrollPercent - 0.6) * 2.5);
+        timeline.style.opacity = opacity;
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(updateTimelineOpacity);
+            ticking = true;
+        }
+    });
+}
+
+// 5. Scratch to Reveal Cards
 function initScratchCards() {
     const cards = document.querySelectorAll('.scratch-card');
 
