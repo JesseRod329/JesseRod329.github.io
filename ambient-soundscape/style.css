@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+:root {
+    --bg-base: #0f0f23;
+    --indigo: #6366f1;
+    --purple: #8b5cf6;
+    --text-primary: #fff;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1)
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0
+}
+
+body {
+    font-family: Inter, sans-serif;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    min-height: 100vh
+}
+
+.gradient-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: linear-gradient(135deg, #1a1a3e 0%, #2d1b4e 50%, #1e3a5f 100%);
+    animation: gradientShift 20s ease infinite
+}
+
+@keyframes gradientShift {
+
+    0%,
+    100% {
+        background-position: 0 50%
+    }
+
+    50% {
+        background-position: 100% 50%
+    }
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 60px
+}
+
+.title {
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--indigo), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: #cbd5e1;
+    font-weight: 300
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px
+}
+
+.viz-container,
+.settings-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 40px
+}
+
+#waveCanvas {
+    width: 100%;
+    height: 400px;
+    margin-bottom: 30px
+}
+
+.controls {
+    display: flex;
+    gap: 16px
+}
+
+.btn {
+    flex: 1;
+    padding: 16px 24px;
+    border: none;
+    border-radius: 16px;
+    font-family: Inter, sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .3s ease
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--indigo), var(--purple));
+    color: var(--text-primary)
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    border: 2px solid var(--glass-border)
+}
+
+.btn:disabled {
+    opacity: .5;
+    cursor: not-allowed
+}
+
+.settings-panel h3 {
+    font-size: 1.5rem;
+    margin-bottom: 24px
+}
+
+.setting {
+    margin-bottom: 24px
+}
+
+.setting label {
+    display: block;
+    font-size: 0.9rem;
+    color: #cbd5e1;
+    margin-bottom: 8px
+}
+
+.setting select,
+.setting input {
+    width: 100%;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: Inter, sans-serif
+}
+
+@media (max-width:968px) {
+    .main-content {
+        grid-template-columns: 1fr
+    }
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambient Soundscape Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="gradient-bg"></div>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Ambient Soundscape</h1>
+            <p class="subtitle">Procedurally generated ambient sounds for relaxation</p>
+        </header>
+        <div class="main-content">
+            <div class="viz-container">
+                <canvas id="waveCanvas"></canvas>
+                <div class="controls">
+                    <button id="playBtn" class="btn btn-primary">▶ Play Soundscape</button>
+                    <button id="stopBtn" class="btn btn-secondary" disabled>⏹ Stop</button>
+                </div>
+            </div>
+            <div class="settings-panel">
+                <h3>Soundscape Settings</h3>
+                <div class="setting">
+                    <label>Mood</label>
+                    <select id="moodSelect">
+                        <option value="calm">Calm</option>
+                        <option value="forest">Forest</option>
+                        <option value="ocean">Ocean</option>
+                        <option value="rain">Rain</option>
+                        <option value="space">Space</option>
+                    </select>
+                </div>
+                <div class="setting">
+                    <label>Volume</label>
+                    <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.5">
+                </div>
+                <div class="setting">
+                    <label>Complexity</label>
+                    <input type="range" id="complexityControl" min="1" max="5" value="3">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
