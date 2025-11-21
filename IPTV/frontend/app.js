@@ -842,7 +842,24 @@ class App {
                 resultDiv.innerHTML = `<span style="color: red;">✗ Connection failed: HTTP ${response.status}</span>`;
             }
         } catch (error) {
-            resultDiv.innerHTML = `<span style="color: red;">✗ Connection failed: ${error.message}</span>`;
+            let errorMsg = error.message;
+            const hostname = window.location.hostname;
+            const isWebDomain = (hostname.includes('.me') || hostname.includes('.com') || hostname.includes('.io') || hostname.includes('.net')) && 
+                               hostname !== 'localhost' && 
+                               !hostname.match(/^\d+\.\d+\.\d+\.\d+$/);
+            
+            if (isWebDomain && cleanApiUrl.includes(hostname)) {
+                errorMsg = 'Backend not accessible from web. Use ngrok tunnel or host backend on a server.';
+            }
+            
+            resultDiv.innerHTML = `
+                <span style="color: red;">✗ Connection failed: ${errorMsg}</span>
+                ${isWebDomain ? '<div style="margin-top: 10px; padding: 10px; background: rgba(255,165,0,0.1); border-radius: 4px; font-size: 12px; color: orange;">
+                    <strong>Web Access Note:</strong> The backend runs on your local machine. To access from jesserodriguez.me:<br>
+                    1. Use <a href="https://ngrok.com" target="_blank" style="color: var(--info-color);">ngrok</a>: <code>ngrok http 5001</code><br>
+                    2. Or deploy backend to a cloud server (Heroku, Railway, etc.)
+                </div>' : ''}
+            `;
             console.error('API connection test failed:', error);
         } finally {
             testBtn.disabled = false;
