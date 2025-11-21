@@ -1,0 +1,323 @@
+/* 
+ * Jesse Rodriguez - Neo-Brutalist Redesign
+ * Raw. Bold. Technical.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,900;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+    --bg: #000000;
+    --text: #ffffff;
+    --accent: #ccff00;
+    /* Acid Green */
+    --border: 1px solid #333;
+    --border-light: 1px solid #ffffff;
+
+    --font-mono: 'Space Mono', monospace;
+    --font-serif: 'Playfair Display', serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    cursor: none;
+    /* Custom cursor */
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    overflow-x: hidden;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* --- Custom Cursor --- */
+.cursor {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    /* Transform is handled by JS for performance */
+    transition: width 0.2s, height 0.2s, background-color 0.2s, opacity 0.2s;
+    mix-blend-mode: difference;
+    opacity: 0;
+    /* Hidden until mouse moves */
+}
+
+.cursor.hovered {
+    width: 60px;
+    height: 60px;
+    background-color: var(--accent);
+    opacity: 0.8;
+    border-color: transparent;
+    mix-blend-mode: normal;
+    /* Solid color on hover */
+}
+
+/* Add a center dot for precision */
+.cursor::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    background: var(--accent);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* --- Layout Grid --- */
+.grid-wrapper {
+    display: grid;
+    grid-template-columns: 60px 1fr 60px;
+    /* Side borders */
+    min-height: 100vh;
+    border-left: var(--border);
+    border-right: var(--border);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.main-content {
+    border-left: var(--border);
+    border-right: var(--border);
+}
+
+/* --- Header / Marquee --- */
+.marquee-container {
+    border-bottom: var(--border-light);
+    overflow: hidden;
+    white-space: nowrap;
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 700;
+    padding: 10px 0;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+}
+
+.marquee-content {
+    display: inline-block;
+    animation: scroll 20s linear infinite;
+}
+
+@keyframes scroll {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+/* --- Hero Section --- */
+.hero {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px;
+    border-bottom: var(--border-light);
+    position: relative;
+}
+
+.hero-title {
+    font-family: var(--font-serif);
+    font-size: clamp(4rem, 12vw, 10rem);
+    line-height: 0.9;
+    font-weight: 900;
+    text-transform: uppercase;
+    mix-blend-mode: difference;
+}
+
+.hero-title span {
+    display: block;
+}
+
+.hero-title .outline {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--text);
+}
+
+.hero-subtitle {
+    margin-top: 40px;
+    font-size: 1.2rem;
+    max-width: 600px;
+    border-left: 4px solid var(--accent);
+    padding-left: 20px;
+}
+
+/* --- Projects List --- */
+.projects-section {
+    border-bottom: var(--border-light);
+}
+
+.section-label {
+    font-size: 0.9rem;
+    padding: 20px 40px;
+    border-bottom: var(--border);
+    text-transform: uppercase;
+    color: #666;
+}
+
+.project-item {
+    display: flex;
+    border-bottom: var(--border);
+    position: relative;
+    transition: background 0.3s;
+}
+
+.project-item:last-child {
+    border-bottom: none;
+}
+
+.project-item:hover {
+    background: #111;
+}
+
+.project-link {
+    display: flex;
+    width: 100%;
+    padding: 40px;
+    align-items: baseline;
+    justify-content: space-between;
+    z-index: 2;
+}
+
+.project-index {
+    font-family: var(--font-mono);
+    color: var(--accent);
+    margin-right: 40px;
+    font-size: 1.2rem;
+}
+
+.project-name {
+    font-family: var(--font-serif);
+    font-size: 3rem;
+    font-weight: 400;
+    flex-grow: 1;
+    transition: transform 0.3s;
+}
+
+.project-item:hover .project-name {
+    transform: translateX(20px);
+    font-style: italic;
+}
+
+.project-tags {
+    font-size: 0.9rem;
+    color: #888;
+    text-transform: uppercase;
+}
+
+/* --- Project Hover Image Reveal --- */
+.hover-reveal {
+    position: fixed;
+    width: 400px;
+    height: 300px;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 1;
+    transform: translate(-50%, -50%) scale(0.8);
+    transition: opacity 0.3s, transform 0.3s;
+    border: 2px solid var(--accent);
+    background: #000;
+    overflow: hidden;
+}
+
+.hover-reveal.active {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.hover-reveal img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%) contrast(120%);
+}
+
+/* --- Footer --- */
+.footer {
+    padding: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    min-height: 300px;
+}
+
+.footer-big {
+    font-family: var(--font-serif);
+    font-size: 4rem;
+    line-height: 1;
+}
+
+.social-links {
+    display: flex;
+    gap: 20px;
+}
+
+.social-link {
+    border: 1px solid var(--text);
+    padding: 10px 20px;
+    border-radius: 50px;
+    transition: background 0.3s, color 0.3s;
+}
+
+.social-link:hover {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .grid-wrapper {
+        grid-template-columns: 1fr;
+        border: none;
+    }
+
+    .main-content {
+        border: none;
+    }
+
+    .hero-title {
+        font-size: 4rem;
+    }
+
+    .project-link {
+        flex-direction: column;
+        gap: 10px;
+        padding: 30px 20px;
+    }
+
+    .project-name {
+        font-size: 2rem;
+    }
+
+    .cursor {
+        display: none;
+        /* No custom cursor on touch */
+    }
+
+    .hover-reveal {
+        display: none;
+    }
+}
