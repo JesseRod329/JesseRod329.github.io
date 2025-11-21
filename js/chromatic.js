@@ -7,12 +7,13 @@ document.addEventListener('DOMContentLoaded', () => {
     initIntro();
     initCanvas();
     initScrollObserver();
-    initTimelineFade();
+    initTiltEffect();
 });
 
 // 1. Intro Sequence
 function initIntro() {
     const intro = document.querySelector('.intro-screen');
+    if (!intro) return;
 
     setTimeout(() => {
         intro.classList.add('hidden');
@@ -112,49 +113,62 @@ function initCanvas() {
     animate();
 }
 
-// V5: Chromatic Timeline - Holographic Grid Logic
+// 3. Scroll Observer for Timeline Nodes
+function initScrollObserver() {
+    const nodes = document.querySelectorAll('.timeline-node');
 
-document.addEventListener('DOMContentLoaded', () => {
-    initParticles();
-    initTiltEffect();
-    animateIntro();
-});
-
-// --- 3D Tilt Effect ---
-function initTiltEffect() {
-    const cards = document.querySelectorAll('.card');
-
-    cards.forEach(card => {
-
-        // Touch events
-        canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            isScratching = true;
-            const rect = canvas.getBoundingClientRect();
-            const touch = e.touches[0];
-            scratch(touch.clientX - rect.left, touch.clientY - rect.top);
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
         });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
 
-        canvas.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            if (!isScratching) return;
-            const rect = canvas.getBoundingClientRect();
-            const touch = e.touches[0];
-            scratch(touch.clientX - rect.left, touch.clientY - rect.top);
-        });
+    nodes.forEach((node, index) => {
+        // Set initial state
+        node.style.opacity = '0';
+        node.style.transform = 'translateY(30px)';
+        node.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        // Stagger delay slightly
+        node.style.transitionDelay = `${index * 0.05}s`;
 
-        canvas.addEventListener('touchend', () => {
-            isScratching = false;
-        });
+        observer.observe(node);
     });
 }
 
-// Initialize on load
-document.addEventListener('DOMContentLoaded', () => {
-    initIntro();
-    initCanvas();
-    initScrollObserver();
+// 4. 3D Tilt Effect for Timeline Content
+function initTiltEffect() {
+    const cards = document.querySelectorAll('.timeline-content');
 
-    // Delay scratch cards init to ensure proper sizing
-    setTimeout(initScratchCards, 100);
-});
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // Calculate center
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            // Calculate rotation (max 10 degrees)
+            const rotateX = ((y - centerY) / centerY) * -5;
+            const rotateY = ((x - centerX) / centerX) * 5;
+
+            // Update CSS variables for glow
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+
+            // Apply transform
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+        });
+    });
+}
