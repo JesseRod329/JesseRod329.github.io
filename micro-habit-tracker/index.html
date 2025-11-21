@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Micro-Habit Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="gradient-bg"></div>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Micro-Habit Tracker</h1>
+            <p class="subtitle">Build better habits, one day at a time</p>
+            <div class="date-display" id="dateDisplay"></div>
+        </header>
+
+        <div class="main-grid">
+            <!-- Add Habit Section -->
+            <div class="add-habit-card">
+                <h2>Add New Habit</h2>
+                <div class="add-habit-form">
+                    <input type="text" id="habitInput" placeholder="e.g., Drink 8 glasses of water" maxlength="50">
+                    <select id="habitIcon">
+                        <option value="💧">💧 Water</option>
+                        <option value="🏃">🏃 Exercise</option>
+                        <option value="📚">📚 Reading</option>
+                        <option value="🧘">🧘 Meditation</option>
+                        <option value="💤">💤 Sleep</option>
+                        <option value="🥗">🥗 Healthy Eating</option>
+                        <option value="💻">💻 Coding</option>
+                        <option value="✍️">✍️ Writing</option>
+                        <option value="🎨">🎨 Creative Work</option>
+                        <option value="⭐">⭐ Custom</option>
+                    </select>
+                    <button id="addHabitBtn" class="btn btn-primary">
+                        <span>+</span> Add Habit
+                    </button>
+                </div>
+            </div>
+
+            <!-- Habits List -->
+            <div class="habits-container" id="habitsContainer">
+                <!-- Habits will be dynamically added here -->
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalStreak">0</div>
+                    <div class="stat-label">Total Streaks</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-content">
+                    <div class="stat-value" id="completedToday">0</div>
+                    <div class="stat-label">Completed Today</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalHabits">0</div>
+                    <div class="stat-label">Active Habits</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-content">
+                    <div class="stat-value" id="completionRate">0%</div>
+                    <div class="stat-label">Completion Rate</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart Section -->
+        <div class="chart-section">
+            <h2>7-Day Activity</h2>
+            <canvas id="activityChart"></canvas>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
