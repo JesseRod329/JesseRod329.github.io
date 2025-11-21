@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IPTV Connection Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .test-item {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>IPTV Server Connection Test</h1>
+    
+    <div class="test-item">
+        <h3>Test 1: Frontend Server</h3>
+        <p id="frontend-test">Testing...</p>
+        <button onclick="testFrontend()">Retest</button>
+    </div>
+    
+    <div class="test-item">
+        <h3>Test 2: API Server</h3>
+        <p id="api-test">Testing...</p>
+        <button onclick="testAPI()">Retest</button>
+    </div>
+    
+    <div class="test-item">
+        <h3>Connection Info</h3>
+        <p><strong>Your IP:</strong> <span id="client-ip"></span></p>
+        <p><strong>Server IP:</strong> 192.168.1.176</p>
+        <p><strong>Frontend Port:</strong> 8080</p>
+        <p><strong>API Port:</strong> 5001</p>
+    </div>
+    
+    <div class="test-item">
+        <h3>Links</h3>
+        <p><a href="/index.html">Go to IPTV Player</a></p>
+        <p><a href="http://192.168.1.176:5001/api/health">Test API Directly</a></p>
+    </div>
+
+    <script>
+        document.getElementById('client-ip').textContent = window.location.hostname;
+        
+        async function testFrontend() {
+            const el = document.getElementById('frontend-test');
+            el.textContent = 'Testing...';
+            try {
+                const response = await fetch('/index.html');
+                if (response.ok) {
+                    el.textContent = '✓ Frontend server is working!';
+                    el.parentElement.className = 'test-item success';
+                } else {
+                    throw new Error('Server returned error');
+                }
+            } catch (error) {
+                el.textContent = '✗ Frontend server error: ' + error.message;
+                el.parentElement.className = 'test-item error';
+            }
+        }
+        
+        async function testAPI() {
+            const el = document.getElementById('api-test');
+            el.textContent = 'Testing...';
+            try {
+                // Try to detect API URL
+                const hostname = window.location.hostname;
+                const apiUrl = `http://${hostname}:5001/api/health`;
+                
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                
+                if (data.status === 'ok') {
+                    el.textContent = '✓ API server is working!';
+                    el.parentElement.className = 'test-item success';
+                } else {
+                    throw new Error('API returned unexpected response');
+                }
+            } catch (error) {
+                el.textContent = '✗ API server error: ' + error.message;
+                el.parentElement.className = 'test-item error';
+            }
+        }
+        
+        // Run tests on load
+        testFrontend();
+        testAPI();
+    </script>
+</body>
+</html>
+
+
+

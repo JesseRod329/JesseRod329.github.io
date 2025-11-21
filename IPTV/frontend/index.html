@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPTV Player</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <h2>🔒 Password Required</h2>
+            <p style="margin-bottom: 20px; color: var(--text-secondary);">This application is password protected. Please enter your password to continue.</p>
+            <form id="login-form">
+                <div class="setting-item">
+                    <label>Password:</label>
+                    <input type="password" id="password-input" placeholder="Enter password" autocomplete="current-password" required autofocus>
+                </div>
+                <div id="login-error" style="color: var(--error-color); margin-bottom: 15px; display: none;"></div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn-primary" style="flex: 1;">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="app-container" id="app-container" style="display: none;">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <button id="mobile-menu-btn" class="btn-icon mobile-only" title="Menu">☰</button>
+                <h1>IPTV Player</h1>
+                <div class="header-actions">
+                    <div id="connection-status" class="connection-status" title="Connection Status">
+                        <span class="status-indicator online"></span>
+                    </div>
+                    <button id="theme-toggle" class="btn-icon" title="Toggle theme">🌓</button>
+                    <button id="settings-btn" class="btn-icon" title="Settings">⚙️</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-overlay" id="sidebar-overlay"></div>
+                
+                <div class="sidebar-section">
+                    <h2>Menu</h2>
+                    <nav class="nav-menu">
+                        <button class="nav-item active" data-view="channels">
+                            <span>📺</span> Channels
+                        </button>
+                        <button class="nav-item" data-view="favorites">
+                            <span>⭐</span> Favorites
+                        </button>
+                        <button class="nav-item" data-view="recent">
+                            <span>🕐</span> Recent
+                        </button>
+                        <button class="nav-item" data-view="epg">
+                            <span>📅</span> Guide
+                        </button>
+                        <button class="nav-item" data-view="local">
+                            <span>📍</span> Local Channels
+                        </button>
+                        <button class="nav-item" data-view="multiview">
+                            <span>⊞</span> Multi-View
+                        </button>
+                        <button class="nav-item" data-view="playlists">
+                            <span>📋</span> Playlists
+                        </button>
+                    </nav>
+                </div>
+
+                <div class="sidebar-section">
+                    <h2>Search & Filter</h2>
+                    <div class="filters">
+                        <div class="search-container">
+                            <input type="text" id="search-input" class="search-input" placeholder="Search channels..." autocomplete="off">
+                            <button id="clear-search-btn" class="btn-icon-small" title="Clear search" style="display: none;">✕</button>
+                        </div>
+                        
+                        <select id="category-filter" class="filter-select">
+                            <option value="">All Categories</option>
+                        </select>
+                        <select id="country-filter" class="filter-select">
+                            <option value="">All Countries</option>
+                        </select>
+                        
+                        <button id="clear-filters-btn" class="btn-secondary" style="width: 100%; margin-top: 10px;">Reset All</button>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h2>Quick Access</h2>
+                    <div class="quick-country-filters">
+                        <button class="quick-filter-btn" data-country="United States" title="United States">🇺🇸 US</button>
+                        <button class="quick-filter-btn" data-country="United Kingdom" title="United Kingdom">🇬🇧 UK</button>
+                        <button class="quick-filter-btn" data-country="Canada" title="Canada">🇨🇦 CA</button>
+                        <button class="quick-filter-btn" data-country="" title="All">🌍 All</button>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h2>Library</h2>
+                    <div class="actions-container" style="display: flex; flex-direction: column; gap: 10px;">
+                        <button id="fetch-playlist-btn" class="btn-primary">Update Playlist</button>
+                        <button id="import-playlist-btn" class="btn-secondary">Import Custom</button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Content Area -->
+            <main class="content-area">
+                <!-- Video Player Section -->
+                <section class="player-section" id="player-section">
+                    <div class="player-container">
+                        <video id="video-player" class="video-player" controls playsinline webkit-playsinline x5-playsinline style="width: 100%; height: auto; max-height: 400px; object-fit: contain; aspect-ratio: 16 / 9;">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div class="player-info">
+                            <h3 id="current-channel-name">No channel selected</h3>
+                            <div class="player-actions">
+                                <button id="vlc-btn" class="btn-secondary" disabled>Open in VLC</button>
+                                <button id="favorite-btn" class="btn-icon" disabled>⭐</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Channels View -->
+                <section class="view-section active" id="channels-view">
+                    <div class="view-header">
+                        <h2 id="channels-view-title">Channels</h2>
+                        <div class="view-controls">
+                            <select id="sort-select" class="filter-select" style="width: auto; padding: 6px 10px; font-size: 12px;" title="Sort channels">
+                                <option value="name">Sort: Name</option>
+                                <option value="country">Sort: Country</option>
+                                <option value="category">Sort: Category</option>
+                                <option value="recent">Sort: Recently Watched</option>
+                            </select>
+                            <button id="group-by-country-btn" class="btn-icon" title="Group by country">🌍</button>
+                            <button id="group-by-network-btn" class="btn-icon" title="Group by network">📺</button>
+                            <button id="grid-view-btn" class="btn-icon active" title="Grid view">⊞</button>
+                            <button id="list-view-btn" class="btn-icon" title="List view">☰</button>
+                        </div>
+                    </div>
+                    <div id="channels-container-wrapper">
+                        <div class="channels-container" id="channels-container">
+                            <div class="loading">Loading channels...</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Favorites View -->
+                <section class="view-section" id="favorites-view">
+                    <div class="view-header">
+                        <h2>Favorites</h2>
+                    </div>
+                    <div class="channels-container" id="favorites-container">
+                        <div class="empty-state">No favorites yet. Add channels to your favorites!</div>
+                    </div>
+                </section>
+
+                <!-- Recently Watched View -->
+                <section class="view-section" id="recent-view">
+                    <div class="view-header">
+                        <h2>Recently Watched</h2>
+                    </div>
+                    <div class="channels-container" id="recent-container">
+                        <div class="loading">Loading recently watched...</div>
+                    </div>
+                </section>
+
+                <!-- EPG View -->
+                <section class="view-section" id="epg-view">
+                    <div class="view-header">
+                        <h2>Electronic Program Guide</h2>
+                        <div class="epg-controls">
+                            <button id="fetch-epg-btn" class="btn-primary">Fetch EPG Data</button>
+                            <select id="epg-channel-filter" class="filter-select">
+                                <option value="">All Channels</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="padding: 0 20px; margin-bottom: 15px; font-size: 12px; color: var(--text-secondary);">
+                        <p>EPG data provided by <a href="https://github.com/iptv-org/epg" target="_blank" style="color: var(--info-color);">iptv-org/epg</a> - covering thousands of channels from hundreds of sources.</p>
+                    </div>
+                    <div class="epg-container" id="epg-container">
+                        <div class="empty-state">No EPG data available. Click "Fetch EPG Data" to load program schedules from iptv-org/epg.</div>
+                    </div>
+                </section>
+
+                <!-- Local Channels View -->
+                <section class="view-section" id="local-view">
+                    <div class="view-header">
+                        <h2>Local Channels</h2>
+                        <div class="view-controls">
+                            <button id="fetch-local-btn" class="btn-primary">Fetch Local Lineup</button>
+                        </div>
+                    </div>
+                    <div class="channels-container" id="local-container">
+                        <div class="empty-state">
+                            <p>Enter your Zip Code in settings to see local channels.</p>
+                            <button class="btn-secondary" onclick="window.app.showSettings()">Open Settings</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Multi-View Section -->
+                <section class="view-section" id="multiview-view">
+                    <div class="view-header">
+                        <h2>Multi-View</h2>
+                        <div class="view-controls">
+                            <button id="clear-multiview-btn" class="btn-secondary">Clear All</button>
+                        </div>
+                    </div>
+                    <div class="multiview-grid" id="multiview-grid">
+                        <!-- Slots will be added here -->
+                    </div>
+                    <div class="multiview-instructions">
+                        <p>Drag channels here or use "Open in Multi-View" from the context menu (right-click or long-press).</p>
+                    </div>
+                </section>
+
+                <!-- Playlists View -->
+                <section class="view-section" id="playlists-view">
+                    <div class="view-header">
+                        <h2>Playlists</h2>
+                    </div>
+                    <div class="playlists-container" id="playlists-container">
+                        <div class="empty-state">No custom playlists yet.</div>
+                    </div>
+                </section>
+            </main>
+            
+            <!-- Mobile Bottom Navigation -->
+            <nav class="mobile-bottom-nav mobile-only" id="mobile-bottom-nav">
+                <button class="bottom-nav-item active" data-view="channels" title="Channels">
+                    <span class="nav-icon">📺</span>
+                    <span class="nav-label">Channels</span>
+                </button>
+                <button class="bottom-nav-item" data-view="favorites" title="Favorites">
+                    <span class="nav-icon">⭐</span>
+                    <span class="nav-label">Favorites</span>
+                </button>
+                <button class="bottom-nav-item" data-view="epg" title="Program Guide">
+                    <span class="nav-icon">📅</span>
+                    <span class="nav-label">Guide</span>
+                </button>
+                <button class="bottom-nav-item" data-view="playlists" title="Playlists">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-label">Lists</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Modals -->
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Settings</h2>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="setting-item">
+                        <label>API Base URL:</label>
+                        <input type="text" id="api-url-input" value="http://localhost:5001/api" placeholder="http://192.168.1.152:5001/api">
+                        <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button id="test-api-btn" class="btn-secondary">Test Connection</button>
+                            <button id="auto-detect-api-btn" class="btn-secondary" style="font-size: 12px;">Auto-Detect IP</button>
+                        </div>
+                        <div id="api-test-result" style="margin-top: 8px; font-size: 0.9em;"></div>
+                        <div style="margin-top: 8px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 4px; font-size: 12px; color: var(--text-secondary);">
+                            <strong>Current IP:</strong> <span id="current-ip-display">Detecting...</span><br>
+                            <strong>Suggested URL:</strong> <span id="suggested-url-display">-</span>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label>Zip Code (for Local Channels):</label>
+                        <input type="text" id="zip-code-input" placeholder="Enter Zip Code (e.g. 90210)" maxlength="10">
+                    </div>
+                    <div class="setting-item">
+                        <label>Default Playlist URL:</label>
+                        <input type="text" id="default-playlist-input" value="https://iptv-org.github.io/iptv/index.m3u">
+                    </div>
+                    <div class="setting-item" style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 20px;">
+                        <button id="logout-btn" class="btn-secondary" style="width: 100%;">🔒 Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Import Playlist Modal -->
+        <div id="import-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Import Playlist</h2>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Playlist URL:</label>
+                        <input type="text" id="playlist-url-input" placeholder="https://example.com/playlist.m3u">
+                    </div>
+                    <div class="form-group">
+                        <label>Or upload file:</label>
+                        <input type="file" id="playlist-file-input" accept=".m3u,.m3u8">
+                    </div>
+                    <button id="import-submit-btn" class="btn-primary">Import</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Channel Info Modal -->
+        <div id="channel-info-modal" class="modal">
+            <div class="modal-content modal-large">
+                <div class="modal-header">
+                    <h2 id="channel-info-title">Channel Information</h2>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="channel-info-content">
+                        <div class="loading">Loading channel information...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="toast.js"></script>
+    <script src="progress.js"></script>
+    <script src="country-flags.js"></script>
+    <script src="app.js"></script>
+    <script src="player.js"></script>
+    <script src="playlist.js"></script>
+    <script src="epg.js"></script>
+    <script src="multiview.js"></script>
+    <script src="favorites.js"></script>
+    <script src="recent.js"></script>
+    <script src="search.js"></script>
+    <script src="keyboard.js"></script>
+    <script src="gestures.js"></script>
+    <script src="channel-info.js"></script>
+    <script src="multiview.js"></script>
+    <script src="local.js"></script>
+</body>
+</html>
+
+
