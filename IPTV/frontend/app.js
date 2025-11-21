@@ -24,16 +24,17 @@ class App {
         let storedApiUrl = localStorage.getItem('apiBaseUrl');
         
         // If we're on a web domain and the stored URL still points to localhost, ignore it
-        if (isWebDomain && storedApiUrl && (storedApiUrl.includes('localhost') || storedApiUrl.includes('127.0.0.1'))) {
+        if (isWebDomain && storedApiUrl && (storedApiUrl.includes('localhost') || storedApiUrl.includes('127.0.0.1') || storedApiUrl.includes('0.0.0.0'))) {
             console.log('Ignoring stored localhost API URL on web domain:', storedApiUrl);
             storedApiUrl = null;
+            localStorage.removeItem('apiBaseUrl'); // Force clear
         }
         
         this.apiBaseUrl = storedApiUrl || defaultApiUrl || 'http://localhost:5001/api';
         
-        // If we are on a web domain and we had to override a bad stored URL, update localStorage
-        if (isWebDomain && this.apiBaseUrl && this.apiBaseUrl !== storedApiUrl) {
-            localStorage.setItem('apiBaseUrl', this.apiBaseUrl);
+        // Force update localStorage if we are on web and using the Railway URL
+        if (isWebDomain && defaultApiUrl && this.apiBaseUrl === defaultApiUrl) {
+            localStorage.setItem('apiBaseUrl', defaultApiUrl);
         }
         
         if (isWebDomain && !localStorage.getItem('apiBaseUrl') && !window.IPTV_REMOTE_API_BASE) {
