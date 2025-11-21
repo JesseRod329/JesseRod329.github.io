@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Mood Board Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="gradient-bg"></div>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="title">AI Mood Board Generator</h1>
+            <p class="subtitle">Upload an image and get instant design inspiration</p>
+        </header>
+
+        <div class="upload-section">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📸</div>
+                <p class="upload-text">Drop an image here or click to upload</p>
+                <input type="file" id="fileInput" accept="image/*" hidden>
+            </div>
+        </div>
+
+        <div class="results-section" id="resultsSection" style="display: none;">
+            <!-- Color Palette -->
+            <div class="result-card">
+                <h2 class="card-title">Color Palette</h2>
+                <div class="color-grid" id="colorGrid"></div>
+                <div class="color-codes" id="colorCodes"></div>
+            </div>
+
+            <!-- Typography Suggestions -->
+            <div class="result-card">
+                <h2 class="card-title">Typography Suggestions</h2>
+                <div class="typography-grid" id="typographyGrid"></div>
+            </div>
+
+            <!-- Mood Board Preview -->
+            <div class="result-card full-width">
+                <h2 class="card-title">Mood Board Preview</h2>
+                <div class="mood-board" id="moodBoard">
+                    <div class="mood-image-container">
+                        <img id="uploadedImage" alt="Uploaded">
+                    </div>
+                    <div class="mood-info">
+                        <h3 id="moodTitle">Design Inspiration</h3>
+                        <p id="moodDesc">Your color palette and typography create a unique aesthetic.</p>
+                        <div class="mood-colors" id="moodColors"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="actions">
+                <button class="btn btn-primary" id="downloadBtn">Download Palette</button>
+                <button class="btn btn-secondary" id="resetBtn">Upload New Image</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
