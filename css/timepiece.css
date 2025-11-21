@@ -102,8 +102,8 @@ body::-webkit-scrollbar {
     max-width: 600px;
     /* Mobile-first focus */
     margin: 0 auto;
-    padding: 100vh 20px 20vh;
-    /* Start with empty space */
+    padding: 40vh 20px 20vh;
+    /* Reduced start space */
     perspective: 1000px;
 }
 
@@ -121,8 +121,8 @@ body::-webkit-scrollbar {
 /* --- Nodes (Projects) --- */
 .node {
     position: relative;
-    margin-bottom: 30vh;
-    /* Spacing between moments */
+    margin-bottom: 20vh;
+    /* Reduced spacing */
     opacity: 0;
     transform-style: preserve-3d;
     transition: opacity 0.5s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
