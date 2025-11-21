@@ -115,7 +115,9 @@ function initCanvas() {
 
 // 3. Scroll Observer for Timeline Nodes
 function initScrollObserver() {
+    console.log('Initializing Scroll Observer...');
     const nodes = document.querySelectorAll('.timeline-node');
+    console.log(`Found ${nodes.length} timeline nodes.`);
 
     // Palette for cycling colors
     const palette = [
@@ -134,6 +136,7 @@ function initScrollObserver() {
             const content = entry.target.querySelector('.timeline-content');
 
             if (entry.isIntersecting) {
+                // console.log('Node intersecting:', entry.target);
                 entry.target.style.opacity = '1';
                 entry.target.style.transform = 'translateY(0)';
 
@@ -142,14 +145,14 @@ function initScrollObserver() {
                     content.classList.add('active-glow');
                 }
             } else {
-                // Optional: Remove glow when out of view to re-trigger
+                // Remove glow when out of view
                 if (content) {
                     content.classList.remove('active-glow');
                 }
             }
         });
     }, {
-        threshold: 0.4, // Trigger when 40% visible
+        threshold: 0.15, // Lower threshold to ensure it triggers
         rootMargin: '0px 0px -10% 0px'
     });
 
@@ -158,7 +161,6 @@ function initScrollObserver() {
         node.style.opacity = '0';
         node.style.transform = 'translateY(30px)';
         node.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        // Stagger delay slightly
         node.style.transitionDelay = `${index * 0.05}s`;
 
         // Assign color
@@ -167,7 +169,10 @@ function initScrollObserver() {
         const marker = node.querySelector('.timeline-marker');
 
         if (content) {
+            // console.log(`Assigning color ${color} to node ${index}`);
             content.style.setProperty('--glow-color', color);
+            // Force a default border color to verify assignment if needed
+            // content.style.borderColor = color; 
         }
         if (marker) {
             marker.style.borderColor = color;
