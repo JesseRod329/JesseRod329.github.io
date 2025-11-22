@@ -1,20 +1,46 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useRef, useState, useMemo, useImperativeHandle, forwardRef } from 'react';
 import Globe, { GlobeMethods } from 'react-globe.gl';
 import * as d3 from 'd3';
+import { City, Arc } from '../types';
 
 interface WorldMapProps {
   onLocationSelect: (loc: { name: string, lat: number, lng: number }) => void;
+  cities?: City[];
+  arcs?: Arc[];
+  onCityClick?: (city: City) => void;
+}
+
+export interface WorldMapRef {
+  flyToCountry: (lat: number, lng: number) => void;
+  getCountries: () => Array<{ name: string; iso_a3: string }>;
 }
 
 // Using a public GeoJSON for countries
 const GEOJSON_URL = 'https://raw.githubusercontent.com/vasturiano/react-globe.gl/master/example/datasets/ne_110m_admin_0_countries.geojson';
 
-const WorldMap: React.FC<WorldMapProps> = ({ onLocationSelect }) => {
+const WorldMap = forwardRef<WorldMapRef, WorldMapProps>(({ onLocationSelect, cities = [], arcs = [], onCityClick }, ref) => {
   const globeEl = useRef<GlobeMethods | undefined>(undefined);
   const [countries, setCountries] = useState({ features: [] });
   const [hoverD, setHoverD] = useState<object | null>(null);
   const [width, setWidth] = useState(window.innerWidth);
   const [height, setHeight] = useState(window.innerHeight);
+
+  useImperativeHandle(ref, () => ({
+    flyToCountry: (lat: number, lng: number) => {
+      if (globeEl.current) {
+        globeEl.current.pointOfView(
+          { lat, lng, altitude: 1.5 },
+          1500 // animation duration in ms
+        );
+      }
+    },
+    getCountries: () => {
+      return countries.features.map((f: any) => ({
+        name: f.properties.ADMIN,
+        iso_a3: f.properties.ISO_A3
+      }));
+    }
+  }));
 
   useEffect(() => {
     // Load country data
@@ -67,20 +93,42 @@ const WorldMap: React.FC<WorldMapProps> = ({ onLocationSelect }) => {
         `}
         onPolygonHover={setHoverD}
         onPolygonClick={(d: any) => {
-          // Focus on country
-          const coords = d.properties.coord || { lat: 0, lng: 0 }; // GeoJSON might not have center props easily accessible without calculation, but let's rely on click event props if available, or calculating centroid.
-          // React-globe-gl passes the feature. We need to compute centroid or just use the click event location if possible. 
-          // Actually, onPolygonClick passes (polygon, event, { lat, lng, altitude }).
-          // Let's use a simplified approximate approach or the library's args.
-          
-          // Since the type defs might be loose, let's assume we just pass the name for now.
-          // Ideally we use d3-geo to calculate centroid, but for now let's just trigger the name.
            onLocationSelect({
              name: d.properties.ADMIN,
-             lat: 0, // Not strictly needed for the text analysis
+             lat: 0,
              lng: 0 
            });
         }}
+        
+        // City markers
+        pointsData={cities}
+        pointLat={(d: any) => d.lat}
+        pointLng={(d: any) => d.lng}
+        pointAltitude={0.01}
+        pointRadius={0.15}
+        pointColor={() => '#ff00ff'}
+        pointLabel={(d: any) => `
+          <div style="background: rgba(0,0,0,0.9); color: #ff00ff; border: 1px solid #ff00ff; padding: 4px 8px; font-family: 'Share Tech Mono', monospace;">
+            <b style="color: #fff">${d.name}</b><br />
+            ${d.country}<br />
+            POP: ${(d.population / 1000000).toFixed(1)}M
+          </div>
+        `}
+        onPointClick={(point: any) => {
+          if (onCityClick) onCityClick(point);
+        }}
+        
+        // Connection arcs
+        arcsData={arcs}
+        arcStartLat={(d: any) => d.startLat}
+        arcStartLng={(d: any) => d.startLng}
+        arcEndLat={(d: any) => d.endLat}
+        arcEndLng={(d: any) => d.endLng}
+        arcColor={(d: any) => d.color}
+        arcDashLength={0.4}
+        arcDashGap={0.2}
+        arcDashAnimateTime={1500}
+        arcStroke={0.5}
         
         // Atmosphere
         atmosphereColor="#00f3ff"
@@ -88,6 +136,7 @@ const WorldMap: React.FC<WorldMapProps> = ({ onLocationSelect }) => {
       />
     </div>
   );
-};
+});
 
+WorldMap.displayName = 'WorldMap';
 export default WorldMap;

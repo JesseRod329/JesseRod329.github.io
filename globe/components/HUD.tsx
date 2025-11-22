@@ -1,6 +1,7 @@
 import React from 'react';
 import { CyberpunkAnalysis, SystemStatus } from '../types';
 import { GlitchText } from './GlitchText';
+import { SearchBar } from './SearchBar';
 import { ShieldAlert, Activity, Zap, Radio, MapPin, Hexagon, Crosshair } from 'lucide-react';
 
 interface HUDProps {
@@ -8,9 +9,11 @@ interface HUDProps {
   analysis: CyberpunkAnalysis | null;
   selectedLocation: string | null;
   onCloseAnalysis: () => void;
+  countries: Array<{ name: string; iso_a3: string }>;
+  onSearchSelect: (countryName: string) => void;
 }
 
-export const HUD: React.FC<HUDProps> = ({ status, analysis, selectedLocation, onCloseAnalysis }) => {
+export const HUD: React.FC<HUDProps> = ({ status, analysis, selectedLocation, onCloseAnalysis, countries, onSearchSelect }) => {
   
   const getThreatColor = (level: string) => {
     switch(level) {
@@ -26,24 +29,31 @@ export const HUD: React.FC<HUDProps> = ({ status, analysis, selectedLocation, on
     <div className="pointer-events-none fixed inset-0 z-10 flex flex-col justify-between p-6 text-cyber-cyan font-mono uppercase tracking-wider">
       
       {/* Header Bar */}
-      <div className="flex justify-between items-start pointer-events-auto">
-        <div className="border-l-4 border-cyber-cyan pl-4 bg-cyber-glass backdrop-blur-sm p-2">
-          <h1 className="text-3xl font-display font-bold text-white mb-1">
-            <GlitchText text="NEON NEXUS" />
-          </h1>
-          <div className="flex items-center gap-2 text-xs">
-            <Activity size={14} className="animate-pulse" />
-            <span>SYSTEM ONLINE // V.2077.4</span>
+      <div className="flex flex-col gap-4 pointer-events-auto">
+        <div className="flex justify-between items-start">
+          <div className="border-l-4 border-cyber-cyan pl-4 bg-cyber-glass backdrop-blur-sm p-2">
+            <h1 className="text-3xl font-display font-bold text-white mb-1">
+              <GlitchText text="NEON NEXUS" />
+            </h1>
+            <div className="flex items-center gap-2 text-xs">
+              <Activity size={14} className="animate-pulse" />
+              <span>SYSTEM ONLINE // V.2077.4</span>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-end gap-2">
+            <div className="bg-cyber-black border border-cyber-pink px-4 py-1 text-cyber-pink font-bold text-sm animate-pulse shadow-[0_0_10px_#ff00ff]">
+              {status}
+            </div>
+            <div className="text-xs text-gray-400">
+              LAT: {Math.random().toFixed(4)} // LNG: {Math.random().toFixed(4)}
+            </div>
           </div>
         </div>
-
-        <div className="flex flex-col items-end gap-2">
-          <div className="bg-cyber-black border border-cyber-pink px-4 py-1 text-cyber-pink font-bold text-sm animate-pulse shadow-[0_0_10px_#ff00ff]">
-            {status}
-          </div>
-          <div className="text-xs text-gray-400">
-            LAT: {Math.random().toFixed(4)} // LNG: {Math.random().toFixed(4)}
-          </div>
+        
+        {/* Search Bar */}
+        <div className="flex justify-center">
+          <SearchBar countries={countries} onSelectCountry={onSearchSelect} />
         </div>
       </div>
 

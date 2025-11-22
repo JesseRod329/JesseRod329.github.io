@@ -29,3 +29,31 @@ export interface ChatMessage {
   text: string;
   timestamp: number;
 }
+
+export interface City {
+  name: string;
+  lat: number;
+  lng: number;
+  population: number;
+  country: string;
+}
+
+export interface Arc {
+  startLat: number;
+  startLng: number;
+  endLat: number;
+  endLng: number;
+  color: string;
+}
+
+export interface Bookmark {
+  countryName: string;
+  timestamp: number;
+  analysis?: CyberpunkAnalysis;
+}
+
+export interface HistoryEntry {
+  countryName: string;
+  timestamp: number;
+  analysis?: CyberpunkAnalysis;
+}
