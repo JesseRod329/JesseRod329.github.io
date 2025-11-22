@@ -28,7 +28,9 @@ export const Terminal: React.FC<TerminalProps> = ({ messages, onSendMessage, isL
   };
 
   return (
-    <div className={`fixed bottom-6 left-6 z-20 transition-all duration-300 ease-in-out ${isMinimized ? 'w-64 h-12' : 'w-96 h-96'}`}>
+    <div className={`fixed z-20 transition-all duration-300 ease-in-out 
+      bottom-4 left-4 right-4 md:left-6 md:right-auto md:bottom-6
+      ${isMinimized ? 'h-12 md:w-64' : 'h-[40vh] md:h-96 md:w-96'}`}>
       <div className="bg-black/90 border border-cyber-pink/50 backdrop-blur-md w-full h-full flex flex-col shadow-[0_0_15px_rgba(255,0,255,0.15)] overflow-hidden rounded-tl-lg rounded-br-lg">
         
         {/* Header */}
