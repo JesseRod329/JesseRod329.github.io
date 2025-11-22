@@ -1,0 +1,28 @@
+{
+  "name": "fantasy-wrestling-booking",
+  "version": "1.0.0",
+  "description": "Fantasy Wrestling Booking Platform - A mobile-first fantasy sports app for professional wrestling",
+  "main": "main.js",
+  "scripts": {
+    "dev": "vite",
+    "prebuild": "node scripts/generate-env-js.mjs || echo 'skip env generation'",
+    "build": "tailwindcss -i ./src/index.css -o ./tailwind.css --minify && vite build",
+    "build:watch": "tailwindcss -i ./src/index.css -o ./tailwind.css --watch"
+  },
+  "keywords": [
+    "fantasy",
+    "wrestling",
+    "sports",
+    "predictions",
+    "leaderboard"
+  ],
+  "author": "Jesse Rodriguez",
+  "license": "MIT",
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "dotenv": "^17.2.3",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17",
+    "vite": "^5.4.20"
+  }
+}

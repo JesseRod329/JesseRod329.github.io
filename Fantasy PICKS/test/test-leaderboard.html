@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Leaderboard - Fantasy Wrestling</title>
+    <link href="/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <h1 class="text-2xl font-bold mb-4">Leaderboard Page Test</h1>
+    
+    <div class="space-y-4">
+        <p>This page tests the leaderboard functionality:</p>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Test Steps:</h2>
+            <ol class="list-decimal list-inside space-y-1">
+                <li>Open browser dev tools (F12)</li>
+                <li>Go to Console tab</li>
+                <li>Navigate to <a href="leaderboard.html" class="text-yellow-400 hover:underline">leaderboard.html</a></li>
+                <li>Check console logs for LeaderboardSystem.init() messages</li>
+                <li>Look for any error messages</li>
+                <li>Try clicking the tab buttons (Event, Global, Weekly)</li>
+            </ol>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Expected Console Output:</h2>
+            <pre class="text-sm text-gray-300">
+LeaderboardSystem.init() called
+Current URL: http://localhost:8000/leaderboard.html
+Leaderboard tabs found, proceeding with initialization
+LeaderboardSystem.fetchAndRender() called
+Current tab: event
+Loading event leaderboard
+Event ID: [some-uuid]
+Event leaderboard data: [...]
+Rendering table with X rows
+LeaderboardSystem.renderTable() called with X rows
+Table elements found: {tbody: true, heading: true, ...}
+Generated table HTML: <tr>...
+Table rendered successfully
+            </pre>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Troubleshooting:</h2>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <li>If you see "leaderboardTabs element not found" - there's an HTML issue</li>
+                <li>If you see "Missing required table elements" - DOM structure issue</li>
+                <li>If you see "No events available" - no events in database</li>
+                <li>If you see "Failed to load leaderboard data" - Supabase connection issue</li>
+                <li>If table is empty - check if leaderboard views exist in Supabase</li>
+            </ul>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Current Leaderboard Status:</h2>
+            <p class="text-sm">The leaderboard system is already implemented with:</p>
+            <ul class="list-disc list-inside space-y-1 text-sm mt-2">
+                <li>✅ Event, Global, and Weekly leaderboard tabs</li>
+                <li>✅ Event selector for event leaderboard</li>
+                <li>✅ Responsive table with proper styling</li>
+                <li>✅ User highlighting for logged-in users</li>
+                <li>✅ Loading states and error handling</li>
+                <li>✅ Integration with Supabase views</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

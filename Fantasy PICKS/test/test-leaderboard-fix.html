@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Leaderboard Fix - Fantasy Wrestling</title>
+    <link href="/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <h1 class="text-2xl font-bold mb-4">Leaderboard Fix Test</h1>
+    
+    <div class="space-y-6">
+        <div class="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-red-400 mb-2">Before Fix (Expected Error)</h2>
+            <p class="text-sm">You should see a 400 error in the console when trying to load leaderboard data.</p>
+        </div>
+        
+        <div class="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-yellow-400 mb-2">Fix Required</h2>
+            <ol class="list-decimal list-inside space-y-1 text-sm">
+                <li>Open Supabase Dashboard → SQL Editor</li>
+                <li>Copy and run the SQL from <code class="bg-gray-700 px-2 py-1 rounded">fix-leaderboard-views.sql</code></li>
+                <li>Verify views were created successfully</li>
+                <li>Test the leaderboard page again</li>
+            </ol>
+        </div>
+        
+        <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-green-400 mb-2">After Fix (Expected Success)</h2>
+            <p class="text-sm">The leaderboard should load without 400 errors and show data in the tables.</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Test Steps</h2>
+            <ol class="list-decimal list-inside space-y-1 text-sm">
+                <li>Open browser dev tools (F12) → Console tab</li>
+                <li>Go to <a href="leaderboard.html" class="text-yellow-400 hover:underline">leaderboard.html</a></li>
+                <li>Check console for errors</li>
+                <li>Try switching between Event/Global/Weekly tabs</li>
+                <li>Look for successful data loading messages</li>
+            </ol>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Expected Console Output (After Fix)</h2>
+            <pre class="text-sm text-gray-300 bg-black p-3 rounded overflow-x-auto">
+LeaderboardSystem.init() called
+Current URL: http://localhost:8000/leaderboard.html
+Leaderboard tabs found, proceeding with initialization
+LeaderboardSystem.fetchAndRender() called
+Current tab: event
+Loading event leaderboard
+Event ID: [some-uuid]
+Event leaderboard data: [...]
+Rendering table with X rows
+LeaderboardSystem.renderTable() called with X rows
+Table elements found: {tbody: true, heading: true, ...}
+Generated table HTML: <tr>...
+Table rendered successfully
+            </pre>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">SQL Commands to Run</h2>
+            <p class="text-sm mb-2">Copy these commands into Supabase SQL Editor:</p>
+            <pre class="text-xs text-gray-300 bg-black p-3 rounded overflow-x-auto">
+-- Create leaderboard view for event-specific rankings
+CREATE OR REPLACE VIEW leaderboard AS
+SELECT 
+    u.email,
+    p.event_id,
+    COUNT(*) FILTER (WHERE p.winner = m.winner AND p.method = m.method) as correct,
+    COUNT(*) as total,
+    ROUND(
+        COUNT(*) FILTER (WHERE p.winner = m.winner AND p.method = m.method)::decimal / 
+        NULLIF(COUNT(*), 0), 
+        2
+    ) as accuracy
+FROM picks p
+JOIN matches m ON m.id = p.match_id
+JOIN users u ON u.id = p.user_id
+WHERE m.winner IS NOT NULL AND m.method IS NOT NULL
+GROUP BY u.email, p.event_id
+ORDER BY correct DESC, total DESC;
+
+-- Set permissions
+ALTER VIEW leaderboard SET (security_invoker = true);
+GRANT SELECT ON leaderboard TO anon;
+            </pre>
+        </div>
+    </div>
+</body>
+</html>

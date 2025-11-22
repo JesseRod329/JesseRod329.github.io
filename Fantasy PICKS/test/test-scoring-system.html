@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Scoring System - Fantasy Wrestling</title>
+    <link href="/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <h1 class="text-2xl font-bold mb-4">Scoring System Test</h1>
+    
+    <div class="space-y-6">
+        <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-green-400 mb-2">✅ Scoring Features Implemented</h2>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <li><strong>Scoring Summary Bar</strong>: Shows total points, accuracy, and correct matches</li>
+                <li><strong>Match Result Fetching</strong>: Loads match results from Supabase matches table</li>
+                <li><strong>Point Calculation</strong>: Winner (10pts), Method (5pts), Bonuses (5pts each)</li>
+                <li><strong>Visual Feedback</strong>: ✅/❌ indicators with point displays</li>
+                <li><strong>Pending State</strong>: ⏳ Pending when results not entered yet</li>
+                <li><strong>Color Coding</strong>: Green for correct, red for incorrect</li>
+            </ul>
+        </div>
+        
+        <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-blue-400 mb-2">Test Steps</h2>
+            <ol class="list-decimal list-inside space-y-1 text-sm">
+                <li>Go to <a href="predictions.html" class="text-yellow-400 hover:underline">predictions.html</a></li>
+                <li>Sign in with Google if not already authenticated</li>
+                <li>Select an event from the dropdown</li>
+                <li>Make some predictions (winner, method, bonuses)</li>
+                <li>Check console for scoring calculations</li>
+                <li>Verify scoring summary bar appears (if matches have results)</li>
+                <li>Check individual match feedback (✅/❌ with points)</li>
+            </ol>
+        </div>
+        
+        <div class="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-yellow-400 mb-2">Expected Visual Features</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <h3 class="font-semibold text-yellow-300 mb-2">Scoring Summary Bar</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Green gradient background with border</li>
+                        <li>Total Points (large green text)</li>
+                        <li>Accuracy percentage (blue text)</li>
+                        <li>Correct matches count (yellow text)</li>
+                        <li>Only shows when matches have results</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-yellow-300 mb-2">Match Feedback</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>✅ Green for correct predictions</li>
+                        <li>❌ Red for incorrect predictions</li>
+                        <li>⏳ Yellow for pending results</li>
+                        <li>Point display (+10, +5, etc.)</li>
+                        <li>Correct count (e.g., "3/5 correct")</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-purple-400 mb-2">Scoring Logic</h2>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400 font-bold">+10</span>
+                    <span>Correct winner prediction</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400 font-bold">+5</span>
+                    <span>Correct method prediction</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400 font-bold">+5</span>
+                    <span>Each correct bonus prediction (interference, titleChange, blood, table, surpriseReturn)</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-yellow-400">⏳</span>
+                    <span>Pending when match.winner or match.method is null</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-red-400 mb-2">Console Output Expected</h2>
+            <pre class="text-xs text-gray-300 bg-black p-3 rounded overflow-x-auto">
+Event data loaded: {id: "...", name: "...", lock_time: "..."}
+Matches loaded: [{id: "...", winner: "John Cena", method: "Pinfall", ...}, ...]
+Calculating scoring for current matches: [...]
+Current predictions: {matchId: {winner: "John Cena", method: "Pinfall", ...}, ...}
+Calculated scoring: {
+  totalPoints: 25,
+  correctMatches: 2,
+  totalMatches: 3,
+  accuracy: 66.7,
+  matchScores: {...}
+}
+            </pre>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Test Scenarios</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <h3 class="font-semibold text-yellow-400 mb-2">Scenario 1: No Results</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Matches without winner/method set</li>
+                        <li>Shows ⏳ Pending for all matches</li>
+                        <li>No scoring summary bar</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-green-400 mb-2">Scenario 2: With Results</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Matches with winner and method set</li>
+                        <li>Shows ✅/❌ with points</li>
+                        <li>Displays scoring summary bar</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-blue-400 mb-2">Scenario 3: Mixed Results</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Some matches scored, some pending</li>
+                        <li>Shows appropriate feedback for each</li>
+                        <li>Summary bar shows partial results</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-purple-400 mb-2">Scenario 4: Perfect Score</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>All predictions correct</li>
+                        <li>All matches show ✅ with max points</li>
+                        <li>100% accuracy in summary</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Database Requirements</h2>
+            <p class="text-sm text-gray-300 mb-2">For scoring to work, matches need these fields populated:</p>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <li><code class="bg-gray-700 px-2 py-1 rounded">winner</code> - The actual winner of the match</li>
+                <li><code class="bg-gray-700 px-2 py-1 rounded">method</code> - How the match ended (Pinfall, Submission, etc.)</li>
+                <li><code class="bg-gray-700 px-2 py-1 rounded">result_interference</code> - Boolean for interference bonus</li>
+                <li><code class="bg-gray-700 px-2 py-1 rounded">result_titleChange</code> - Boolean for title change bonus</li>
+                <li><code class="bg-gray-700 px-2 py-1 rounded">result_blood</code> - Boolean for blood bonus</li>
+                <li><code class="bg-gray-700 px-2 py-1 rounded">result_table</code> - Boolean for table spot bonus</li>
+                <li><code class="bg-gray-700 px-2 py-1 rounded">result_surpriseReturn</code> - Boolean for surprise return bonus</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

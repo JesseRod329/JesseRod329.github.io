@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Prediction Summary Fixes - Fantasy Wrestling Booking</title>
+    <link href="/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-black text-white">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-8 text-center text-yellow-400">Prediction Summary Fixes Test</h1>
+        
+        <div class="mb-8 p-4 bg-gray-800 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4">Fixes Applied</h2>
+            <ul class="list-disc list-inside space-y-2 text-sm">
+                <li><strong>Percentage Math:</strong> Now based ONLY on earned/maxPossible (0-100% clamped)</li>
+                <li><strong>Prop Mapping:</strong> predicted = user picks count, total = matches count</li>
+                <li><strong>Data Loader:</strong> Returns correct predicted/total from database queries</li>
+                <li><strong>PER_MATCH_MAX:</strong> Set to 26 (6 matches × 26 = 156 max possible)</li>
+                <li><strong>Debug Logging:</strong> Added console logs to verify all numbers</li>
+                <li><strong>Validation:</strong> Ensures predicted ≤ total</li>
+            </ul>
+        </div>
+
+        <div class="mb-8 p-4 bg-gray-800 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4">Test Scenarios</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                    <button class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm" onclick="testScenario(0, 6, 0, 156, 0)">
+                        No Predictions (0/6, 0%)
+                    </button>
+                    <button class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm" onclick="testScenario(6, 6, 15, 156, 78)">
+                        Half Points (6/6, 50%)
+                    </button>
+                    <button class="w-full bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg text-sm" onclick="testScenario(6, 6, 30, 156, 156)">
+                        Perfect Score (6/6, 100%)
+                    </button>
+                </div>
+                <div class="space-y-2">
+                    <button class="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm" onclick="testScenario(3, 6, 10, 156, 45)">
+                        Partial Predictions (3/6, 29%)
+                    </button>
+                    <button class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm" onclick="testScenario(6, 6, 0, 156, 0)">
+                        All Wrong (6/6, 0%)
+                    </button>
+                    <button class="w-full bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm" onclick="testScenario(6, 6, 50, 156, 200)">
+                        Over Max (6/6, 100% clamped)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prediction Summary Display -->
+        <div id="predictionSummary" class="max-w-md mx-auto mb-8">
+            <!-- Dynamic prediction summary will be loaded here -->
+        </div>
+
+        <div class="mb-8 p-4 bg-gray-800 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4">Expected Results</h2>
+            <div class="text-sm space-y-2">
+                <div><strong>Percentage Formula:</strong> Math.max(0, Math.min(100, Math.round((earned / maxPossible) * 100)))</div>
+                <div><strong>Validation:</strong> predicted ≤ total always</div>
+                <div><strong>Clamping:</strong> percent always 0-100%</div>
+                <div><strong>Debug Logs:</strong> Check console for '[PredictionSummary props]'</div>
+            </div>
+        </div>
+
+        <div class="p-4 bg-gray-800 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4">Debug Information</h2>
+            <div id="debugInfo" class="text-sm font-mono">
+                <p>Click test scenarios above and check console for debug output...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase Client -->
+    <script type="module">
+        import { createClient } from 'https://cdn.skypack.dev/@supabase/supabase-js@2';
+        
+        const supabaseUrl = 'https://your-project.supabase.co';
+        const supabaseKey = 'your-anon-key';
+        
+        window.sb = createClient(supabaseUrl, supabaseKey);
+        window.supabaseClient = window.sb;
+    </script>
+
+    <!-- Main Application Script -->
+    <script src="main.js"></script>
+
+    <script>
+        // Test scenarios with different data combinations
+        function testScenario(predicted, total, bonusPoints, maxPossible, earned) {
+            if (window.FantasyWrestling?.PredictionSummarySystem) {
+                const testData = {
+                    predicted,
+                    total,
+                    bonusPoints,
+                    maxPossible,
+                    earned
+                };
+                
+                console.log('🧪 Testing scenario:', testData);
+                
+                // Calculate expected percentage
+                const expectedPercent = maxPossible > 0
+                    ? Math.max(0, Math.min(100, Math.round((Number(earned) / Number(maxPossible)) * 100)))
+                    : 0;
+                
+                console.log('📊 Expected percentage:', expectedPercent + '%');
+                
+                window.FantasyWrestling.PredictionSummarySystem.render(testData, 'predictionSummary');
+                
+                // Update debug info
+                document.getElementById('debugInfo').innerHTML = `
+                    <div><strong>Test Data:</strong></div>
+                    <pre>${JSON.stringify(testData, null, 2)}</pre>
+                    <div><strong>Expected %:</strong> ${expectedPercent}%</div>
+                    <div><strong>Check console for '[PredictionSummary props]' log</strong></div>
+                `;
+            } else {
+                console.error('❌ PredictionSummarySystem not available');
+            }
+        }
+
+        // Initialize test page
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🧪 Prediction Summary Fixes Test Page Loaded');
+            
+            // Wait for main.js to load
+            setTimeout(() => {
+                if (typeof window.FantasyWrestling?.PredictionSummarySystem !== 'undefined') {
+                    console.log('✅ PredictionSummarySystem available');
+                    
+                    // Test initial scenario
+                    testScenario(3, 6, 10, 156, 45);
+                } else {
+                    console.error('❌ PredictionSummarySystem not found');
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+@import url('./shared.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* === Custom site styles compiled by Tailwind CLI === */
+@layer base {
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+}
+@layer components {
+  .glass {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl;
+  }
+  .glass-dark {
+    @apply bg-neutral-900/50 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl;
+  }
+  .pill {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide;
+  }
+  .pill-amber {
+    @apply pill bg-amber-500/15 text-amber-300 border border-amber-400/30;
+  }
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold
+           bg-amber-500 hover:bg-amber-400 text-black transition;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold
+           bg-white/5 hover:bg-white/10 text-white transition border border-white/10;
+  }
+  .gold-divider {
+    @apply h-[2px] w-full bg-gradient-to-r from-amber-500/0 via-amber-400 to-amber-500/0 rounded;
+  }
+  .card {
+    @apply glass p-4 md:p-6;
+  }
+  .section-title {
+    @apply text-amber-400 font-extrabold tracking-wide uppercase;
+  }
+}
+@layer utilities {
+  .bg-ring {
+    background-image: radial-gradient(100% 60% at 50% 0%, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0) 60%),
+                      linear-gradient(180deg, rgba(4,7,14,0.9) 0%, rgba(4,7,14,0.6) 100%);
+  }
+  .edge-fade {
+    mask-image: radial-gradient(120% 80% at 50% 0%, black 30%, transparent 100%);
+  }
+}

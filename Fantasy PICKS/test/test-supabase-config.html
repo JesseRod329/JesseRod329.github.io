@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase Configuration Test</title>
+    <link href="/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <h1 class="text-2xl font-bold mb-4">Supabase Configuration Test</h1>
+    
+    <div class="space-y-4">
+        <div id="config-status" class="p-4 bg-gray-800 rounded">
+            <h3 class="font-bold mb-2">Configuration Status:</h3>
+            <div id="config-details"></div>
+        </div>
+        
+        <button id="test-signin" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            Test Google Sign-In
+        </button>
+        
+        <div id="test-results" class="p-4 bg-gray-800 rounded hidden">
+            <h3 class="font-bold mb-2">Test Results:</h3>
+            <div id="test-log"></div>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+    
+    <script>
+        function log(message) {
+            const testLog = document.getElementById('test-log');
+            const timestamp = new Date().toLocaleTimeString();
+            testLog.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            console.log(`[CONFIG TEST] ${message}`);
+        }
+        
+        function updateConfigStatus() {
+            const details = document.getElementById('config-details');
+            const sb = window.sb;
+            
+            details.innerHTML = `
+                <div>Supabase Client: ${sb ? '✅ Available' : '❌ Missing'}</div>
+                <div>Auth Module: ${sb?.auth ? '✅ Available' : '❌ Missing'}</div>
+                <div>SignIn Method: ${sb?.auth?.signInWithOAuth ? '✅ Available' : '❌ Missing'}</div>
+                <div>Current URL: ${window.location.origin}</div>
+                <div>Expected Redirect: ${window.location.origin}/</div>
+            `;
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            updateConfigStatus();
+            
+            const testBtn = document.getElementById('test-signin');
+            const results = document.getElementById('test-results');
+            
+            testBtn.addEventListener('click', async () => {
+                results.classList.remove('hidden');
+                log('Starting Google OAuth test...');
+                
+                if (!window.sb) {
+                    log('❌ Supabase client not available');
+                    return;
+                }
+                
+                try {
+                    log('Calling signInWithOAuth...');
+                    const { data, error } = await window.sb.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: {
+                            redirectTo: `${window.location.origin}/`,
+                            queryParams: {
+                                access_type: 'offline',
+                                prompt: 'consent'
+                            }
+                        }
+                    });
+                    
+                    if (error) {
+                        log(`❌ OAuth Error: ${error.message}`);
+                        log(`Error details: ${JSON.stringify(error)}`);
+                    } else {
+                        log(`✅ OAuth initiated successfully`);
+                        log(`Redirect URL: ${data?.url || 'No URL returned'}`);
+                        log(`Provider: ${data?.provider || 'Unknown'}`);
+                    }
+                } catch (err) {
+                    log(`❌ Exception: ${err.message}`);
+                    log(`Stack: ${err.stack}`);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

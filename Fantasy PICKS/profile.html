@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile — Fantasy Wrestling Booking</title>
+    <link href="/tailwind.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto+Slab&family=Inter&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top, #1f1f1f 0%, #050505 60%);
+            color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .title-font { font-family: 'Bebas Neue', cursive; }
+        .heading-font { font-family: 'Roboto Slab', serif; }
+
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #facc15, #f97316);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .profile-card {
+            background: linear-gradient(135deg, rgba(31, 31, 31, 0.8), rgba(40, 40, 40, 0.8));
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #fcd34d;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 6px;
+            color: #f5f5f5;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #fcd34d;
+            box-shadow: 0 0 0 3px rgba(252, 211, 77, 0.1);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .form-hint {
+            font-size: 0.875rem;
+            color: #9ca3af;
+            margin-top: 0.25rem;
+        }
+
+        .form-error {
+            font-size: 0.875rem;
+            color: #ef4444;
+            margin-top: 0.25rem;
+        }
+
+        .form-success {
+            font-size: 0.875rem;
+            color: #10b981;
+            margin-top: 0.25rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #fcd34d, #fbbf24);
+            color: black;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(252, 211, 77, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: rgba(212, 175, 55, 0.1);
+            color: #fcd34d;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(212, 175, 55, 0.2);
+        }
+
+        .avatar-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #fcd34d;
+            margin-bottom: 1rem;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fcd34d;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .status-message {
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .status-message.show {
+            display: block;
+        }
+
+        .status-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10b981;
+        }
+
+        .status-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 640px) {
+            .profile-card {
+                padding: 1.5rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="pb-16">
+    <nav class="sticky top-0 z-40 bg-black/80 backdrop-blur border-b border-yellow-600/40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-6">
+                <a href="index.html" class="title-font text-3xl font-bold text-yellow-400 tracking-widest">FANTASY WRESTLING</a>
+                <div class="hidden md:flex items-center space-x-4 text-sm">
+                    <a href="index.html" class="nav-link text-gray-300 hover:text-yellow-300 px-3 py-2">Home</a>
+                    <a href="predictions.html" class="nav-link text-gray-300 hover:text-yellow-300 px-3 py-2">Predictions</a>
+                    <a href="leaderboard.html" class="nav-link text-gray-300 hover:text-yellow-300 px-3 py-2">Leaderboard</a>
+                    <a href="profile.html" class="nav-link active text-yellow-300 px-3 py-2">Profile</a>
+                </div>
+            </div>
+            <div class="hidden md:flex items-center space-x-3">
+                <button id="btnSignIn" class="hidden px-3 py-2 text-sm rounded-lg border border-yellow-400 text-yellow-300 hover:bg-yellow-400 hover:text-black transition">Sign in with Google</button>
+                <div id="userChip" class="hidden items-center space-x-2 text-sm">
+                    <img id="userAvatar" src="" alt="" class="w-8 h-8 rounded-full border border-yellow-400" />
+                    <span id="userHandle" class="font-medium"></span>
+                    <button id="btnSignOut" class="px-3 py-1 rounded-lg border border-yellow-400 text-yellow-300 hover:bg-yellow-400 hover:text-black transition">Sign out</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div id="signInPrompt" class="text-center py-12">
+            <h1 class="title-font text-4xl font-bold text-yellow-400 mb-4">Sign In Required</h1>
+            <p class="text-gray-400 mb-8">You need to sign in to view and edit your profile.</p>
+            <button id="promptSignIn" class="px-6 py-3 bg-yellow-400 text-black rounded-lg font-bold hover:bg-yellow-500 transition">Sign in with Google</button>
+        </div>
+
+        <div id="profileContent" class="hidden">
+            <div class="mb-8">
+                <h1 class="title-font text-5xl font-bold text-yellow-400 mb-2">My Profile</h1>
+                <p class="text-gray-400">Update your public profile information</p>
+            </div>
+
+            <div class="profile-card">
+                <div class="avatar-section">
+                    <img id="profileAvatar" src="" alt="Avatar" class="avatar" />
+                    <div class="mt-2">
+                        <input id="avatarInput" type="file" accept="image/*" class="hidden" />
+                        <button id="changeAvatarBtn" class="btn btn-secondary">Change Avatar</button>
+                        <span id="avatarStatus" class="form-hint ml-2"></span>
+                    </div>
+                    <div id="profileEmail" class="text-gray-400 text-sm mb-2"></div>
+                </div>
+
+                <div id="statusMessage" class="status-message"></div>
+
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="displayName" class="form-label">Display Name</label>
+                        <input 
+                            type="text" 
+                            id="displayName" 
+                            name="displayName"
+                            class="form-input"
+                            placeholder="Your display name"
+                            maxlength="50"
+                            required
+                        />
+                        <div id="displayNameHint" class="form-hint">This is how your name appears to other users</div>
+                        <div id="displayNameError" class="form-error"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="username" class="form-label">Username</label>
+                        <div class="flex items-center">
+                            <span class="text-gray-400 mr-2">@</span>
+                            <input 
+                                type="text" 
+                                id="username" 
+                                name="username"
+                                class="form-input flex-1"
+                                placeholder="your_username"
+                                maxlength="30"
+                                pattern="[a-zA-Z0-9_]+"
+                                required
+                            />
+                        </div>
+                        <div class="form-hint">Your handle: <span id="fullHandle" class="text-yellow-300">@—</span></div>
+                        <div id="usernameHint" class="form-hint">Lowercase letters, numbers, and underscores only. Must be unique.</div>
+                        <div id="usernameError" class="form-error"></div>
+                        <div id="usernameSuccess" class="form-success"></div>
+                    </div>
+
+                    <hr class="my-6 border-yellow-600/20" />
+
+                    <div class="form-group">
+                        <label for="bio" class="form-label">Bio</label>
+                        <textarea id="bio" name="bio" rows="3" maxlength="280" class="form-input" placeholder="Tell others about you (max 280 chars)"></textarea>
+                        <div class="form-hint"><span id="bioCount">0</span>/280</div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label for="favoritePromotion" class="form-label">Favorite Promotion</label>
+                            <select id="favoritePromotion" class="form-input">
+                                <option value="">Select…</option>
+                                <option>WWE</option>
+                                <option>AEW</option>
+                                <option>NJPW</option>
+                                <option>Impact</option>
+                                <option>ROH</option>
+                                <option>Stardom</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="timezone" class="form-label">Timezone</label>
+                            <select id="timezone" class="form-input"></select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" id="notifyResults" />
+                            <span class="form-hint">Notifications: Match results</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" id="marketingOptIn" />
+                            <span class="form-hint">Product updates</span>
+                        </label>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" id="cancelBtn" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" id="saveBtn" class="btn btn-primary">
+                            <span id="saveBtnText">Save Changes</span>
+                            <span id="saveBtnSpinner" class="loading-spinner" style="display: none;"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <section class="profile-card">
+                    <h3 class="heading-font text-2xl text-yellow-300 mb-4">Your Stats</h3>
+                    <div id="statsTiles" class="grid grid-cols-2 gap-4">
+                        <div class="text-center"><div class="text-2xl font-bold" id="statCorrect">0</div><div class="form-hint">Correct Picks</div></div>
+                        <div class="text-center"><div class="text-2xl font-bold" id="statAccuracy">0%</div><div class="form-hint">Accuracy</div></div>
+                        <div class="text-center"><div class="text-2xl font-bold" id="statPredictions">0</div><div class="form-hint">Predictions</div></div>
+                        <div class="text-center"><div class="text-2xl font-bold" id="statEvents">0</div><div class="form-hint">Events Predicted</div></div>
+                    </div>
+                    <div class="mt-6">
+                        <h4 class="heading-font text-xl text-yellow-200 mb-2">Recent Events</h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead><tr><th class="text-left">Event</th><th class="text-left">Date</th><th class="text-left">Correct/Total</th></tr></thead>
+                                <tbody id="recentEvents"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="profile-card">
+                    <h3 class="heading-font text-2xl text-yellow-300 mb-4">Security</h3>
+                    <button id="globalSignOutBtn" class="btn btn-secondary">Sign out all sessions</button>
+                    <div class="form-hint mt-2">Use this if you’ve logged in on a shared device.</div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Load env.js first, then initialize app -->
+    <script>
+      // Load env.js synchronously before modules
+      (function() {
+        const script = document.createElement('script');
+        script.src = '/public/env.js';
+        script.async = false;
+        document.head.appendChild(script);
+      })();
+    </script>
+    <script type="module">
+        import { initializeApp } from './js/init.js';
+        import { setupProfilePage } from './js/profile.js';
+        import { setupAuthUI } from './js/auth-ui.js';
+        
+        const ok = await initializeApp();
+        if (ok) {
+          setupAuthUI();
+          setupProfilePage();
+        }
+    </script>
+</body>
+</html>
+
+

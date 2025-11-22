@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make Predictions - Fantasy Wrestling Booking</title>
+    <link href="/tailwind.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto+Slab&family=Inter&family=Orbitron&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #1a1a1a;
+            --primary-gold: #d4af37;
+            --secondary-blue: #0066cc;
+            --accent-red: #dc143c;
+            --neutral-gray: #f5f5f5;
+            --success-gold: #ffd700;
+            --warning-orange: #ff6b35;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #2d2d2d 100%);
+            color: var(--neutral-gray);
+        }
+        
+        .title-font {
+            font-family: 'Bebas Neue', cursive;
+        }
+        
+        .heading-font {
+            font-family: 'Roboto Slab', serif;
+        }
+        
+        .accent-font {
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .gold-gradient {
+            background: linear-gradient(45deg, var(--primary-gold), var(--success-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .prediction-card {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(45, 45, 45, 0.9));
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .prediction-card:hover {
+            border-color: var(--primary-gold);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.2);
+        }
+        
+        .prediction-card.selected {
+            border-color: var(--success-gold);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+        }
+        
+        .wrestler-option {
+            background: rgba(26, 26, 26, 0.8);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .wrestler-option:hover {
+            border-color: var(--secondary-blue);
+            transform: scale(1.02);
+        }
+        
+        .wrestler-option.selected {
+            border-color: var(--primary-gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .countdown-timer {
+            background: linear-gradient(45deg, var(--warning-orange), var(--accent-red));
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-gold);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .method-dropdown {
+            background: rgba(26, 26, 26, 0.9);
+            border: 1px solid var(--primary-gold);
+        }
+        
+        .bonus-toggle {
+            background: rgba(26, 26, 26, 0.8);
+            border: 2px solid var(--secondary-blue);
+            transition: all 0.3s ease;
+        }
+        
+        .bonus-toggle.active {
+            background: var(--secondary-blue);
+            border-color: var(--success-gold);
+        }
+        
+        .submit-button {
+            background: linear-gradient(45deg, var(--primary-gold), var(--success-gold));
+            transition: all 0.3s ease;
+        }
+        
+        .submit-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .submit-button:disabled {
+            background: rgba(128, 128, 128, 0.5);
+            cursor: not-allowed;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, var(--primary-gold), var(--success-gold));
+            height: 4px;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        
+        .scoring-breakdown {
+            background: rgba(26, 26, 26, 0.8);
+            border-left: 4px solid var(--primary-gold);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-black bg-opacity-90 backdrop-blur-sm z-50 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="title-font text-2xl font-bold gold-gradient">FANTASY WRESTLING</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-center space-x-8">
+                        <a href="index.html" class="nav-link text-white hover:text-yellow-400 px-3 py-2 text-sm font-medium">Home</a>
+                        <a href="predictions.html" class="nav-link text-yellow-400 px-3 py-2 text-sm font-medium">Predictions</a>
+                        <a href="leaderboard.html" class="nav-link text-white hover:text-yellow-400 px-3 py-2 text-sm font-medium">Leaderboard</a>
+                        <a href="profile.html" class="nav-link text-white hover:text-yellow-400 px-3 py-2 text-sm font-medium">Profile</a>
+                        <a href="admin.html" class="nav-link text-white hover:text-yellow-400 px-3 py-2 text-sm font-medium">Admin</a>
+                        <!-- Signed out -->
+                        <button id="btnSignIn" class="hidden md:inline-flex px-4 py-2 rounded-lg border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-all duration-300">Sign in with Google</button>
+                        <!-- Signed in -->
+                        <div id="userChip" class="hidden items-center gap-2">
+                            <img id="userAvatar" class="w-8 h-8 rounded-full" alt="" />
+                            <span id="userHandle" class="font-medium"></span>
+                            <button id="btnSignOut" class="px-3 py-1 rounded-lg border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black transition-all duration-300">Sign out</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <section class="pt-24 pb-12 bg-gradient-to-b from-gray-900 to-black">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-8">
+                <h1 class="title-font text-5xl font-bold gold-gradient mb-4">Make Your Predictions</h1>
+                <p class="text-xl text-gray-400">Choose your event and predict the outcomes</p>
+            </div>
+            
+            <!-- Event Selection -->
+            <div class="max-w-4xl mx-auto mb-8">
+                <div class="bg-gray-800 rounded-lg p-6">
+                    <h3 class="heading-font text-2xl font-bold text-yellow-400 mb-4">Select Event</h3>
+                    <select id="eventSelect" class="bg-gray-900 text-white border border-gray-700 rounded-md px-2 py-1 w-full mb-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"></select>
+                </div>
+            </div>
+
+            <!-- Prediction Summary -->
+            <div id="predictionSummary" class="max-w-4xl mx-auto mb-8">
+                <!-- Dynamic prediction summary will be loaded here -->
+            </div>
+            
+            <!-- Lock Banner (shown when event is locked) -->
+            <div id="lockBanner" class="hidden bg-red-600 text-white p-4 rounded mb-4 text-center font-bold">
+                🔒 Predictions are closed for this event.
+            </div>
+            
+            <!-- Countdown Timer -->
+            <div id="lockCountdown" class="text-yellow-400 font-bold text-center mb-6"></div>
+        </div>
+    </section>
+
+    <!-- Scoring Summary Bar -->
+    <section id="scoringSummary" class="hidden bg-gradient-to-r from-green-900/20 to-blue-900/20 border border-green-500/30 rounded-xl mx-4 sm:mx-6 lg:mx-8 mb-8">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex flex-col sm:flex-row items-center justify-between space-y-2 sm:space-y-0">
+                <div class="text-center sm:text-left">
+                    <h3 class="text-lg font-bold text-green-400">Event Results</h3>
+                    <p class="text-sm text-gray-400">Your prediction performance</p>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <div class="text-center">
+                        <div id="totalPoints" class="text-3xl font-bold text-green-400">0</div>
+                        <div class="text-xs text-gray-400 uppercase tracking-wide">Total Points</div>
+                    </div>
+                    <div class="text-center">
+                        <div id="accuracyPercent" class="text-2xl font-bold text-blue-400">0%</div>
+                        <div class="text-xs text-gray-400 uppercase tracking-wide">Accuracy</div>
+                    </div>
+                    <div class="text-center">
+                        <div id="correctMatches" class="text-xl font-bold text-yellow-400">0/0</div>
+                        <div class="text-xs text-gray-400 uppercase tracking-wide">Correct</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Event Score Summary -->
+    <div id="eventScoreSummary" class="mb-4 hidden rounded-lg bg-gray-800 p-4 text-white max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 class="text-lg font-semibold text-green-400">Your Event Performance</h3>
+                <p class="text-sm text-gray-400">Scoring based on official results</p>
+            </div>
+            <div id="eventScoreContent" class="text-right">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Prediction Interface -->
+    <section class="py-12 bg-black">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Main Prediction Area -->
+                <div class="lg:col-span-2">
+                    <div id="matchList" class="space-y-4"></div>
+                    
+                    <!-- Submit Button -->
+                    <div class="mt-8 text-center">
+                        <button id="submitPredictions" class="submit-button text-black px-12 py-4 rounded-lg font-bold text-xl disabled:opacity-50 disabled:cursor-not-allowed">
+                            Submit Predictions
+                        </button>
+                        <p class="text-sm text-gray-400 mt-4">Predictions lock 2 hours before event start time</p>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="lg:col-span-1">
+                    <!-- Prediction Summary -->
+                    <div class="scoring-breakdown p-6 rounded-lg mb-6">
+                        <h3 class="heading-font text-xl font-bold text-yellow-400 mb-4">Prediction Summary</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Matches Predicted:</span>
+                                <span id="matches-predicted" class="font-bold text-yellow-400">0/3</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Bonus Points:</span>
+                                <span id="bonus-points" class="font-bold text-yellow-400">0</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Max Possible:</span>
+                                <span id="max-points" class="font-bold text-yellow-400">156</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <div class="bg-gray-700 rounded-full h-2">
+                                <div id="progress-bar" class="progress-bar w-0"></div>
+                            </div>
+                            <div class="text-center mt-2 text-sm text-gray-400">
+                                <span id="progress-text">0% Complete</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scoring System -->
+                    <div class="scoring-breakdown p-6 rounded-lg">
+                        <h3 class="heading-font text-xl font-bold text-yellow-400 mb-4">Scoring System</h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Correct Winner:</span>
+                                <span class="text-green-400">+10 Points</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Correct Method:</span>
+                                <span class="text-green-400">+5 Points</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Title Change:</span>
+                                <span class="text-green-400">+5 Points</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Interference:</span>
+                                <span class="text-green-400">+5 Points</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Surprise Return:</span>
+                                <span class="text-green-400">+10 Points</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400">Heel Turn:</span>
+                                <span class="text-green-400">+7 Points</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t border-gray-800 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h3 class="title-font text-2xl font-bold gold-gradient mb-4">Fantasy Wrestling Booking</h3>
+            <p class="text-gray-400 mb-6">Predict. Compete. Dominate.</p>
+            <div class="border-t border-gray-700 pt-6">
+                <p class="text-gray-500 text-sm">
+                    © 2025 Fantasy Wrestling Booking. All rights reserved. Not affiliated with WWE or AEW.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Load env.js first, then initialize app -->
+    <script>
+      // Load env.js synchronously before modules
+      (function() {
+        const script = document.createElement('script');
+        script.src = '/public/env.js';
+        script.async = false;
+        document.head.appendChild(script);
+      })();
+    </script>
+    <script type="module">
+      import { initializeApp } from './js/init.js';
+      const ok = await initializeApp();
+      if (ok) {
+        const { setupAuthUI } = await import('./js/auth-ui.js');
+        setupAuthUI();
+      }
+      // main.js still loads for animations/notifications
+    </script>
+    <script type="module" src="main.js"></script>
+</body>
+</html>

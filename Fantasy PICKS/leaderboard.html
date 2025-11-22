@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboards — Fantasy Wrestling Booking</title>
+    <link href="/tailwind.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto+Slab&family=Inter&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top, #1f1f1f 0%, #050505 60%);
+            color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .title-font { font-family: 'Bebas Neue', cursive; }
+        .heading-font { font-family: 'Roboto Slab', serif; }
+
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #facc15, #f97316);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .tab-button {
+            border-radius: 9999px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-button:hover {
+            background: rgba(250, 204, 21, 0.1);
+            border-color: rgba(250, 204, 21, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #facc15, #fb923c);
+            color: #1f2937;
+            font-weight: 600;
+            border-color: #facc15;
+            box-shadow: 0 4px 12px rgba(250, 204, 21, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .tab-button.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .tab-button.active:hover::before {
+            left: 100%;
+        }
+
+        .leaderboard-table tbody tr:nth-child(odd) { background: rgba(255, 255, 255, 0.02); }
+        .leaderboard-table tbody tr:nth-child(even) { background: rgba(255, 255, 255, 0.05); }
+        .leaderboard-table tbody tr.highlight { background: rgba(250, 204, 21, 0.2); color: #fde68a; font-weight: 600; }
+        .leaderboard-table tbody tr:hover { background: rgba(250, 204, 21, 0.1); transition: background-color 0.2s ease; }
+        
+        /* Top 3 medal styling */
+        .medal-gold { color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.5); }
+        .medal-silver { color: #c0c0c0; text-shadow: 0 0 8px rgba(192, 192, 192, 0.5); }
+        .medal-bronze { color: #cd7f32; text-shadow: 0 0 8px rgba(205, 127, 50, 0.5); }
+        
+        /* Top 3 row styling */
+        .rank-gold { border-left: 4px solid #ffd700; background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), transparent); }
+        .rank-silver { border-left: 4px solid #c0c0c0; background: linear-gradient(90deg, rgba(192, 192, 192, 0.1), transparent); }
+        .rank-bronze { border-left: 4px solid #cd7f32; background: linear-gradient(90deg, rgba(205, 127, 50, 0.1), transparent); }
+
+        .loader {
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid #facc15;
+            border-radius: 50%;
+            width: 2.5rem;
+            height: 2.5rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="pb-16">
+    <nav class="sticky top-0 z-40 bg-black/80 backdrop-blur border-b border-yellow-600/40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-6">
+                <a href="index.html" class="title-font text-3xl font-bold text-yellow-400 tracking-widest">FANTASY WRESTLING</a>
+                <div class="hidden md:flex items-center space-x-4 text-sm">
+                    <a href="index.html" class="nav-link text-gray-300 hover:text-yellow-300 px-3 py-2">Home</a>
+                    <a href="predictions.html" class="nav-link text-gray-300 hover:text-yellow-300 px-3 py-2">Predictions</a>
+                    <a href="leaderboard.html" class="nav-link active text-yellow-300 px-3 py-2">Leaderboards</a>
+                    <a href="profile.html" class="nav-link text-gray-300 hover:text-yellow-300 px-3 py-2">Profile</a>
+                    <a href="admin.html" class="nav-link text-gray-300 hover:text-yellow-300 px-3 py-2">Admin</a>
+                </div>
+            </div>
+            <div class="hidden md:flex items-center space-x-3">
+                <button id="btnSignIn" class="hidden px-3 py-2 text-sm rounded-lg border border-yellow-400 text-yellow-300 hover:bg-yellow-400 hover:text-black transition">Sign in with Google</button>
+                <div id="userChip" class="hidden items-center space-x-2 text-sm">
+                    <img id="userAvatar" src="" alt="" class="w-8 h-8 rounded-full border border-yellow-400" />
+                    <span id="userHandle" class="font-medium"></span>
+                    <button id="btnSignOut" class="px-3 py-1 rounded-lg border border-yellow-400 text-yellow-300 hover:bg-yellow-400 hover:text-black transition">Sign out</button>
+                </div>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-yellow-300 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden border-t border-yellow-600/40">
+            <div class="px-4 py-3 space-y-2 text-sm">
+                <a href="index.html" class="block text-gray-300 hover:text-yellow-300">Home</a>
+                <a href="predictions.html" class="block text-gray-300 hover:text-yellow-300">Predictions</a>
+                <a href="leaderboard.html" class="block text-yellow-300">Leaderboards</a>
+                    <a href="profile.html" class="block text-gray-300 hover:text-yellow-300">Profile</a>
+                <button id="btnSignInMobile" class="hidden w-full text-left px-3 py-2 rounded-lg border border-yellow-400 text-yellow-300 hover:bg-yellow-400 hover:text-black transition">Sign in with Google</button>
+                <div id="userChipMobile" class="hidden flex items-center space-x-2">
+                    <img id="userAvatarMobile" src="" class="w-8 h-8 rounded-full border border-yellow-400" alt="" />
+                    <span id="userHandleMobile" class="font-medium"></span>
+                    <button id="btnSignOutMobile" class="px-3 py-1 rounded-lg border border-yellow-400 text-yellow-300 hover:bg-yellow-400 hover:text-black transition">Sign out</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <header class="text-center py-12">
+            <p class="title-font text-5xl md:text-6xl font-bold text-yellow-300 tracking-[0.3em]">LEADERBOARDS</p>
+            <p class="mt-4 text-gray-300 max-w-2xl mx-auto">
+                Track who’s winning the fantasy booking wars. Switch between event, global, and weekly views to see how the competition stacks up.
+            </p>
+        </header>
+
+        <section class="bg-black/40 border border-yellow-500/30 rounded-3xl shadow-lg shadow-yellow-500/10 p-6 sm:p-8">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div class="flex space-x-2" id="leaderboardTabs">
+                    <button class="tab-button active px-4 py-2 text-sm sm:text-base" data-tab="event">Event Leaderboard</button>
+                    <button class="tab-button px-4 py-2 text-sm sm:text-base" data-tab="global">All-Time Leaderboard</button>
+                    <button class="tab-button px-4 py-2 text-sm sm:text-base" data-tab="weekly">Weekly Leaderboard</button>
+                </div>
+                <div id="eventSelector" class="hidden sm:flex items-center space-x-2">
+                    <label for="eventFilter" class="text-xs uppercase tracking-wide text-gray-400">Event</label>
+                    <select id="eventFilter" class="bg-black/60 border border-yellow-500/40 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-yellow-300">
+                        <option value="latest">Latest Event</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="leaderboardContent" class="mt-6">
+                <div class="flex flex-col items-center py-12" id="leaderboardLoader">
+                    <div class="loader"></div>
+                    <p class="mt-4 text-xs uppercase tracking-wide text-gray-400">Fetching live standings…</p>
+                </div>
+
+                <div id="leaderboardTables" class="hidden space-y-10">
+                    <div>
+                        <h3 class="heading-font text-xl text-yellow-200 mb-4" id="leaderboardHeading">Event Leaderboard</h3>
+                        <div class="overflow-x-auto rounded-xl border border-yellow-500/20 shadow-lg">
+                            <table class="leaderboard-table w-full text-sm text-left">
+                                <thead class="bg-gradient-to-r from-yellow-500/20 to-yellow-600/20 text-yellow-300 uppercase tracking-wide">
+                                    <tr>
+                                        <th class="px-4 py-4 font-semibold">Rank</th>
+                                        <th class="px-4 py-4 font-semibold">User</th>
+                                        <th class="px-4 py-4 font-semibold text-center">Points</th>
+                                        <th class="px-4 py-4 font-semibold text-center">Correct</th>
+                                        <th class="px-4 py-4 font-semibold text-center">Total</th>
+                                        <th class="px-4 py-4 font-semibold text-center">Accuracy</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leaderboardRows" class="divide-y divide-yellow-500/10"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="weeklyInfo" class="hidden">
+                        <h4 class="heading-font text-lg text-yellow-200 mb-2" id="weeklyHeading">Week of …</h4>
+                        <p class="text-sm text-gray-400">Top performers for the selected week.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="mt-16 border-t border-yellow-500/30 py-8 text-center text-sm text-gray-500">
+        <p>© 2025 Fantasy Wrestling Booking. Predict. Compete. Dominate.</p>
+    </footer>
+
+    <!-- Load env.js first, then initialize app -->
+    <script>
+      // Load env.js synchronously before modules
+      (function() {
+        const script = document.createElement('script');
+        script.src = '/public/env.js';
+        script.async = false;
+        document.head.appendChild(script);
+      })();
+    </script>
+    <script type="module">
+      import { initializeApp } from './js/init.js';
+      const ok = await initializeApp();
+      if (ok) {
+        const { setupAuthUI } = await import('./js/auth-ui.js');
+        setupAuthUI();
+        const { LeaderboardSystem } = await import('./js/leaderboard.js');
+        const { initializeRealtimeLeaderboard } = await import('./js/leaderboard-realtime.js');
+        const realtime = initializeRealtimeLeaderboard({
+          onUpdate: () => LeaderboardSystem.fetchAndRender(),
+          autoRefreshMV: true
+        });
+        LeaderboardSystem.init();
+        window.addEventListener('beforeunload', () => realtime.cleanup());
+      }
+    </script>
+    
+</body>
+</html>
+

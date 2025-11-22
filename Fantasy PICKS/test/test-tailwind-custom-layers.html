@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tailwind Custom Layers Test - Fantasy Wrestling</title>
+    <link href="/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <h1 class="text-2xl font-bold mb-4">Tailwind Custom Layers Test</h1>
+    
+    <div class="space-y-6">
+        <div class="glass p-6">
+            <h2 class="section-title mb-4">✅ Custom Tailwind Layers Complete</h2>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <li><strong>@layer base</strong>: Font smoothing optimizations</li>
+                <li><strong>@layer components</strong>: Glass, pill, button styles</li>
+                <li><strong>@layer utilities</strong>: bg-ring, edge-fade effects</li>
+                <li><strong>Safelist</strong>: Dynamic color classes preserved</li>
+                <li><strong>CLI Compilation</strong>: All styles compiled by Tailwind CLI</li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h2 class="section-title mb-4">Custom Components</h2>
+            <div class="space-y-4">
+                <div class="flex flex-wrap gap-2">
+                    <span class="pill bg-blue-500/15 text-blue-300 border border-blue-400/30">Blue Pill</span>
+                    <span class="pill-amber">Amber Pill</span>
+                    <span class="pill bg-green-500/15 text-green-300 border border-green-400/30">Green Pill</span>
+                </div>
+                
+                <div class="flex flex-wrap gap-2">
+                    <button class="btn-primary">Primary Button</button>
+                    <button class="btn-ghost">Ghost Button</button>
+                </div>
+                
+                <div class="glass-dark p-4">
+                    <p class="text-sm">Glass dark component with backdrop blur</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 class="section-title mb-4">Custom Utilities</h2>
+            <div class="space-y-4">
+                <div class="bg-ring p-6 rounded-lg">
+                    <p class="text-sm">Background with ring effect using custom utility</p>
+                </div>
+                
+                <div class="edge-fade p-6 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg">
+                    <p class="text-sm">Edge fade mask effect applied</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 class="section-title mb-4">Safelist Classes</h2>
+            <div class="space-y-2">
+                <p class="text-sm">These classes are preserved even if not detected:</p>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 rounded bg-red-500 text-white text-xs">bg-red-500</span>
+                    <span class="px-3 py-1 rounded bg-green-500 text-white text-xs">bg-green-500</span>
+                    <span class="px-3 py-1 rounded bg-yellow-500 text-white text-xs">bg-yellow-500</span>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 rounded bg-gray-800 text-red-500 text-xs">text-red-500</span>
+                    <span class="px-3 py-1 rounded bg-gray-800 text-green-500 text-xs">text-green-500</span>
+                    <span class="px-3 py-1 rounded bg-gray-800 text-yellow-500 text-xs">text-yellow-500</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 class="section-title mb-4">Configuration Details</h2>
+            <div class="space-y-2 text-sm font-mono">
+                <div class="bg-gray-800 p-3 rounded">
+                    <h3 class="font-bold mb-2">tailwind.config.js</h3>
+                    <pre>{
+  content: ["./index.html", "./*.html", "./*.js", "./src/**/*.{js,ts,jsx,tsx}"],
+  safelist: [
+    'bg-red-500', 'bg-green-500', 'bg-yellow-500',
+    'text-red-500', 'text-green-500', 'text-yellow-500'
+  ]
+}</pre>
+                </div>
+                
+                <div class="bg-gray-800 p-3 rounded">
+                    <h3 class="font-bold mb-2">src/index.css</h3>
+                    <pre>@layer base { /* font smoothing */ }
+@layer components { /* glass, pill, btn styles */ }
+@layer utilities { /* bg-ring, edge-fade */ }</pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 class="section-title mb-4">Available Custom Classes</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <h3 class="font-bold mb-2">Components</h3>
+                    <ul class="space-y-1">
+                        <li><code class="bg-gray-700 px-1 rounded">.glass</code> - Glass morphism effect</li>
+                        <li><code class="bg-gray-700 px-1 rounded">.glass-dark</code> - Dark glass variant</li>
+                        <li><code class="bg-gray-700 px-1 rounded">.pill</code> - Base pill component</li>
+                        <li><code class="bg-gray-700 px-1 rounded">.pill-amber</code> - Amber pill variant</li>
+                        <li><code class="bg-gray-700 px-1 rounded">.btn-primary</code> - Primary button</li>
+                        <li><code class="bg-gray-700 px-1 rounded">.btn-ghost</code> - Ghost button</li>
+                        <li><code class="bg-gray-700 px-1 rounded">.card</code> - Card container</li>
+                        <li><code class="bg-gray-700 px-1 rounded">.section-title</code> - Section heading</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-2">Utilities</h3>
+                    <ul class="space-y-1">
+                        <li><code class="bg-gray-700 px-1 rounded">.bg-ring</code> - Ring background effect</li>
+                        <li><code class="bg-gray-700 px-1 rounded">.edge-fade</code> - Edge fade mask</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 class="section-title mb-4">Test Functions</h2>
+            <div class="space-y-4">
+                <div class="flex space-x-2">
+                    <button onclick="testCustomClasses()" class="btn-primary">
+                        Test Custom Classes
+                    </button>
+                    <button onclick="checkCompilation()" class="btn-ghost">
+                        Check Compilation
+                    </button>
+                </div>
+                <div id="testResults" class="bg-black p-4 rounded text-sm font-mono hidden">
+                    <!-- Test results will appear here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showResult(message, type = 'info') {
+            const results = document.getElementById('testResults');
+            results.classList.remove('hidden');
+            const color = type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-blue-400';
+            results.innerHTML += `<div class="${color}">${message}</div>`;
+        }
+        
+        function clearResults() {
+            const results = document.getElementById('testResults');
+            results.innerHTML = '';
+            results.classList.add('hidden');
+        }
+        
+        function testCustomClasses() {
+            clearResults();
+            showResult('🧪 Testing Custom Tailwind Classes...', 'info');
+            
+            try {
+                const customClasses = [
+                    'glass', 'glass-dark', 'pill', 'pill-amber',
+                    'btn-primary', 'btn-ghost', 'card', 'section-title',
+                    'bg-ring', 'edge-fade'
+                ];
+                
+                customClasses.forEach(className => {
+                    const testElement = document.createElement('div');
+                    testElement.className = className;
+                    document.body.appendChild(testElement);
+                    
+                    const styles = window.getComputedStyle(testElement);
+                    const hasStyles = styles.cssText.length > 0;
+                    
+                    if (hasStyles) {
+                        showResult(`✅ ${className} is working`, 'success');
+                    } else {
+                        showResult(`❌ ${className} not working`, 'error');
+                    }
+                    
+                    document.body.removeChild(testElement);
+                });
+                
+            } catch (error) {
+                showResult(`❌ Test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        function checkCompilation() {
+            clearResults();
+            showResult('🧪 Checking CSS Compilation...', 'info');
+            
+            try {
+                // Check if CSS file exists and is loaded
+                const links = document.querySelectorAll('link[rel="stylesheet"]');
+                let cssFound = false;
+                
+                links.forEach(link => {
+                    if (link.href.includes('/tailwind.css')) {
+                        cssFound = true;
+                        showResult('✅ Tailwind CSS loaded from /tailwind.css', 'success');
+                    }
+                });
+                
+                if (!cssFound) {
+                    showResult('❌ Tailwind CSS not found', 'error');
+                }
+                
+                // Test if custom classes are compiled
+                const testElement = document.createElement('div');
+                testElement.className = 'glass';
+                document.body.appendChild(testElement);
+                
+                const styles = window.getComputedStyle(testElement);
+                if (styles.backdropFilter && styles.backdropFilter !== 'none') {
+                    showResult('✅ Custom @layer components compiled', 'success');
+                } else {
+                    showResult('❌ Custom @layer components not compiled', 'error');
+                }
+                
+                document.body.removeChild(testElement);
+                
+            } catch (error) {
+                showResult(`❌ Test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        // Check custom classes on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            showResult('✅ Custom Tailwind layers test page loaded!', 'success');
+        });
+    </script>
+</body>
+</html>

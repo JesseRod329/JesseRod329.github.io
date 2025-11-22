@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Event Scores Integration - Fantasy Wrestling</title>
+    <link href="/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <h1 class="text-2xl font-bold mb-4">Event Scores Integration Test</h1>
+    
+    <div class="space-y-6">
+        <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-green-400 mb-2">✅ Event Scores Features Implemented</h2>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <li><strong>Leaderboard Views</strong>: Updated to use event_scores-backed views</li>
+                <li><strong>Column Mapping</strong>: Rank | User | Points | Correct | Total | Accuracy%</li>
+                <li><strong>Event Score Summary</strong>: Added to predictions.html</li>
+                <li><strong>EventScoreSystem.hydrate</strong>: Fetches from event_scores table</li>
+                <li><strong>Per-match Feedback</strong>: ✅/❌ indicators with point details</li>
+                <li><strong>Defensive Checks</strong>: Error handling and empty state management</li>
+            </ul>
+        </div>
+        
+        <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-blue-400 mb-2">Test Steps</h2>
+            <ol class="list-decimal list-inside space-y-1 text-sm">
+                <li>Go to <a href="leaderboard.html" class="text-yellow-400 hover:underline">leaderboard.html</a></li>
+                <li>Check console for event_scores-backed view queries</li>
+                <li>Verify new column structure (Points, Correct, Total, Accuracy%)</li>
+                <li>Go to <a href="predictions.html" class="text-yellow-400 hover:underline">predictions.html</a></li>
+                <li>Sign in and select an event</li>
+                <li>Check for event score summary bar</li>
+                <li>Verify per-match feedback with ✅/❌ indicators</li>
+            </ol>
+        </div>
+        
+        <div class="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-yellow-400 mb-2">Expected Database Structure</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <h3 class="font-semibold text-yellow-300 mb-2">event_scores Table</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><code class="bg-gray-700 px-2 py-1 rounded">user_id</code> - User identifier</li>
+                        <li><code class="bg-gray-700 px-2 py-1 rounded">event_id</code> - Event identifier</li>
+                        <li><code class="bg-gray-700 px-2 py-1 rounded">total_points</code> - Total points earned</li>
+                        <li><code class="bg-gray-700 px-2 py-1 rounded">correct_winners</code> - Correct winner predictions</li>
+                        <li><code class="bg-gray-700 px-2 py-1 rounded">total_predictions</code> - Total predictions made</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-yellow-300 mb-2">Leaderboard Views</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><code class="bg-gray-700 px-2 py-1 rounded">leaderboard</code> - Event-specific rankings</li>
+                        <li><code class="bg-gray-700 px-2 py-1 rounded">leaderboard_global</code> - All-time rankings</li>
+                        <li><code class="bg-gray-700 px-2 py-1 rounded">leaderboard_weekly</code> - Weekly rankings</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-purple-400 mb-2">Leaderboard Changes</h2>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400 font-bold">Points</span>
+                    <span>New column showing total_points from event_scores</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-yellow-400 font-bold">Correct</span>
+                    <span>Shows correct_winners count</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-gray-400 font-bold">Total</span>
+                    <span>Shows total_predictions count</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-blue-400 font-bold">Accuracy%</span>
+                    <span>Calculated from correct_winners/total_predictions</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl">🥇🥈🥉</span>
+                    <span>Medals still shown for top 3 positions</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-red-400 mb-2">Predictions Changes</h2>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400 font-bold">Event Score Summary</span>
+                    <span>Shows total points and accuracy from event_scores</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-yellow-400">⏳ Pending</span>
+                    <span>When no event_scores data found</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400">✅ +10</span>
+                    <span>Per-match feedback with point details</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-red-400">❌ +0</span>
+                    <span>Incorrect predictions with 0 points</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Console Output Expected</h2>
+            <pre class="text-xs text-gray-300 bg-black p-3 rounded overflow-x-auto">
+// Leaderboard queries
+Loading event leaderboard from leaderboard view
+Event ID: [uuid]
+Event leaderboard data: 5 rows returned
+Rendering table with 5 rows
+
+// Event scores hydration
+Fetching event scores for user: [uuid] event: [uuid]
+Event scores loaded: {total_points: 25, correct_winners: 2, total_predictions: 3, ...}
+Event score displayed: {totalPoints: 25, correctWinners: 2, totalPredictions: 3, accuracy: "66.7"}
+
+// Per-match feedback
+Calculating scoring for current matches: [...]
+Calculated scoring: {totalPoints: 25, correctMatches: 2, totalMatches: 3, ...}
+            </pre>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Error Handling</h2>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <li><strong>Empty Data</strong>: Shows "No data yet—check back after results"</li>
+                <li><strong>Missing Views</strong>: Shows "Leaderboard views not found. Please contact support."</li>
+                <li><strong>Network Errors</strong>: Shows "Failed to load leaderboard data. Please try again."</li>
+                <li><strong>No Event Scores</strong>: Shows "⏳ Scoring Pending" in predictions</li>
+                <li><strong>Console Logging</strong>: All errors logged with details for debugging</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

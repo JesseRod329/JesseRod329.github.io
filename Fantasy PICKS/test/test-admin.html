@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Admin - Fantasy Wrestling</title>
+    <link href="/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <h1 class="text-2xl font-bold mb-4">Admin Page Test</h1>
+    
+    <div class="space-y-4">
+        <p>This page tests the admin functionality:</p>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Test Steps:</h2>
+            <ol class="list-decimal list-inside space-y-1">
+                <li>Open browser dev tools (F12)</li>
+                <li>Go to Console tab</li>
+                <li>Navigate to <a href="admin.html" class="text-yellow-400 hover:underline">admin.html</a></li>
+                <li>Check console logs for AdminSystem.init() messages</li>
+                <li>If not authenticated, you should see "Access Denied"</li>
+                <li>If authenticated as admin, you should see the admin interface</li>
+            </ol>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Expected Console Output:</h2>
+            <pre class="text-sm text-gray-300">
+AdminSystem.init() called
+Current URL: http://localhost:8000/admin.html
+AppState.isAuthenticated: true/false
+AppState.currentUser: {email: "..."}
+User email: jesse.rodriguez89@gmail.com
+Allowed admins: ["jesse.rodriguez89@gmail.com"]
+User is admin, showing admin content
+AdminSystem.showAdminContent() called
+adminContent element: <div id="adminContent" class="...">
+Showed admin content
+AdminSystem.loadEvents() called
+Events loaded: [...]
+Events populated in dropdown
+AdminSystem.bindEventListeners() called
+Event select element found, adding listener
+            </pre>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Troubleshooting:</h2>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <li>If you see "adminContent element not found" - there's an HTML issue</li>
+                <li>If you see "User not authenticated" - sign in first</li>
+                <li>If you see "User not in admin list" - your email isn't in ALLOWED_ADMINS</li>
+                <li>If you see "Event select element not found" - there's a DOM issue</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

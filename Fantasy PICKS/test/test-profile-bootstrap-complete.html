@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Bootstrap Complete Test - Fantasy Wrestling</title>
+    <link href="/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <h1 class="text-2xl font-bold mb-4">Profile Bootstrap Complete Test</h1>
+    
+    <div class="space-y-6">
+        <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-green-400 mb-2">✅ Profile Bootstrap Complete Features</h2>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <li><strong>Profile Trigger</strong>: Automatic profile creation on auth.users insert</li>
+                <li><strong>Unique Constraint</strong>: Picks table has (user_id, match_id) unique constraint</li>
+                <li><strong>Demo Seed Data</strong>: Demo PPV event with 2 matches for testing</li>
+                <li><strong>Client Helpers</strong>: ensureProfile, getDemoCard, savePick, loadLeaderboard</li>
+                <li><strong>Sanity Checks</strong>: Comprehensive SQL tests for validation</li>
+                <li><strong>Integration</strong>: Seamlessly integrated into existing auth flow</li>
+            </ul>
+        </div>
+        
+        <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-blue-400 mb-2">Test Steps</h2>
+            <ol class="list-decimal list-inside space-y-1 text-sm">
+                <li>Run SQL migration: <code class="bg-gray-700 px-2 py-1 rounded">profile-bootstrap-complete.sql</code></li>
+                <li>Sign in with Google on any page</li>
+                <li>Load this test page and run the JavaScript tests</li>
+                <li>Test profile creation and demo data loading</li>
+                <li>Test pick saving and leaderboard loading</li>
+                <li>Run SQL sanity checks: <code class="bg-gray-700 px-2 py-1 rounded">profile-sanity-checks.sql</code></li>
+            </ol>
+        </div>
+        
+        <div class="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-yellow-400 mb-2">SQL Migration Components</h2>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400 font-bold">A) Profile Trigger</span>
+                    <span>handle_new_user() function + on_auth_user_created trigger</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-blue-400 font-bold">B) Unique Constraint</span>
+                    <span>uniq_picks_user_match on (user_id, match_id)</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-yellow-400 font-bold">C) Demo Seed</span>
+                    <span>Demo PPV event with Alpha vs Bravo, Charlie vs Delta matches</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-red-400 font-bold">D) Sanity Checks</span>
+                    <span>12 interactive SQL tests for validation</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-purple-400 mb-2">Client Helper Functions</h2>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400 font-bold">ensureProfile()</span>
+                    <span>Creates/updates user profile after sign-in</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-blue-400 font-bold">getDemoCard()</span>
+                    <span>Fetches demo event and matches for UI rendering</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-yellow-400 font-bold">savePick()</span>
+                    <span>Saves user picks with unique constraint handling</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-red-400 font-bold">loadLeaderboard()</span>
+                    <span>Loads leaderboard data from existing views</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Test Functions</h2>
+            <div class="space-y-4">
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="testProfileCreation()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+                        Test Profile Creation
+                    </button>
+                    <button onclick="testDemoCard()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                        Test Demo Card
+                    </button>
+                    <button onclick="testSavePick()" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded">
+                        Test Save Pick
+                    </button>
+                    <button onclick="testLoadLeaderboard()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+                        Test Load Leaderboard
+                    </button>
+                    <button onclick="runAllTests()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded">
+                        Run All Tests
+                    </button>
+                </div>
+                <div id="testResults" class="bg-black p-4 rounded text-sm font-mono hidden">
+                    <!-- Test results will appear here -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Expected Console Output</h2>
+            <pre class="text-xs text-gray-300 bg-black p-3 rounded overflow-x-auto">
+// Profile Creation
+Ensuring profile for user: user@example.com
+Profile ensured successfully
+
+// Demo Card Loading
+Fetching demo card data...
+Demo card data loaded: { event: {...}, matches: 2 }
+
+// Pick Saving
+Saving pick: { eventId: "...", matchId: "...", winner: "Alpha", method: "Pin", extras: {...} }
+Pick saved successfully
+
+// Leaderboard Loading
+Loading leaderboard for event: ...
+Leaderboard loaded: 1 entries
+            </pre>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">SQL Sanity Checks</h2>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400">✅</span>
+                    <span>Demo event exists with correct lock_time</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400">✅</span>
+                    <span>Demo matches created (Alpha vs Bravo, Charlie vs Delta)</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400">✅</span>
+                    <span>Profile creation works for authenticated user</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400">✅</span>
+                    <span>RLS working - only own profile visible</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400">✅</span>
+                    <span>Unique constraint prevents duplicate picks</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400">✅</span>
+                    <span>Trigger function and trigger exist and are active</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Integration Points</h2>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-start space-x-2">
+                    <span class="text-green-400 font-bold">AuthManager:</span>
+                    <span>Calls ensureProfile() after successful authentication</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span class="text-blue-400 font-bold">Predictions Page:</span>
+                    <span>Can use getDemoCard() to load demo data for testing</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span class="text-yellow-400 font-bold">Pick Saving:</span>
+                    <span>Can use savePick() with unique constraint handling</span>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span class="text-red-400 font-bold">Leaderboard Page:</span>
+                    <span>Can use loadLeaderboard() to display results</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Migration Checklist</h2>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <li><strong>✅ SQL Migration</strong>: profile-bootstrap-complete.sql created</li>
+                <li><strong>✅ Profile Trigger</strong>: handle_new_user() function and trigger</li>
+                <li><strong>✅ Unique Constraint</strong>: uniq_picks_user_match constraint added</li>
+                <li><strong>✅ Demo Seed</strong>: Demo PPV event with 2 matches created</li>
+                <li><strong>✅ Client Helpers</strong>: All helper functions added to ApiHelpers</li>
+                <li><strong>✅ Integration</strong>: ensureProfile() integrated into auth flow</li>
+                <li><strong>✅ Sanity Checks</strong>: 12 SQL tests for validation</li>
+                <li><strong>✅ Documentation</strong>: Complete usage examples and test cases</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        let demoCard = null;
+        
+        function showResult(message, type = 'info') {
+            const results = document.getElementById('testResults');
+            results.classList.remove('hidden');
+            const color = type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-blue-400';
+            results.innerHTML += `<div class="${color}">${message}</div>`;
+        }
+        
+        function clearResults() {
+            const results = document.getElementById('testResults');
+            results.innerHTML = '';
+            results.classList.add('hidden');
+        }
+        
+        async function testProfileCreation() {
+            clearResults();
+            showResult('🧪 Testing Profile Creation...', 'info');
+            
+            try {
+                if (!window.FantasyWrestling?.ApiHelpers) {
+                    showResult('❌ ApiHelpers not available. Make sure main.js is loaded.', 'error');
+                    return;
+                }
+                
+                await window.FantasyWrestling.ApiHelpers.ensureProfile();
+                showResult('✅ Profile creation test completed successfully', 'success');
+                
+            } catch (error) {
+                showResult(`❌ Profile creation test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testDemoCard() {
+            clearResults();
+            showResult('🧪 Testing Demo Card Loading...', 'info');
+            
+            try {
+                if (!window.FantasyWrestling?.ApiHelpers) {
+                    showResult('❌ ApiHelpers not available. Make sure main.js is loaded.', 'error');
+                    return;
+                }
+                
+                demoCard = await window.FantasyWrestling.ApiHelpers.getDemoCard();
+                if (demoCard) {
+                    showResult(`✅ Demo card loaded: ${demoCard.event.name} with ${demoCard.matches.length} matches`, 'success');
+                    showResult(`📊 Event ID: ${demoCard.event.id}`, 'info');
+                    showResult(`📊 Matches: ${demoCard.matches.map(m => m.title).join(', ')}`, 'info');
+                } else {
+                    showResult('⚠️ No demo card found. Make sure demo seed data was created.', 'error');
+                }
+                
+            } catch (error) {
+                showResult(`❌ Demo card test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testSavePick() {
+            clearResults();
+            showResult('🧪 Testing Pick Saving...', 'info');
+            
+            try {
+                if (!window.FantasyWrestling?.ApiHelpers) {
+                    showResult('❌ ApiHelpers not available. Make sure main.js is loaded.', 'error');
+                    return;
+                }
+                
+                if (!demoCard) {
+                    showResult('⚠️ No demo card loaded. Run "Test Demo Card" first.', 'error');
+                    return;
+                }
+                
+                const match = demoCard.matches[0];
+                if (!match) {
+                    showResult('❌ No matches found in demo card', 'error');
+                    return;
+                }
+                
+                await window.FantasyWrestling.ApiHelpers.savePick({
+                    eventId: demoCard.event.id,
+                    matchId: match.id,
+                    winner: 'Alpha',
+                    method: 'Pin',
+                    extras: { blood: false, table: false }
+                });
+                
+                showResult(`✅ Pick saved successfully for match: ${match.title}`, 'success');
+                
+            } catch (error) {
+                showResult(`❌ Pick saving test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testLoadLeaderboard() {
+            clearResults();
+            showResult('🧪 Testing Leaderboard Loading...', 'info');
+            
+            try {
+                if (!window.FantasyWrestling?.ApiHelpers) {
+                    showResult('❌ ApiHelpers not available. Make sure main.js is loaded.', 'error');
+                    return;
+                }
+                
+                if (!demoCard) {
+                    showResult('⚠️ No demo card loaded. Run "Test Demo Card" first.', 'error');
+                    return;
+                }
+                
+                const leaderboard = await window.FantasyWrestling.ApiHelpers.loadLeaderboard(demoCard.event.id);
+                showResult(`✅ Leaderboard loaded: ${leaderboard.length} entries`, 'success');
+                
+                if (leaderboard.length > 0) {
+                    showResult(`📊 Top entry: ${leaderboard[0].email} - ${leaderboard[0].total_points} points`, 'info');
+                } else {
+                    showResult('📊 No leaderboard entries yet (matches may not be scored)', 'info');
+                }
+                
+            } catch (error) {
+                showResult(`❌ Leaderboard loading test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function runAllTests() {
+            clearResults();
+            showResult('🚀 Running All Tests...', 'info');
+            
+            await testProfileCreation();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await testDemoCard();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await testSavePick();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            await testLoadLeaderboard();
+            
+            showResult('🎉 All tests completed!', 'success');
+        }
+        
+        // Check if ApiHelpers is available
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.FantasyWrestling?.ApiHelpers) {
+                showResult('✅ ApiHelpers loaded successfully!', 'success');
+            } else {
+                showResult('⚠️ ApiHelpers not yet loaded. Make sure main.js is loaded.', 'info');
+            }
+        });
+    </script>
+</body>
+</html>

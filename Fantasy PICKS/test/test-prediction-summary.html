@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Prediction Summary - Fantasy Wrestling Booking</title>
+    <link href="/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-black text-white">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-8 text-center text-yellow-400">Prediction Summary Test</h1>
+        
+        <div class="mb-8 p-4 bg-gray-800 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4">Test Instructions</h2>
+            <ol class="list-decimal list-inside space-y-2 text-sm">
+                <li>Open browser console to see debug output</li>
+                <li>Check if PredictionSummarySystem is available</li>
+                <li>Test loadPredictionSummary function with mock data</li>
+                <li>Verify render function creates correct HTML</li>
+                <li>Test integration with Supabase (if available)</li>
+            </ol>
+        </div>
+
+        <div class="mb-8 p-4 bg-gray-800 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4">Expected Features</h2>
+            <ul class="list-disc list-inside space-y-2 text-sm">
+                <li><strong>Dynamic Loading:</strong> Loads prediction data from Supabase</li>
+                <li><strong>Progress Tracking:</strong> Shows matches predicted vs total</li>
+                <li><strong>Points Display:</strong> Shows earned points, bonus points, max possible</li>
+                <li><strong>Progress Bar:</strong> Visual progress indicator</li>
+                <li><strong>Real-time Updates:</strong> Updates when picks are saved</li>
+                <li><strong>Error Handling:</strong> Graceful fallback for missing data</li>
+            </ul>
+        </div>
+
+        <!-- Test Controls -->
+        <div class="mb-8 p-4 bg-gray-800 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4">Test Controls</h2>
+            <div class="space-y-4">
+                <button id="testRender" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                    Test Render Function
+                </button>
+                <button id="testLoadData" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+                    Test Load Data (Mock)
+                </button>
+                <button id="testIntegration" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg">
+                    Test Supabase Integration
+                </button>
+            </div>
+        </div>
+
+        <!-- Prediction Summary Display -->
+        <div id="predictionSummary" class="max-w-md mx-auto">
+            <!-- Dynamic prediction summary will be loaded here -->
+        </div>
+
+        <div class="mt-8 p-4 bg-gray-800 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4">Debug Information</h2>
+            <div id="debugInfo" class="text-sm font-mono">
+                <p>Check console for detailed debug output...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase Client -->
+    <script type="module">
+        import { createClient } from 'https://cdn.skypack.dev/@supabase/supabase-js@2';
+        
+        const supabaseUrl = 'https://your-project.supabase.co';
+        const supabaseKey = 'your-anon-key';
+        
+        window.sb = createClient(supabaseUrl, supabaseKey);
+        window.supabaseClient = window.sb;
+    </script>
+
+    <!-- Main Application Script -->
+    <script src="main.js"></script>
+
+    <script>
+        // Test the prediction summary functionality
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🧪 Prediction Summary Test Page Loaded');
+            
+            // Wait for main.js to load
+            setTimeout(async () => {
+                try {
+                    // Test 1: Check if PredictionSummarySystem exists
+                    if (typeof window.FantasyWrestling?.PredictionSummarySystem !== 'undefined') {
+                        console.log('✅ PredictionSummarySystem found');
+                        
+                        // Test 2: Test render function with mock data
+                        const mockData = {
+                            predicted: 3,
+                            total: 5,
+                            bonusPoints: 15,
+                            maxPossible: 75,
+                            earned: 45
+                        };
+                        
+                        window.FantasyWrestling.PredictionSummarySystem.render(mockData, 'predictionSummary');
+                        console.log('✅ Render function test completed');
+                        
+                        // Test 3: Test loadPredictionSummary with mock parameters
+                        try {
+                            const summaryData = await window.FantasyWrestling.PredictionSummarySystem.loadPredictionSummary(
+                                window.sb, 
+                                'test-event-id', 
+                                'test-user-id'
+                            );
+                            console.log('✅ LoadPredictionSummary test completed:', summaryData);
+                        } catch (error) {
+                            console.log('⚠️ LoadPredictionSummary test (expected to fail with mock data):', error.message);
+                        }
+                        
+                    } else {
+                        console.error('❌ PredictionSummarySystem not found');
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Test failed:', error);
+                }
+            }, 1000);
+        });
+
+        // Test button handlers
+        document.getElementById('testRender')?.addEventListener('click', () => {
+            const mockData = {
+                predicted: Math.floor(Math.random() * 5),
+                total: 5,
+                bonusPoints: Math.floor(Math.random() * 20),
+                maxPossible: 75,
+                earned: Math.floor(Math.random() * 75)
+            };
+            
+            if (window.FantasyWrestling?.PredictionSummarySystem) {
+                window.FantasyWrestling.PredictionSummarySystem.render(mockData, 'predictionSummary');
+                console.log('🎲 Rendered with random data:', mockData);
+            }
+        });
+
+        document.getElementById('testLoadData')?.addEventListener('click', async () => {
+            if (window.FantasyWrestling?.PredictionSummarySystem) {
+                try {
+                    const data = await window.FantasyWrestling.PredictionSummarySystem.loadPredictionSummary(
+                        window.sb, 
+                        'test-event-id', 
+                        'test-user-id'
+                    );
+                    console.log('📊 Loaded data:', data);
+                    document.getElementById('debugInfo').innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } catch (error) {
+                    console.log('⚠️ Load test (expected with mock Supabase):', error.message);
+                }
+            }
+        });
+
+        document.getElementById('testIntegration')?.addEventListener('click', () => {
+            console.log('🔗 Supabase Integration Test');
+            console.log('Supabase client available:', !!window.sb);
+            console.log('FantasyWrestling object:', window.FantasyWrestling);
+            console.log('PredictionSummarySystem:', window.FantasyWrestling?.PredictionSummarySystem);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Event Posters - Fantasy Wrestling Booking</title>
+    <link href="/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-black text-white">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-8 text-center text-yellow-400">Event Posters Test</h1>
+        
+        <div class="mb-8 p-4 bg-gray-800 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4">Test Instructions</h2>
+            <ol class="list-decimal list-inside space-y-2 text-sm">
+                <li>Open browser console to see debug output</li>
+                <li>Check if events are loaded from database</li>
+                <li>Verify poster images display with fallback</li>
+                <li>Test countdown timer functionality</li>
+                <li>Check responsive design on different screen sizes</li>
+            </ol>
+        </div>
+
+        <div class="mb-8 p-4 bg-gray-800 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4">Expected Behavior</h2>
+            <ul class="list-disc list-inside space-y-2 text-sm">
+                <li><strong>Dynamic Loading:</strong> Events loaded from Supabase events table</li>
+                <li><strong>Poster Display:</strong> Shows poster_url from database or fallback to resources/event-poster.jpg</li>
+                <li><strong>Countdown:</strong> Live countdown to event date</li>
+                <li><strong>Event Info:</strong> Name, description, venue from database</li>
+                <li><strong>Error Handling:</strong> Graceful fallback if no events or images fail to load</li>
+            </ul>
+        </div>
+
+        <!-- Dynamic Events List -->
+        <div id="eventsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="col-span-full text-center py-12">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto mb-4"></div>
+                <p class="text-gray-400">Loading events...</p>
+            </div>
+        </div>
+
+        <div class="mt-8 p-4 bg-gray-800 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4">Debug Information</h2>
+            <div id="debugInfo" class="text-sm font-mono">
+                <p>Check console for detailed debug output...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase Client -->
+    <script type="module">
+        import { createClient } from 'https://cdn.skypack.dev/@supabase/supabase-js@2';
+        
+        const supabaseUrl = 'https://your-project.supabase.co';
+        const supabaseKey = 'your-anon-key';
+        
+        window.sb = createClient(supabaseUrl, supabaseKey);
+        window.supabaseClient = window.sb;
+    </script>
+
+    <!-- Main Application Script -->
+    <script src="main.js"></script>
+
+    <script>
+        // Test the event posters functionality
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🧪 Event Posters Test Page Loaded');
+            
+            // Wait a bit for Supabase to initialize
+            setTimeout(async () => {
+                try {
+                    console.log('🔍 Testing loadEvents function...');
+                    
+                    // Test if loadEvents function exists
+                    if (typeof loadEvents === 'function') {
+                        console.log('✅ loadEvents function found');
+                        await loadEvents();
+                        console.log('✅ loadEvents executed successfully');
+                    } else {
+                        console.error('❌ loadEvents function not found');
+                    }
+                    
+                    // Check if events list was populated
+                    const eventsList = document.getElementById('eventsList');
+                    if (eventsList && eventsList.children.length > 0) {
+                        console.log('✅ Events list populated with', eventsList.children.length, 'items');
+                    } else {
+                        console.log('⚠️ Events list not populated or empty');
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Test failed:', error);
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

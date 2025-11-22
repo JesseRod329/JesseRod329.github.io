@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Auth - Fantasy Wrestling</title>
+    <link href="/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <h1 class="text-2xl font-bold mb-4">Debug Authentication</h1>
+    
+    <div class="space-y-4">
+        <button id="testSignIn" class="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700">
+            Test Google Sign In
+        </button>
+        
+        <button id="testSupabase" class="bg-green-600 px-4 py-2 rounded hover:bg-green-700">
+            Test Supabase Connection
+        </button>
+        
+        <div id="output" class="bg-gray-800 p-4 rounded min-h-32">
+            <p>Click buttons above to test...</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+        
+        const sb = createClient(
+            'https://bxlgrtlzxqcmhfmvxnmw.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4bGdydGx6eHFjbWhmbXZ4bm13Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg5MjMzNTEsImV4cCI6MjA3NDQ5OTM1MX0.vgKMAyJIgPxEFbOR9yG5YbYvy2x445WZGhE6S0ScuTY'
+        );
+        
+        const output = document.getElementById('output');
+        
+        function log(message) {
+            console.log(message);
+            output.innerHTML += `<p>${new Date().toLocaleTimeString()}: ${message}</p>`;
+        }
+        
+        document.getElementById('testSupabase').addEventListener('click', async () => {
+            log('Testing Supabase connection...');
+            try {
+                const { data, error } = await sb.from('events').select('count');
+                if (error) {
+                    log(`Supabase error: ${error.message}`);
+                } else {
+                    log(`Supabase connected! Events count: ${data?.[0]?.count || 'unknown'}`);
+                }
+            } catch (err) {
+                log(`Connection error: ${err.message}`);
+            }
+        });
+        
+        document.getElementById('testSignIn').addEventListener('click', async () => {
+            log('Testing Google OAuth...');
+            try {
+                log(`Current URL: ${window.location.href}`);
+                log(`Origin: ${window.location.origin}`);
+                
+                const { data, error } = await sb.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin,
+                        queryParams: {
+                            access_type: 'offline',
+                            prompt: 'consent',
+                        }
+                    }
+                });
+                
+                log(`OAuth response: ${JSON.stringify({ data, error })}`);
+                
+                if (error) {
+                    log(`OAuth error: ${error.message}`);
+                } else {
+                    log('OAuth redirect initiated successfully');
+                }
+            } catch (err) {
+                log(`OAuth error: ${err.message}`);
+            }
+        });
+        
+        // Test auth state changes
+        sb.auth.onAuthStateChange((event, session) => {
+            log(`Auth state change: ${event}, user: ${session?.user?.email || 'none'}`);
+        });
+        
+        log('Debug page loaded');
+    </script>
+</body>
+</html>

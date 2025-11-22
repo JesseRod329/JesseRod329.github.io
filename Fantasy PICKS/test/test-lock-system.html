@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Prediction Lock System - Fantasy Wrestling</title>
+    <link href="/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <h1 class="text-2xl font-bold mb-4">Prediction Lock System Test</h1>
+    
+    <div class="space-y-6">
+        <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-blue-400 mb-2">Test Steps</h2>
+            <ol class="list-decimal list-inside space-y-1 text-sm">
+                <li>Run the SQL commands in <code class="bg-gray-700 px-2 py-1 rounded">add-prediction-lock-system.sql</code></li>
+                <li>Go to <a href="predictions.html" class="text-yellow-400 hover:underline">predictions.html</a></li>
+                <li>Check console for countdown system initialization</li>
+                <li>Select an event and verify countdown timer appears</li>
+                <li>Test with events that have different lock times</li>
+            </ol>
+        </div>
+        
+        <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-green-400 mb-2">Expected Behavior</h2>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <li><strong>Future Event:</strong> Countdown timer shows time remaining</li>
+                <li><strong>Past Event:</strong> Red lock banner appears, UI disabled</li>
+                <li><strong>Near Lock:</strong> Timer changes color (yellow → orange → red)</li>
+                <li><strong>Locked Attempts:</strong> Error messages when trying to save</li>
+            </ul>
+        </div>
+        
+        <div class="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-yellow-400 mb-2">Console Output Expected</h2>
+            <pre class="text-xs text-gray-300 bg-black p-3 rounded overflow-x-auto">
+CountdownSystem.init() called
+CountdownSystem.start() called with event: {id: "...", name: "...", lock_time: "..."}
+Starting countdown for event: [Event Name]
+Countdown reached zero, locking predictions
+Disabling prediction UI due to lock
+            </pre>
+        </div>
+        
+        <div class="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-red-400 mb-2">Database Setup Required</h2>
+            <p class="text-sm mb-2">Run these SQL commands in Supabase SQL Editor:</p>
+            <pre class="text-xs text-gray-300 bg-black p-3 rounded overflow-x-auto">
+-- Add lock_time column to events table
+ALTER TABLE events ADD COLUMN lock_time TIMESTAMPTZ;
+UPDATE events SET lock_time = date - INTERVAL '2 hours' WHERE lock_time IS NULL;
+ALTER TABLE events ALTER COLUMN lock_time SET NOT NULL;
+
+-- Create lock checking function
+CREATE OR REPLACE FUNCTION is_event_locked(event_id UUID)
+RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN EXISTS (
+        SELECT 1 FROM events 
+        WHERE id = event_id 
+        AND lock_time <= NOW()
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Update RLS policies
+DROP POLICY IF EXISTS "Users can insert their own picks" ON picks;
+DROP POLICY IF EXISTS "Users can update their own picks" ON picks;
+
+CREATE POLICY "Users can insert picks before lock_time" ON picks
+    FOR INSERT WITH CHECK (
+        auth.uid() = user_id 
+        AND NOT is_event_locked((SELECT event_id FROM matches WHERE id = match_id))
+    );
+
+CREATE POLICY "Users can update picks before lock_time" ON picks
+    FOR UPDATE USING (
+        auth.uid() = user_id 
+        AND NOT is_event_locked((SELECT event_id FROM matches WHERE id = match_id))
+    );
+            </pre>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Test Scenarios</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <h3 class="font-semibold text-yellow-400 mb-2">Scenario 1: Future Event</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Event with lock_time in future</li>
+                        <li>Countdown timer visible</li>
+                        <li>UI enabled for predictions</li>
+                        <li>Timer updates every second</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-red-400 mb-2">Scenario 2: Past Event</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Event with lock_time in past</li>
+                        <li>Red lock banner visible</li>
+                        <li>All inputs disabled</li>
+                        <li>Submit button shows "Predictions Locked"</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-orange-400 mb-2">Scenario 3: Near Lock</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Event locking in < 1 hour</li>
+                        <li>Timer color changes to orange/red</li>
+                        <li>UI still enabled until lock</li>
+                        <li>Auto-lock when timer hits zero</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-purple-400 mb-2">Scenario 4: Locked Attempts</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>Try to save prediction after lock</li>
+                        <li>Error message appears</li>
+                        <li>Database blocks the operation</li>
+                        <li>UI remains disabled</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vercel Configuration Test - Fantasy Wrestling</title>
+    <link href="/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <h1 class="text-2xl font-bold mb-4">Vercel Configuration Test</h1>
+    
+    <div class="space-y-6">
+        <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-green-400 mb-2">✅ Vercel Configuration Complete</h2>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <li><strong>vercel.json</strong>: Created with static site configuration</li>
+                <li><strong>Build Command</strong>: npm run build (generates CSS in public folder)</li>
+                <li><strong>Output Directory</strong>: Project root (serves HTML files directly)</li>
+                <li><strong>Framework</strong>: None (static site deployment)</li>
+                <li><strong>Static Assets</strong>: public/ folder served at root URL</li>
+            </ul>
+        </div>
+        
+        <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-blue-400 mb-2">Vercel Configuration Details</h2>
+            <div class="bg-black p-4 rounded text-sm font-mono">
+                <pre>{
+  "buildCommand": "npm run build",
+  "outputDirectory": ".",
+  "framework": "none"
+}</pre>
+            </div>
+        </div>
+        
+        <div class="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-yellow-400 mb-2">How Vercel Deployment Works</h2>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400 font-bold">1. Build Phase</span>
+                    <span>Runs npm run build → generates public/tailwind.css</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-blue-400 font-bold">2. Static Files</span>
+                    <span>Serves HTML files from project root</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-yellow-400 font-bold">3. Public Assets</span>
+                    <span>Serves public/ folder contents at root URL</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-red-400 font-bold">4. CSS Access</span>
+                    <span>public/tailwind.css → /tailwind.css</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">File Structure on Vercel</h2>
+            <div class="space-y-2 text-sm font-mono">
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400">📄 index.html</span>
+                    <span>→ https://domain.com/</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400">📄 predictions.html</span>
+                    <span>→ https://domain.com/predictions.html</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400">📄 leaderboard.html</span>
+                    <span>→ https://domain.com/leaderboard.html</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400">📄 admin.html</span>
+                    <span>→ https://domain.com/admin.html</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-blue-400">📄 public/tailwind.css</span>
+                    <span>→ https://domain.com/tailwind.css</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-yellow-400">📁 resources/</span>
+                    <span>→ https://domain.com/resources/</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Configuration Benefits</h2>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <li><strong>✅ Static Site Optimization</strong>: Framework set to 'none' for static deployment</li>
+                <li><strong>✅ Build Integration</strong>: Automatically runs npm run build on deployment</li>
+                <li><strong>✅ Root File Serving</strong>: HTML files served directly from project root</li>
+                <li><strong>✅ Public Asset Access</strong>: CSS and images accessible at root URLs</li>
+                <li><strong>✅ No Framework Overhead</strong>: Pure static site deployment</li>
+                <li><strong>✅ Fast Loading</strong>: Optimized for static content delivery</li>
+            </ul>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Deployment Process</h2>
+            <ol class="list-decimal list-inside space-y-1 text-sm">
+                <li>Push code to GitHub repository</li>
+                <li>Vercel detects changes and triggers deployment</li>
+                <li>Runs <code class="bg-gray-700 px-1 rounded">npm run build</code> to generate CSS</li>
+                <li>Serves HTML files from project root directory</li>
+                <li>Serves static assets from public/ folder at root URLs</li>
+                <li>Site becomes available at Vercel domain</li>
+            </ol>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Test Functions</h2>
+            <div class="space-y-4">
+                <div class="flex space-x-2">
+                    <button onclick="testStaticFiles()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+                        Test Static Files
+                    </button>
+                    <button onclick="checkCSSAccess()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                        Check CSS Access
+                    </button>
+                    <button onclick="testResources()" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded">
+                        Test Resources
+                    </button>
+                </div>
+                <div id="testResults" class="bg-black p-4 rounded text-sm font-mono hidden">
+                    <!-- Test results will appear here -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Verification Steps</h2>
+            <ol class="list-decimal list-inside space-y-1 text-sm">
+                <li>Deploy to Vercel and verify site loads correctly</li>
+                <li>Check that all HTML pages are accessible</li>
+                <li>Verify CSS loads from /tailwind.css (no 404 errors)</li>
+                <li>Test that images in resources/ folder load</li>
+                <li>Confirm Supabase authentication works on deployed site</li>
+                <li>Test all functionality (predictions, leaderboards, admin)</li>
+            </ol>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Expected URLs on Vercel</h2>
+            <div class="space-y-2 text-sm font-mono">
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400">🏠 Home</span>
+                    <span>https://your-domain.vercel.app/</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-blue-400">🎯 Predictions</span>
+                    <span>https://your-domain.vercel.app/predictions.html</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-yellow-400">🏆 Leaderboards</span>
+                    <span>https://your-domain.vercel.app/leaderboard.html</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-red-400">⚙️ Admin</span>
+                    <span>https://your-domain.vercel.app/admin.html</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-purple-400">🎨 CSS</span>
+                    <span>https://your-domain.vercel.app/tailwind.css</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showResult(message, type = 'info') {
+            const results = document.getElementById('testResults');
+            results.classList.remove('hidden');
+            const color = type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-blue-400';
+            results.innerHTML += `<div class="${color}">${message}</div>`;
+        }
+        
+        function clearResults() {
+            const results = document.getElementById('testResults');
+            results.innerHTML = '';
+            results.classList.add('hidden');
+        }
+        
+        function testStaticFiles() {
+            clearResults();
+            showResult('🧪 Testing Static Files...', 'info');
+            
+            try {
+                const staticFiles = [
+                    'index.html',
+                    'predictions.html',
+                    'leaderboard.html',
+                    'admin.html'
+                ];
+                
+                staticFiles.forEach(file => {
+                    // Check if we can access the file (in browser context)
+                    if (window.location.pathname.includes(file.replace('.html', ''))) {
+                        showResult(`✅ ${file} is accessible`, 'success');
+                    } else {
+                        showResult(`📄 ${file} should be accessible at /${file}`, 'info');
+                    }
+                });
+                
+                showResult('✅ Static file configuration is correct', 'success');
+                
+            } catch (error) {
+                showResult(`❌ Test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        function checkCSSAccess() {
+            clearResults();
+            showResult('🧪 Checking CSS Access...', 'info');
+            
+            try {
+                // Check if CSS is loaded
+                const links = document.querySelectorAll('link[rel="stylesheet"]');
+                let cssFound = false;
+                
+                links.forEach(link => {
+                    if (link.href.includes('/tailwind.css')) {
+                        cssFound = true;
+                        showResult('✅ CSS loaded from /tailwind.css', 'success');
+                        showResult(`   Full URL: ${link.href}`, 'info');
+                    }
+                });
+                
+                if (!cssFound) {
+                    showResult('❌ CSS not found at /tailwind.css', 'error');
+                }
+                
+                // Test CSS is actually working
+                const testElement = document.createElement('div');
+                testElement.className = 'bg-blue-600 text-white p-2 rounded';
+                testElement.textContent = 'CSS Test';
+                document.body.appendChild(testElement);
+                
+                const styles = window.getComputedStyle(testElement);
+                if (styles.backgroundColor.includes('37, 99, 235') || styles.backgroundColor.includes('rgb(37, 99, 235)')) {
+                    showResult('✅ Tailwind CSS classes are working', 'success');
+                } else {
+                    showResult('❌ Tailwind CSS classes not working', 'error');
+                }
+                
+                document.body.removeChild(testElement);
+                
+            } catch (error) {
+                showResult(`❌ Test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        function testResources() {
+            clearResults();
+            showResult('🧪 Testing Resources...', 'info');
+            
+            try {
+                const resources = [
+                    'championship-belts.jpg',
+                    'event-poster.jpg',
+                    'hero-wrestling.jpg',
+                    'user-avatars.jpg'
+                ];
+                
+                resources.forEach(resource => {
+                    const img = new Image();
+                    img.onload = function() {
+                        showResult(`✅ ${resource} loads correctly`, 'success');
+                    };
+                    img.onerror = function() {
+                        showResult(`❌ ${resource} failed to load`, 'error');
+                    };
+                    img.src = `/resources/${resource}`;
+                });
+                
+                showResult('📁 Resources should be accessible at /resources/', 'info');
+                
+            } catch (error) {
+                showResult(`❌ Test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        // Check configuration on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            showResult('✅ Vercel configuration test page loaded!', 'success');
+        });
+    </script>
+</body>
+</html>

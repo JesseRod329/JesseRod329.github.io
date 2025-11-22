@@ -1,0 +1,164 @@
+/* Shared styles for Fantasy Wrestling Booking */
+/* Color variables and common component styles */
+
+:root {
+  --primary-dark: #1a1a1a;
+  --primary-gold: #d4af37;
+  --secondary-blue: #0066cc;
+  --accent-red: #dc143c;
+  --neutral-gray: #f5f5f5;
+  --success-gold: #ffd700;
+  --warning-orange: #ff6b35;
+}
+
+/* Typography */
+.title-font {
+  font-family: 'Bebas Neue', cursive;
+}
+
+.heading-font {
+  font-family: 'Roboto Slab', serif;
+}
+
+.accent-font {
+  font-family: 'Orbitron', monospace;
+}
+
+/* Text Effects */
+.gold-gradient {
+  background: linear-gradient(45deg, var(--primary-gold), var(--success-gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.feature-icon {
+  background: linear-gradient(45deg, var(--primary-gold), var(--secondary-blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Navigation */
+.nav-link {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary-gold);
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* Cards */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(212, 175, 55, 0.3);
+}
+
+.prediction-card {
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(45, 45, 45, 0.9));
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  position: relative;
+}
+
+.prediction-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, var(--primary-gold), var(--secondary-blue));
+  z-index: -1;
+  border-radius: inherit;
+}
+
+.prediction-card:hover {
+  border-color: var(--primary-gold);
+  transform: translateY(-4px);
+  box-shadow: 0 15px 30px rgba(212, 175, 55, 0.2);
+}
+
+.prediction-card.selected {
+  border-color: var(--success-gold);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+}
+
+.event-card {
+  background: linear-gradient(135deg, rgba(0, 102, 204, 0.1), rgba(220, 20, 60, 0.1));
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+/* Wrestler Options */
+.wrestler-option {
+  background: rgba(26, 26, 26, 0.8);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.wrestler-option:hover {
+  border-color: var(--secondary-blue);
+  transform: scale(1.02);
+}
+
+.wrestler-option.selected {
+  border-color: var(--primary-gold);
+  background: rgba(212, 175, 55, 0.1);
+}
+
+/* Leaderboard */
+.leaderboard-item {
+  background: rgba(26, 26, 26, 0.8);
+  border-left: 4px solid var(--primary-gold);
+}
+
+.achievement-badge {
+  background: radial-gradient(circle, var(--success-gold), var(--primary-gold));
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+/* Animations */
+.countdown-timer {
+  background: linear-gradient(45deg, var(--warning-orange), var(--accent-red));
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease;
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+

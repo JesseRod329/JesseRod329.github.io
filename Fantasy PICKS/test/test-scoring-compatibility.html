@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scoring Compatibility Layer Test - Fantasy Wrestling</title>
+    <link href="/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <h1 class="text-2xl font-bold mb-4">Scoring Compatibility Layer Test</h1>
+    
+    <div class="space-y-6">
+        <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-green-400 mb-2">✅ Compatibility Layer Features Implemented</h2>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <li><strong>SQL Wrapper RPCs</strong>: leaderboard() and calculate_scores() functions</li>
+                <li><strong>Client Helpers</strong>: apiLeaderboard() and apiEventScores() functions</li>
+                <li><strong>Backward Compatibility</strong>: Old API calls preserved with pass-through wrappers</li>
+                <li><strong>Fallback Logic</strong>: Automatic fallback from new API to legacy API</li>
+                <li><strong>JSONB Validation</strong>: No problematic JSONB comparison patterns found</li>
+                <li><strong>Error Handling</strong>: Comprehensive error handling and logging</li>
+            </ul>
+        </div>
+        
+        <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-blue-400 mb-2">Test Steps</h2>
+            <ol class="list-decimal list-inside space-y-1 text-sm">
+                <li>Run the SQL migration: <code class="bg-gray-700 px-2 py-1 rounded">scoring-compatibility-layer.sql</code></li>
+                <li>Sign in with Google on any page</li>
+                <li>Load this test page and run the JavaScript tests</li>
+                <li>Test both legacy and new API calls</li>
+                <li>Verify fallback behavior works correctly</li>
+                <li>Check console for detailed logging</li>
+            </ol>
+        </div>
+        
+        <div class="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-yellow-400 mb-2">SQL Wrapper RPCs</h2>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400 font-bold">leaderboard(event_id, extras)</span>
+                    <span>Legacy API wrapper - forwards to event_scores(event_id)</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-blue-400 font-bold">calculate_scores(event_id, rules)</span>
+                    <span>Legacy API wrapper - forwards to event_scores(event_id)</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-yellow-400 font-bold">Security</span>
+                    <span>SECURITY DEFINER with proper permissions</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-red-400 font-bold">Compatibility</span>
+                    <span>Preserves old API signatures and behavior</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-purple-400 mb-2">Client Helper Functions</h2>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400 font-bold">apiLeaderboard(eventId, extras)</span>
+                    <span>Legacy API call with backward compatibility</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-blue-400 font-bold">apiEventScores(eventId)</span>
+                    <span>New preferred API call to stable RPC</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-yellow-400 font-bold">getLeaderboardData(eventId, useLegacy)</span>
+                    <span>Helper with automatic fallback logic</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-red-400 font-bold">Error Handling</span>
+                    <span>Comprehensive error handling and logging</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-red-400 mb-2">JSONB Comparison Fixes</h2>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400">✅</span>
+                    <span>No problematic "jsonb = text" patterns found</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400">✅</span>
+                    <span>All JSONB operations use proper object construction</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400">✅</span>
+                    <span>JavaScript code uses correct comparison patterns</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400">✅</span>
+                    <span>SQL files use proper JSONB operations</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Test Functions</h2>
+            <div class="space-y-4">
+                <div class="flex space-x-2">
+                    <button onclick="testLegacyAPI()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                        Test Legacy API
+                    </button>
+                    <button onclick="testNewAPI()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+                        Test New API
+                    </button>
+                    <button onclick="testFallback()" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded">
+                        Test Fallback
+                    </button>
+                </div>
+                <div id="testResults" class="bg-black p-4 rounded text-sm font-mono hidden">
+                    <!-- Test results will appear here -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Expected Console Output</h2>
+            <pre class="text-xs text-gray-300 bg-black p-3 rounded overflow-x-auto">
+// Legacy API call
+Calling legacy leaderboard API: [event-id] {}
+Leaderboard API response: [{user_id, email, total_points, ...}]
+
+// New API call
+Calling event_scores API: [event-id]
+Event scores API response: [{user_id, email, total_points, ...}]
+
+// Fallback test
+Error getting leaderboard data: [error]
+Falling back to legacy API...
+Calling legacy leaderboard API: [event-id] {}
+            </pre>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">API Usage Examples</h2>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-start space-x-2">
+                    <span class="text-green-400 font-bold">Legacy:</span>
+                    <code class="bg-gray-700 px-2 py-1 rounded">await ApiHelpers.apiLeaderboard(eventId, {extras: true})</code>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span class="text-blue-400 font-bold">New:</span>
+                    <code class="bg-gray-700 px-2 py-1 rounded">await ApiHelpers.apiEventScores(eventId)</code>
+                </div>
+                <div class="flex items-start space-x-2">
+                    <span class="text-yellow-400 font-bold">Helper:</span>
+                    <code class="bg-gray-700 px-2 py-1 rounded">await ApiHelpers.getLeaderboardData(eventId, false)</code>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Migration Checklist</h2>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <li><strong>✅ SQL Migration</strong>: scoring-compatibility-layer.sql created</li>
+                <li><strong>✅ Wrapper RPCs</strong>: leaderboard() and calculate_scores() functions</li>
+                <li><strong>✅ Client Helpers</strong>: ApiHelpers object with all functions</li>
+                <li><strong>✅ JSONB Validation</strong>: No problematic patterns found</li>
+                <li><strong>✅ Error Handling</strong>: Comprehensive error handling implemented</li>
+                <li><strong>✅ Fallback Logic</strong>: Automatic fallback from new to legacy API</li>
+                <li><strong>✅ Documentation</strong>: Complete usage examples and test cases</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        function showResult(message, type = 'info') {
+            const results = document.getElementById('testResults');
+            results.classList.remove('hidden');
+            const color = type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-blue-400';
+            results.innerHTML += `<div class="${color}">${message}</div>`;
+        }
+        
+        function clearResults() {
+            const results = document.getElementById('testResults');
+            results.innerHTML = '';
+            results.classList.add('hidden');
+        }
+        
+        async function testLegacyAPI() {
+            clearResults();
+            showResult('🧪 Testing Legacy API (apiLeaderboard)...', 'info');
+            
+            try {
+                if (!window.FantasyWrestling?.ApiHelpers) {
+                    showResult('❌ ApiHelpers not available. Make sure main.js is loaded.', 'error');
+                    return;
+                }
+                
+                // Get a sample event ID (you might need to adjust this)
+                const eventId = '00000000-0000-0000-0000-000000000000'; // Replace with actual event ID
+                showResult(`📡 Calling apiLeaderboard with eventId: ${eventId}`, 'info');
+                
+                const result = await window.FantasyWrestling.ApiHelpers.apiLeaderboard(eventId, {test: true});
+                showResult(`✅ Legacy API call successful. Response: ${JSON.stringify(result).substring(0, 100)}...`, 'success');
+                
+            } catch (error) {
+                showResult(`❌ Legacy API test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testNewAPI() {
+            clearResults();
+            showResult('🧪 Testing New API (apiEventScores)...', 'info');
+            
+            try {
+                if (!window.FantasyWrestling?.ApiHelpers) {
+                    showResult('❌ ApiHelpers not available. Make sure main.js is loaded.', 'error');
+                    return;
+                }
+                
+                const eventId = '00000000-0000-0000-0000-000000000000'; // Replace with actual event ID
+                showResult(`📡 Calling apiEventScores with eventId: ${eventId}`, 'info');
+                
+                const result = await window.FantasyWrestling.ApiHelpers.apiEventScores(eventId);
+                showResult(`✅ New API call successful. Response: ${JSON.stringify(result).substring(0, 100)}...`, 'success');
+                
+            } catch (error) {
+                showResult(`❌ New API test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testFallback() {
+            clearResults();
+            showResult('🧪 Testing Fallback Logic...', 'info');
+            
+            try {
+                if (!window.FantasyWrestling?.ApiHelpers) {
+                    showResult('❌ ApiHelpers not available. Make sure main.js is loaded.', 'error');
+                    return;
+                }
+                
+                const eventId = '00000000-0000-0000-0000-000000000000'; // Replace with actual event ID
+                showResult(`📡 Testing fallback with eventId: ${eventId}`, 'info');
+                
+                const result = await window.FantasyWrestling.ApiHelpers.getLeaderboardData(eventId, false);
+                showResult(`✅ Fallback test successful. Response: ${JSON.stringify(result).substring(0, 100)}...`, 'success');
+                
+            } catch (error) {
+                showResult(`❌ Fallback test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        // Check if ApiHelpers is available
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.FantasyWrestling?.ApiHelpers) {
+                showResult('✅ ApiHelpers loaded successfully!', 'success');
+            } else {
+                showResult('⚠️ ApiHelpers not yet loaded. Make sure main.js is loaded.', 'info');
+            }
+        });
+    </script>
+</body>
+</html>

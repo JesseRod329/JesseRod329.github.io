@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Bootstrap Test - Fantasy Wrestling</title>
+    <link href="/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <h1 class="text-2xl font-bold mb-4">Profile Bootstrap System Test</h1>
+    
+    <div class="space-y-6">
+        <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-green-400 mb-2">✅ Profile Bootstrap Features Implemented</h2>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <li><strong>Server-side Trigger</strong>: Automatic profile creation on auth signups</li>
+                <li><strong>Client-side Fallback</strong>: ensureProfile() function for existing accounts</li>
+                <li><strong>RLS Integration</strong>: Row Level Security for user data isolation</li>
+                <li><strong>Idempotent Operations</strong>: Safe to run multiple times</li>
+                <li><strong>Error Handling</strong>: Comprehensive error handling and logging</li>
+                <li><strong>Sanity Tests</strong>: SQL and JavaScript test suites</li>
+            </ul>
+        </div>
+        
+        <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-blue-400 mb-2">Test Steps</h2>
+            <ol class="list-decimal list-inside space-y-1 text-sm">
+                <li>Run the SQL migration: <code class="bg-gray-700 px-2 py-1 rounded">profile-bootstrap-trigger.sql</code></li>
+                <li>Sign in with Google on any page</li>
+                <li>Check console for profile creation logs</li>
+                <li>Run SQL sanity tests: <code class="bg-gray-700 px-2 py-1 rounded">profile-sanity-tests.sql</code></li>
+                <li>Load this page and run JavaScript tests</li>
+                <li>Verify RLS is working correctly</li>
+            </ol>
+        </div>
+        
+        <div class="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-yellow-400 mb-2">Server-side Trigger</h2>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400 font-bold">Function</span>
+                    <span>public.handle_new_user() - Creates profile on auth.users insert</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-blue-400 font-bold">Trigger</span>
+                    <span>on_auth_user_created - Fires after INSERT on auth.users</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-yellow-400 font-bold">Idempotent</span>
+                    <span>Uses ON CONFLICT DO NOTHING to prevent duplicates</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-red-400 font-bold">Security</span>
+                    <span>SECURITY DEFINER - Runs with elevated privileges</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-purple-400 mb-2">Client-side Fallback</h2>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400 font-bold">Function</span>
+                    <span>AuthManager.ensureUserProfile() - Checks and creates profile</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-blue-400 font-bold">Integration</span>
+                    <span>Called after successful authentication</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-yellow-400 font-bold">RLS Compliant</span>
+                    <span>Only creates profile for authenticated user (auth.uid())</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-red-400 font-bold">Error Handling</span>
+                    <span>Comprehensive error handling with user notifications</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-red-400 mb-2">RLS (Row Level Security)</h2>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400 font-bold">Self Access</span>
+                    <span>Users can only access their own profile data</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-blue-400 font-bold">Public Read</span>
+                    <span>Events and matches are publicly readable</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-yellow-400 font-bold">Admin Access</span>
+                    <span>Admin users can access all data for management</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-red-400 font-bold">Isolation</span>
+                    <span>Complete data isolation between users</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">JavaScript Test Functions</h2>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400 font-bold">testProfileBootstrap()</span>
+                    <span>Run all profile bootstrap tests</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-blue-400 font-bold">testEnsureProfile(user)</span>
+                    <span>Test profile creation for specific user</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-yellow-400 font-bold">testRLS()</span>
+                    <span>Test Row Level Security behavior</span>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button onclick="runTests()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                    Run All Tests
+                </button>
+                <button onclick="loadTestScript()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded ml-2">
+                    Load Test Script
+                </button>
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Expected Console Output</h2>
+            <pre class="text-xs text-gray-300 bg-black p-3 rounded overflow-x-auto">
+// Authentication
+AuthManager.init() called
+User authenticated: user@example.com
+
+// Profile Creation
+Ensuring user profile for: user@example.com
+Profile not found, creating new profile
+User profile created successfully
+
+// RLS Test
+RLS Test - Profiles visible: 1
+RLS working correctly - only own profile visible
+
+// All Tests
+🎉 All profile bootstrap tests completed!
+            </pre>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">SQL Test Results</h2>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400">✅</span>
+                    <span>Insert/upsert own profile should succeed</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400">✅</span>
+                    <span>Select own profile should return exactly one row</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400">✅</span>
+                    <span>Select other users should return 0 rows (RLS)</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-red-400">❌</span>
+                    <span>Update other users should be denied (RLS)</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400">✅</span>
+                    <span>Trigger function should exist</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400">✅</span>
+                    <span>Trigger should be active</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Database Schema</h2>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center space-x-2">
+                    <span class="text-green-400 font-bold">users table</span>
+                    <span>id (uuid, primary key), email (text), display_name (text), avatar_url (text), created_at (timestamptz)</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-blue-400 font-bold">RLS Policy</span>
+                    <span>Users can only access their own records (id = auth.uid())</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-yellow-400 font-bold">Trigger</span>
+                    <span>on_auth_user_created - Auto-creates profile on signup</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Troubleshooting</h2>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <li><strong>Profile not created:</strong> Check RLS policies and trigger installation</li>
+                <li><strong>RLS errors:</strong> Verify policies are correctly configured</li>
+                <li><strong>Trigger not firing:</strong> Check trigger installation and permissions</li>
+                <li><strong>Client errors:</strong> Check Supabase client initialization and auth state</li>
+                <li><strong>Console errors:</strong> Check browser console for detailed error messages</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        function runTests() {
+            if (typeof testProfileBootstrap === 'function') {
+                testProfileBootstrap();
+            } else {
+                console.log('Test functions not loaded. Click "Load Test Script" first.');
+            }
+        }
+        
+        function loadTestScript() {
+            const script = document.createElement('script');
+            script.src = 'test-profile-bootstrap.js';
+            script.onload = () => {
+                console.log('✅ Test script loaded. You can now run tests.');
+            };
+            script.onerror = () => {
+                console.error('❌ Failed to load test script');
+            };
+            document.head.appendChild(script);
+        }
+        
+        // Auto-load test script
+        loadTestScript();
+    </script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Frontend Lock System - Fantasy Wrestling</title>
+    <link href="/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <h1 class="text-2xl font-bold mb-4">Frontend Lock System Test</h1>
+    
+    <div class="space-y-6">
+        <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-green-400 mb-2">✅ Implementation Complete</h2>
+            <p class="text-sm">The frontend lock system has been updated to match your exact requirements:</p>
+            <ul class="list-disc list-inside space-y-1 text-sm mt-2">
+                <li><strong>lockBanner</strong>: Red banner with exact styling you requested</li>
+                <li><strong>lockCountdown</strong>: Yellow countdown text with hours:minutes:seconds format</li>
+                <li><strong>Debug Logging</strong>: Console logs for event.lock_time and remaining seconds</li>
+                <li><strong>Toast Notifications</strong>: "Predictions closed" message on locked attempts</li>
+            </ul>
+        </div>
+        
+        <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-blue-400 mb-2">Test Steps</h2>
+            <ol class="list-decimal list-inside space-y-1 text-sm">
+                <li>Go to <a href="predictions.html" class="text-yellow-400 hover:underline">predictions.html</a></li>
+                <li>Open browser dev tools (F12) → Console tab</li>
+                <li>Select an event from the dropdown</li>
+                <li>Check console for debug output</li>
+                <li>Verify countdown timer appears in yellow text</li>
+                <li>Test with events that have different lock times</li>
+            </ol>
+        </div>
+        
+        <div class="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-yellow-400 mb-2">Expected Console Output</h2>
+            <pre class="text-xs text-gray-300 bg-black p-3 rounded overflow-x-auto">
+Event data loaded: {id: "...", name: "...", lock_time: "2024-01-28T20:00:00Z", ...}
+Event lock_time: 2024-01-28T20:00:00Z
+CountdownSystem.start() called with event: {...}
+Starting countdown for event: [Event Name]
+Event lock_time: 2024-01-28T20:00:00Z
+Remaining seconds: 3600
+Time remaining: 1:00:00
+            </pre>
+        </div>
+        
+        <div class="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-purple-400 mb-2">HTML Elements Added</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <h3 class="font-semibold text-yellow-400 mb-2">Lock Banner</h3>
+                    <pre class="text-xs text-gray-300 bg-black p-2 rounded">
+&lt;div id="lockBanner" class="hidden bg-red-600 text-white p-4 rounded mb-4 text-center font-bold"&gt;
+    🔒 Predictions are closed for this event.
+&lt;/div&gt;
+                    </pre>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-yellow-400 mb-2">Countdown Timer</h3>
+                    <pre class="text-xs text-gray-300 bg-black p-2 rounded">
+&lt;div id="lockCountdown" class="text-yellow-400 font-bold text-center mb-6"&gt;&lt;/div&gt;
+                    </pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
+            <h2 class="text-lg font-bold text-red-400 mb-2">Countdown Logic</h2>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <li><strong>Format</strong>: Hours:Minutes:Seconds (e.g., "1:30:45")</li>
+                <li><strong>Updates</strong>: Every second via setInterval</li>
+                <li><strong>Auto-lock</strong>: When timer hits 0, disables UI and shows banner</li>
+                <li><strong>Debug</strong>: Logs lock_time and remaining seconds</li>
+            </ul>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded">
+            <h2 class="text-lg font-bold mb-2">Integration Points</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <h3 class="font-semibold text-yellow-400 mb-2">PredictionSystem</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>loadCard() calls CountdownSystem.start()</li>
+                        <li>submitPredictions() checks lock status</li>
+                        <li>savePick() validates lock before saving</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-yellow-400 mb-2">CountdownSystem</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>start(event) - begins countdown for event</li>
+                        <li>updateCountdown() - updates every second</li>
+                        <li>showLockBanner() - displays when locked</li>
+                        <li>disablePredictionUI() - disables all inputs</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
