@@ -50,8 +50,8 @@ const WorldMap: React.FC<WorldMapProps> = ({ onLocationSelect }) => {
         ref={globeEl}
         width={width}
         height={height}
-        globeImageUrl="//unpkg.com/three-globe/example/img/earth-night.jpg"
-        backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
+        globeImageUrl="https://unpkg.com/three-globe/example/img/earth-night.jpg"
+        backgroundImageUrl="https://unpkg.com/three-globe/example/img/night-sky.png"
         lineHoverPrecision={0}
         
         polygonsData={countries.features}
