@@ -23,25 +23,25 @@ export const HUD: React.FC<HUDProps> = ({ status, analysis, selectedLocation, on
   };
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-10 flex flex-col justify-between p-4 md:p-6 text-cyber-cyan font-mono uppercase tracking-wider">
+    <div className="pointer-events-none fixed inset-0 z-10 flex flex-col justify-between p-6 text-cyber-cyan font-mono uppercase tracking-wider">
       
       {/* Header Bar */}
       <div className="flex justify-between items-start pointer-events-auto">
         <div className="border-l-4 border-cyber-cyan pl-4 bg-cyber-glass backdrop-blur-sm p-2">
-          <h1 className="text-xl md:text-3xl font-display font-bold text-white mb-1">
+          <h1 className="text-3xl font-display font-bold text-white mb-1">
             <GlitchText text="NEON NEXUS" />
           </h1>
-          <div className="flex items-center gap-2 text-[10px] md:text-xs">
+          <div className="flex items-center gap-2 text-xs">
             <Activity size={14} className="animate-pulse" />
             <span>SYSTEM ONLINE // V.2077.4</span>
           </div>
         </div>
 
         <div className="flex flex-col items-end gap-2">
-          <div className="bg-cyber-black border border-cyber-pink px-4 py-1 text-cyber-pink font-bold text-xs md:text-sm animate-pulse shadow-[0_0_10px_#ff00ff]">
+          <div className="bg-cyber-black border border-cyber-pink px-4 py-1 text-cyber-pink font-bold text-sm animate-pulse shadow-[0_0_10px_#ff00ff]">
             {status}
           </div>
-          <div className="text-[10px] md:text-xs text-gray-400 hidden md:block">
+          <div className="text-xs text-gray-400">
             LAT: {Math.random().toFixed(4)} // LNG: {Math.random().toFixed(4)}
           </div>
         </div>
@@ -49,7 +49,7 @@ export const HUD: React.FC<HUDProps> = ({ status, analysis, selectedLocation, on
 
       {/* Analysis Panel (Center-Right or Overlay) */}
       {analysis && selectedLocation && (
-        <div className="pointer-events-auto absolute top-20 left-4 right-4 md:left-auto md:right-6 md:top-24 md:w-96 bg-cyber-black/90 border border-cyber-cyan backdrop-blur-md p-4 md:p-6 clip-path-corner transition-all duration-300 shadow-[0_0_20px_rgba(0,243,255,0.2)] max-h-[60vh] overflow-y-auto">
+        <div className="pointer-events-auto absolute top-24 right-6 w-96 bg-cyber-black/90 border border-cyber-cyan backdrop-blur-md p-6 clip-path-corner transition-all duration-300 shadow-[0_0_20px_rgba(0,243,255,0.2)]">
            <button 
              onClick={onCloseAnalysis}
              className="absolute top-2 right-2 text-cyber-cyan hover:text-white"
@@ -115,7 +115,7 @@ export const HUD: React.FC<HUDProps> = ({ status, analysis, selectedLocation, on
       )}
 
       {/* Footer / Decorative */}
-      <div className="flex justify-between items-end pointer-events-auto hidden md:flex">
+      <div className="flex justify-between items-end pointer-events-auto">
         <div className="w-64 h-32 bg-gradient-to-t from-cyber-cyan/20 to-transparent border-b-2 border-cyber-cyan p-2 relative">
           <div className="absolute bottom-1 left-1 text-[10px] text-cyber-cyan/70">
              // GRID_MATRIX_LOADED <br/>
