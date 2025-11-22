@@ -1,0 +1,41 @@
+name: build
+
+on:
+  push:
+    branches: [ "master", "newgui" ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      CI: false
+      NEXT_PUBLIC_API_URL: api.worldguessr.com
+      NEXT_PUBLIC_WS_HOST: server.worldguessr.com
+      NEXT_PUBLIC_GOOGLE_CLIENT_ID: 471080734176-vm588te8pig8tnmvi00b5hr143d64qjk.apps.googleusercontent.com
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Use dev env on newgui
+      if: github.ref_name == 'newgui'
+      run: |
+        echo "NEXT_PUBLIC_API_URL=devapi.worldguessr.com" >> $GITHUB_ENV
+        echo "NEXT_PUBLIC_WS_HOST=devserver.worldguessr.com" >> $GITHUB_ENV
+
+    - name: Install and Build
+      run: |
+        npm i
+        npm run build
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./out
+        publish_branch: ${{ github.ref_name == 'master' && 'gh-pages' || 'gh-pages-dev' }}

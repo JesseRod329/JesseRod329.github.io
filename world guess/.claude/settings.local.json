@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git commit:*)",
+      "Bash(git add:*)",
+      "Bash(sed:*)",
+      "Bash(node:*)",
+      "Bash(npm install:*)",
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm run build:*)",
+      "Bash(for lang in de es fr ru)",
+      "Bash(do echo \"=== $lang ===\")",
+      "Bash(done)"
+    ],
+    "deny": []
+  }
+}
