@@ -44,7 +44,7 @@ const WorldMap: React.FC<WorldMapProps> = ({ onLocationSelect }) => {
   const getVal = (feat: any) => feat.properties.GDP_MD_EST / Math.max(1e5, feat.properties.POP_EST);
 
   return (
-    <div className="fixed inset-0 z-0 bg-black">
+    <div className="fixed inset-0 z-0 bg-black w-full h-full">
         {/* Starfield background is handled by the globe library or we can add a CSS layer */}
       <Globe
         ref={globeEl}
