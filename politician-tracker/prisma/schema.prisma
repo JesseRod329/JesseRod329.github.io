@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Chamber {
+  HOUSE
+  SENATE
+  OTHER
+}
+
+enum Party {
+  DEMOCRAT
+  REPUBLICAN
+  INDEPENDENT
+  OTHER
+}
+
+enum InstrumentType {
+  STOCK
+  ETF
+  OPTION
+  OTHER
+}
+
+enum TransactionType {
+  BUY
+  SELL
+  UNKNOWN
+}
+
+enum WatchlistItemType {
+  POLITICIAN
+  TICKER
+}
+
+model Politician {
+  id          String   @id @default(cuid())
+  fullName    String
+  chamber     Chamber
+  party       Party
+  state       String?
+  committees  String?
+  externalIds Json?
+  trades      Trade[]
+  watchlistItems WatchlistItem[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Trade {
+  id                      String   @id @default(cuid())
+  politicianId            String
+  politician              Politician @relation(fields: [politicianId], references: [id])
+  ticker                  String
+  assetName               String?
+  instrumentType          InstrumentType
+  transactionType         TransactionType
+  reportedTransactionDate DateTime
+  filedDate               DateTime?
+  amountMin               Float?
+  amountMax               Float?
+  sourceName              String?
+  sourceRef               String?
+  notes                   String?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+  priceSnapshots          PriceSnapshot[]
+
+  @@index([politicianId])
+  @@unique([politicianId, ticker, reportedTransactionDate, amountMin, amountMax, sourceName, sourceRef])
+}
+
+model PriceSnapshot {
+  id        String   @id @default(cuid())
+  tradeId   String?
+  trade     Trade?   @relation(fields: [tradeId], references: [id])
+  ticker    String
+  asOfDate  DateTime
+  closePrice Float
+  sourceName String?
+  createdAt DateTime @default(now())
+
+  @@index([ticker, asOfDate])
+  @@unique([ticker, asOfDate])
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String?  @unique
+  watchlists Watchlist[]
+  createdAt DateTime @default(now())
+}
+
+model Watchlist {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  user      User     @relation(fields: [userId], references: [id])
+  items     WatchlistItem[]
+  createdAt DateTime @default(now())
+
+  @@unique([userId, name])
+}
+
+model WatchlistItem {
+  id           String   @id @default(cuid())
+  watchlistId  String
+  watchlist    Watchlist @relation(fields: [watchlistId], references: [id])
+  type         WatchlistItemType
+  politicianId String?
+  ticker       String?
+  politician   Politician? @relation(fields: [politicianId], references: [id])
+  createdAt    DateTime @default(now())
+
+  @@index([watchlistId])
+}
