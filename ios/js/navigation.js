@@ -14,6 +14,11 @@ class iOSNavigation {
         
         // App configurations
         this.apps = {
+            'stock': {
+                title: 'Stocks',
+                icon: '📈',
+                color: 'linear-gradient(135deg, #10B981 0%, #059669 100%)'
+            },
             'ai-tools': {
                 title: 'AI Tools',
                 icon: '🤖',
@@ -355,6 +360,13 @@ class iOSNavigation {
             return;
         }
         
+        // Special handling for stock app - redirect to politician tracker
+        if (appId === 'stock') {
+            console.log('Stock app - redirecting to politician tracker');
+            window.location.href = '/politician-tracker/';
+            return;
+        }
+
         // Special handling for planner app - redirect to planner page
         if (appId === 'planner') {
             console.log('Planner app - redirecting to planner page');
@@ -523,6 +535,10 @@ class iOSNavigation {
         
         // Customize content by app
         switch (appId) {
+            case 'stock':
+                description.textContent = 'Track US politician stock trades and market moves. Tap the button below to launch.';
+                this.addAppLink(links, '📈 Launch Politician Tracker', '/politician-tracker/');
+                break;
             case 'ai-tools':
                 description.textContent = 'Intelligent automation and AI-powered tools for productivity and creativity.';
                 // Create full AI tools showcase
