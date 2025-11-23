@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 min-h-screen;
+}
+
+a {
+  @apply text-brand-700 hover:underline;
+}
+
+.table-container {
+  @apply overflow-x-auto bg-white shadow-sm rounded-lg border border-slate-200;
+}
