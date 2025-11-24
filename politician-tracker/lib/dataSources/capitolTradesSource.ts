@@ -134,20 +134,20 @@ async function fetchFromCapitolTrades(since: Date, jsonlPath?: string): Promise<
       const tradeDate = parseTradeDate(trade.tradeDate);
       return tradeDate && tradeDate >= since;
     })
-    .map(trade => {
+    .flatMap(trade => {
       const politician = trade.politician;
       const issuer = trade.issuer;
       const ticker = extractTicker(issuer);
       
       if (!ticker || !politician?.name) {
-        return null;
+        return [];
       }
       
       const { min: amountMin, max: amountMax } = parseTradeSize(trade.tradeSize);
       const reportedTransactionDate = parseTradeDate(trade.tradeDate);
       
       if (!reportedTransactionDate) {
-        return null;
+        return [];
       }
       
       // Calculate filed date from reporting gap
@@ -157,7 +157,7 @@ async function fetchFromCapitolTrades(since: Date, jsonlPath?: string): Promise<
         filedDate.setDate(filedDate.getDate() + (trade.reportingGapDays || 0));
       }
       
-      return {
+      return [{
         politician: {
           fullName: politician.name,
           chamber: mapChamber(politician.chamber) as any,
@@ -184,9 +184,8 @@ async function fetchFromCapitolTrades(since: Date, jsonlPath?: string): Promise<
           sourceRef: trade.detailUrl || undefined,
           notes: trade.owner ? `Owner: ${trade.owner}` : undefined
         }
-      };
-    })
-    .filter((trade): trade is NormalizedTrade => trade !== null);
+      }];
+    });
 }
 
 export const capitolTradesSource: PoliticianTradeSource = {
