@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd politician-tracker && npm install && npx prisma generate && npx prisma db push --accept-data-loss && npm run build",
+  "installCommand": "cd politician-tracker && npm install",
+  "framework": "nextjs",
+  "outputDirectory": "politician-tracker/.next"
+}
+
