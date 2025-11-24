@@ -5,7 +5,11 @@ import { computePerformance } from "@/lib/performance";
 import InteractiveMapSection from "@/components/InteractiveMapSection";
 
 async function getRecentTrades() {
+  // Prioritize Capitol Trades data, exclude mock data
   const trades = await prisma.trade.findMany({
+    where: {
+      sourceName: { not: 'mock' } // Exclude mock data
+    },
     include: { politician: true },
     orderBy: { reportedTransactionDate: "desc" },
     take: 10
