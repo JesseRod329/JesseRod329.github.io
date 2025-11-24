@@ -1,5 +1,6 @@
 import { prisma } from "./prisma";
 import { mockTradeSource } from "./dataSources/mockSource";
+import { capitolTradesSource } from "./dataSources/capitolTradesSource";
 import { PoliticianTradeSource } from "./dataSources/base";
 
 function normalizeString(value: string | null | undefined) {
@@ -7,7 +8,8 @@ function normalizeString(value: string | null | undefined) {
 }
 
 export async function ingestRecentTrades({ since, source }: { since: Date; source?: PoliticianTradeSource }) {
-  const tradeSource = source ?? mockTradeSource;
+  // Use Capitol Trades source by default (data already imported), fall back to mock if needed
+  const tradeSource = source ?? (process.env.USE_MOCK_DATA === 'true' ? mockTradeSource : capitolTradesSource);
   const trades = await tradeSource.fetchRecentTrades(since);
 
   for (const item of trades) {
