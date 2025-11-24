@@ -15,15 +15,12 @@ A Next.js + Prisma demo that tracks and analyzes stock and options trades disclo
    cd politician-tracker
    npm install
    ```
-2. Set environment variables by copying the example file:
-   ```bash
-   cp .env.example .env.local
-   ```
-3. Configure your database connection in `.env.local`:
-   ```bash
-   DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/politician_trades"
-   ```
-4. Run migrations and generate the Prisma client:
+2. **Database Setup**:
+   - **Local (SQLite)**: No setup needed! The app will use `prisma/dev.db` automatically.
+   - **Local (Postgres)**: See `DATABASE_SETUP.md` for instructions.
+   - **Production (Vercel)**: See `DATABASE_SETUP.md` for Vercel Postgres setup.
+
+3. Run migrations and generate the Prisma client (if using Postgres):
    ```bash
    npm run prisma:migrate -- --name init
    npm run prisma:generate
@@ -44,13 +41,26 @@ A Next.js + Prisma demo that tracks and analyzes stock and options trades disclo
   - `GET/POST/DELETE /api/watchlist` – minimal demo watchlist for a single user.
 
 ## Environment variables
+
+### Local Development
+- `DATABASE_URL` (optional) - If not set, uses SQLite at `prisma/dev.db`
+- `DIRECT_URL` (optional) - For Postgres migrations, same as DATABASE_URL for local
+
+### Production (Vercel)
+Vercel Postgres automatically provides:
+- `POSTGRES_PRISMA_URL` → mapped to `DATABASE_URL`
+- `POSTGRES_URL_NON_POOLING` → mapped to `DIRECT_URL`
+
+### Other Variables
 ```
-DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/politician_trades"
 POLITICIAN_TRADES_API_URL=""
 POLITICIAN_TRADES_API_KEY=""
 MARKET_DATA_API_URL=""
 MARKET_DATA_API_KEY=""
+GEMINI_API_KEY=""  # For state analysis features
 ```
+
+See `DATABASE_SETUP.md` for detailed database configuration.
 
 ## Disclaimer
 This project is for transparency and research only. It is **not** investment, legal, or tax advice. Market data and trade disclosures may be delayed, estimated, or incomplete. Always perform independent verification before making financial decisions.

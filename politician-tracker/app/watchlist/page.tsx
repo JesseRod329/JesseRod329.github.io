@@ -1,10 +1,20 @@
 import { WatchlistCard } from "@/components/WatchlistCard";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = 'force-dynamic'; // Prevent static generation
+
 const DEMO_USER_ID = "demo-user";
 
 async function getWatchlist() {
-  await prisma.user.upsert({ where: { id: DEMO_USER_ID }, update: {}, create: { id: DEMO_USER_ID } });
+  try {
+    await prisma.user.upsert({ where: { id: DEMO_USER_ID }, update: {}, create: { id: DEMO_USER_ID } });
+  } catch (error) {
+    // Ignore unique constraint errors during build/static generation
+    if (error && typeof error === 'object' && 'code' in error && error.code !== 'P2002') {
+      throw error;
+    }
+  }
+  
   const list = await prisma.watchlist.findFirst({
     where: { userId: DEMO_USER_ID },
     include: { items: { include: { politician: true } } }
@@ -33,7 +43,12 @@ async function getWatchlist() {
 }
 
 export default async function WatchlistPage() {
-  const entry = await getWatchlist();
+  const entry = await getWatchlist().catch(() => ({
+    id: "temp",
+    name: "My Watchlist",
+    politicians: [],
+    tickers: []
+  }));
   return (
     <main className="space-y-4">
       <div className="flex items-center justify-between">

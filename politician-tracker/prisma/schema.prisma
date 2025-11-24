@@ -3,11 +3,21 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // directUrl is optional - Prisma will use url for migrations if not specified
+  // The runtime code in lib/prisma.ts can use POSTGRES_URL for direct connections when needed
 }
 
-// Enums not supported in SQLite, using String with application-level validation
+// Prisma Postgres provides:
+// - PRISMA_DATABASE_URL (mapped to DATABASE_URL)
+// - POSTGRES_URL (mapped to DIRECT_URL)
+//
+// Generic Vercel Postgres also supported:
+// - POSTGRES_PRISMA_URL (mapped to DATABASE_URL)
+// - POSTGRES_URL_NON_POOLING (mapped to DIRECT_URL)
+
+// Using String fields for enum-like values for flexibility
 
 model Politician {
   id          String   @id @default(cuid())
