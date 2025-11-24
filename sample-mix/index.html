@@ -9,7 +9,14 @@
 <body>
   <div class="container">
     <header class="header">
-      <h1>Sample Mix</h1>
+      <div class="header-top">
+        <h1>Sample Mix</h1>
+        <div class="header-actions">
+          <button class="btn-icon" id="settingsBtn" title="Settings" aria-label="Settings">⚙️</button>
+          <button class="btn-icon" id="helpBtn" title="Keyboard Shortcuts (?)" aria-label="Help">?</button>
+          <button class="btn-icon" id="fullscreenBtn" title="Fullscreen" aria-label="Fullscreen">⛶</button>
+        </div>
+      </div>
       <p class="subtitle">Upload, chop, and play samples</p>
     </header>
 
@@ -45,6 +52,14 @@
         <span class="value" id="sampleRate">-</span>
       </div>
       <div class="info-row">
+        <span class="label">BPM:</span>
+        <span class="value" id="bpm">-</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Key:</span>
+        <span class="value" id="key">-</span>
+      </div>
+      <div class="info-row">
         <span class="label">Slices:</span>
         <span class="value" id="sliceCount">0</span>
       </div>
@@ -53,51 +68,334 @@
     <!-- Waveform & Controls -->
     <section class="waveform-section" id="waveformSection" style="display: none;">
       <div class="controls-bar">
-        <button class="btn btn-primary" id="autoChopBtn">Auto Chop</button>
-        <button class="btn btn-secondary" id="clearSlicesBtn">Clear Slices</button>
-        <div class="slider-group">
-          <label for="sensitivitySlider">Sensitivity:</label>
-          <input type="range" id="sensitivitySlider" min="0.1" max="1" step="0.1" value="0.5">
-          <span id="sensitivityValue">0.5</span>
+        <div class="controls-group">
+          <button class="btn btn-primary" id="autoChopBtn">Auto Chop</button>
+          <button class="btn btn-secondary" id="clearSlicesBtn">Clear Slices</button>
+          <button class="btn btn-secondary" id="undoBtn" title="Undo (Ctrl+Z)">↶ Undo</button>
+          <button class="btn btn-secondary" id="redoBtn" title="Redo (Ctrl+Y)">↷ Redo</button>
         </div>
-        <div class="slider-group">
-          <label for="minSliceLength">Min Length (ms):</label>
-          <input type="range" id="minSliceLength" min="50" max="500" step="50" value="100">
-          <span id="minLengthValue">100</span>
+        <div class="controls-group">
+          <div class="slider-group">
+            <label for="sensitivitySlider">Sensitivity:</label>
+            <input type="range" id="sensitivitySlider" min="0.1" max="1" step="0.1" value="0.5">
+            <span id="sensitivityValue">0.5</span>
+          </div>
+          <div class="slider-group">
+            <label for="minSliceLength">Min Length (ms):</label>
+            <input type="range" id="minSliceLength" min="50" max="500" step="50" value="100">
+            <span id="minLengthValue">100</span>
+          </div>
+          <div class="slider-group">
+            <label for="zoomSlider">Zoom:</label>
+            <input type="range" id="zoomSlider" min="0.1" max="10" step="0.1" value="1">
+            <span id="zoomValue">100%</span>
+          </div>
+          <div class="checkbox-group">
+            <label><input type="checkbox" id="snapToGrid"> Snap to Grid</label>
+            <label><input type="checkbox" id="showGrid"> Show Grid</label>
+          </div>
+        </div>
+        <div class="controls-group">
+          <select id="detectionAlgorithm" class="select-input">
+            <option value="amplitude">Amplitude Detection</option>
+            <option value="spectral">Spectral Detection</option>
+            <option value="onset">Onset Detection</option>
+          </select>
+          <select id="sensitivityPreset" class="select-input">
+            <option value="custom">Custom</option>
+            <option value="tight">Tight</option>
+            <option value="medium">Medium</option>
+            <option value="loose">Loose</option>
+          </select>
         </div>
       </div>
-      <div class="waveform-container">
-        <canvas id="waveformCanvas"></canvas>
-        <div class="slice-markers" id="sliceMarkers"></div>
+      <div class="waveform-wrapper">
+        <div class="waveform-scroll-container" id="waveformScrollContainer">
+          <div class="waveform-container">
+            <canvas id="waveformCanvas"></canvas>
+            <div class="slice-markers" id="sliceMarkers"></div>
+            <div class="playhead" id="playhead"></div>
+            <div class="time-display" id="timeDisplay"></div>
+            <div class="grid-overlay" id="gridOverlay"></div>
+          </div>
+        </div>
+        <div class="waveform-minimap" id="waveformMinimap">
+          <canvas id="minimapCanvas"></canvas>
+          <div class="minimap-viewport" id="minimapViewport"></div>
+        </div>
       </div>
     </section>
 
     <!-- MIDI Pad Grid -->
     <section class="pads-section" id="padsSection" style="display: none;">
-      <h2>MIDI Pads</h2>
+      <div class="section-header">
+        <h2>MIDI Pads</h2>
+        <div class="section-actions">
+          <button class="btn btn-secondary" id="clearPadsBtn">Clear All</button>
+          <button class="btn btn-secondary" id="exportPadsBtn">Export</button>
+          <button class="btn btn-secondary" id="importPadsBtn">Import</button>
+          <button class="btn btn-secondary" id="recordBtn">Record</button>
+          <button class="btn btn-secondary" id="metronomeBtn">Metronome</button>
+        </div>
+      </div>
       <div class="pads-controls">
         <div class="slider-group">
           <label for="masterVolume">Master Volume:</label>
           <input type="range" id="masterVolume" min="0" max="1" step="0.01" value="0.8">
           <span id="masterVolumeValue">80%</span>
         </div>
-        <button class="btn btn-secondary" id="clearPadsBtn">Clear All Pads</button>
+        <div class="slider-group">
+          <label for="bpmControl">BPM:</label>
+          <input type="range" id="bpmControl" min="60" max="200" step="1" value="120">
+          <span id="bpmValue">120</span>
+        </div>
+        <div class="checkbox-group">
+          <label><input type="checkbox" id="padSearchEnabled"> Search Pads</label>
+        </div>
+        <input type="text" id="padSearchInput" class="search-input" placeholder="Search pads..." style="display: none;">
       </div>
       <div class="pads-grid" id="padsGrid">
         <!-- Pads will be generated by JavaScript -->
       </div>
       <div class="keyboard-hint">
-        <p>Press Q-P, A-L, Z-M, or 1-0 to trigger pads</p>
+        <p>Press Q-P, A-L, Z-M, or 1-0 to trigger pads | Double-click to clear pad</p>
       </div>
     </section>
+
+    <!-- Pad Settings Modal -->
+    <div class="modal" id="padSettingsModal" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Pad Settings</h3>
+          <button class="modal-close" id="closePadSettings">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="pad-settings-grid">
+            <div class="setting-group">
+              <label>Volume</label>
+              <input type="range" id="padVolume" min="0" max="1" step="0.01" value="1">
+              <span id="padVolumeValue">100%</span>
+            </div>
+            <div class="setting-group">
+              <label>Pan</label>
+              <input type="range" id="padPan" min="-1" max="1" step="0.01" value="0">
+              <span id="padPanValue">Center</span>
+            </div>
+            <div class="setting-group">
+              <label>Pitch (semitones)</label>
+              <input type="range" id="padPitch" min="-12" max="12" step="1" value="0">
+              <span id="padPitchValue">0</span>
+            </div>
+            <div class="setting-group">
+              <label>Reverse</label>
+              <input type="checkbox" id="padReverse">
+            </div>
+            <div class="setting-group">
+              <label>Loop</label>
+              <input type="checkbox" id="padLoop">
+            </div>
+            <div class="setting-group">
+              <label>One-shot</label>
+              <input type="checkbox" id="padOneshot">
+            </div>
+            <div class="setting-group">
+              <label>ADSR Attack</label>
+              <input type="range" id="padAttack" min="0" max="1" step="0.01" value="0.01">
+              <span id="padAttackValue">0.01s</span>
+            </div>
+            <div class="setting-group">
+              <label>ADSR Decay</label>
+              <input type="range" id="padDecay" min="0" max="1" step="0.01" value="0.1">
+              <span id="padDecayValue">0.1s</span>
+            </div>
+            <div class="setting-group">
+              <label>ADSR Sustain</label>
+              <input type="range" id="padSustain" min="0" max="1" step="0.01" value="0.7">
+              <span id="padSustainValue">70%</span>
+            </div>
+            <div class="setting-group">
+              <label>ADSR Release</label>
+              <input type="range" id="padRelease" min="0" max="1" step="0.01" value="0.2">
+              <span id="padReleaseValue">0.2s</span>
+            </div>
+            <div class="setting-group">
+              <label>Low-pass Filter</label>
+              <input type="range" id="padLowpass" min="20" max="20000" step="1" value="20000">
+              <span id="padLowpassValue">20kHz</span>
+            </div>
+            <div class="setting-group">
+              <label>High-pass Filter</label>
+              <input type="range" id="padHighpass" min="20" max="20000" step="1" value="20">
+              <span id="padHighpassValue">20Hz</span>
+            </div>
+            <div class="setting-group">
+              <label>Reverb</label>
+              <input type="range" id="padReverb" min="0" max="1" step="0.01" value="0">
+              <span id="padReverbValue">0%</span>
+            </div>
+            <div class="setting-group">
+              <label>Delay</label>
+              <input type="range" id="padDelay" min="0" max="1" step="0.01" value="0">
+              <span id="padDelayValue">0%</span>
+            </div>
+            <div class="setting-group">
+              <label>Distortion</label>
+              <input type="range" id="padDistortion" min="0" max="100" step="1" value="0">
+              <span id="padDistortionValue">0%</span>
+            </div>
+            <div class="setting-group">
+              <label>EQ Low</label>
+              <input type="range" id="padEQLow" min="-12" max="12" step="0.1" value="0">
+              <span id="padEQLowValue">0dB</span>
+            </div>
+            <div class="setting-group">
+              <label>EQ Mid</label>
+              <input type="range" id="padEQMid" min="-12" max="12" step="0.1" value="0">
+              <span id="padEQMidValue">0dB</span>
+            </div>
+            <div class="setting-group">
+              <label>EQ High</label>
+              <input type="range" id="padEQHigh" min="-12" max="12" step="0.1" value="0">
+              <span id="padEQHighValue">0dB</span>
+            </div>
+            <div class="setting-group">
+              <label>Mute</label>
+              <input type="checkbox" id="padMute">
+            </div>
+            <div class="setting-group">
+              <label>Solo</label>
+              <input type="checkbox" id="padSolo">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" id="savePadSettings">Save</button>
+          <button class="btn btn-secondary" id="cancelPadSettings">Cancel</button>
+        </div>
+      </div>
+    </div>
 
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay" style="display: none;">
       <div class="spinner"></div>
       <p id="loadingText">Processing audio...</p>
     </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Settings</h3>
+          <button class="modal-close" id="closeSettings">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="settings-tabs">
+            <button class="tab-btn active" data-tab="general">General</button>
+            <button class="tab-btn" data-tab="audio">Audio</button>
+            <button class="tab-btn" data-tab="theme">Theme</button>
+            <button class="tab-btn" data-tab="keyboard">Keyboard</button>
+          </div>
+          <div class="settings-content">
+            <div class="tab-content active" id="generalTab">
+              <div class="setting-item">
+                <label>Pad Grid Size</label>
+                <select id="padGridSize">
+                  <option value="32">32 pads (4x8)</option>
+                  <option value="16">16 pads (4x4)</option>
+                  <option value="64">64 pads (8x8)</option>
+                </select>
+              </div>
+              <div class="setting-item">
+                <label>Auto-save Projects</label>
+                <input type="checkbox" id="autoSave">
+              </div>
+              <div class="setting-item">
+                <label>Show Tutorial on Start</label>
+                <input type="checkbox" id="showTutorial">
+              </div>
+            </div>
+            <div class="tab-content" id="audioTab">
+              <div class="setting-item">
+                <label>Sample Rate</label>
+                <select id="sampleRateSetting">
+                  <option value="44100">44.1 kHz</option>
+                  <option value="48000">48 kHz</option>
+                  <option value="96000">96 kHz</option>
+                </select>
+              </div>
+              <div class="setting-item">
+                <label>Buffer Size</label>
+                <select id="bufferSize">
+                  <option value="256">256</option>
+                  <option value="512">512</option>
+                  <option value="1024">1024</option>
+                </select>
+              </div>
+            </div>
+            <div class="tab-content" id="themeTab">
+              <div class="setting-item">
+                <label>Theme</label>
+                <select id="themeSelect">
+                  <option value="auto">Auto (System)</option>
+                  <option value="light">Light</option>
+                  <option value="dark">Dark</option>
+                </select>
+              </div>
+              <div class="setting-item">
+                <label>Waveform Style</label>
+                <select id="waveformStyle">
+                  <option value="default">Default</option>
+                  <option value="minimal">Minimal</option>
+                  <option value="detailed">Detailed</option>
+                </select>
+              </div>
+            </div>
+            <div class="tab-content" id="keyboardTab">
+              <div id="keyboardShortcutsList"></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" id="saveSettings">Save</button>
+          <button class="btn btn-secondary" id="cancelSettings">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Help/Shortcuts Modal -->
+    <div class="modal" id="helpModal" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Keyboard Shortcuts</h3>
+          <button class="modal-close" id="closeHelp">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div id="shortcutsContent"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Spectrum Analyzer -->
+    <div class="spectrum-analyzer" id="spectrumAnalyzer" style="display: none;">
+      <canvas id="spectrumCanvas"></canvas>
+    </div>
+
+    <!-- Project Actions -->
+    <div class="project-actions" id="projectActions" style="display: none;">
+      <button class="btn btn-primary" id="saveProjectBtn">Save Project</button>
+      <button class="btn btn-secondary" id="loadProjectBtn">Load Project</button>
+      <button class="btn btn-secondary" id="exportSlicesBtn">Export Slices</button>
+      <button class="btn btn-secondary" id="exportMixdownBtn">Export Mixdown</button>
+      <button class="btn btn-secondary" id="exportWaveformBtn">Export Waveform</button>
+    </div>
   </div>
 
+  <script src="ui-feedback.js"></script>
+  <script src="effects-processor.js"></script>
+  <script src="project-manager.js"></script>
+  <script src="export-manager.js"></script>
+  <script src="settings-manager.js"></script>
+  <script src="tutorial.js"></script>
   <script src="audio-processor.js"></script>
   <script src="waveform.js"></script>
   <script src="pad-controller.js"></script>

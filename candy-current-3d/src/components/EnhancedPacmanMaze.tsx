@@ -242,3 +242,15 @@ export default EnhancedPacmanMaze;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+

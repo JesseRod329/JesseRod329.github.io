@@ -2,6 +2,7 @@ import { StatsBar } from "@/components/StatsBar";
 import { TradeTable } from "@/components/TradeTable";
 import { prisma } from "@/lib/prisma";
 import { computePerformance } from "@/lib/performance";
+import InteractiveMapSection from "@/components/InteractiveMapSection";
 
 async function getRecentTrades() {
   const trades = await prisma.trade.findMany({
@@ -31,7 +32,10 @@ export default async function Home() {
   ];
 
   return (
-    <main className="space-y-6">
+    <main className="space-y-8">
+      {/* Interactive Globe Section */}
+      <InteractiveMapSection />
+
       <StatsBar stats={stats} />
       <section className="space-y-3">
         <div className="flex items-center justify-between">

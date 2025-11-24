@@ -6,7 +6,7 @@ function normalizeString(value: string | null | undefined) {
   return value?.trim();
 }
 
-export async function ingestRecentTrades({ since }: { since: Date; source?: PoliticianTradeSource }) {
+export async function ingestRecentTrades({ since, source }: { since: Date; source?: PoliticianTradeSource }) {
   const tradeSource = source ?? mockTradeSource;
   const trades = await tradeSource.fetchRecentTrades(since);
 
@@ -19,14 +19,14 @@ export async function ingestRecentTrades({ since }: { since: Date; source?: Poli
         party: (item.politician.party || "OTHER") as any,
         state: normalizeString(item.politician.state ?? null),
         committees: item.politician.committees?.join(",") ?? null,
-        externalIds: item.politician.externalIds ?? {}
+        externalIds: item.politician.externalIds ? JSON.stringify(item.politician.externalIds) : null
       },
       update: {
         chamber: (item.politician.chamber || "OTHER") as any,
         party: (item.politician.party || "OTHER") as any,
         state: normalizeString(item.politician.state ?? null),
         committees: item.politician.committees?.join(",") ?? null,
-        externalIds: item.politician.externalIds ?? {}
+        externalIds: item.politician.externalIds ? JSON.stringify(item.politician.externalIds) : null
       }
     });
 
@@ -36,10 +36,10 @@ export async function ingestRecentTrades({ since }: { since: Date; source?: Poli
           politicianId: politician.id,
           ticker: item.trade.ticker,
           reportedTransactionDate: item.trade.reportedTransactionDate,
-          amountMin: item.trade.amountMin ?? null,
-          amountMax: item.trade.amountMax ?? null,
-          sourceName: item.trade.sourceName ?? null,
-          sourceRef: item.trade.sourceRef ?? null
+          amountMin: (item.trade.amountMin ?? null) as any,
+          amountMax: (item.trade.amountMax ?? null) as any,
+          sourceName: (item.trade.sourceName ?? null) as any,
+          sourceRef: (item.trade.sourceRef ?? null) as any
         }
       },
       create: {

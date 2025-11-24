@@ -91,6 +91,146 @@ class AudioProcessor {
   }
 
   /**
+   * Detect beats using spectral analysis
+   */
+  detectBeatsSpectral(sensitivity = 0.5, minSliceLength = 0.1) {
+    if (!this.audioBuffer) return [];
+    
+    const channelData = this.audioBuffer.getChannelData(0);
+    const sampleRate = this.audioBuffer.sampleRate;
+    const fftSize = 2048;
+    const hopSize = Math.floor(fftSize / 4);
+    const minSamples = Math.floor(minSliceLength * sampleRate);
+    
+    // Calculate spectral flux
+    const spectralFlux = [];
+    let previousSpectrum = new Float32Array(fftSize / 2);
+    
+    for (let i = 0; i < channelData.length - fftSize; i += hopSize) {
+      const frame = channelData.subarray(i, i + fftSize);
+      const spectrum = this.computeFFT(frame);
+      
+      let flux = 0;
+      for (let j = 0; j < spectrum.length; j++) {
+        const diff = spectrum[j] - previousSpectrum[j];
+        if (diff > 0) flux += diff;
+      }
+      
+      spectralFlux.push({ index: i, flux });
+      previousSpectrum = spectrum;
+    }
+    
+    // Find peaks in spectral flux
+    const maxFlux = Math.max(...spectralFlux.map(s => s.flux));
+    const threshold = maxFlux * sensitivity;
+    const peaks = [];
+    let lastPeak = -minSamples;
+    
+    for (let i = 1; i < spectralFlux.length - 1; i++) {
+      const sampleIndex = spectralFlux[i].index;
+      
+      if (sampleIndex - lastPeak < minSamples) continue;
+      
+      if (spectralFlux[i].flux > threshold &&
+          spectralFlux[i].flux > spectralFlux[i - 1].flux &&
+          spectralFlux[i].flux > spectralFlux[i + 1].flux) {
+        peaks.push(sampleIndex);
+        lastPeak = sampleIndex;
+      }
+    }
+    
+    if (peaks.length === 0 || peaks[0] > minSamples) {
+      peaks.unshift(0);
+    }
+    if (peaks[peaks.length - 1] < channelData.length - minSamples) {
+      peaks.push(channelData.length);
+    }
+    
+    return peaks;
+  }
+
+  /**
+   * Detect beats using onset detection
+   */
+  detectBeatsOnset(sensitivity = 0.5, minSliceLength = 0.1) {
+    if (!this.audioBuffer) return [];
+    
+    const channelData = this.audioBuffer.getChannelData(0);
+    const sampleRate = this.audioBuffer.sampleRate;
+    const minSamples = Math.floor(minSliceLength * sampleRate);
+    
+    // High-frequency emphasis filter
+    const filtered = new Float32Array(channelData.length);
+    for (let i = 1; i < channelData.length; i++) {
+      filtered[i] = channelData[i] - 0.95 * channelData[i - 1];
+    }
+    
+    // Calculate energy
+    const windowSize = Math.floor(sampleRate * 0.01);
+    const energy = [];
+    
+    for (let i = 0; i < filtered.length; i += windowSize) {
+      let sum = 0;
+      for (let j = 0; j < windowSize && i + j < filtered.length; j++) {
+        sum += filtered[i + j] * filtered[i + j];
+      }
+      energy.push({ index: i, value: sum / windowSize });
+    }
+    
+    // Detect onsets
+    const maxEnergy = Math.max(...energy.map(e => e.value));
+    const threshold = maxEnergy * sensitivity;
+    const peaks = [];
+    let lastPeak = -minSamples;
+    
+    for (let i = 1; i < energy.length - 1; i++) {
+      const sampleIndex = energy[i].index;
+      
+      if (sampleIndex - lastPeak < minSamples) continue;
+      
+      if (energy[i].value > threshold &&
+          energy[i].value > energy[i - 1].value &&
+          energy[i].value > energy[i + 1].value) {
+        peaks.push(sampleIndex);
+        lastPeak = sampleIndex;
+      }
+    }
+    
+    if (peaks.length === 0 || peaks[0] > minSamples) {
+      peaks.unshift(0);
+    }
+    if (peaks[peaks.length - 1] < channelData.length - minSamples) {
+      peaks.push(channelData.length);
+    }
+    
+    return peaks;
+  }
+
+  /**
+   * Simple FFT computation (simplified)
+   */
+  computeFFT(frame) {
+    // Simplified FFT - in production would use proper FFT
+    const N = frame.length;
+    const spectrum = new Float32Array(N / 2);
+    
+    for (let k = 0; k < N / 2; k++) {
+      let real = 0;
+      let imag = 0;
+      
+      for (let n = 0; n < N; n++) {
+        const angle = -2 * Math.PI * k * n / N;
+        real += frame[n] * Math.cos(angle);
+        imag += frame[n] * Math.sin(angle);
+      }
+      
+      spectrum[k] = Math.sqrt(real * real + imag * imag);
+    }
+    
+    return spectrum;
+  }
+
+  /**
    * Create slices from detected beat positions
    */
   createSlices(beatPositions) {

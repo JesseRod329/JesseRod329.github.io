@@ -74,10 +74,18 @@ const PoliticianGlobe: React.FC<PoliticianGlobeProps> = ({ onStateSelect }) => {
       onStateSelect(stateName, null); // Clear previous or set loading
 
       const res = await fetch(`/api/states?state=${encodeURIComponent(stateName)}`);
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: 'Unknown error' }));
+        onStateSelect(stateName, { error: errorData.error || `Server error: ${res.status}` });
+        return;
+      }
+      
       const data = await res.json();
       onStateSelect(stateName, data);
     } catch (error) {
       console.error("Failed to fetch state data", error);
+      onStateSelect(stateName, { error: 'Network error. Please try again.' });
     }
   }, [onStateSelect]);
 

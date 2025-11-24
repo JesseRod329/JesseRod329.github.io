@@ -1,8 +1,12 @@
+import Link from "next/link";
 import { Trade } from "@prisma/client";
 import { TradeSummary } from "@/lib/types";
 
 interface Props {
-  trades: (TradeSummary | (Trade & { politician?: { fullName: string; party: string; chamber: string } | null }))[];
+  trades: (TradeSummary | (Trade & { 
+    politician?: { fullName: string; party: string; chamber: string } | null;
+    performanceSinceReport?: number | null;
+  }))[];
 }
 
 export function TradeTable({ trades }: Props) {
@@ -27,7 +31,18 @@ export function TradeTable({ trades }: Props) {
           {trades.map((trade) => (
             <tr key={trade.id} className="border-t border-slate-100 hover:bg-slate-50">
               <td className="px-3 py-2">{new Date(trade.reportedTransactionDate).toLocaleDateString()}</td>
-              <td className="px-3 py-2 whitespace-nowrap">{trade.politician?.fullName ?? "Unknown"}</td>
+              <td className="px-3 py-2 whitespace-nowrap">
+                {trade.politician?.fullName ? (
+                  <Link
+                    href={`/politicians/${(trade as any).politicianId ?? (trade as any).politician?.id ?? ""}`}
+                    className="text-brand-700 hover:underline"
+                  >
+                    {trade.politician.fullName}
+                  </Link>
+                ) : (
+                  "Unknown"
+                )}
+              </td>
               <td className="px-3 py-2 font-semibold">{trade.ticker}</td>
               <td className="px-3 py-2 uppercase text-xs text-slate-600">{trade.transactionType}</td>
               <td className="px-3 py-2">

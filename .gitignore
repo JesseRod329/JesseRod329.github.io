@@ -45,3 +45,13 @@ stem/pretrained_models/
 node_modules/
 *.log
 
+.vercel
+
+# Next.js and build caches
+**/.next/
+**/.npm-cache/
+**/*.tsbuildinfo
+
+# Local SQLite databases
+**/dev.db
+**/dev.db-journal

@@ -1,4 +1,5 @@
 import { GoogleGenAI, Schema, Type } from "@google/genai";
+import { prisma } from "./prisma";
 
 export interface StateAnalysis {
   stateName: string;
@@ -16,7 +17,32 @@ const createClient = () => {
   return new GoogleGenAI({ apiKey: apiKey || 'dummy_key' });
 };
 
-export const analyzeStateData = async (stateName: string, politicians: any[], topTickers: any[]): Promise<StateAnalysis> => {
+export const analyzeStateData = async (
+  stateName: string,
+  stateCode: string,
+  politicians: any[],
+  topTickers: any[]
+): Promise<StateAnalysis> => {
+  const monthKey = new Date().toISOString().slice(0, 7); // YYYY-MM
+
+  // 1) Try cache first
+  try {
+    const cached = await prisma.stateAnalysisCache.findUnique({
+      where: {
+        stateCode_yearMonth: {
+          stateCode,
+          yearMonth: monthKey
+        }
+      }
+    });
+    if (cached?.analysis) {
+      const parsed = JSON.parse(cached.analysis) as StateAnalysis;
+      return parsed;
+    }
+  } catch (err) {
+    console.error("Failed to read state analysis cache:", err);
+  }
+
   const ai = createClient();
 
   const prompt = `
@@ -60,18 +86,67 @@ export const analyzeStateData = async (stateName: string, politicians: any[], to
 
     const text = response.text;
     if (!text) throw new Error("No response from AI");
-    
-    return JSON.parse(text) as StateAnalysis;
+
+    const analysis = JSON.parse(text) as StateAnalysis;
+
+    // 2) Write to cache (best-effort)
+    try {
+      await prisma.stateAnalysisCache.upsert({
+        where: {
+          stateCode_yearMonth: {
+            stateCode,
+            yearMonth: monthKey
+          }
+        },
+        create: {
+          stateCode,
+          yearMonth: monthKey,
+          analysis: JSON.stringify(analysis)
+        },
+        update: {
+          analysis: JSON.stringify(analysis)
+        }
+      });
+    } catch (cacheErr) {
+      console.error("Failed to write state analysis cache:", cacheErr);
+    }
+
+    return analysis;
   } catch (error) {
     console.error("State analysis failed:", error);
-    return {
+    const fallback: StateAnalysis = {
       stateName,
       summary: "Data analysis unavailable at this time.",
       topSectors: ["Unknown"],
       tradingActivityLevel: "LOW",
       keyInsight: "System offline."
     };
+
+    // Best-effort cache of fallback so we don't keep retrying on every click
+    try {
+      await prisma.stateAnalysisCache.upsert({
+        where: {
+          stateCode_yearMonth: {
+            stateCode,
+            yearMonth: monthKey
+          }
+        },
+        create: {
+          stateCode,
+          yearMonth: monthKey,
+          analysis: JSON.stringify(fallback)
+        },
+        update: {
+          analysis: JSON.stringify(fallback)
+        }
+      });
+    } catch (cacheErr) {
+      console.error("Failed to cache fallback state analysis:", cacheErr);
+    }
+
+    return fallback;
   }
 };
+
 
 
