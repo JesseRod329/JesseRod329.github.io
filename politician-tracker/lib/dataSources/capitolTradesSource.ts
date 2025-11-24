@@ -165,10 +165,10 @@ async function fetchFromCapitolTrades(since: Date, jsonlPath?: string): Promise<
           state: politician.state || null,
           committees: [], // Capitol Trades doesn't provide committees in trade data
           externalIds: {
-            capitolTrades: {
+            capitolTrades: JSON.stringify({
               slug: politician.slug,
               url: politician.url
-            }
+            })
           }
         },
         trade: {
