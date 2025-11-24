@@ -1,0 +1,20 @@
+{
+  "scrapedAt": "2025-11-24T17:36:22.274Z",
+  "source": "https://www.capitoltrades.com/trades",
+  "output": "data/capitol-trades/trades.jsonl",
+  "totalRecords": 35425,
+  "uniquePoliticians": 214,
+  "uniqueIssuers": 3223,
+  "pagesFetched": 2953,
+  "pageRange": {
+    "start": 1,
+    "end": 2953
+  },
+  "siteDigestStats": {
+    "trades": 35425,
+    "filings": 1729,
+    "volume": 2263000000,
+    "politicians": 214,
+    "issuers": 3223
+  }
+}
