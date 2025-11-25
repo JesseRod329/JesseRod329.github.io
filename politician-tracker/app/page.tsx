@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { computePerformance } from "@/lib/performance";
 import InteractiveMapSection from "@/components/InteractiveMapSection";
 
+export const dynamic = 'force-dynamic'; // Prevent static generation - always fetch fresh data
+
 async function getRecentTrades() {
   // Prioritize Capitol Trades data, exclude mock data
   const trades = await prisma.trade.findMany({
@@ -26,7 +28,15 @@ async function getRecentTrades() {
 export default async function Home() {
   const [trades, counts] = await Promise.all([
     getRecentTrades(),
-    prisma.trade.groupBy({ by: ["ticker"], _count: { ticker: true }, orderBy: { _count: { ticker: "desc" } }, take: 5 })
+    prisma.trade.groupBy({ 
+      by: ["ticker"], 
+      where: {
+        sourceName: { not: 'mock' } // Exclude mock data from stats
+      },
+      _count: { ticker: true }, 
+      orderBy: { _count: { ticker: "desc" } }, 
+      take: 5 
+    })
   ]);
 
   const stats = [

@@ -1,6 +1,8 @@
 import { PoliticianCard } from "@/components/PoliticianCard";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = 'force-dynamic'; // Prevent static generation - always fetch fresh data
+
 export default async function PoliticiansPage() {
   const politicians = await prisma.politician.findMany({ orderBy: { fullName: "asc" } });
   return (
