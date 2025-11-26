@@ -1,22 +1,30 @@
 import React from 'react';
-import { CyberpunkAnalysis } from '../types';
+import { CountryData } from '../types';
 import { GitCompare, X } from 'lucide-react';
 
 interface ComparisonPanelProps {
-  countries: Array<{ name: string; analysis: CyberpunkAnalysis | null }>;
+  countries: Array<{ name: string; countryData: CountryData | null }>;
   onClose: () => void;
   onRemoveCountry: (countryName: string) => void;
 }
 
 export const ComparisonPanel: React.FC<ComparisonPanelProps> = ({ countries, onClose, onRemoveCountry }) => {
-  const getThreatColor = (level: string) => {
-    switch(level) {
-      case 'LOW': return 'text-green-400';
-      case 'MODERATE': return 'text-yellow-400';
-      case 'CRITICAL': return 'text-orange-500';
-      case 'EXTREME': return 'text-red-600';
-      default: return 'text-cyber-cyan';
-    }
+  const formatGDP = (gdp: number): string => {
+    if (gdp >= 1e12) return `$${(gdp / 1e12).toFixed(2)}T`;
+    if (gdp >= 1e9) return `$${(gdp / 1e9).toFixed(2)}B`;
+    if (gdp >= 1e6) return `$${(gdp / 1e6).toFixed(2)}M`;
+    return `$${gdp.toLocaleString()}`;
+  };
+
+  const formatPopulation = (pop: number): string => {
+    if (pop >= 1e9) return `${(pop / 1e9).toFixed(2)}B`;
+    if (pop >= 1e6) return `${(pop / 1e6).toFixed(2)}M`;
+    if (pop >= 1e3) return `${(pop / 1e3).toFixed(2)}K`;
+    return pop.toLocaleString();
+  };
+
+  const formatGDPPerCapita = (gdp: number): string => {
+    return `$${Math.round(gdp).toLocaleString()}`;
   };
 
   return (
@@ -53,37 +61,42 @@ export const ComparisonPanel: React.FC<ComparisonPanelProps> = ({ countries, onC
 
                 <h3 className="text-white font-mono text-lg mb-4">{country.name}</h3>
 
-                {country.analysis ? (
+                {country.countryData ? (
                   <div className="space-y-3">
                     <div>
-                      <p className="text-gray-400 text-xs mb-1">THREAT LEVEL</p>
-                      <p className={`font-bold ${getThreatColor(country.analysis.threatLevel)}`}>
-                        {country.analysis.threatLevel}
+                      <p className="text-gray-400 text-xs mb-1">GDP</p>
+                      <p className="text-cyber-cyan font-bold text-sm">
+                        {formatGDP(country.countryData.gdp)}
                       </p>
                     </div>
 
                     <div>
-                      <p className="text-gray-400 text-xs mb-1">TECH INDEX</p>
+                      <p className="text-gray-400 text-xs mb-1">GDP PER CAPITA</p>
                       <div className="flex items-center gap-2">
                         <div className="flex-1 h-2 bg-gray-800">
                           <div
                             className="h-full bg-cyber-cyan"
-                            style={{ width: `${country.analysis.techIndex}%` }}
+                            style={{ width: `${Math.min(100, (country.countryData.gdpPerCapita / 80000) * 100)}%` }}
                           />
                         </div>
-                        <span className="text-cyber-cyan text-sm">{country.analysis.techIndex}%</span>
+                        <span className="text-cyber-cyan text-sm">{formatGDPPerCapita(country.countryData.gdpPerCapita)}</span>
                       </div>
                     </div>
 
                     <div>
-                      <p className="text-gray-400 text-xs mb-1">FACTION</p>
-                      <p className="text-cyber-pink text-sm">{country.analysis.factionControl}</p>
+                      <p className="text-gray-400 text-xs mb-1">POPULATION</p>
+                      <p className="text-cyber-pink text-sm">{formatPopulation(country.countryData.population)}</p>
+                    </div>
+
+                    <div>
+                      <p className="text-gray-400 text-xs mb-1">CAPITAL</p>
+                      <p className="text-white text-sm">{country.countryData.capital}</p>
                     </div>
 
                     <div>
                       <p className="text-gray-400 text-xs mb-1">EXPORTS</p>
                       <div className="flex flex-wrap gap-1">
-                        {country.analysis.notableExports.slice(0, 3).map((exp, i) => (
+                        {country.countryData.tradeExports.slice(0, 3).map((exp, i) => (
                           <span
                             key={i}
                             className="text-xs bg-cyber-cyan/10 border border-cyber-cyan/50 px-2 py-0.5 text-cyber-cyan"
@@ -95,7 +108,7 @@ export const ComparisonPanel: React.FC<ComparisonPanelProps> = ({ countries, onC
                     </div>
                   </div>
                 ) : (
-                  <div className="text-gray-500 text-sm italic">Loading analysis...</div>
+                  <div className="text-gray-500 text-sm italic">Loading data...</div>
                 )}
               </div>
             ))}
@@ -111,4 +124,7 @@ export const ComparisonPanel: React.FC<ComparisonPanelProps> = ({ countries, onC
     </div>
   );
 };
+
+
+
 

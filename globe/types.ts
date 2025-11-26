@@ -6,21 +6,25 @@ export interface LocationData {
   iso_a3?: string;
 }
 
-export interface CyberpunkAnalysis {
+export interface CountryData {
   location: string;
-  threatLevel: 'LOW' | 'MODERATE' | 'CRITICAL' | 'EXTREME';
-  techIndex: number; // 0-100
-  factionControl: string;
-  description: string;
-  notableExports: string[];
+  gdp: number; // in USD
+  gdpPerCapita: number;
+  population: number;
+  currency: string;
+  capital: string;
+  region: string;
+  tradeExports: string[]; // real export products
+  tradePartners: string[]; // major trading partners
+  description: string; // real country description
 }
 
 export enum SystemStatus {
-  IDLE = 'SYSTEM IDLE',
-  SCANNING = 'SCANNING SECTOR...',
-  ANALYZING = 'PROCESSING DATA...',
-  LOCKED = 'TARGET ACQUIRED',
-  ERROR = 'CONNECTION LOST'
+  READY = 'READY',
+  LOADING = 'LOADING...',
+  FETCHING_DATA = 'FETCHING DATA...',
+  DATA_LOADED = 'DATA LOADED',
+  ERROR = 'ERROR'
 }
 
 export interface ChatMessage {
@@ -49,11 +53,11 @@ export interface Arc {
 export interface Bookmark {
   countryName: string;
   timestamp: number;
-  analysis?: CyberpunkAnalysis;
+  countryData?: CountryData;
 }
 
 export interface HistoryEntry {
   countryName: string;
   timestamp: number;
-  analysis?: CyberpunkAnalysis;
+  countryData?: CountryData;
 }

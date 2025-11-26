@@ -8,17 +8,18 @@ import { Timeline } from './components/Timeline';
 import { ComparisonPanel } from './components/ComparisonPanel';
 import { HelpModal } from './components/HelpModal';
 import { HoverPreview } from './components/HoverPreview';
-import { CyberpunkAnalysis, SystemStatus, ChatMessage, City, Arc, HistoryEntry } from './types';
-import { analyzeLocation, chatWithSystem } from './services/geminiService';
+import { CountryData, SystemStatus, ChatMessage, City, Arc, HistoryEntry } from './types';
+import { fetchCountryData } from './services/countryDataService';
+import { chatWithSystem } from './services/geminiService';
 import { useBookmarks } from './hooks/useBookmarks';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { createRippleEffect } from './utils/animations';
 import { Star, History, Settings, GitCompare } from 'lucide-react';
 
 const App: React.FC = () => {
-  const [status, setStatus] = useState<SystemStatus>(SystemStatus.IDLE);
+  const [status, setStatus] = useState<SystemStatus>(SystemStatus.READY);
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
-  const [analysis, setAnalysis] = useState<CyberpunkAnalysis | null>(null);
+  const [countryData, setCountryData] = useState<CountryData | null>(null);
   const globeRef = useRef<WorldMapRef>(null);
   const [countries, setCountries] = useState<Array<{ name: string; iso_a3: string }>>([]);
   
@@ -65,7 +66,7 @@ const App: React.FC = () => {
   const { bookmarks, toggleBookmark, isBookmarked, exportBookmarks } = useBookmarks();
   
   // Comparison mode
-  const [comparisonCountries, setComparisonCountries] = useState<Array<{ name: string; analysis: CyberpunkAnalysis | null }>>([]);
+  const [comparisonCountries, setComparisonCountries] = useState<Array<{ name: string; countryData: CountryData | null }>>([]);
   
   // Globe controls
   const [autoRotate, setAutoRotate] = useState(true);
@@ -89,29 +90,27 @@ const App: React.FC = () => {
     // If shift-click, add to comparison
     if (isShiftClick) {
       if (!comparisonCountries.find(c => c.name === loc.name)) {
-        setComparisonCountries(prev => [...prev, { name: loc.name, analysis: null }]);
+        setComparisonCountries(prev => [...prev, { name: loc.name, countryData: null }]);
         setShowComparison(true);
         
-        // Load analysis for comparison
-        const data = await analyzeLocation(loc.name);
+        // Load country data for comparison
+        const data = await fetchCountryData(loc.name);
         setComparisonCountries(prev => 
-          prev.map(c => c.name === loc.name ? { ...c, analysis: data } : c)
+          prev.map(c => c.name === loc.name ? { ...c, countryData: data } : c)
         );
       }
       return;
     }
     
     setSelectedLocation(loc.name);
-    setStatus(SystemStatus.SCANNING);
-    setAnalysis(null);
+    setStatus(SystemStatus.LOADING);
+    setCountryData(null);
 
     try {
-      setTimeout(async () => {
-        setStatus(SystemStatus.ANALYZING);
-        const data = await analyzeLocation(loc.name);
-        setAnalysis(data);
-        setStatus(SystemStatus.LOCKED);
-      }, 1500);
+      setStatus(SystemStatus.FETCHING_DATA);
+      const data = await fetchCountryData(loc.name);
+      setCountryData(data);
+      setStatus(SystemStatus.DATA_LOADED);
     } catch (e) {
       setStatus(SystemStatus.ERROR);
     }
@@ -151,9 +150,9 @@ const App: React.FC = () => {
   };
 
   const handleCloseAnalysis = () => {
-    setAnalysis(null);
+    setCountryData(null);
     setSelectedLocation(null);
-    setStatus(SystemStatus.IDLE);
+    setStatus(SystemStatus.READY);
   };
 
   const handleSearchSelect = useCallback((countryName: string) => {
@@ -172,7 +171,7 @@ const App: React.FC = () => {
         globeRef.current.flyToCountry(coords.lat, coords.lng);
       }
     }
-  }, []);
+  }, [handleLocationSelect]);
 
   const getApproximateCoords = (countryName: string): { lat: number; lng: number } | null => {
     // Basic coordinate mapping for major countries
@@ -217,9 +216,9 @@ const App: React.FC = () => {
       searchInput?.focus();
     },
     onClearSelection: () => {
-      setAnalysis(null);
+      setCountryData(null);
       setSelectedLocation(null);
-      setStatus(SystemStatus.IDLE);
+      setStatus(SystemStatus.READY);
       setShowHelp(false);
       setShowComparison(false);
     },
@@ -242,7 +241,7 @@ const App: React.FC = () => {
       {/* UI Layer */}
       <HUD 
         status={status}
-        analysis={analysis}
+        countryData={countryData}
         selectedLocation={selectedLocation}
         onCloseAnalysis={handleCloseAnalysis}
         countries={countries}
@@ -359,9 +358,9 @@ const App: React.FC = () => {
       <HoverPreview countryName={hoverCountry} position={hoverPosition} />
       
       {/* Bookmark current location button */}
-      {selectedLocation && analysis && (
+      {selectedLocation && countryData && (
         <button
-          onClick={() => toggleBookmark({ countryName: selectedLocation, timestamp: Date.now(), analysis })}
+          onClick={() => toggleBookmark({ countryName: selectedLocation, timestamp: Date.now(), countryData })}
           className={`fixed top-32 right-6 z-20 p-2 border transition-all pointer-events-auto ${
             isBookmarked(selectedLocation)
               ? 'bg-cyber-pink/20 border-cyber-pink text-cyber-pink'

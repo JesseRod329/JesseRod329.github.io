@@ -38,7 +38,7 @@ export const Terminal: React.FC<TerminalProps> = ({ messages, onSendMessage, isL
         >
           <div className="flex items-center gap-2 text-cyber-pink font-mono text-sm font-bold">
             <TerminalIcon size={14} />
-            <span>NET_RUNNER_UPLINK</span>
+            <span>COUNTRY_DATA_TERMINAL</span>
           </div>
           <button className="text-cyber-pink hover:text-white">
             {isMinimized ? <Maximize2 size={14} /> : <Minimize2 size={14} />}
@@ -53,9 +53,9 @@ export const Terminal: React.FC<TerminalProps> = ({ messages, onSendMessage, isL
               className="flex-1 p-3 overflow-y-auto font-mono text-xs space-y-3 scrollbar-thin scrollbar-thumb-cyber-pink/50"
             >
               <div className="text-gray-500 italic text-[10px]">
-                &gt; Connection established to secure server...<br/>
-                &gt; Identity verified.<br/>
-                &gt; Welcome, User.
+                &gt; Country data terminal initialized...<br/>
+                &gt; Ready to explore world statistics.<br/>
+                &gt; Ask me about any country!
               </div>
               
               {messages.map((msg) => (
@@ -72,7 +72,7 @@ export const Terminal: React.FC<TerminalProps> = ({ messages, onSendMessage, isL
               ))}
               {isLoading && (
                 <div className="text-cyber-cyan animate-pulse">
-                  &gt; PROCESSING_REQUEST...
+                  &gt; Fetching country data...
                 </div>
               )}
            </div>
@@ -84,7 +84,7 @@ export const Terminal: React.FC<TerminalProps> = ({ messages, onSendMessage, isL
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Enter command..."
+                placeholder="Ask about countries..."
                 className="flex-1 bg-transparent border-none outline-none text-white font-mono text-xs placeholder-gray-600"
                 disabled={isLoading}
               />

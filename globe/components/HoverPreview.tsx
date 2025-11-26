@@ -61,7 +61,7 @@ export const HoverPreview: React.FC<HoverPreviewProps> = ({ countryName, positio
         </div>
         
         <div className="mt-2 pt-2 border-t border-cyber-cyan/30">
-          <p className="text-cyber-cyan/70 text-xs">Click for full analysis</p>
+          <p className="text-cyber-cyan/70 text-xs">Click for country data</p>
         </div>
       </div>
     </div>

@@ -1,28 +1,36 @@
 import React from 'react';
-import { CyberpunkAnalysis, SystemStatus } from '../types';
+import { CountryData, SystemStatus } from '../types';
 import { GlitchText } from './GlitchText';
 import { SearchBar } from './SearchBar';
-import { ShieldAlert, Activity, Zap, Radio, MapPin, Hexagon, Crosshair } from 'lucide-react';
+import { Activity, MapPin, DollarSign, Users, Building2, Globe, Crosshair } from 'lucide-react';
 
 interface HUDProps {
   status: SystemStatus;
-  analysis: CyberpunkAnalysis | null;
+  countryData: CountryData | null;
   selectedLocation: string | null;
   onCloseAnalysis: () => void;
   countries: Array<{ name: string; iso_a3: string }>;
   onSearchSelect: (countryName: string) => void;
 }
 
-export const HUD: React.FC<HUDProps> = ({ status, analysis, selectedLocation, onCloseAnalysis, countries, onSearchSelect }) => {
+export const HUD: React.FC<HUDProps> = ({ status, countryData, selectedLocation, onCloseAnalysis, countries, onSearchSelect }) => {
   
-  const getThreatColor = (level: string) => {
-    switch(level) {
-      case 'LOW': return 'text-green-400 border-green-400';
-      case 'MODERATE': return 'text-yellow-400 border-yellow-400';
-      case 'CRITICAL': return 'text-orange-500 border-orange-500';
-      case 'EXTREME': return 'text-red-600 border-red-600 shadow-[0_0_15px_red]';
-      default: return 'text-cyber-cyan border-cyber-cyan';
-    }
+  const formatGDP = (gdp: number): string => {
+    if (gdp >= 1e12) return `$${(gdp / 1e12).toFixed(2)}T`;
+    if (gdp >= 1e9) return `$${(gdp / 1e9).toFixed(2)}B`;
+    if (gdp >= 1e6) return `$${(gdp / 1e6).toFixed(2)}M`;
+    return `$${gdp.toLocaleString()}`;
+  };
+
+  const formatPopulation = (pop: number): string => {
+    if (pop >= 1e9) return `${(pop / 1e9).toFixed(2)}B`;
+    if (pop >= 1e6) return `${(pop / 1e6).toFixed(2)}M`;
+    if (pop >= 1e3) return `${(pop / 1e3).toFixed(2)}K`;
+    return pop.toLocaleString();
+  };
+
+  const formatGDPPerCapita = (gdp: number): string => {
+    return `$${Math.round(gdp).toLocaleString()}`;
   };
 
   return (
@@ -57,8 +65,8 @@ export const HUD: React.FC<HUDProps> = ({ status, analysis, selectedLocation, on
         </div>
       </div>
 
-      {/* Analysis Panel (Center-Right or Overlay) */}
-      {analysis && selectedLocation && (
+      {/* Country Data Panel (Center-Right or Overlay) */}
+      {countryData && selectedLocation && (
         <div className="pointer-events-auto absolute top-24 right-6 w-96 bg-cyber-black/90 border border-cyber-cyan backdrop-blur-md p-6 clip-path-corner transition-all duration-300 shadow-[0_0_20px_rgba(0,243,255,0.2)]">
            <button 
              onClick={onCloseAnalysis}
@@ -69,53 +77,86 @@ export const HUD: React.FC<HUDProps> = ({ status, analysis, selectedLocation, on
            
            <div className="flex items-center gap-2 mb-4 border-b border-cyber-cyan/30 pb-2">
              <MapPin className="text-cyber-pink" />
-             <h2 className="text-2xl font-display text-white">{analysis.location}</h2>
+             <h2 className="text-2xl font-display text-white">{countryData.location}</h2>
            </div>
 
            <div className="space-y-4">
-             <div className={`border p-2 flex justify-between items-center ${getThreatColor(analysis.threatLevel)}`}>
+             <div className="border border-cyber-cyan p-2 flex justify-between items-center">
                <div className="flex items-center gap-2">
-                 <ShieldAlert size={18} />
-                 <span>THREAT LEVEL</span>
+                 <DollarSign size={18} className="text-cyber-cyan" />
+                 <span className="text-cyber-cyan">GDP</span>
                </div>
-               <span className="font-bold animate-pulse">{analysis.threatLevel}</span>
+               <span className="font-bold text-white">{formatGDP(countryData.gdp)}</span>
              </div>
 
              <div className="flex items-center gap-4">
                <div className="flex-1">
                  <div className="flex justify-between text-xs mb-1 text-gray-300">
-                    <span>TECH INDEX</span>
-                    <span>{analysis.techIndex}%</span>
+                    <span>GDP PER CAPITA</span>
+                    <span>{formatGDPPerCapita(countryData.gdpPerCapita)}</span>
                  </div>
                  <div className="h-2 bg-gray-800 w-full overflow-hidden">
                    <div 
                      className="h-full bg-cyber-cyan shadow-[0_0_10px_#00f3ff]" 
-                     style={{ width: `${analysis.techIndex}%` }}
+                     style={{ width: `${Math.min(100, (countryData.gdpPerCapita / 80000) * 100)}%` }}
                    />
                  </div>
                </div>
              </div>
 
-             <div>
-               <h3 className="text-xs text-cyber-pink mb-1 flex items-center gap-1">
-                 <Hexagon size={12} /> CONTROLLING FACTION
-               </h3>
-               <p className="text-white text-lg leading-tight">{analysis.factionControl}</p>
+             <div className="border border-cyber-pink/50 p-2 flex justify-between items-center">
+               <div className="flex items-center gap-2">
+                 <Users size={18} className="text-cyber-pink" />
+                 <span className="text-cyber-pink">POPULATION</span>
+               </div>
+               <span className="font-bold text-white">{formatPopulation(countryData.population)}</span>
              </div>
 
              <div>
-               <h3 className="text-xs text-gray-400 mb-1">INTEL SUMMARY</h3>
+               <h3 className="text-xs text-cyber-pink mb-1 flex items-center gap-1">
+                 <Building2 size={12} /> CAPITAL CITY
+               </h3>
+               <p className="text-white text-lg leading-tight">{countryData.capital}</p>
+             </div>
+
+             <div>
+               <h3 className="text-xs text-gray-400 mb-1 flex items-center gap-1">
+                 <Globe size={12} /> REGION
+               </h3>
+               <p className="text-white text-sm">{countryData.region}</p>
+             </div>
+
+             <div>
+               <h3 className="text-xs text-gray-400 mb-1">CURRENCY</h3>
                <p className="text-sm text-gray-300 normal-case font-body leading-relaxed border-l-2 border-cyber-pink pl-2">
-                 {analysis.description}
+                 {countryData.currency}
                </p>
              </div>
 
              <div>
-               <h3 className="text-xs text-gray-400 mb-1">KEY EXPORTS</h3>
+               <h3 className="text-xs text-gray-400 mb-1">DESCRIPTION</h3>
+               <p className="text-sm text-gray-300 normal-case font-body leading-relaxed border-l-2 border-cyber-pink pl-2">
+                 {countryData.description}
+               </p>
+             </div>
+
+             <div>
+               <h3 className="text-xs text-gray-400 mb-1">MAJOR EXPORTS</h3>
                <div className="flex flex-wrap gap-2">
-                 {analysis.notableExports.map((item, i) => (
+                 {countryData.tradeExports.map((item, i) => (
                    <span key={i} className="text-xs bg-cyber-cyan/10 border border-cyber-cyan/50 px-2 py-0.5 text-cyber-cyan">
                      {item}
+                   </span>
+                 ))}
+               </div>
+             </div>
+
+             <div>
+               <h3 className="text-xs text-gray-400 mb-1">TRADING PARTNERS</h3>
+               <div className="flex flex-wrap gap-2">
+                 {countryData.tradePartners.map((partner, i) => (
+                   <span key={i} className="text-xs bg-cyber-pink/10 border border-cyber-pink/50 px-2 py-0.5 text-cyber-pink">
+                     {partner}
                    </span>
                  ))}
                </div>

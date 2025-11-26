@@ -51,9 +51,9 @@ export const Bookmarks: React.FC<BookmarksProps> = ({ bookmarks, onSelect, onRem
                 <p className="text-gray-500 text-xs">
                   {new Date(bookmark.timestamp).toLocaleDateString()}
                 </p>
-                {bookmark.analysis && (
+                {bookmark.countryData && (
                   <p className="text-cyber-cyan text-xs mt-1">
-                    Threat: {bookmark.analysis.threatLevel} | Tech: {bookmark.analysis.techIndex}%
+                    GDP: ${(bookmark.countryData.gdp / 1e9).toFixed(2)}B | Pop: {(bookmark.countryData.population / 1e6).toFixed(1)}M
                   </p>
                 )}
               </button>
