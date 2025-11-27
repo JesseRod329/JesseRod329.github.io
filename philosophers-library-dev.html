@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,17 +9,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --text-primary: #242829;
-            --text-secondary: #6b7280;
-            --text-accent: #8b5cf6;
-            --background-primary: #fcfcfa;
-            --background-secondary: #f9fafb;
-            --border-subtle: #e5e7eb;
-            --accent-warm: #d97706;
-            --accent-cool: #0891b2;
+            --text-primary: #ffffff;
+            --text-secondary: #e0e7ff;
+            --text-accent: #d8b4fe;
+            --background-primary: #050505;
+            /* Deep dark background */
+            --background-secondary: rgba(0, 0, 0, 0.6);
+            --border-subtle: rgba(255, 255, 255, 0.1);
+            --accent-warm: #f59e0b;
+            --accent-cool: #06b6d4;
+            --neon-glow: 0 0 10px rgba(139, 92, 246, 0.5), 0 0 20px rgba(139, 92, 246, 0.3);
         }
 
         html {
@@ -33,20 +38,20 @@
             line-height: 1.7;
             font-size: 1.1rem;
         }
-        
+
         /* Remove custom cursor for clean literary feel */
 
         /* Typography & Literary Elements */
         .font-serif {
             font-family: 'EB Garamond', serif;
         }
-        
+
         .font-mono {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.9rem;
             color: var(--text-secondary);
         }
-        
+
         .font-sans {
             font-family: 'Inter', sans-serif;
         }
@@ -58,14 +63,14 @@
             margin: 3rem 0;
             opacity: 0.6;
         }
-        
+
         .divider-line {
             border: none;
             border-top: 1px solid var(--border-subtle);
             margin: 2.5rem 0;
             position: relative;
         }
-        
+
         .divider-line::before {
             content: '◆';
             position: absolute;
@@ -86,19 +91,17 @@
             color: var(--text-secondary);
             font-size: 0.9rem;
         }
-        
+
         .section-accent::before {
             content: '|';
             margin-right: 0.5rem;
             color: var(--border-subtle);
         }
 
-        /* Soft Background Texture */
+        /* Psychedelic Background is handled by Canvas, remove texture */
         .textured-bg {
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(217, 119, 6, 0.03) 0%, transparent 50%),
-                var(--background-primary);
+            background: transparent;
+            color: white;
         }
 
         /* Fade-in Animation */
@@ -106,18 +109,53 @@
             opacity: 0;
             animation: fadeInLiterary 1.2s ease-out forwards;
         }
-        
+
         @keyframes fadeInLiterary {
-            from { 
+            from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(40px) scale(0.98);
+                filter: blur(10px);
             }
-            to { 
+
+            to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
+                filter: blur(0);
             }
         }
-        
+
+        /* Gradient Text Shimmer - Neon Version */
+        .text-shimmer {
+            background: linear-gradient(to right,
+                    #ff00cc 20%,
+                    #3333ff 40%,
+                    #00ffff 60%,
+                    #ff00cc 80%);
+            background-size: 200% auto;
+            color: #fff;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
+            text-shadow: 0 0 20px rgba(255, 0, 204, 0.5);
+        }
+
+        @keyframes shimmer {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        /* 3D Tilt Card Effect */
+        .tilt-card {
+            transform-style: preserve-3d;
+            transform: perspective(1000px);
+        }
+
+        .tilt-content {
+            transform: translateZ(20px);
+        }
+
         .hero {
             min-height: 100vh;
             background: var(--background-primary);
@@ -128,8 +166,20 @@
             text-align: center;
             padding: 2rem;
             position: relative;
+            overflow: hidden;
+            /* Ensure canvas doesn't overflow */
         }
-        
+
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.6;
+        }
+
         .hero::before {
             content: '';
             position: absolute;
@@ -137,18 +187,18 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: 
+            background:
                 radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
                 radial-gradient(circle at 70% 80%, rgba(217, 119, 6, 0.05) 0%, transparent 50%);
             pointer-events: none;
         }
-        
+
         .hero-content {
             position: relative;
             z-index: 2;
             max-width: 800px;
         }
-        
+
         #progress-bar {
             position: fixed;
             top: 0;
@@ -159,7 +209,7 @@
             z-index: 10000;
             transition: width 0.1s linear;
         }
-        
+
         .book-section {
             opacity: 0;
             transform: translateY(30px);
@@ -175,15 +225,56 @@
         }
 
         .content-panel {
-            background: var(--background-secondary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            /* Darker glass */
+            backdrop-filter: blur(20px);
+            /* Heavier blur */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
             padding: 2.5rem;
             margin: 2rem 0;
             position: relative;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.02);
+            box-shadow:
+                0 20px 40px -10px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+                0 0 20px rgba(139, 92, 246, 0.1);
+            /* Subtle glow */
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            transform-style: preserve-3d;
         }
-        
+
+        .content-panel:hover {
+            box-shadow:
+                0 25px 50px -12px rgba(0, 0, 0, 0.6),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+                0 0 30px rgba(139, 92, 246, 0.2);
+        }
+
+        .book-canvas-container {
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 200px;
+            height: 200px;
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0.8;
+            transition: opacity 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            .book-canvas-container {
+                position: relative;
+                top: 0;
+                right: 0;
+                width: 100%;
+                height: 150px;
+                margin-bottom: -2rem;
+            }
+        }
+
         /* Ensure content doesn't overlap with sidebar on larger screens */
         @media (min-width: 1024px) {
             .content-panel {
@@ -191,18 +282,57 @@
             }
         }
 
-        .prose-custom { color: #d1d5db; }
-        .prose-custom h3 { font-family: 'Playfair Display', serif; color: #c4b5fd; font-weight: 700; letter-spacing: .02em; border-bottom: 1px solid rgba(196, 181, 253, 0.3); padding-bottom: 0.5rem; margin-bottom: 1rem; }
-        .prose-custom p, .prose-custom li { color: #9ca3af; font-size: 1.05rem; line-height: 1.7; }
-        .prose-custom strong { color: #a5b4fc; }
-        .prose-custom ul { list-style: none; padding-left: 0; }
-        .prose-custom li { position: relative; padding-left: 1.5em; margin-bottom: 0.5rem; }
-        .prose-custom li::before { content: '›'; position: absolute; left: 0; color: #818cf8; font-weight: bold; font-size: 1.2em; line-height: 1; }
+        .prose-custom {
+            color: #d1d5db;
+        }
+
+        .prose-custom h3 {
+            font-family: 'Playfair Display', serif;
+            color: #c4b5fd;
+            font-weight: 700;
+            letter-spacing: .02em;
+            border-bottom: 1px solid rgba(196, 181, 253, 0.3);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .prose-custom p,
+        .prose-custom li {
+            color: #9ca3af;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .prose-custom strong {
+            color: #a5b4fc;
+        }
+
+        .prose-custom ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .prose-custom li {
+            position: relative;
+            padding-left: 1.5em;
+            margin-bottom: 0.5rem;
+        }
+
+        .prose-custom li::before {
+            content: '›';
+            position: absolute;
+            left: 0;
+            color: #818cf8;
+            font-weight: bold;
+            font-size: 1.2em;
+            line-height: 1;
+        }
 
         #toc-nav {
             position: fixed;
             top: 50%;
-            right: -280px; /* Move further off-screen initially */
+            right: -280px;
+            /* Move further off-screen initially */
             transform: translateY(-50%);
             width: 250px;
             max-height: 80vh;
@@ -216,37 +346,67 @@
             pointer-events: none;
             box-shadow: -5px 0 20px rgba(0, 0, 0, 0.5);
         }
+
         #toc-nav.visible {
-            right: 20px; /* Keep some margin from edge */
+            right: 20px;
+            /* Keep some margin from edge */
             opacity: 1;
             pointer-events: auto;
         }
+
         #toc-nav a {
             transition: all 0.2s ease-in-out;
             transform-origin: left center;
         }
+
         #toc-nav a:hover {
             color: #d1c4e9;
             transform: scale(1.05);
             text-shadow: 0 0 8px var(--glow-color);
         }
-        
+
         #toc-toggle {
             opacity: 1;
             pointer-events: auto;
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
-        
+
         #toc-toggle:hover {
             transform: translateY(-50%) scale(1.05);
         }
+
+        /* Custom Cursor */
+        #custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--accent-warm);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+            mix-blend-mode: difference;
+        }
+
+        #custom-cursor.hovering {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(217, 119, 6, 0.2);
+            border-color: var(--accent-cool);
+        }
     </style>
 </head>
+
 <body class="antialiased textured-bg">
+    <div id="custom-cursor"></div>
     <div id="progress-bar"></div>
 
     <!-- Toggle Button for Table of Contents -->
-    <button id="toc-toggle" class="fixed top-1/2 right-4 transform -translate-y-1/2 z-[6000] bg-white bg-opacity-90 text-gray-800 p-3 rounded-l-lg border border-gray-200 hover:bg-opacity-100 hover:border-gray-300 transition-all duration-300 shadow-lg hover:shadow-xl">
+    <button id="toc-toggle"
+        class="fixed top-1/2 right-4 transform -translate-y-1/2 z-[6000] bg-white bg-opacity-90 text-gray-800 p-3 rounded-l-lg border border-gray-200 hover:bg-opacity-100 hover:border-gray-300 transition-all duration-300 shadow-lg hover:shadow-xl">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
@@ -259,7 +419,8 @@
             <h3 class="font-serif text-lg text-gray-800">Table of Contents</h3>
             <button id="toc-close" class="text-gray-500 hover:text-gray-800 transition-colors">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
                 </svg>
             </button>
         </div>
@@ -270,10 +431,11 @@
 
     <div class="relative">
         <header class="hero">
+            <canvas id="hero-canvas"></canvas>
             <div class="hero-content">
                 <div class="mb-8">
                     <span class="font-mono text-sm tracking-widest text-gray-500 uppercase">A Curated Collection</span>
-                    <h1 class="text-5xl md:text-7xl font-serif font-bold text-gray-900 mt-4 mb-6">
+                    <h1 class="text-5xl md:text-7xl font-serif font-bold text-gray-900 mt-4 mb-6 text-shimmer">
                         The Philosopher's Library
                     </h1>
                     <hr class="divider-line">
@@ -293,7 +455,9 @@
                     Explore the Foundations of Thought
                     <span class="section-accent">essential reading</span>
                 </h2>
-                <p class="text-xl text-gray-600 leading-relaxed mb-8">Scroll down to embark on a curated exploration of the most influential philosophical works in history. Each entry is a gateway to profound ideas, presented in a contemplative literary format.</p>
+                <p class="text-xl text-gray-600 leading-relaxed mb-8">Scroll down to embark on a curated exploration of
+                    the most influential philosophical works in history. Each entry is a gateway to profound ideas,
+                    presented in a contemplative literary format.</p>
                 <hr class="divider-dots">
             </div>
         </section>
@@ -301,7 +465,7 @@
         <main id="library-container" class="textured-bg">
             <!-- Book sections will be injected here by JavaScript -->
         </main>
-        
+
         <footer class="text-center py-12 px-4 text-gray-500 textured-bg">
             <hr class="divider-dots">
             <p class="font-mono text-sm">A fusion of ancient wisdom and modern technology</p>
@@ -441,7 +605,7 @@ Questions: Is Quality metaphysical or psychological? How persuasive is Pirsig's 
                         questions: lines[5]?.replace('Questions: ', ''),
                     };
                 }
-                
+
                 bookData.id = `book-${index}`;
                 return bookData;
 
@@ -450,42 +614,44 @@ Questions: Is Quality metaphysical or psychological? How persuasive is Pirsig's 
 
         function createBookSection(book, index) {
             const questionsHTML = book.questions.split('?').filter(q => q.trim()).map(q => `<li>${q.trim()}?</li>`).join('');
-            const isReversed = index % 2 !== 0;
 
             return `
                 <section id="${book.id}" class="book-section textured-bg">
                     <div class="max-w-4xl mx-auto px-4">
-                        <div class="content-panel fade-in">
-                            <div class="mb-6">
-                                <span class="font-mono text-sm tracking-wide">${book.author}</span>
-                                <h2 class="text-3xl md:text-4xl font-serif font-semibold mt-2 mb-4">
+                        <div class="content-panel fade-in tilt-card" data-tilt>
+                            <div class="book-canvas-container">
+                                <canvas class="book-canvas" data-id="${book.id}"></canvas>
+                            </div>
+                            <div class="mb-6 tilt-content">
+                                <span class="font-mono text-sm tracking-wide text-cyan-300">${book.author}</span>
+                                <h2 class="text-3xl md:text-4xl font-serif font-semibold mt-2 mb-4 text-white" style="text-shadow: 0 0 10px rgba(255,255,255,0.3);">
                                     ${book.title}
-                                    <span class="section-accent">essential</span>
+                                    <span class="section-accent text-fuchsia-400">essential</span>
                                 </h2>
                             </div>
-                            <p class="text-lg leading-relaxed mb-8 text-gray-700">${book.overview}</p>
+                            <p class="text-lg leading-relaxed mb-8 text-gray-200 tilt-content">${book.overview}</p>
                             
-                            <hr class="divider-dots">
+                            <hr class="divider-dots" style="border-color: rgba(255,255,255,0.2);">
                             
-                            <div class="space-y-6">
+                            <div class="space-y-6 tilt-content">
                                 <div>
-                                    <h3 class="font-serif text-xl font-medium mb-3 text-gray-800">Key Themes</h3>
-                                    <p class="text-gray-600 leading-relaxed">${book.themes}</p>
+                                    <h3 class="font-serif text-xl font-medium mb-3 text-fuchsia-300">Key Themes</h3>
+                                    <p class="text-gray-300 leading-relaxed">${book.themes}</p>
                                 </div>
                                 
                                 <div>
-                                    <h3 class="font-serif text-xl font-medium mb-3 text-gray-800">Central Insight</h3>
-                                    <p class="text-gray-600 leading-relaxed italic">${book.insight}</p>
+                                    <h3 class="font-serif text-xl font-medium mb-3 text-cyan-300">Central Insight</h3>
+                                    <p class="text-gray-300 leading-relaxed italic">${book.insight}</p>
                                 </div>
 
                                 <div>
-                                    <h3 class="font-serif text-xl font-medium mb-3 text-gray-800">How to Read</h3>
-                                    <p class="text-gray-600 leading-relaxed font-mono">${book.read}</p>
+                                    <h3 class="font-serif text-xl font-medium mb-3 text-yellow-300">How to Read</h3>
+                                    <p class="text-gray-300 leading-relaxed font-mono">${book.read}</p>
                                 </div>
                                 
                                 <div>
-                                    <h3 class="font-serif text-xl font-medium mb-3 text-gray-800">Discussion Questions</h3>
-                                    <ul class="space-y-2 text-gray-600 leading-relaxed">${questionsHTML}</ul>
+                                    <h3 class="font-serif text-xl font-medium mb-3 text-green-300">Discussion Questions</h3>
+                                    <ul class="space-y-2 text-gray-300 leading-relaxed">${questionsHTML}</ul>
                                 </div>
                             </div>
                         </div>
@@ -493,83 +659,263 @@ Questions: Is Quality metaphysical or psychological? How persuasive is Pirsig's 
                 </section>
             `;
         }
-        
+
+        // --- GLSL Fractal Shader for Hero Background ---
+        function initHeroCanvas() {
+            const canvas = document.getElementById('hero-canvas');
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: false, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+            // Shader Code
+            const fragmentShader = `
+                uniform float time;
+                uniform vec2 resolution;
+                uniform vec2 mouse;
+
+                // Palette function
+                vec3 palette( float t ) {
+                    vec3 a = vec3(0.5, 0.5, 0.5);
+                    vec3 b = vec3(0.5, 0.5, 0.5);
+                    vec3 c = vec3(1.0, 1.0, 1.0);
+                    vec3 d = vec3(0.263,0.416,0.557);
+                    return a + b*cos( 6.28318*(c*t+d) );
+                }
+
+                void main() {
+                    vec2 uv = (gl_FragCoord.xy * 2.0 - resolution.xy) / resolution.y;
+                    vec2 uv0 = uv;
+                    
+                    // Mouse interaction
+                    vec2 m = mouse * 2.0 - 1.0;
+                    
+                    vec3 finalColor = vec3(0.0);
+                    
+                    for (float i = 0.0; i < 4.0; i++) {
+                        uv = fract(uv * 1.5) - 0.5;
+
+                        float d = length(uv) * exp(-length(uv0));
+
+                        vec3 col = palette(length(uv0) + i*.4 + time*.4);
+
+                        d = sin(d*8. + time)/8.;
+                        d = abs(d);
+
+                        d = pow(0.01 / d, 1.2);
+
+                        finalColor += col * d;
+                    }
+                    
+                    // Kaleidoscope effect
+                    float angle = atan(uv0.y, uv0.x);
+                    float radius = length(uv0);
+                    angle = mod(angle, 3.14159 / 3.0); // 6-fold symmetry
+                    
+                    gl_FragColor = vec4(finalColor, 1.0);
+                }
+            `;
+
+            const vertexShader = `
+                void main() {
+                    gl_Position = vec4( position, 1.0 );
+                }
+            `;
+
+            const uniforms = {
+                time: { value: 0 },
+                resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                mouse: { value: new THREE.Vector2(0.5, 0.5) }
+            };
+
+            const material = new THREE.ShaderMaterial({
+                uniforms: uniforms,
+                vertexShader: vertexShader,
+                fragmentShader: fragmentShader
+            });
+
+            const geometry = new THREE.PlaneGeometry(2, 2);
+            const mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+            // Mouse tracking
+            document.addEventListener('mousemove', (e) => {
+                uniforms.mouse.value.x = e.clientX / window.innerWidth;
+                uniforms.mouse.y = 1.0 - (e.clientY / window.innerHeight);
+            });
+
+            function animate(time) {
+                uniforms.time.value = time * 0.0005;
+                renderer.render(scene, camera);
+                requestAnimationFrame(animate);
+            }
+            requestAnimationFrame(animate);
+
+            window.addEventListener('resize', () => {
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        // --- Holographic 3D Book Icons ---
         function initThreeCanvas(canvas, id) {
             const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+            const camera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+
             renderer.setSize(canvas.clientWidth, canvas.clientHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
 
             const clock = new THREE.Clock();
 
-            // Unique geometry based on index hash
+            // Unique geometry
             const geometryType = parseInt(id.split('-')[1]) % 3;
             let geometry;
+
             if (geometryType === 0) {
-                 geometry = new THREE.IcosahedronGeometry(1.5, 0);
+                geometry = new THREE.IcosahedronGeometry(1.4, 0);
             } else if (geometryType === 1) {
-                geometry = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
+                geometry = new THREE.OctahedronGeometry(1.4, 0);
             } else {
-                geometry = new THREE.BoxGeometry(2, 2, 2);
+                geometry = new THREE.DodecahedronGeometry(1.4, 0);
             }
 
-            const material = new THREE.MeshStandardMaterial({
-                color: new THREE.Color(`hsl(${Math.random() * 360}, 50%, 70%)`),
-                wireframe: true,
-                metalness: 0.5,
-                roughness: 0.5,
+            // Holographic Material
+            const material = new THREE.MeshPhysicalMaterial({
+                color: 0xffffff,
+                metalness: 0.1,
+                roughness: 0.1,
+                transmission: 0.9, // Glass-like
+                thickness: 0.5,
+                ior: 2.33, // Diamond-like refraction
+                iridescence: 1.0,
+                iridescenceIOR: 1.3,
+                clearcoat: 1.0,
+                clearcoatRoughness: 0.1
             });
 
             const mesh = new THREE.Mesh(geometry, material);
             scene.add(mesh);
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+            // Wireframe overlay for "tech" feel
+            const wireframeGeo = new THREE.WireframeGeometry(geometry);
+            const wireframeMat = new THREE.LineBasicMaterial({ color: 0xff00ff, transparent: true, opacity: 0.3 });
+            const wireframe = new THREE.LineSegments(wireframeGeo, wireframeMat);
+            mesh.add(wireframe);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
             scene.add(ambientLight);
-            const pointLight = new THREE.PointLight(0xffffff, 0.8);
+
+            const pointLight = new THREE.PointLight(0x00ffff, 2);
             pointLight.position.set(5, 5, 5);
             scene.add(pointLight);
 
-            camera.position.z = 5;
+            const pointLight2 = new THREE.PointLight(0xff00ff, 2);
+            pointLight2.position.set(-5, -5, 5);
+            scene.add(pointLight2);
+
+            camera.position.z = 4;
 
             function animate() {
                 const elapsedTime = clock.getElapsedTime();
-                mesh.rotation.x = elapsedTime * 0.2;
-                mesh.rotation.y = elapsedTime * 0.2;
+                const speed = 0.5;
+
+                mesh.rotation.x = elapsedTime * speed;
+                mesh.rotation.y = elapsedTime * (speed * 0.7);
+
+                // Pulse scale
+                const scale = 1 + Math.sin(elapsedTime * 2) * 0.05;
+                mesh.scale.set(scale, scale, scale);
 
                 renderer.render(scene, camera);
                 requestAnimationFrame(animate);
             }
             animate();
-            
+
             // Handle resize
-            new ResizeObserver(() => {
-                camera.aspect = canvas.clientWidth / canvas.clientHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-            }).observe(canvas);
+            const resizeObserver = new ResizeObserver(() => {
+                const width = canvas.clientWidth;
+                const height = canvas.clientHeight;
+                if (width && height) {
+                    camera.aspect = width / height;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(width, height, false);
+                }
+            });
+            resizeObserver.observe(canvas);
+        }
+
+        // --- Tilt Effect Logic ---
+        function initTiltEffect() {
+            const cards = document.querySelectorAll('.tilt-card');
+
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+
+                    const rotateX = ((y - centerY) / centerY) * -3; // Increased rotation
+                    const rotateY = ((x - centerX) / centerX) * 3;
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+                });
+            });
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             const libraryContainer = document.getElementById('library-container');
             const tocList = document.getElementById('toc-list');
             const parsedBooks = parseBookData(booksData);
-            
+
             libraryContainer.innerHTML = parsedBooks.map(createBookSection).join('');
             tocList.innerHTML = parsedBooks.map(book => `<a href="#${book.id}" class="block py-1 text-gray-400 hover:text-white">${book.title}</a>`).join('');
 
+            // Initialize Hero Animation (Shader)
+            initHeroCanvas();
+
+            // Initialize Book Canvases
             const canvases = document.querySelectorAll('.book-canvas');
             canvases.forEach(canvas => initThreeCanvas(canvas, canvas.dataset.id));
-            
+
+            // Initialize Tilt Effect
+            initTiltEffect();
+
+            // Intersection Observer for Scroll Reveals
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('is-visible');
                     }
                 });
-            }, { threshold: 0.2 });
+            }, { threshold: 0.15 });
 
-            document.querySelectorAll('.book-section').forEach(section => observer.observe(section));
+            document.querySelectorAll('.book-section .content-panel').forEach(section => {
+                section.style.opacity = '0';
+                section.style.animation = 'none';
+                observer.observe(section);
+            });
+
+            const animationObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'fadeInLiterary 1s ease-out forwards';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.content-panel').forEach(el => animationObserver.observe(el));
+
 
             // Custom cursor
             const cursor = document.getElementById('custom-cursor');
@@ -577,31 +923,31 @@ Questions: Is Quality metaphysical or psychological? How persuasive is Pirsig's 
                 cursor.style.left = e.clientX + 'px';
                 cursor.style.top = e.clientY + 'px';
             });
-            
+
+            document.querySelectorAll('a, button, .content-panel').forEach(el => {
+                el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
+                el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+            });
+
             // Progress bar & ToC visibility
             const tocNav = document.getElementById('toc-nav');
             const tocToggle = document.getElementById('toc-toggle');
             const tocClose = document.getElementById('toc-close');
-            const heroSection = document.querySelector('.hero');
-            
-            // Toggle sidebar manually
+
             tocToggle.addEventListener('click', () => {
                 tocNav.classList.toggle('visible');
             });
-            
-            // Close sidebar when close button is clicked
+
             tocClose.addEventListener('click', () => {
                 tocNav.classList.remove('visible');
             });
-            
-            // Close sidebar when clicking outside
+
             document.addEventListener('click', (e) => {
                 if (!tocNav.contains(e.target) && !tocToggle.contains(e.target)) {
                     tocNav.classList.remove('visible');
                 }
             });
-            
-            // Keyboard shortcut (M key) to toggle menu
+
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'm' || e.key === 'M') {
                     tocNav.classList.toggle('visible');
@@ -610,7 +956,7 @@ Questions: Is Quality metaphysical or psychological? How persuasive is Pirsig's 
                     tocNav.classList.remove('visible');
                 }
             });
-            
+
             window.addEventListener('scroll', () => {
                 const totalHeight = document.body.scrollHeight - window.innerHeight;
                 const progress = (window.scrollY / totalHeight) * 100;
@@ -620,4 +966,5 @@ Questions: Is Quality metaphysical or psychological? How persuasive is Pirsig's 
 
     </script>
 </body>
+
 </html>

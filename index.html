@@ -17,6 +17,20 @@
       src: url('supercharge-font/SuperchargeCondensed-jE5KO.otf') format('opentype');
       font-display: swap;
     }
+
+    #hero-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    /* Hide old background elements if they interfere */
+    .gradient-bg {
+      display: none;
+    }
   </style>
 </head>
 
@@ -26,7 +40,7 @@
   <div class="gradient-bg"></div>
 
   <!-- Colorful Particles -->
-  <canvas id="chromatic-canvas"></canvas>
+  <canvas id="hero-canvas"></canvas>
 
   <div class="intro-screen">
     <div class="intro-year">EST. 2025</div>
@@ -36,6 +50,20 @@
   <!-- Timeline Container -->
   <div class="timeline-container">
     <div class="timeline-line"></div>
+
+    <!-- PROJECT NEW: Fidget Device -->
+    <div class="timeline-node">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content" data-tilt>
+        <div class="timeline-date">2025</div>
+        <h2 class="timeline-title">Fidget OS</h2>
+        <p class="timeline-desc">
+          Digital ADHD relief. Interactive kinetic simulation with procedural audio and tactile feedback.
+        </p>
+        <a href="/fidget-device/" class="timeline-link">PLAY</a>
+        <div class="card-glow"></div>
+      </div>
+    </div>
 
     <!-- PROJECT 00: World Globe -->
     <div class="timeline-node">
@@ -296,7 +324,8 @@
         <div class="timeline-date">2025</div>
         <h2 class="timeline-title">IPTV Player</h2>
         <p class="timeline-desc">
-          Live TV streaming with multi-view, EPG guide, local channels, and password protection. Access thousands of channels.
+          Live TV streaming with multi-view, EPG guide, local channels, and password protection. Access thousands of
+          channels.
         </p>
         <a href="IPTV/frontend/" class="timeline-link">WATCH</a>
         <div class="card-glow"></div>
@@ -314,7 +343,114 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/chromatic.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    // --- GLSL Fractal Shader for Hero Background ---
+    function initHeroCanvas() {
+      const canvas = document.getElementById('hero-canvas');
+      if (!canvas) return;
+
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: false, antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+      // Shader Code
+      const fragmentShader = `
+            uniform float time;
+            uniform vec2 resolution;
+            uniform vec2 mouse;
+
+            // Palette function
+            vec3 palette( float t ) {
+                vec3 a = vec3(0.5, 0.5, 0.5);
+                vec3 b = vec3(0.5, 0.5, 0.5);
+                vec3 c = vec3(1.0, 1.0, 1.0);
+                vec3 d = vec3(0.263,0.416,0.557);
+                return a + b*cos( 6.28318*(c*t+d) );
+            }
+
+            void main() {
+                vec2 uv = (gl_FragCoord.xy * 2.0 - resolution.xy) / resolution.y;
+                vec2 uv0 = uv;
+                
+                // Mouse interaction
+                vec2 m = mouse * 2.0 - 1.0;
+                
+                vec3 finalColor = vec3(0.0);
+                
+                for (float i = 0.0; i < 4.0; i++) {
+                    uv = fract(uv * 1.5) - 0.5;
+
+                    float d = length(uv) * exp(-length(uv0));
+
+                    vec3 col = palette(length(uv0) + i*.4 + time*.4);
+
+                    d = sin(d*8. + time)/8.;
+                    d = abs(d);
+
+                    d = pow(0.01 / d, 1.2);
+
+                    finalColor += col * d;
+                }
+                
+                // Kaleidoscope effect
+                float angle = atan(uv0.y, uv0.x);
+                float radius = length(uv0);
+                angle = mod(angle, 3.14159 / 3.0); // 6-fold symmetry
+                
+                gl_FragColor = vec4(finalColor, 1.0);
+            }
+        `;
+
+      const vertexShader = `
+            void main() {
+                gl_Position = vec4( position, 1.0 );
+            }
+        `;
+
+      const uniforms = {
+        time: { value: 0 },
+        resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+        mouse: { value: new THREE.Vector2(0.5, 0.5) }
+      };
+
+      const material = new THREE.ShaderMaterial({
+        uniforms: uniforms,
+        vertexShader: vertexShader,
+        fragmentShader: fragmentShader
+      });
+
+      const geometry = new THREE.PlaneGeometry(2, 2);
+      const mesh = new THREE.Mesh(geometry, material);
+      scene.add(mesh);
+
+      // Mouse tracking
+      document.addEventListener('mousemove', (e) => {
+        uniforms.mouse.value.x = e.clientX / window.innerWidth;
+        uniforms.mouse.value.y = 1.0 - (e.clientY / window.innerHeight);
+      });
+
+      function animate(time) {
+        uniforms.time.value = time * 0.0005;
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+      }
+      requestAnimationFrame(animate);
+
+      window.addEventListener('resize', () => {
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initHeroCanvas();
+    });
+  </script>
+  <!-- <script src="js/chromatic.js"></script> -->
 </body>
 
 </html>
