@@ -1,27 +1,123 @@
 [
   {
-    "title": "AEW Thanksgiving Collision Results (11/27): Continental Classic Continues",
-    "summary": "All Elite Wrestling aired the November 27th episode of AEW Collision from The Pinnacle in Nashville, TN. Full results are below. AEW Thanksgiving Collision Results (11/27) Fans can find results from...",
+    "title": "What Made WWE SmackDown's Debut So Unique",
+    "summary": "The first-ever episode of \"WWE SmackDown\" has a unique place in wrestling history, but what made the show so special at the time?",
+    "source": "Wrestling Inc",
+    "url": "https://www.wrestlinginc.com/2038135/wwe-smackdown-made-debut-unique/",
+    "publishedAt": "2025-11-28T04:59:00+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "TNA IMPACT Thanksgiving Episode Results – 11/27/25",
+    "summary": "TNA IMPACT Results are courtesy of tnawrestling.com. A longtime TNA Thanksgiving tradition, the annual Turkey Bowl made its… The post TNA IMPACT Thanksgiving Episode Results – 11/27/25 appeared first...",
+    "source": "Wrestleview",
+    "url": "https://www.wrestleview.com/impact-results/368324-tna-impact-thanksgiving-episode-results-11-27-25/",
+    "publishedAt": "2025-11-28T03:56:54+00:00",
+    "category": "tna"
+  },
+  {
+    "title": "AEW Thanksgiving Day Collision Results – 11/27/25 (Continental Classic, More)",
+    "summary": "TNT and HBO Max aired a special taped episode of AEW Collision. For this week only, Collision results… The post AEW Thanksgiving Day Collision Results – 11/27/25 (Continental Classic, More) appeared...",
+    "source": "Wrestleview",
+    "url": "https://www.wrestleview.com/top-story/368300-aew-thanksgiving-day-collision-results-11-27-25-continental-classic-more/",
+    "publishedAt": "2025-11-28T03:29:25+00:00",
+    "category": "aew"
+  },
+  {
+    "title": "TNA iMPACT! Results (11/27): Thanksgiving Turkey Bowl Match",
+    "summary": "TNA Wrestling aired the latest episode of TNA iMPACT! on November 27th. Full results are below. TNA iMPACT! Results (11/27) Thanksgiving Turkey Bowl Match: Brian Myers pins Ryan Nemeth. Mance Warner,...",
     "source": "Fightful",
-    "url": "https://www.fightful.com/wrestling/aew-thanksgiving-collision-results-11-27-continental-classic-continues",
-    "publishedAt": "2025-11-28T00:37:05+00:00",
+    "url": "https://www.fightful.com/wrestling/tna-impact-results-11-27-thanksgiving-turkey-bowl-match",
+    "publishedAt": "2025-11-28T03:15:07+00:00",
+    "category": "tna"
+  },
+  {
+    "title": "2025 AEW Continental Classic Tournament Results, 11/27 Collision",
+    "summary": "The 2025 Continental Classic tournament continued on the Thanksgiving edition of \"AEW Collision\" as the first set of matches are now complete.",
+    "source": "Wrestling Inc",
+    "url": "https://www.wrestlinginc.com/2038123/aew-2025-continental-classic-tournament-results-november-27-collision/",
+    "publishedAt": "2025-11-28T03:07:11+00:00",
+    "category": "aew"
+  },
+  {
+    "title": "AEW Continental Classic 2025 Standings And Results Archive",
+    "summary": "The AEW Continental Classic began on the November 26th episode of AEW Dynamite with league action. The top point-getter in Blue League will face second place in Gold League in the semifinals while...",
+    "source": "Fightful",
+    "url": "https://www.fightful.com/wrestling/aew-continental-classic-2025-standings-and-results-archive",
+    "publishedAt": "2025-11-28T03:05:34+00:00",
+    "category": "aew"
+  },
+  {
+    "title": "AEW Continental Classic 2025 Night Two Recap",
+    "summary": "The AEW Continental Classic continued on the November 27th episode of AEW Collision with the second night of action. In the first match of the night, PAC defeated \"Speedball\" Mike Bailey in a Gold...",
+    "source": "Fightful",
+    "url": "https://www.fightful.com/wrestling/aew-continental-classic-2025-night-two-recap",
+    "publishedAt": "2025-11-28T03:04:26+00:00",
+    "category": "aew"
+  },
+  {
+    "title": "Kazuchika Okada vs. PAC, More Added To 12/3 AEW Dynamite",
+    "summary": "The AEW Continental Classic will roll on with the third night of action of the December 3rd episode of AEW Dynamite. In the Gold League, Kazuchika Okada (0-1, 0 points) will take on PAC (1-0, 3...",
+    "source": "Fightful",
+    "url": "https://www.fightful.com/wrestling/kazuchika-okada-vs-pac-added-to-12-3-aew-dynamite",
+    "publishedAt": "2025-11-28T02:54:42+00:00",
+    "category": "aew"
+  },
+  {
+    "title": "TNA Knockouts Tag Team Title Bout, Rascalz vs. Order 4 Set For TNA Final Resolution",
+    "summary": "Two bouts have been added to TNA Final Resolution. TNA Wrestling announced that The IInspiration (Jessie McKary & Cassie Lee) will defend the TNA Knockouts Tag Team Titles against Tessa Blanchard &...",
+    "source": "Fightful",
+    "url": "https://www.fightful.com/wrestling/tna-knockouts-tag-team-title-bout-rascalz-vs-order-4-set-for-tna-final-resolution",
+    "publishedAt": "2025-11-28T02:53:48+00:00",
+    "category": "tna"
+  },
+  {
+    "title": "Eddie Kingston Challenges Samoa Joe For AEW Dynamite Winter Is Coming",
+    "summary": "Eddie Kingston is calling out Samoa Joe for AEW Dynamite Winter Is Coming. On AEW Collision, Eddie Kingston defeated Katsuyori Shibata, taking down the first member of The Opps on his way to AEW...",
+    "source": "Fightful",
+    "url": "https://www.fightful.com/wrestling/eddie-kingston-challenges-samoa-joe-for-aew-dynamite-winter-is-coming",
+    "publishedAt": "2025-11-28T02:42:13+00:00",
+    "category": "aew"
+  },
+  {
+    "title": "Mercedes Mone To Defend ROH Women's TV Title Against Red Velvet At ROH Final Battle",
+    "summary": "The rematch is set between Mercedes Mone and Red Velvet. On AEW Collision, Red Velvet challenged Mercedes Mone to defend the ROH Women's TV Title against her at ROH Final Battle on December 5th....",
+    "source": "Fightful",
+    "url": "https://www.fightful.com/wrestling/mercedes-mone-to-defend-roh-womens-tv-title-against-red-velvet-at-roh-final-battle",
+    "publishedAt": "2025-11-28T02:32:28+00:00",
+    "category": "aew"
+  },
+  {
+    "title": "Country Music Star Michael Ray Confronted By Ricochet On AEW Collision",
+    "summary": "Ricochet made no friends in Nashville on Thursday, confronting country music star Michael Ray on AEW Collision. The new AEW National Champion was flanked by Gates of Agony (Bishop Kaun & Toa Liona),...",
+    "source": "Fightful",
+    "url": "https://www.fightful.com/wrestling/country-music-star-michael-ray-confronted-by-ricochet-on-aew-collision",
+    "publishedAt": "2025-11-28T02:18:36+00:00",
+    "category": "aew"
+  },
+  {
+    "title": "AEW's MVP Reflects On NJPW Tenure",
+    "summary": "More than a decade ago, MVP had a stint with New Japan Pro-Wrestling that saw him take part in the company's annual G1 Climax tournament.",
+    "source": "Wrestling Inc",
+    "url": "https://www.wrestlinginc.com/2035320/aew-mvp-reflects-njpw-tenure/",
+    "publishedAt": "2025-11-28T02:00:00+00:00",
+    "category": "njpw"
+  },
+  {
+    "title": "RUSH Sidelined With A Knee Injury",
+    "summary": "RUSH is currently out of action with a knee injury. Tony Khan announced that RUSH is not medically cleared due to a knee injury. Khan said that RUSH was scheduled to challenge Bandido for the ROH...",
+    "source": "Fightful",
+    "url": "https://www.fightful.com/wrestling/rush-sidelined-with-a-knee-injury",
+    "publishedAt": "2025-11-28T01:42:32+00:00",
     "category": "aew"
   },
   {
     "title": "AEW Collision Results 11/27 - 2025 Continental Classic Continues, Eddie Kingston Faces Katsuyori Shibata",
-    "summary": "This is Wrestling Inc.'s live coverage for \"AEW Collision\" on November 26, 2025, with a singles match between Eddie Kingston & The Opps' Katsuyori Shibata!",
+    "summary": "This is Wrestling Inc.'s results for \"AEW Collision\" on November 26, 2025, with a singles match between Eddie Kingston & The Opps' Katsuyori Shibata!",
     "source": "Wrestling Inc",
     "url": "https://www.wrestlinginc.com/2037671/aew-collision-november-27-2025-continental-classic-continues-eddie-kingston-katsuyori-shibata/",
     "publishedAt": "2025-11-28T00:00:00+00:00",
     "category": "aew"
-  },
-  {
-    "title": "Bruce Prichard Recalls Learning Of Hulk Hogan's Passing, Vince McMahon Speaking At The Funeral",
-    "summary": "The wrestling world sadly lost Hulk Hogan on July 24 at the age of 71. Hogan's official cause of death was a heart attack. WWE ran multiple tributes to Hogan following his passing, honoring his...",
-    "source": "Fightful",
-    "url": "https://www.fightful.com/wrestling/bruce-prichard-recalls-learning-of-hulk-hogan-passing-vince-mcmahon-speaking-at-the-funeral",
-    "publishedAt": "2025-11-27T23:00:54+00:00",
-    "category": "wwe"
   },
   {
     "title": "Rhea Ripley Highlights Why AJ Lee Appeals To Her As A WWE Superstar",
@@ -62,14 +158,6 @@
     "url": "https://wrestlingnews.co/wwe-news/bruce-prichard-hulk-hogan-wanted-turn-heel-match-against-dusty-rhodes-wwe-wrestlemania/",
     "publishedAt": "2025-11-27T20:11:36+00:00",
     "category": "wwe"
-  },
-  {
-    "title": "Former WCW World Heavyweight Champion David Arquette Attends AEW Dynamite",
-    "summary": "Former WCW World Heavyweight Champion David Arquette was in attendance for AEW Dynamite on November 26th in Nashville, TN. Arquette posted photos backstage with RJ City and Renee Paquette. Arquette...",
-    "source": "Fightful",
-    "url": "https://www.fightful.com/wrestling/former-wcw-world-heavyweight-champion-david-arquette-attends-aew-dynamite",
-    "publishedAt": "2025-11-27T20:02:07+00:00",
-    "category": "aew"
   },
   {
     "title": "The Loose Cannon: How Brian Pillman Blurred The Lines Of Reality In WCW And WWF",
@@ -128,38 +216,6 @@
     "category": "wwe"
   },
   {
-    "title": "Dominik Mysterio Says Custody Battle Angle Around Him Was Eddie Guerrero's Idea",
-    "summary": "Dominik Mysterio talks about Eddie Guerrero in a new video, sharing about how Eddie took care of him during the angle. In 2005, an iconic angle would take place in the lead up to SummerSlam that...",
-    "source": "Fightful",
-    "url": "https://www.fightful.com/wrestling/dominik-mysterio-says-custody-battle-angle-around-him-was-eddie-guerreros-idea",
-    "publishedAt": "2025-11-27T17:54:20+00:00",
-    "category": "wwe"
-  },
-  {
-    "title": "Kazuchika Okada: I'm Gonna Show You Who Is The Greatest Tournament Wrestler Of All Time",
-    "summary": "Kazuchika Okada reacts to losing in the first match of the 2025 AEW Continental Classic. On the November 26th edition of AEW Dynamite, the 2025 Continental Classic kicked off with Kyle Fletcher and...",
-    "source": "Fightful",
-    "url": "https://www.fightful.com/wrestling/kazuchika-okada-im-gonna-show-you-who-is-the-greatest-tournament-wrestler-of-all-time",
-    "publishedAt": "2025-11-27T17:30:41+00:00",
-    "category": "aew"
-  },
-  {
-    "title": "Tony Khan Loves And Respects In The Weeds",
-    "summary": "Tony Khan praises Fightful's In The Weeds morning show. Tony Khan's relationship with wrestling media and otherwise has been one that has developed since the inception of AEW in 2019, with Khan being...",
-    "source": "Fightful",
-    "url": "https://www.fightful.com/wrestling/tony-khan-loves-and-respects-in-the-weeds",
-    "publishedAt": "2025-11-27T17:11:11+00:00",
-    "category": "aew"
-  },
-  {
-    "title": "Maxxine Dupri Says She 'Completely Blacked Out' During Her WWE In Ring Debut",
-    "summary": "Maxxine Dupri says that she has completely blacked out during her WWE in ring debut. Maxxine is one of the more inexperienced pro wrestlers on the WWE roster, debuting in 2021. However, she has shown...",
-    "source": "Fightful",
-    "url": "https://www.fightful.com/wrestling/maxxine-dupri-says-she-completely-blacked-out-during-her-wwe-in-ring-debut",
-    "publishedAt": "2025-11-27T17:03:17+00:00",
-    "category": "wwe"
-  },
-  {
     "title": "Saraya Names Her Mount Rushmore of Women’s Wrestlers",
     "summary": "Saraya has revealed the names in her Mount Rushmore of women’s wrestlers. During a recent interview with Poker Scout, former WWE and AEW star Saraya named retired Japanese wrestler Bull Nakano, WWE...",
     "source": "Wrestlezone",
@@ -173,14 +229,6 @@
     "source": "Wrestling News",
     "url": "https://wrestlingnews.co/wwe-news/backstage-news-plans-main-event-wwe-wrestlemania-las-vegas/",
     "publishedAt": "2025-11-27T16:37:06+00:00",
-    "category": "wwe"
-  },
-  {
-    "title": "Maxxine Dupri: WWE Locker Room Is One Of A Kind, It Is Probably My Favorite Thing About This Job",
-    "summary": "Maxxine Dupri thinks that WWE's locker room is one of a king and probably her favorite thing about her job. Prior to becoming a WWE superstar, Maxxine Dupri was a cheerleader for the Los Angeles Rams...",
-    "source": "Fightful",
-    "url": "https://www.fightful.com/wrestling/maxxine-dupri-wwe-locker-room-is-one-of-a-kind-it-is-probably-my-favorite-thing-about-this-job",
-    "publishedAt": "2025-11-27T16:32:54+00:00",
     "category": "wwe"
   },
   {
@@ -198,14 +246,6 @@
     "url": "https://wrestlingnews.co/stories/night-stone-cold-took-his-ball-went-home-complete-history-2002-walkout/",
     "publishedAt": "2025-11-27T16:00:06+00:00",
     "category": "wwe"
-  },
-  {
-    "title": "Daniel Garcia vs. Daddy Magic, Mark Briscoe Segment Added To 11/27 AEW Collision",
-    "summary": "Daniel Garcia will face Daddy Magic in a grudge match on the November 27th episode of AEW Collision. Daddy Magic has taken exception to Garcia turning his back on him and joining the Death Riders....",
-    "source": "Fightful",
-    "url": "https://www.fightful.com/wrestling/daniel-garcia-vs-daddy-magic-mark-briscoe-segment-added-to-11-27-aew-collision",
-    "publishedAt": "2025-11-27T16:00:05+00:00",
-    "category": "aew"
   },
   {
     "title": "Swerve Strickland Reflects On Leaving WWE For AEW",
@@ -232,14 +272,6 @@
     "category": "general"
   },
   {
-    "title": "AEW Collision Spoilers For 11/27 (Taped On 11/26)",
-    "summary": "All Elite Wrestling taped the November 27th episode of AEW Collision on November 26th from The Pinnacle in Nashville, TN. Full spoilers (courtesy of F4Wonline) are below. AEW Collision Spoilers For...",
-    "source": "Fightful",
-    "url": "https://www.fightful.com/wrestling/aew-collision-spoilers-for-11-27-taped-on-11-26",
-    "publishedAt": "2025-11-27T15:22:46+00:00",
-    "category": "aew"
-  },
-  {
     "title": "WWE Survivor Series WarGames 2025: Draws & Duds",
     "summary": "With war coming to San Diego this weekend, these are the Wrestling Inc. staff's biggest draws and biggest duds for WWE Survivor Series: WarGames 2025!",
     "source": "Wrestling Inc",
@@ -254,14 +286,6 @@
     "url": "https://www.wrestleview.com/featured-top-story/368305-andrade-provides-contract-status-with-wwe-aew/",
     "publishedAt": "2025-11-27T14:59:56+00:00",
     "category": "wwe"
-  },
-  {
-    "title": "AEW Collision SPOILERS: Matches taped 11/26 to air 11/27",
-    "summary": "AEW taped a special Thanksgiving Day episode of Collision on Wednesday night, at The Pinnacle in Nashville, Tennessee… The post AEW Collision SPOILERS: Matches taped 11/26 to air 11/27 appeared first...",
-    "source": "Wrestleview",
-    "url": "https://www.wrestleview.com/aew-news/368224-aew-collision-spoilers-matches-taped-11-26-to-air-11-27/",
-    "publishedAt": "2025-11-27T14:47:46+00:00",
-    "category": "aew"
   },
   {
     "title": "Paul Heyman Reacts To Brock Lesnar Falling During WWE Raw Entrance",
@@ -280,36 +304,12 @@
     "category": "wwe"
   },
   {
-    "title": "Chelsea Green Explains Lengths She Had To Go To Get Special Merch Into The WWE Shop",
-    "summary": "WWE Women's United States Champion Chelsea Green has discussed the lengths she went to in order to get her hat sold on the WWE shop.",
-    "source": "Wrestling Inc",
-    "url": "https://www.wrestlinginc.com/2037695/wwe-chelsea-green-hats-merch-shop/",
-    "publishedAt": "2025-11-27T14:00:00+00:00",
-    "category": "wwe"
-  },
-  {
-    "title": "Priscilla Kelly Reflects On Differences Between WWE And Independent Scene",
-    "summary": "Priscilla Kelly reflected on an episode of \"Busted Open Radio\" about the differences between WWE and the independent scene following her May release.",
-    "source": "Wrestling Inc",
-    "url": "https://www.wrestlinginc.com/2035284/wwe-priscilla-kelly-gigi-dolin-differences-independent-scene/",
-    "publishedAt": "2025-11-27T13:30:00+00:00",
-    "category": "wwe"
-  },
-  {
     "title": "Report: Former WWE champion signs with AEW",
     "summary": "Fightful Select has reported that Lacey Lane recently signed with AEW, officially joining the roster after her debut… The post Report: Former WWE champion signs with AEW appeared first on WWE News,...",
     "source": "Wrestleview",
     "url": "https://www.wrestleview.com/featured-top-story/368293-report-former-wwe-champion-signs-with-aew/",
     "publishedAt": "2025-11-27T04:54:10+00:00",
     "category": "wwe"
-  },
-  {
-    "title": "AEW Dynamite 11/26/2025: 3 Things We Hated & 3 Things We Loved",
-    "summary": "Tonight's \"AEW Dynamite\" was loaded up with four Continental Classic matches, and we found quite a lot to dissect.",
-    "source": "Wrestling Inc",
-    "url": "https://www.wrestlinginc.com/2037676/aew-dynamite-november-26-2025-3-things-hated-3-things-loved/",
-    "publishedAt": "2025-11-27T04:21:22+00:00",
-    "category": "aew"
   },
   {
     "title": "AEW Dynamite Results: Review, Grades, Card For November 26",
@@ -366,13 +366,5 @@
     "url": "https://www.wrestleview.com/wwe-news/368237-wwe-smackdown-viewership-up-lands-at-no-2-for-the-night-on-cable/",
     "publishedAt": "2025-11-26T19:19:11+00:00",
     "category": "wwe"
-  },
-  {
-    "title": "AEW Dynamite Thanksgiving Eve Preview: Fallout From Full Gear, Continental Classic begins",
-    "summary": "The AEW Thanksgiving Eve themed episode of Dynamite airs live tonight on TBS and HBO Max, from The… The post AEW Dynamite Thanksgiving Eve Preview: Fallout From Full Gear, Continental Classic begins...",
-    "source": "Wrestleview",
-    "url": "https://www.wrestleview.com/top-story/368228-aew-thanksgiving-eve-dynamite-preview-fallout-from-full-gear-continental-classic-begins/",
-    "publishedAt": "2025-11-26T14:00:00+00:00",
-    "category": "aew"
   }
 ]
