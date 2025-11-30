@@ -331,19 +331,19 @@
   <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
-    // --- Hyper-Dimensional Chromatic Tunnel (Raymarching Shader) ---
+    // --- Event Horizon Black Hole Simulation (Gravitational Lensing) ---
     function initHeroCanvas() {
       const canvas = document.getElementById('hero-canvas');
       if (!canvas) return;
 
-      const renderer = new THREE.WebGLRenderer({ canvas, alpha: false, antialias: false }); // Antialias off for shader performance
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: false, antialias: false });
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap pixel ratio for performance
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
       const scene = new THREE.Scene();
       const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
-      // Mouse tracking for interaction
+      // Mouse tracking
       const mouse = new THREE.Vector2(0.5, 0.5);
       const targetMouse = new THREE.Vector2(0.5, 0.5);
 
@@ -352,7 +352,6 @@
         targetMouse.y = 1.0 - e.clientY / window.innerHeight;
       });
 
-      // Shader Material
       const material = new THREE.ShaderMaterial({
         uniforms: {
           iTime: { value: 0 },
@@ -373,8 +372,8 @@
           varying vec2 vUv;
 
           #define MAX_STEPS 100
-          #define MAX_DIST 100.0
-          #define SURF_DIST 0.001
+          #define MAX_DIST 50.0
+          #define SURF_DIST 0.01
           #define PI 3.14159265
 
           // Rotation matrix
@@ -384,138 +383,150 @@
               return mat2(c, -s, s, c);
           }
 
-          // SDF for a hexagonal prism (infinite)
-          float sdHexPrism(vec3 p, vec2 h) {
-              const vec3 k = vec3(-0.8660254, 0.5, 0.57735027);
-              p = abs(p);
-              p.xy -= 2.0 * min(dot(k.xy, p.xy), 0.0) * k.xy;
-              vec2 d = vec2(
-                  length(p.xy - vec2(clamp(p.x, -k.z*h.x, k.z*h.x), h.x)) * sign(p.y - h.x),
-                  p.z - h.y
-              );
-              return min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
+          // Noise function for accretion disk texture
+          float hash(vec2 p) {
+              p = fract(p * vec2(123.34, 456.21));
+              p += dot(p, p + 45.32);
+              return fract(p.x * p.y);
           }
 
-          // Scene description
-          float GetDist(vec3 p) {
-              // Twist the space based on depth
-              float twist = p.z * 0.1 + iTime * 0.05; // Slower twist
-              p.xy *= rot(twist);
-              
-              // Repetition
-              vec3 p_rep = p;
-              p_rep.xy = mod(p_rep.xy, 4.0) - 2.0;
-              
-              // Tunnel walls (inverted tubes)
-              float d = -length(p.xy) + 3.5;
-              
-              // Add some geometric details
-              // Hexagonal structures
-              vec3 p_hex = p;
-              p_hex.z = mod(p_hex.z, 2.0) - 1.0;
-              p_hex.xy *= rot(p.z * 0.5);
-              float hex = sdHexPrism(p_hex, vec2(0.5, 0.1));
-              
-              // Combine
-              d = min(d, hex);
-              
-              // Add some noise/displacement
-              d += sin(p.z * 5.0 + iTime * 0.5) * 0.05; // Slower noise
-              
-              return d * 0.6; // Scale down for artifact reduction
+          float noise(vec2 p) {
+              vec2 i = floor(p);
+              vec2 f = fract(p);
+              f = f * f * (3.0 - 2.0 * f);
+              float a = hash(i);
+              float b = hash(i + vec2(1.0, 0.0));
+              float c = hash(i + vec2(0.0, 1.0));
+              float d = hash(i + vec2(1.0, 1.0));
+              return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
           }
 
-          // Raymarching loop
-          float RayMarch(vec3 ro, vec3 rd) {
-              float dO = 0.0;
-              for(int i = 0; i < MAX_STEPS; i++) {
-                  vec3 p = ro + rd * dO;
-                  float dS = GetDist(p);
-                  dO += dS;
-                  if(dO > MAX_DIST || abs(dS) < SURF_DIST) break;
+          float fbm(vec2 p) {
+              float v = 0.0;
+              float a = 0.5;
+              for (int i = 0; i < 5; i++) {
+                  v += a * noise(p);
+                  p *= 2.0;
+                  a *= 0.5;
               }
-              return dO;
+              return v;
           }
 
-          // Calculate Normal
-          vec3 GetNormal(vec3 p) {
-              float d = GetDist(p);
-              vec2 e = vec2(0.01, 0);
-              vec3 n = d - vec3(
-                  GetDist(p - e.xyy),
-                  GetDist(p - e.yxy),
-                  GetDist(p - e.yyx)
-              );
-              return normalize(n);
-          }
-
-          // Palette function
-          vec3 palette(float t) {
-              vec3 a = vec3(0.5, 0.5, 0.5);
-              vec3 b = vec3(0.5, 0.5, 0.5);
-              vec3 c = vec3(1.0, 1.0, 1.0);
-              vec3 d = vec3(0.263, 0.416, 0.557);
-              return a + b * cos(6.28318 * (c * t + d));
-          }
-
+          // Black Hole Rendering
           void main() {
               vec2 uv = (gl_FragCoord.xy - 0.5 * iResolution.xy) / iResolution.y;
               
-              // Camera setup
-              vec3 ro = vec3(0.0, 0.0, -3.0 + iTime * 0.5); // Much slower forward movement
+              // Camera setup (Orbiting)
+              float camDist = 8.0;
+              float camAngleY = (iMouse.x - 0.5) * 4.0;
+              float camAngleX = (iMouse.y - 0.5) * 2.0;
               
-              // Mouse interaction for camera look
-              vec2 m = (iMouse.xy - 0.5) * 2.0;
-              ro.xy += m * 2.0;
+              vec3 ro = vec3(0.0, 0.0, -camDist);
+              ro.yz *= rot(camAngleX);
+              ro.xz *= rot(camAngleY);
               
-              vec3 rd = normalize(vec3(uv, 1.0));
+              vec3 target = vec3(0.0);
+              vec3 fwd = normalize(target - ro);
+              vec3 right = normalize(cross(vec3(0.0, 1.0, 0.0), fwd));
+              vec3 up = cross(fwd, right);
               
-              // Rotate camera based on mouse
-              rd.yz *= rot(-m.y * 0.5);
-              rd.xz *= rot(-m.x * 0.5);
-
-              // Raymarch
-              float d = RayMarch(ro, rd);
+              vec3 rd = normalize(fwd + right * uv.x + up * uv.y);
+              
+              // Black Hole Parameters
+              float bhRadius = 1.0;
+              float diskInner = 2.5;
+              float diskOuter = 6.0;
               
               vec3 col = vec3(0.0);
               
-              if(d < MAX_DIST) {
-                  vec3 p = ro + rd * d;
-                  vec3 n = GetNormal(p);
+              // Ray Tracing with Gravitational Lensing (Step-by-step integration)
+              vec3 p = ro;
+              vec3 dir = rd;
+              float totalDist = 0.0;
+              
+              float accretionAccum = 0.0;
+              vec3 accretionColor = vec3(0.0);
+              
+              // Simplified curved ray tracing
+              // We step forward and bend the ray towards the center (0,0,0)
+              for(int i=0; i<150; i++) {
+                  float r = length(p);
                   
-                  // Lighting
-                  vec3 lightPos = ro + vec3(0.0, 0.0, 1.0); // Light follows camera
-                  vec3 l = normalize(lightPos - p);
-                  float dif = clamp(dot(n, l), 0.0, 1.0);
+                  // Event Horizon Check
+                  if(r < bhRadius) {
+                      col = vec3(0.0); // Pure black
+                      break;
+                  }
                   
-                  // Distance fog / coloring
-                  float fog = 1.0 / (1.0 + d * d * 0.05);
+                  // Gravity bending (Newtonian approximation for visual effect)
+                  // Force ~ 1/r^2, but we need to modify direction
+                  // Bending strength
+                  float bend = 0.15 / (r * r); 
+                  vec3 toCenter = normalize(-p);
+                  dir = normalize(dir + toCenter * bend * 0.5); // Bend ray
                   
-                  // Dynamic color based on position and time
-                  vec3 objCol = palette(p.z * 0.1 + iTime * 0.05 + length(p.xy) * 0.2); // Slower color shift
+                  // Step size (adaptive)
+                  float stepSize = max(0.05, r * 0.1);
+                  p += dir * stepSize;
+                  totalDist += stepSize;
                   
-                  // Specular
-                  vec3 ref = reflect(-l, n);
-                  float spec = pow(max(dot(ref, -rd), 0.0), 32.0);
+                  if(totalDist > 20.0) break; // Escaped
                   
-                  // Fresnel
-                  float fresnel = pow(1.0 + dot(rd, n), 4.0);
-                  
-                  // Combine
-                  col = objCol * dif * fog;
-                  col += vec3(1.0) * spec * fog;
-                  col += objCol * fresnel * 2.0 * fog; // Glowing edges
-                  
-                  // Volumetric glow accumulation (fake)
-                  col += objCol * 0.2 * fog; 
+                  // Accretion Disk Intersection
+                  // Disk is in XZ plane (y ~ 0)
+                  // Check if we crossed the plane or are very close
+                  if(abs(p.y) < 0.2 && r > diskInner && r < diskOuter) {
+                      // Calculate disk coordinates
+                      float angle = atan(p.z, p.x);
+                      float dist = length(p.xz);
+                      
+                      // Animated texture
+                      float speed = 2.0 / (dist * dist); // Keplerian-ish speed
+                      float noiseVal = fbm(vec2(angle * 4.0 + iTime * speed, dist * 2.0));
+                      
+                      // Intensity profile
+                      float intensity = smoothstep(diskInner, diskInner + 0.5, dist) * 
+                                      smoothstep(diskOuter, diskOuter - 1.0, dist);
+                      intensity *= noiseVal;
+                      intensity *= exp(-abs(p.y) * 8.0); // Vertical fade
+                      
+                      // Doppler Beaming (Relativistic brightness)
+                      // Matter moving towards camera is brighter/bluer
+                      vec3 diskVel = normalize(vec3(-p.z, 0.0, p.x)); // Circular motion
+                      float doppler = dot(diskVel, normalize(p - ro));
+                      float beam = 1.0 + doppler * 0.5;
+                      
+                      // Color mapping (Temperature gradient)
+                      vec3 hot = vec3(0.5, 0.8, 1.0); // Blue hot
+                      vec3 mid = vec3(1.0, 0.6, 0.2); // Orange
+                      vec3 cold = vec3(0.8, 0.1, 0.0); // Red
+                      
+                      vec3 diskCol = mix(cold, mid, intensity);
+                      diskCol = mix(diskCol, hot, intensity * intensity);
+                      
+                      // Accumulate (Volumetric-ish)
+                      float alpha = intensity * 0.2 * beam;
+                      accretionColor += diskCol * alpha * (1.0 - accretionAccum);
+                      accretionAccum += alpha;
+                      
+                      if(accretionAccum > 0.95) break;
+                  }
               }
               
-              // Background / Infinite depth
-              col = mix(col, vec3(0.05, 0.05, 0.1), smoothstep(0.0, MAX_DIST, d));
+              // Background Stars (if ray escaped)
+              if(length(p) > bhRadius * 1.5 && accretionAccum < 1.0) {
+                  // Distorted direction is 'dir'
+                  vec3 bgDir = normalize(dir);
+                  float stars = pow(hash(bgDir.xy * 50.0 + bgDir.z * 50.0), 20.0);
+                  col += vec3(stars) * (1.0 - accretionAccum);
+              }
               
-              // Vignette
-              col *= 1.0 - length(uv) * 0.5;
-
+              // Composite
+              col += accretionColor;
+              
+              // Glow/Bloom
+              // Simple screen-space glow based on brightness
+              
               gl_FragColor = vec4(col, 1.0);
           }
         `
