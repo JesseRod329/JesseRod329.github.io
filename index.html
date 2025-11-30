@@ -328,6 +328,55 @@
 
   </div>
 
+  <!-- Color Picker UI -->
+  <div class="color-picker">
+    <button class="color-btn" data-theme="green" style="--btn-color: #00ff88;"></button>
+    <button class="color-btn" data-theme="blue" style="--btn-color: #0088ff;"></button>
+    <button class="color-btn" data-theme="pink" style="--btn-color: #ff0088;"></button>
+    <button class="color-btn" data-theme="yellow" style="--btn-color: #ffcc00;"></button>
+    <button class="color-btn" data-theme="orange" style="--btn-color: #ff4400;"></button>
+  </div>
+
+  <style>
+    .color-picker {
+      position: fixed;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      z-index: 1000;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      border-radius: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .color-btn {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: none;
+      background: var(--btn-color);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px var(--btn-color);
+      position: relative;
+    }
+
+    .color-btn:hover {
+      transform: scale(1.2);
+      box-shadow: 0 0 20px var(--btn-color);
+    }
+
+    .color-btn.active {
+      transform: scale(1.3);
+      border: 2px solid white;
+    }
+  </style>
+
   <!-- Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
@@ -352,11 +401,69 @@
         targetMouse.y = 1.0 - e.clientY / window.innerHeight;
       });
 
+      // Color Themes
+      const themes = {
+        green: {
+          gal1: new THREE.Vector3(0.0, 0.1, 0.0), // Deep Green
+          gal2: new THREE.Vector3(0.1, 0.4, 0.1), // Nebula Green
+          gal3: new THREE.Vector3(0.0, 0.3, 0.2), // Teal Dust
+          gal4: new THREE.Vector3(0.8, 1.0, 0.4), // Bright Center
+          diskHot: new THREE.Vector3(0.6, 1.0, 0.6),
+          diskMid: new THREE.Vector3(0.2, 0.8, 0.2),
+          diskCold: new THREE.Vector3(0.0, 0.3, 0.0)
+        },
+        blue: {
+          gal1: new THREE.Vector3(0.0, 0.0, 0.2), // Deep Blue
+          gal2: new THREE.Vector3(0.1, 0.2, 0.6), // Nebula Blue
+          gal3: new THREE.Vector3(0.0, 0.5, 0.8), // Cyan Dust
+          gal4: new THREE.Vector3(0.6, 0.8, 1.0), // White/Blue Center
+          diskHot: new THREE.Vector3(0.5, 0.8, 1.0),
+          diskMid: new THREE.Vector3(0.1, 0.4, 0.9),
+          diskCold: new THREE.Vector3(0.0, 0.1, 0.4)
+        },
+        pink: {
+          gal1: new THREE.Vector3(0.2, 0.0, 0.1), // Deep Purple
+          gal2: new THREE.Vector3(0.6, 0.1, 0.4), // Magenta
+          gal3: new THREE.Vector3(0.8, 0.2, 0.6), // Pink Dust
+          gal4: new THREE.Vector3(1.0, 0.8, 0.9), // White/Pink Center
+          diskHot: new THREE.Vector3(1.0, 0.6, 0.9),
+          diskMid: new THREE.Vector3(0.9, 0.1, 0.6),
+          diskCold: new THREE.Vector3(0.4, 0.0, 0.2)
+        },
+        yellow: {
+          gal1: new THREE.Vector3(0.2, 0.1, 0.0), // Dark Brown
+          gal2: new THREE.Vector3(0.6, 0.4, 0.1), // Gold
+          gal3: new THREE.Vector3(0.8, 0.6, 0.2), // Amber
+          gal4: new THREE.Vector3(1.0, 0.9, 0.6), // Bright Yellow
+          diskHot: new THREE.Vector3(1.0, 1.0, 0.6),
+          diskMid: new THREE.Vector3(1.0, 0.8, 0.1),
+          diskCold: new THREE.Vector3(0.5, 0.3, 0.0)
+        },
+        orange: {
+          gal1: new THREE.Vector3(0.2, 0.05, 0.0), // Dark Red
+          gal2: new THREE.Vector3(0.6, 0.2, 0.0), // Rust
+          gal3: new THREE.Vector3(0.8, 0.4, 0.1), // Orange
+          gal4: new THREE.Vector3(1.0, 0.7, 0.4), // Peach
+          diskHot: new THREE.Vector3(1.0, 0.8, 0.5),
+          diskMid: new THREE.Vector3(1.0, 0.4, 0.1),
+          diskCold: new THREE.Vector3(0.6, 0.1, 0.0)
+        }
+      };
+
+      let currentTheme = themes.blue; // Default
+
       const material = new THREE.ShaderMaterial({
         uniforms: {
           iTime: { value: 0 },
           iResolution: { value: new THREE.Vector3(window.innerWidth, window.innerHeight, 1) },
-          iMouse: { value: new THREE.Vector2(0.5, 0.5) }
+          iMouse: { value: new THREE.Vector2(0.5, 0.5) },
+          uGal1: { value: currentTheme.gal1 },
+          uGal2: { value: currentTheme.gal2 },
+          uGal3: { value: currentTheme.gal3 },
+          uGal4: { value: currentTheme.gal4 },
+          uDiskHot: { value: currentTheme.diskHot },
+          uDiskMid: { value: currentTheme.diskMid },
+          uDiskCold: { value: currentTheme.diskCold }
         },
         vertexShader: `
           varying vec2 vUv;
@@ -369,6 +476,16 @@
           uniform float iTime;
           uniform vec3 iResolution;
           uniform vec2 iMouse;
+          
+          // Theme Uniforms
+          uniform vec3 uGal1;
+          uniform vec3 uGal2;
+          uniform vec3 uGal3;
+          uniform vec3 uGal4;
+          uniform vec3 uDiskHot;
+          uniform vec3 uDiskMid;
+          uniform vec3 uDiskCold;
+
           varying vec2 vUv;
 
           #define MAX_STEPS 100
@@ -496,13 +613,9 @@
                       float doppler = dot(diskVel, normalize(p - ro));
                       float beam = 1.0 + doppler * 0.5;
                       
-                      // Color mapping (Temperature gradient)
-                      vec3 hot = vec3(0.5, 0.8, 1.0); // Blue hot
-                      vec3 mid = vec3(1.0, 0.6, 0.2); // Orange
-                      vec3 cold = vec3(0.8, 0.1, 0.0); // Red
-                      
-                      vec3 diskCol = mix(cold, mid, intensity);
-                      diskCol = mix(diskCol, hot, intensity * intensity);
+                      // Color mapping (Theme based)
+                      vec3 diskCol = mix(uDiskCold, uDiskMid, intensity);
+                      diskCol = mix(diskCol, uDiskHot, intensity * intensity);
                       
                       // Accumulate (Volumetric-ish)
                       float alpha = intensity * 0.2 * beam;
@@ -522,19 +635,14 @@
                   float nebula = fbm(bgDir.xy * 3.0 + iTime * 0.05);
                   nebula += fbm(bgDir.zy * 3.0 - iTime * 0.02) * 0.5;
                   
-                  // Color grading for galaxy
-                  vec3 galColor1 = vec3(0.1, 0.0, 0.2); // Deep purple space
-                  vec3 galColor2 = vec3(0.4, 0.1, 0.5); // Nebula purple
-                  vec3 galColor3 = vec3(0.1, 0.3, 0.5); // Blue dust
-                  vec3 galColor4 = vec3(0.8, 0.6, 0.4); // Golden center glow
-                  
-                  vec3 bgCol = mix(galColor1, galColor2, nebula);
-                  bgCol = mix(bgCol, galColor3, fbm(bgDir.xz * 5.0) * 0.5);
+                  // Color grading for galaxy (Theme based)
+                  vec3 bgCol = mix(uGal1, uGal2, nebula);
+                  bgCol = mix(bgCol, uGal3, fbm(bgDir.xz * 5.0) * 0.5);
                   
                   // Add a "galactic plane" band
                   float band = 1.0 - abs(bgDir.y);
                   band = pow(band, 4.0);
-                  bgCol += galColor4 * band * 0.3;
+                  bgCol += uGal4 * band * 0.3;
                   
                   // Stars
                   float stars = pow(hash(bgDir.xy * 100.0 + bgDir.z * 50.0), 100.0) * 20.0;
@@ -566,6 +674,15 @@
         material.uniforms.iTime.value = time * 0.001;
         material.uniforms.iMouse.value.copy(mouse);
 
+        // Smooth color transition
+        material.uniforms.uGal1.value.lerp(currentTheme.gal1, 0.05);
+        material.uniforms.uGal2.value.lerp(currentTheme.gal2, 0.05);
+        material.uniforms.uGal3.value.lerp(currentTheme.gal3, 0.05);
+        material.uniforms.uGal4.value.lerp(currentTheme.gal4, 0.05);
+        material.uniforms.uDiskHot.value.lerp(currentTheme.diskHot, 0.05);
+        material.uniforms.uDiskMid.value.lerp(currentTheme.diskMid, 0.05);
+        material.uniforms.uDiskCold.value.lerp(currentTheme.diskCold, 0.05);
+
         renderer.render(scene, camera);
       }
 
@@ -575,6 +692,23 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         material.uniforms.iResolution.value.set(window.innerWidth, window.innerHeight, 1);
       });
+
+      // Theme Switching Logic
+      document.querySelectorAll('.color-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const themeName = btn.dataset.theme;
+          if (themes[themeName]) {
+            currentTheme = themes[themeName];
+
+            // Update active state
+            document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+          }
+        });
+      });
+
+      // Set initial active state
+      document.querySelector('.color-btn[data-theme="blue"]').classList.add('active');
     }
 
     document.addEventListener('DOMContentLoaded', () => {
