@@ -366,6 +366,34 @@
       border-radius: 30px;
       border: 1px solid rgba(255, 255, 255, 0.1);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+
+      /* Initial hidden state */
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1s ease;
+    }
+
+    .color-picker.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Mobile Optimization for UI */
+    @media (max-width: 768px) {
+      .color-picker {
+        left: 10px;
+        padding: 10px;
+        gap: 10px;
+        transform: translateY(-50%) scale(0.8);
+        transform-origin: left center;
+      }
+
+      .color-btn,
+      .mix-btn {
+        width: 30px;
+        /* Larger touch targets */
+        height: 30px;
+      }
     }
 
     .picker-group {
@@ -428,9 +456,13 @@
       const canvas = document.getElementById('hero-canvas');
       if (!canvas) return;
 
+      // Mobile check
+      const isMobile = window.innerWidth < 768;
+
       const renderer = new THREE.WebGLRenderer({ canvas, alpha: false, antialias: false });
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      // Reduce pixel ratio on mobile for performance
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
 
       const scene = new THREE.Scene();
       const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
@@ -443,6 +475,14 @@
         targetMouse.x = e.clientX / window.innerWidth;
         targetMouse.y = 1.0 - e.clientY / window.innerHeight;
       });
+
+      // Touch support for mobile
+      document.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) {
+          targetMouse.x = e.touches[0].clientX / window.innerWidth;
+          targetMouse.y = 1.0 - e.touches[0].clientY / window.innerHeight;
+        }
+      }, { passive: true });
 
       // Color Themes
       const themes = {
@@ -505,6 +545,10 @@
       let currentMix = new THREE.Vector3(0.0, 0.0, 0.0); // Default no mix (or black)
       let mixStrength = 0.0; // 0.0 to 1.0
 
+      // Shader optimization for mobile
+      const maxSteps = isMobile ? "60" : "150";
+      const maxDist = isMobile ? "30.0" : "50.0";
+
       const material = new THREE.ShaderMaterial({
         uniforms: {
           iTime: { value: 0 },
@@ -547,8 +591,8 @@
 
           varying vec2 vUv;
 
-          #define MAX_STEPS 100
-          #define MAX_DIST 50.0
+          #define MAX_STEPS ${maxSteps}
+          #define MAX_DIST ${maxDist}
           #define SURF_DIST 0.01
           #define PI 3.14159265
 
@@ -625,7 +669,7 @@
               
               // Simplified curved ray tracing
               // We step forward and bend the ray towards the center (0,0,0)
-              for(int i=0; i<150; i++) {
+              for(int i=0; i<${maxSteps}; i++) {
                   float r = length(p);
                   
                   // Event Horizon Check
@@ -646,7 +690,7 @@
                   p += dir * stepSize;
                   totalDist += stepSize;
                   
-                  if(totalDist > 20.0) break; // Escaped
+                  if(totalDist > MAX_DIST) break; // Escaped
                   
                   // Accretion Disk Intersection
                   // Disk is in XZ plane (y ~ 0)
@@ -799,6 +843,12 @@
 
       // Set initial active state
       document.querySelector('.color-btn[data-theme="blue"]').classList.add('active');
+
+      // Reveal UI after splash screen
+      setTimeout(() => {
+        const picker = document.querySelector('.color-picker');
+        if (picker) picker.classList.add('visible');
+      }, 3000);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
