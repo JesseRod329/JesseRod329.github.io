@@ -330,11 +330,24 @@
 
   <!-- Color Picker UI -->
   <div class="color-picker">
-    <button class="color-btn" data-theme="green" style="--btn-color: #00ff88;"></button>
-    <button class="color-btn" data-theme="blue" style="--btn-color: #0088ff;"></button>
-    <button class="color-btn" data-theme="pink" style="--btn-color: #ff0088;"></button>
-    <button class="color-btn" data-theme="yellow" style="--btn-color: #ffcc00;"></button>
-    <button class="color-btn" data-theme="orange" style="--btn-color: #ff4400;"></button>
+    <div class="picker-group">
+      <div class="picker-label">THEME</div>
+      <button class="color-btn" data-theme="green" style="--btn-color: #00ff88;"></button>
+      <button class="color-btn" data-theme="blue" style="--btn-color: #0088ff;"></button>
+      <button class="color-btn" data-theme="pink" style="--btn-color: #ff0088;"></button>
+      <button class="color-btn" data-theme="yellow" style="--btn-color: #ffcc00;"></button>
+      <button class="color-btn" data-theme="orange" style="--btn-color: #ff4400;"></button>
+    </div>
+
+    <div class="picker-divider"></div>
+
+    <div class="picker-group">
+      <div class="picker-label">MIX</div>
+      <button class="mix-btn" data-mix="black" style="--btn-color: #000000; border: 1px solid #333;"></button>
+      <button class="mix-btn" data-mix="white" style="--btn-color: #ffffff;"></button>
+      <button class="mix-btn" data-mix="gold" style="--btn-color: #ffd700;"></button>
+      <button class="mix-btn" data-mix="purple" style="--btn-color: #9d00ff;"></button>
+    </div>
   </div>
 
   <style>
@@ -345,35 +358,65 @@
       transform: translateY(-50%);
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 20px;
       z-index: 1000;
-      padding: 15px;
-      background: rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(10px);
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(15px);
       border-radius: 30px;
       border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
 
-    .color-btn {
-      width: 20px;
-      height: 20px;
+    .picker-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .picker-label {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 10px;
+      letter-spacing: 2px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .picker-divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+      width: 100%;
+    }
+
+    .color-btn,
+    .mix-btn {
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
       border: none;
       background: var(--btn-color);
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       box-shadow: 0 0 10px var(--btn-color);
       position: relative;
     }
 
-    .color-btn:hover {
+    .color-btn:hover,
+    .mix-btn:hover {
       transform: scale(1.2);
       box-shadow: 0 0 20px var(--btn-color);
     }
 
-    .color-btn.active {
+    .color-btn.active,
+    .mix-btn.active {
       transform: scale(1.3);
       border: 2px solid white;
+      box-shadow: 0 0 25px var(--btn-color);
+    }
+
+    .mix-btn[data-mix="black"] {
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
     }
   </style>
 
@@ -450,7 +493,17 @@
         }
       };
 
+      // Secondary Mix Colors
+      const mixColors = {
+        black: new THREE.Vector3(0.0, 0.0, 0.0),
+        white: new THREE.Vector3(1.0, 1.0, 1.0),
+        gold: new THREE.Vector3(1.0, 0.8, 0.0),
+        purple: new THREE.Vector3(0.6, 0.0, 1.0)
+      };
+
       let currentTheme = themes.blue; // Default
+      let currentMix = new THREE.Vector3(0.0, 0.0, 0.0); // Default no mix (or black)
+      let mixStrength = 0.0; // 0.0 to 1.0
 
       const material = new THREE.ShaderMaterial({
         uniforms: {
@@ -463,7 +516,9 @@
           uGal4: { value: currentTheme.gal4 },
           uDiskHot: { value: currentTheme.diskHot },
           uDiskMid: { value: currentTheme.diskMid },
-          uDiskCold: { value: currentTheme.diskCold }
+          uDiskCold: { value: currentTheme.diskCold },
+          uMixColor: { value: currentMix },
+          uMixStrength: { value: 0.0 }
         },
         vertexShader: `
           varying vec2 vUv;
@@ -485,6 +540,10 @@
           uniform vec3 uDiskHot;
           uniform vec3 uDiskMid;
           uniform vec3 uDiskCold;
+          
+          // Mix Uniforms
+          uniform vec3 uMixColor;
+          uniform float uMixStrength;
 
           varying vec2 vUv;
 
@@ -613,9 +672,12 @@
                       float doppler = dot(diskVel, normalize(p - ro));
                       float beam = 1.0 + doppler * 0.5;
                       
-                      // Color mapping (Theme based)
+                      // Color mapping (Theme based + Mix)
                       vec3 diskCol = mix(uDiskCold, uDiskMid, intensity);
                       diskCol = mix(diskCol, uDiskHot, intensity * intensity);
+                      
+                      // Apply Mix Color
+                      diskCol = mix(diskCol, uMixColor, uMixStrength * 0.5); // Blend 50% max for disk
                       
                       // Accumulate (Volumetric-ish)
                       float alpha = intensity * 0.2 * beam;
@@ -643,6 +705,9 @@
                   float band = 1.0 - abs(bgDir.y);
                   band = pow(band, 4.0);
                   bgCol += uGal4 * band * 0.3;
+                  
+                  // Apply Mix Color to Background
+                  bgCol = mix(bgCol, uMixColor, uMixStrength * 0.8); // Blend 80% max for bg
                   
                   // Stars
                   float stars = pow(hash(bgDir.xy * 100.0 + bgDir.z * 50.0), 100.0) * 20.0;
@@ -683,6 +748,10 @@
         material.uniforms.uDiskMid.value.lerp(currentTheme.diskMid, 0.05);
         material.uniforms.uDiskCold.value.lerp(currentTheme.diskCold, 0.05);
 
+        // Smooth Mix Transition
+        material.uniforms.uMixColor.value.lerp(currentMix, 0.05);
+        material.uniforms.uMixStrength.value += (mixStrength - material.uniforms.uMixStrength.value) * 0.05;
+
         renderer.render(scene, camera);
       }
 
@@ -703,6 +772,27 @@
             // Update active state
             document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
+          }
+        });
+      });
+
+      // Mix Switching Logic
+      document.querySelectorAll('.mix-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const mixName = btn.dataset.mix;
+          if (mixColors[mixName]) {
+            // Toggle logic: if clicking active, turn off. Else turn on.
+            if (btn.classList.contains('active')) {
+              mixStrength = 0.0;
+              btn.classList.remove('active');
+            } else {
+              currentMix = mixColors[mixName];
+              mixStrength = 0.6; // Set mix strength
+
+              // Update active state
+              document.querySelectorAll('.mix-btn').forEach(b => b.classList.remove('active'));
+              btn.classList.add('active');
+            }
           }
         });
       });
