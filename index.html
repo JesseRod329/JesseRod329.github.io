@@ -399,7 +399,7 @@
           // Scene description
           float GetDist(vec3 p) {
               // Twist the space based on depth
-              float twist = p.z * 0.1 + iTime * 0.2;
+              float twist = p.z * 0.1 + iTime * 0.05; // Slower twist
               p.xy *= rot(twist);
               
               // Repetition
@@ -420,7 +420,7 @@
               d = min(d, hex);
               
               // Add some noise/displacement
-              d += sin(p.z * 5.0 + iTime * 2.0) * 0.05;
+              d += sin(p.z * 5.0 + iTime * 0.5) * 0.05; // Slower noise
               
               return d * 0.6; // Scale down for artifact reduction
           }
@@ -462,7 +462,7 @@
               vec2 uv = (gl_FragCoord.xy - 0.5 * iResolution.xy) / iResolution.y;
               
               // Camera setup
-              vec3 ro = vec3(0.0, 0.0, -3.0 + iTime * 2.0); // Moving forward
+              vec3 ro = vec3(0.0, 0.0, -3.0 + iTime * 0.5); // Much slower forward movement
               
               // Mouse interaction for camera look
               vec2 m = (iMouse.xy - 0.5) * 2.0;
@@ -492,7 +492,7 @@
                   float fog = 1.0 / (1.0 + d * d * 0.05);
                   
                   // Dynamic color based on position and time
-                  vec3 objCol = palette(p.z * 0.1 + iTime * 0.1 + length(p.xy) * 0.2);
+                  vec3 objCol = palette(p.z * 0.1 + iTime * 0.05 + length(p.xy) * 0.2); // Slower color shift
                   
                   // Specular
                   vec3 ref = reflect(-l, n);
