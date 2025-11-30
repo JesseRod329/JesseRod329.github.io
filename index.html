@@ -513,12 +513,34 @@
                   }
               }
               
-              // Background Stars (if ray escaped)
+              // Background Galaxy/Nebula (if ray escaped)
               if(length(p) > bhRadius * 1.5 && accretionAccum < 1.0) {
-                  // Distorted direction is 'dir'
+                  // Distorted direction is 'dir' (this is the key for lensing the background)
                   vec3 bgDir = normalize(dir);
-                  float stars = pow(hash(bgDir.xy * 50.0 + bgDir.z * 50.0), 20.0);
-                  col += vec3(stars) * (1.0 - accretionAccum);
+                  
+                  // Nebula / Galaxy generation using FBM
+                  float nebula = fbm(bgDir.xy * 3.0 + iTime * 0.05);
+                  nebula += fbm(bgDir.zy * 3.0 - iTime * 0.02) * 0.5;
+                  
+                  // Color grading for galaxy
+                  vec3 galColor1 = vec3(0.1, 0.0, 0.2); // Deep purple space
+                  vec3 galColor2 = vec3(0.4, 0.1, 0.5); // Nebula purple
+                  vec3 galColor3 = vec3(0.1, 0.3, 0.5); // Blue dust
+                  vec3 galColor4 = vec3(0.8, 0.6, 0.4); // Golden center glow
+                  
+                  vec3 bgCol = mix(galColor1, galColor2, nebula);
+                  bgCol = mix(bgCol, galColor3, fbm(bgDir.xz * 5.0) * 0.5);
+                  
+                  // Add a "galactic plane" band
+                  float band = 1.0 - abs(bgDir.y);
+                  band = pow(band, 4.0);
+                  bgCol += galColor4 * band * 0.3;
+                  
+                  // Stars
+                  float stars = pow(hash(bgDir.xy * 100.0 + bgDir.z * 50.0), 100.0) * 20.0;
+                  bgCol += vec3(stars);
+                  
+                  col += bgCol * (1.0 - accretionAccum);
               }
               
               // Composite
