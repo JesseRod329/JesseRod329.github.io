@@ -23,7 +23,7 @@ interface Category {
 const App: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [favorites, setFavorites] = useState<string[]>(() => {
+  const [favorites] = useState<string[]>(() => {
     const saved = localStorage.getItem('creator-tools-favorites');
     return saved ? JSON.parse(saved) : [];
   });
@@ -62,13 +62,14 @@ const App: React.FC = () => {
     window.location.href = tool.path;
   };
 
-  const toggleFavorite = (toolId: string) => {
-    const updated = favorites.includes(toolId)
-      ? favorites.filter((id) => id !== toolId)
-      : [...favorites, toolId];
-    setFavorites(updated);
-    localStorage.setItem('creator-tools-favorites', JSON.stringify(updated));
-  };
+  // Favorite functionality can be added later when needed
+  // const toggleFavorite = (toolId: string) => {
+  //   const updated = favorites.includes(toolId)
+  //     ? favorites.filter((id) => id !== toolId)
+  //     : [...favorites, toolId];
+  //   setFavorites(updated);
+  //   localStorage.setItem('creator-tools-favorites', JSON.stringify(updated));
+  // };
 
   const getCategoryInfo = (categoryId: string) => {
     return categories.find((cat) => cat.id === categoryId);
