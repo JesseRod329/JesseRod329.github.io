@@ -1,0 +1,42 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+.container { max-width: 1200px; margin: 0 auto; }
+.header { text-align: center; color: white; margin-bottom: 30px; }
+.header h1 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+.main-content { display: grid; grid-template-columns: 400px 1fr; gap: 30px; }
+.input-section, .output-section {
+    background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
+.form-group input {
+    width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem;
+}
+.btn-primary {
+    width: 100%; padding: 15px; background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+    color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer;
+}
+.risk-assessment { margin-bottom: 30px; }
+.risk-card {
+    text-align: center; padding: 40px; border-radius: 15px; border: 4px solid;
+}
+.risk-card.high { background: #fee2e2; border-color: #ef4444; }
+.risk-card.medium { background: #fef3c7; border-color: #f59e0b; }
+.risk-card.low { background: #d1fae5; border-color: #10b981; }
+.risk-score { font-size: 3.5rem; font-weight: bold; margin-bottom: 10px; }
+.risk-label { font-size: 1rem; margin-bottom: 5px; }
+.risk-level { font-size: 1.2rem; font-weight: 600; }
+.recommendations { display: flex; flex-direction: column; gap: 10px; }
+.rec-item {
+    padding: 12px; border-radius: 8px; border-left: 4px solid;
+}
+.rec-item.success { background: #d1fae5; border-color: #10b981; }
+.rec-item.warning { background: #fee2e2; border-color: #ef4444; }
+.rec-item.info { background: #dbeafe; border-color: #3b82f6; }
+@media (max-width: 968px) { .main-content { grid-template-columns: 1fr; } }
+

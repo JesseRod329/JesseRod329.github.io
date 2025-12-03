@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "generate:prompts": "node scripts/generate-prompt-data.mjs"
+    "generate:prompts": "node scripts/generate-prompt-data.mjs",
+    "build": "cd dry-age-simulator && npm run build"
   },
   "dependencies": {
     "google-trends-api": "^4.9.2",

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Calendar AI - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>✍️ Content Calendar AI</h1>
+            <p>Smart scheduling with optimal posting time predictions</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="contentTitle">Content Title</label>
+                    <input type="text" id="contentTitle" placeholder="Enter content title">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="platform">Platform</label>
+                        <select id="platform">
+                            <option value="instagram">Instagram</option>
+                            <option value="twitter">Twitter</option>
+                            <option value="youtube">YouTube</option>
+                            <option value="tiktok">TikTok</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="contentType">Content Type</label>
+                        <select id="contentType">
+                            <option value="post">Post</option>
+                            <option value="video">Video</option>
+                            <option value="story">Story</option>
+                        </select>
+                    </div>
+                </div>
+                <button id="scheduleBtn" class="btn-primary">Get Optimal Time</button>
+            </div>
+            <div class="output-section">
+                <h2>Recommended Schedule</h2>
+                <div id="scheduleOutput" class="schedule-output"></div>
+                <div id="calendar" class="calendar"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

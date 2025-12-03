@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background Music Matcher - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🎬 Background Music Matcher</h1>
+            <p>Match music to video mood and length</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="mood">Video Mood</label>
+                    <select id="mood">
+                        <option value="energetic">Energetic</option>
+                        <option value="calm">Calm</option>
+                        <option value="dramatic">Dramatic</option>
+                        <option value="upbeat">Upbeat</option>
+                        <option value="melancholic">Melancholic</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="duration">Video Duration (seconds)</label>
+                    <input type="number" id="duration" min="10" max="600" value="60">
+                </div>
+                <div class="form-group">
+                    <label for="genre">Preferred Genre</label>
+                    <select id="genre">
+                        <option value="electronic">Electronic</option>
+                        <option value="acoustic">Acoustic</option>
+                        <option value="rock">Rock</option>
+                        <option value="jazz">Jazz</option>
+                        <option value="ambient">Ambient</option>
+                    </select>
+                </div>
+                <button id="matchBtn" class="btn-primary">Find Music</button>
+            </div>
+            <div class="output-section">
+                <h2>Recommended Music</h2>
+                <div id="recommendations" class="recommendations"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Readability Enhancer - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📝 Readability Enhancer</h1>
+            <p>Improve readability scores with AI suggestions</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="content">Your Content</label>
+                    <textarea id="content" rows="12" placeholder="Paste your content here..."></textarea>
+                </div>
+                <button id="analyzeBtn" class="btn-primary">Analyze & Enhance</button>
+            </div>
+            <div class="output-section">
+                <div class="score-display">
+                    <div class="score-circle">
+                        <div id="scoreValue">0</div>
+                        <div class="score-label">Readability Score</div>
+                    </div>
+                </div>
+                <div id="enhancedContent" class="enhanced-content"></div>
+                <div id="suggestions" class="suggestions"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

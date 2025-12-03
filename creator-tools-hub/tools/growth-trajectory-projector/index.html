@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Growth Trajectory Projector - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📊 Growth Trajectory Projector</h1>
+            <p>Project future growth based on current metrics</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="currentFollowers">Current Followers</label>
+                    <input type="number" id="currentFollowers" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label for="growthRate">Monthly Growth Rate (%)</label>
+                    <input type="number" id="growthRate" step="0.1" placeholder="e.g., 5.0">
+                </div>
+                <div class="form-group">
+                    <label for="months">Project Months</label>
+                    <input type="number" id="months" min="1" max="24" value="12">
+                </div>
+                <button id="projectBtn" class="btn-primary">Project Growth</button>
+            </div>
+            <div class="output-section">
+                <div id="projection" class="projection"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

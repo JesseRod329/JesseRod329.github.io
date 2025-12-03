@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Julius Caesar's Villa</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #111;
+      color: #f0f0f0;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+    }
+
+    #app {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    #overlay {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      max-width: 320px;
+      line-height: 1.4;
+    }
+
+    #overlay h1 {
+      margin: 0 0 0.35rem;
+      font-size: 1.2rem;
+      letter-spacing: 0.04em;
+    }
+
+    #overlay p {
+      margin: 0 0 0.5rem;
+      font-size: 0.9rem;
+      color: #d3d3d3;
+    }
+
+    #overlay span {
+      display: block;
+      font-size: 0.8rem;
+      color: #a0a0a0;
+    }
+  </style>
+</head>
+
+<body>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+        "gsap": "https://unpkg.com/gsap@3.12.5/index.js"
+      }
+    }
+  </script>
+  <style>
+    /* ... existing styles ... */
+    #info-panel {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 300px;
+      background: rgba(20, 20, 25, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 12px;
+      padding: 1.5rem;
+      color: #f0f0f0;
+      transform: translateX(120%);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    #info-panel.visible {
+      transform: translateX(0);
+    }
+
+    #info-panel h2 {
+      margin: 0 0 0.5rem 0;
+      font-family: "Cinzel", serif;
+      color: #ffd700;
+      /* Gold */
+      font-size: 1.4rem;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+      padding-bottom: 0.5rem;
+    }
+
+    #info-panel p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #dcdcdc;
+    }
+
+    #info-panel .meta {
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: #a0a0a0;
+      font-style: italic;
+    }
+  </style>
+  <div id="app"></div>
+  <div id="overlay">
+    <h1>Domus Iulii &mdash; Conceptual Model</h1>
+    <p>
+      Simplified Three.js interpretation of the villa attributed to Julius Caesar.
+      Experience the grandeur of Roman architecture.
+    </p>
+    <span>Click a room to reveal its history.</span>
+  </div>
+
+  <div id="info-panel">
+    <h2 id="panel-title">Room Name</h2>
+    <p id="panel-desc">Select a room to see details.</p>
+    <div class="meta" id="panel-meta"></div>
+  </div>
+
+  <script type="module" src="./src/game.js"></script>
+</body>
+
+</html>

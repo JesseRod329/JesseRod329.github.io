@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Tracker for Creators - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>⚡ Time Tracker for Creators</h1>
+            <p>Track time spent on different content types</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="taskName">Task/Content Type</label>
+                    <input type="text" id="taskName" placeholder="e.g., Video Editing">
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category">
+                        <option value="editing">Editing</option>
+                        <option value="filming">Filming</option>
+                        <option value="writing">Writing</option>
+                        <option value="design">Design</option>
+                        <option value="planning">Planning</option>
+                    </select>
+                </div>
+                <div class="timer-controls">
+                    <button id="startBtn" class="btn-start">Start Timer</button>
+                    <button id="stopBtn" class="btn-stop" style="display:none;">Stop Timer</button>
+                </div>
+                <div id="timerDisplay" class="timer-display">00:00:00</div>
+            </div>
+            <div class="output-section">
+                <h2>Time Log</h2>
+                <div id="timeLog" class="time-log"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

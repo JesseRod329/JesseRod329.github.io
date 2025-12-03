@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Script Generator - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>✍️ AI Script Generator</h1>
+            <p>Generate video/audio scripts with tone, length, and platform optimization</p>
+        </header>
+
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="topic">Topic/Subject</label>
+                    <input type="text" id="topic" placeholder="e.g., How to start a YouTube channel">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="platform">Platform</label>
+                        <select id="platform">
+                            <option value="youtube">YouTube</option>
+                            <option value="tiktok">TikTok</option>
+                            <option value="instagram">Instagram Reels</option>
+                            <option value="podcast">Podcast</option>
+                            <option value="twitter">Twitter/X Thread</option>
+                            <option value="linkedin">LinkedIn</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="length">Length (minutes)</label>
+                        <input type="number" id="length" min="1" max="60" value="5">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tone">Tone</label>
+                        <select id="tone">
+                            <option value="professional">Professional</option>
+                            <option value="casual">Casual</option>
+                            <option value="humorous">Humorous</option>
+                            <option value="educational">Educational</option>
+                            <option value="inspirational">Inspirational</option>
+                            <option value="conversational">Conversational</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="keyPoints">Key Points (one per line)</label>
+                    <textarea id="keyPoints" rows="4" placeholder="Enter key points you want to cover..."></textarea>
+                </div>
+
+                <button id="generateBtn" class="btn-primary">Generate Script</button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-header">
+                    <h2>Generated Script</h2>
+                    <div class="output-actions">
+                        <button id="copyBtn" class="btn-secondary">Copy</button>
+                        <button id="downloadBtn" class="btn-secondary">Download</button>
+                    </div>
+                </div>
+                <div id="scriptOutput" class="script-output">
+                    <p class="placeholder">Your generated script will appear here...</p>
+                </div>
+                <div id="stats" class="stats"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

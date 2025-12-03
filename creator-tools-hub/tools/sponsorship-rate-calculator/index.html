@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsorship Rate Calculator - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>💰 Sponsorship Rate Calculator</h1>
+            <p>Calculate fair sponsorship rates</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="followers">Follower Count</label>
+                    <input type="number" id="followers" placeholder="Enter follower count">
+                </div>
+                <div class="form-group">
+                    <label for="engagementRate">Engagement Rate (%)</label>
+                    <input type="number" id="engagementRate" step="0.1" placeholder="e.g., 3.5">
+                </div>
+                <div class="form-group">
+                    <label for="platform">Platform</label>
+                    <select id="platform">
+                        <option value="instagram">Instagram</option>
+                        <option value="youtube">YouTube</option>
+                        <option value="tiktok">TikTok</option>
+                        <option value="twitter">Twitter/X</option>
+                    </select>
+                </div>
+                <button id="calculateBtn" class="btn-primary">Calculate Rate</button>
+            </div>
+            <div class="output-section">
+                <div class="result-card">
+                    <div class="result-value" id="rate">$0</div>
+                    <div class="result-label">Recommended Rate</div>
+                </div>
+                <div id="breakdown" class="breakdown"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Performance Predictor - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📊 Content Performance Predictor</h1>
+            <p>Predict content success before publishing</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="title">Content Title</label>
+                    <input type="text" id="title" placeholder="Enter your content title">
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" rows="5" placeholder="Enter content description..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="platform">Platform</label>
+                        <select id="platform">
+                            <option value="youtube">YouTube</option>
+                            <option value="instagram">Instagram</option>
+                            <option value="tiktok">TikTok</option>
+                            <option value="twitter">Twitter/X</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category">
+                            <option value="education">Education</option>
+                            <option value="entertainment">Entertainment</option>
+                            <option value="lifestyle">Lifestyle</option>
+                            <option value="tech">Tech</option>
+                        </select>
+                    </div>
+                </div>
+                <button id="predictBtn" class="btn-primary">Predict Performance</button>
+            </div>
+            <div class="output-section">
+                <div class="prediction-card">
+                    <div class="prediction-score">
+                        <div id="scoreValue">0</div>
+                        <div class="score-label">Success Score</div>
+                    </div>
+                    <div id="predictionDetails" class="prediction-details"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,139 @@
+/* Fidget Device Styles - 3D Version */
+
+.fidget-console {
+    background: transparent;
+    /* Remove card background for cleaner 3D look */
+    backdrop-filter: none;
+    border: none;
+    box-shadow: none;
+    width: 100%;
+    max-width: 800px;
+    /* Wider for 3D view */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.console-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.console-header h1 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    letter-spacing: 4px;
+    margin: 0;
+    text-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+    background: linear-gradient(to right, #fff, var(--text-secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.status-light {
+    width: 8px;
+    height: 8px;
+    background: var(--teal);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--teal);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+        box-shadow: 0 0 5px var(--teal);
+    }
+
+    50% {
+        opacity: 1;
+        box-shadow: 0 0 15px var(--teal);
+    }
+
+    100% {
+        opacity: 0.5;
+        box-shadow: 0 0 5px var(--teal);
+    }
+}
+
+.fidget-grid {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+}
+
+/* --- Slider Module --- */
+.slider-module {
+    background: rgba(15, 15, 35, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 20px 40px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    max-width: 400px;
+    margin-top: -50px;
+    /* Overlap slightly with 3D space if needed, or just pull up */
+    z-index: 20;
+}
+
+.label {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    letter-spacing: 3px;
+    margin-top: 15px;
+    text-transform: uppercase;
+}
+
+/* --- Slider Input --- */
+.fidget-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    outline: none;
+    opacity: 0.8;
+    transition: opacity .2s;
+}
+
+.fidget-slider:hover {
+    opacity: 1;
+}
+
+.fidget-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--amber);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 15px var(--amber);
+    border: 2px solid #fff;
+    transition: transform 0.1s;
+}
+
+.fidget-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.fidget-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: var(--amber);
+    cursor: pointer;
+    border: 2px solid #fff;
+}

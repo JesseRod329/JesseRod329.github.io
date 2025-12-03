@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Competitor Content Analyzer - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📊 Competitor Content Analyzer</h1>
+            <p>Analyze competitor content strategies</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="competitorUrl">Competitor URL/Channel</label>
+                    <input type="text" id="competitorUrl" placeholder="Enter competitor URL or channel name">
+                </div>
+                <div class="form-group">
+                    <label for="platform">Platform</label>
+                    <select id="platform">
+                        <option value="youtube">YouTube</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="tiktok">TikTok</option>
+                    </select>
+                </div>
+                <button id="analyzeBtn" class="btn-primary">Analyze Competitor</button>
+            </div>
+            <div class="output-section">
+                <div id="analysis" class="analysis"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

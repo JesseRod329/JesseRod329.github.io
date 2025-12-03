@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metadata Editor - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🔧 Metadata Editor</h1>
+            <p>Edit EXIF and other metadata for media files</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="fileInput">Upload Image</label>
+                    <input type="file" id="fileInput" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" placeholder="Enter title">
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" rows="4" placeholder="Enter description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="keywords">Keywords (comma separated)</label>
+                    <input type="text" id="keywords" placeholder="keyword1, keyword2">
+                </div>
+                <button id="saveBtn" class="btn-primary">Save Metadata</button>
+            </div>
+            <div class="output-section">
+                <div id="preview" class="preview"></div>
+                <div id="metadata" class="metadata"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

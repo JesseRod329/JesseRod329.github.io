@@ -1,0 +1,39 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+.container { max-width: 1200px; margin: 0 auto; }
+.header { text-align: center; color: white; margin-bottom: 30px; }
+.header h1 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+.main-content { display: grid; grid-template-columns: 400px 1fr; gap: 30px; }
+.input-section, .output-section {
+    background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
+.form-group input, .form-group select {
+    width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem;
+}
+.btn-primary {
+    width: 100%; padding: 15px; background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+    color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer;
+}
+.result-card {
+    text-align: center; padding: 30px; border-radius: 15px; border: 4px solid; margin-bottom: 20px;
+}
+.result-card.deductible { background: #d1fae5; border-color: #10b981; }
+.result-card.not-deductible { background: #fee2e2; border-color: #ef4444; }
+.result-status { font-size: 1.2rem; font-weight: 600; margin-bottom: 15px; }
+.result-amount { font-size: 2.5rem; font-weight: bold; margin-bottom: 10px; }
+.result-note { font-size: 0.9rem; color: #666; }
+.total-card {
+    background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%); color: white;
+    padding: 20px; border-radius: 10px; text-align: center;
+}
+.total-label { font-size: 0.9rem; opacity: 0.9; margin-bottom: 10px; }
+.total-value { font-size: 2rem; font-weight: bold; }
+@media (max-width: 968px) { .main-content { grid-template-columns: 1fr; } }
+

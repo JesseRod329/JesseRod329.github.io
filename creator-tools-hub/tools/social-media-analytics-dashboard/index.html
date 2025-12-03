@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Analytics Dashboard - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📱 Social Media Analytics Dashboard</h1>
+            <p>Unified analytics across all platforms</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label>Select Platforms</label>
+                    <div class="platform-checkboxes">
+                        <label><input type="checkbox" value="instagram" checked> Instagram</label>
+                        <label><input type="checkbox" value="twitter" checked> Twitter/X</label>
+                        <label><input type="checkbox" value="youtube"> YouTube</label>
+                        <label><input type="checkbox" value="tiktok"> TikTok</label>
+                    </div>
+                </div>
+                <button id="loadBtn" class="btn-primary">Load Analytics</button>
+            </div>
+            <div class="output-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Followers</div>
+                        <div class="stat-value" id="totalFollowers">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Engagement</div>
+                        <div class="stat-value" id="totalEngagement">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Avg Engagement Rate</div>
+                        <div class="stat-value" id="avgEngagement">0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Posts</div>
+                        <div class="stat-value" id="totalPosts">0</div>
+                    </div>
+                </div>
+                <div id="platformBreakdown" class="platform-breakdown"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

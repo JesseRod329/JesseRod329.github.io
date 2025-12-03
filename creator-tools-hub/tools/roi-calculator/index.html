@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROI Calculator - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📊 ROI Calculator</h1>
+            <p>Calculate ROI for different content types</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="investment">Investment ($)</label>
+                    <input type="number" id="investment" step="0.01" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="revenue">Revenue Generated ($)</label>
+                    <input type="number" id="revenue" step="0.01" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="contentType">Content Type</label>
+                    <select id="contentType">
+                        <option value="video">Video</option>
+                        <option value="post">Social Media Post</option>
+                        <option value="blog">Blog Post</option>
+                        <option value="course">Online Course</option>
+                    </select>
+                </div>
+                <button id="calculateBtn" class="btn-primary">Calculate ROI</button>
+            </div>
+            <div class="output-section">
+                <div class="result-card">
+                    <div class="result-value" id="roi">0%</div>
+                    <div class="result-label">Return on Investment</div>
+                </div>
+                <div id="breakdown" class="breakdown"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

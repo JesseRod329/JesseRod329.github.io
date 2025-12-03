@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Thumbnail Optimizer - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🎬 Video Thumbnail Optimizer</h1>
+            <p>AI-suggested thumbnails with A/B testing</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="imageInput">Upload Thumbnail</label>
+                    <input type="file" id="imageInput" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="title">Video Title</label>
+                    <input type="text" id="title" placeholder="Enter video title">
+                </div>
+                <button id="analyzeBtn" class="btn-primary">Analyze Thumbnail</button>
+            </div>
+            <div class="output-section">
+                <div id="preview" class="preview"></div>
+                <div id="score" class="score"></div>
+                <div id="suggestions" class="suggestions"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

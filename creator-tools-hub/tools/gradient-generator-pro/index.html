@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Generator Pro - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🎨 Gradient Generator Pro</h1>
+            <p>Advanced gradient tools with animation and export options</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label>Color 1</label>
+                    <input type="color" id="color1" value="#667eea">
+                </div>
+                <div class="form-group">
+                    <label>Color 2</label>
+                    <input type="color" id="color2" value="#764ba2">
+                </div>
+                <div class="form-group">
+                    <label for="direction">Direction</label>
+                    <select id="direction">
+                        <option value="to right">Left to Right</option>
+                        <option value="to bottom">Top to Bottom</option>
+                        <option value="to bottom right">Diagonal</option>
+                        <option value="135deg">135° Angle</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="animation">Animation</label>
+                    <select id="animation">
+                        <option value="none">None</option>
+                        <option value="pulse">Pulse</option>
+                        <option value="wave">Wave</option>
+                    </select>
+                </div>
+                <button id="generateBtn" class="btn-primary">Generate Gradient</button>
+            </div>
+            <div class="output-section">
+                <div id="gradientPreview" class="gradient-preview"></div>
+                <div class="code-output">
+                    <label>CSS Code</label>
+                    <textarea id="cssCode" readonly></textarea>
+                    <button id="copyBtn" class="btn-secondary">Copy CSS</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Repurposing Engine - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>✍️ Content Repurposing Engine</h1>
+            <p>Auto-adapt content for different platforms (YouTube → TikTok → Instagram)</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="sourceContent">Original Content</label>
+                    <textarea id="sourceContent" rows="10" placeholder="Paste your original content here..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="sourcePlatform">Source Platform</label>
+                    <select id="sourcePlatform">
+                        <option value="youtube">YouTube</option>
+                        <option value="blog">Blog Post</option>
+                        <option value="podcast">Podcast</option>
+                        <option value="twitter">Twitter/X</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="targetPlatform">Target Platform</label>
+                    <select id="targetPlatform">
+                        <option value="tiktok">TikTok</option>
+                        <option value="instagram">Instagram Reels</option>
+                        <option value="twitter">Twitter/X Thread</option>
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="youtube-shorts">YouTube Shorts</option>
+                    </select>
+                </div>
+                <button id="repurposeBtn" class="btn-primary">Repurpose Content</button>
+            </div>
+            <div class="output-section">
+                <div class="output-header">
+                    <h2>Repurposed Content</h2>
+                    <button id="copyBtn" class="btn-secondary">Copy</button>
+                </div>
+                <div id="output" class="output-content"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator Pro - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🔧 QR Code Generator Pro</h1>
+            <p>Generate QR codes with custom designs</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="content">Content/URL</label>
+                    <input type="text" id="content" placeholder="Enter URL or text">
+                </div>
+                <div class="form-group">
+                    <label for="size">Size</label>
+                    <select id="size">
+                        <option value="200">Small (200x200)</option>
+                        <option value="300" selected>Medium (300x300)</option>
+                        <option value="400">Large (400x400)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="color">Color</label>
+                    <input type="color" id="color" value="#000000">
+                </div>
+                <button id="generateBtn" class="btn-primary">Generate QR Code</button>
+            </div>
+            <div class="output-section">
+                <div id="qrCode" class="qr-code"></div>
+                <button id="downloadBtn" class="btn-secondary" style="display:none;">Download</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+

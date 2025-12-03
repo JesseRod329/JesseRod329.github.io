@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engagement Rate Calculator - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📱 Engagement Rate Calculator</h1>
+            <p>Calculate and compare engagement rates</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="followers">Followers</label>
+                    <input type="number" id="followers" placeholder="Enter follower count">
+                </div>
+                <div class="form-group">
+                    <label for="likes">Likes</label>
+                    <input type="number" id="likes" placeholder="Enter likes">
+                </div>
+                <div class="form-group">
+                    <label for="comments">Comments</label>
+                    <input type="number" id="comments" placeholder="Enter comments">
+                </div>
+                <div class="form-group">
+                    <label for="shares">Shares</label>
+                    <input type="number" id="shares" placeholder="Enter shares">
+                </div>
+                <button id="calculateBtn" class="btn-primary">Calculate Rate</button>
+            </div>
+            <div class="output-section">
+                <div class="result-card">
+                    <div class="result-value" id="engagementRate">0%</div>
+                    <div class="result-label">Engagement Rate</div>
+                </div>
+                <div id="breakdown" class="breakdown"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

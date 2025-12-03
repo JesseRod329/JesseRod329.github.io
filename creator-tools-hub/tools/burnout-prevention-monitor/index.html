@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burnout Prevention Monitor - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>⚡ Burnout Prevention Monitor</h1>
+            <p>Monitor work patterns and suggest breaks</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="hoursWorked">Hours Worked Today</label>
+                    <input type="number" id="hoursWorked" min="0" max="24" step="0.5" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label for="breaksTaken">Breaks Taken</label>
+                    <input type="number" id="breaksTaken" min="0" max="20" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label for="stressLevel">Stress Level (1-10)</label>
+                    <input type="number" id="stressLevel" min="1" max="10" placeholder="5">
+                </div>
+                <button id="checkBtn" class="btn-primary">Check Burnout Risk</button>
+            </div>
+            <div class="output-section">
+                <div id="riskAssessment" class="risk-assessment"></div>
+                <div id="recommendations" class="recommendations"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

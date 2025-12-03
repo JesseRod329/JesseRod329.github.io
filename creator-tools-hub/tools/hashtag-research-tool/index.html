@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hashtag Research Tool - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📱 Hashtag Research Tool</h1>
+            <p>Find trending hashtags with performance data</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="keyword">Keyword/Topic</label>
+                    <input type="text" id="keyword" placeholder="e.g., content creation">
+                </div>
+                <div class="form-group">
+                    <label for="platform">Platform</label>
+                    <select id="platform">
+                        <option value="instagram">Instagram</option>
+                        <option value="twitter">Twitter/X</option>
+                        <option value="tiktok">TikTok</option>
+                    </select>
+                </div>
+                <button id="researchBtn" class="btn-primary">Research Hashtags</button>
+            </div>
+            <div class="output-section">
+                <h2>Recommended Hashtags</h2>
+                <div id="hashtags" class="hashtags"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Headline Analyzer - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📝 Headline Analyzer</h1>
+            <p>Test headlines for engagement and click-through potential</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="headline">Your Headline</label>
+                    <input type="text" id="headline" placeholder="Enter your headline">
+                </div>
+                <button id="analyzeBtn" class="btn-primary">Analyze Headline</button>
+            </div>
+            <div class="output-section">
+                <div class="score-display">
+                    <div class="score-circle">
+                        <div id="scoreValue">0</div>
+                        <div class="score-label">Engagement Score</div>
+                    </div>
+                </div>
+                <div id="analysis" class="analysis"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

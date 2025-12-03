@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener with Analytics - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🔧 URL Shortener with Analytics</h1>
+            <p>Shorten URLs with click tracking</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="url">Long URL</label>
+                    <input type="url" id="url" placeholder="https://example.com/very/long/url">
+                </div>
+                <div class="form-group">
+                    <label for="customSlug">Custom Slug (optional)</label>
+                    <input type="text" id="customSlug" placeholder="my-link">
+                </div>
+                <button id="shortenBtn" class="btn-primary">Shorten URL</button>
+            </div>
+            <div class="output-section">
+                <h2>Your Short URLs</h2>
+                <div id="urlsList" class="urls-list"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

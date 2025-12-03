@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Waveform Visualizer - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🎬 Audio Waveform Visualizer</h1>
+            <p>Customizable waveform graphics for podcasts</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="audioInput">Upload Audio</label>
+                    <input type="file" id="audioInput" accept="audio/*">
+                </div>
+                <div class="form-group">
+                    <label for="color">Waveform Color</label>
+                    <input type="color" id="color" value="#667eea">
+                </div>
+                <div class="form-group">
+                    <label for="style">Style</label>
+                    <select id="style">
+                        <option value="bars">Bars</option>
+                        <option value="line">Line</option>
+                        <option value="filled">Filled</option>
+                    </select>
+                </div>
+                <button id="generateBtn" class="btn-primary">Generate Waveform</button>
+            </div>
+            <div class="output-section">
+                <canvas id="waveformCanvas"></canvas>
+                <button id="downloadBtn" class="btn-secondary" style="display:none;">Download Image</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

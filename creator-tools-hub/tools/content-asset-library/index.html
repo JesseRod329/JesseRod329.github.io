@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Asset Library - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>⚡ Content Asset Library</h1>
+            <p>Organize images, videos, templates, etc.</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="assetName">Asset Name</label>
+                    <input type="text" id="assetName" placeholder="e.g., Thumbnail Template">
+                </div>
+                <div class="form-group">
+                    <label for="assetType">Asset Type</label>
+                    <select id="assetType">
+                        <option value="image">Image</option>
+                        <option value="video">Video</option>
+                        <option value="template">Template</option>
+                        <option value="audio">Audio</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <input type="text" id="category" placeholder="e.g., thumbnails">
+                </div>
+                <div class="form-group">
+                    <label for="tags">Tags (comma separated)</label>
+                    <input type="text" id="tags" placeholder="e.g., youtube, tutorial, tech">
+                </div>
+                <button id="addBtn" class="btn-primary">Add Asset</button>
+            </div>
+            <div class="output-section">
+                <div class="filters">
+                    <input type="text" id="search" placeholder="Search assets...">
+                    <select id="filterType">
+                        <option value="all">All Types</option>
+                        <option value="image">Images</option>
+                        <option value="video">Videos</option>
+                        <option value="template">Templates</option>
+                    </select>
+                </div>
+                <div id="assets" class="assets"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

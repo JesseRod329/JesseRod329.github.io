@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audience Demographics Visualizer - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>👥 Audience Demographics Visualizer</h1>
+            <p>Visual breakdown of audience demographics</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="age18-24">Age 18-24 (%)</label>
+                    <input type="number" id="age18-24" min="0" max="100" value="25">
+                </div>
+                <div class="form-group">
+                    <label for="age25-34">Age 25-34 (%)</label>
+                    <input type="number" id="age25-34" min="0" max="100" value="35">
+                </div>
+                <div class="form-group">
+                    <label for="age35-44">Age 35-44 (%)</label>
+                    <input type="number" id="age35-44" min="0" max="100" value="25">
+                </div>
+                <div class="form-group">
+                    <label for="age45+">Age 45+ (%)</label>
+                    <input type="number" id="age45+" min="0" max="100" value="15">
+                </div>
+                <button id="visualizeBtn" class="btn-primary">Visualize Demographics</button>
+            </div>
+            <div class="output-section">
+                <h2>Demographics Breakdown</h2>
+                <div id="charts" class="charts"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

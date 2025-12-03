@@ -1,0 +1,43 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+.container { max-width: 1200px; margin: 0 auto; }
+.header { text-align: center; color: white; margin-bottom: 30px; }
+.header h1 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+.main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+.input-section, .output-section {
+    background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem;
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.btn-primary {
+    width: 100%; padding: 15px; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer;
+}
+.prediction-card { text-align: center; }
+.prediction-score {
+    width: 200px; height: 200px; border-radius: 50%; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; margin: 0 auto 30px; font-size: 3rem; font-weight: bold;
+    border: 10px solid #e0e0e0; transition: all 0.3s;
+}
+.prediction-score.high { border-color: #10b981; color: #10b981; }
+.prediction-score.medium { border-color: #f59e0b; color: #f59e0b; }
+.prediction-score.low { border-color: #ef4444; color: #ef4444; }
+.score-label { font-size: 1rem; margin-top: 10px; font-weight: normal; }
+.prediction-details { display: flex; flex-direction: column; gap: 10px; }
+.factor {
+    padding: 12px; border-radius: 8px; border-left: 4px solid; text-align: left;
+}
+.factor.good { background: #d1fae5; border-color: #10b981; }
+.factor.warning { background: #fef3c7; border-color: #f59e0b; }
+.factor.info { background: #dbeafe; border-color: #3b82f6; }
+@media (max-width: 968px) { .main-content { grid-template-columns: 1fr; } }
+

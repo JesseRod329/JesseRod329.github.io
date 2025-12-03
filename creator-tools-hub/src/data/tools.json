@@ -1,0 +1,517 @@
+{
+  "categories": [
+    {
+      "id": "content-creation",
+      "name": "Content Creation & Editing",
+      "icon": "✍️",
+      "color": "blue"
+    },
+    {
+      "id": "visual-design",
+      "name": "Visual Design & Graphics",
+      "icon": "🎨",
+      "color": "purple"
+    },
+    {
+      "id": "video-audio",
+      "name": "Video & Audio Production",
+      "icon": "🎬",
+      "color": "red"
+    },
+    {
+      "id": "writing-text",
+      "name": "Writing & Text Tools",
+      "icon": "📝",
+      "color": "green"
+    },
+    {
+      "id": "social-media",
+      "name": "Social Media Management",
+      "icon": "📱",
+      "color": "pink"
+    },
+    {
+      "id": "audience-community",
+      "name": "Audience & Community",
+      "icon": "👥",
+      "color": "orange"
+    },
+    {
+      "id": "monetization",
+      "name": "Monetization & Business",
+      "icon": "💰",
+      "color": "yellow"
+    },
+    {
+      "id": "analytics",
+      "name": "Analytics & Insights",
+      "icon": "📊",
+      "color": "indigo"
+    },
+    {
+      "id": "productivity",
+      "name": "Productivity & Workflow",
+      "icon": "⚡",
+      "color": "teal"
+    },
+    {
+      "id": "utilities",
+      "name": "Utilities & Helpers",
+      "icon": "🔧",
+      "color": "gray"
+    }
+  ],
+  "tools": [
+    {
+      "id": "ai-script-generator",
+      "name": "AI Script Generator",
+      "description": "Generate video/audio scripts with tone, length, and platform optimization",
+      "category": "content-creation",
+      "path": "/creator-tools-hub/tools/ai-script-generator",
+      "status": "ready",
+      "priority": 1
+    },
+    {
+      "id": "content-repurposing-engine",
+      "name": "Content Repurposing Engine",
+      "description": "Auto-adapt content for different platforms (YouTube → TikTok → Instagram)",
+      "category": "content-creation",
+      "path": "/creator-tools-hub/tools/content-repurposing-engine",
+      "status": "ready",
+      "priority": 2
+    },
+    {
+      "id": "interactive-content-builder",
+      "name": "Interactive Content Builder",
+      "description": "Create quizzes, polls, and interactive videos",
+      "category": "content-creation",
+      "path": "/creator-tools-hub/tools/interactive-content-builder",
+      "status": "ready",
+      "priority": 3
+    },
+    {
+      "id": "bulk-content-generator",
+      "name": "Bulk Content Generator",
+      "description": "Generate multiple variations of content for A/B testing",
+      "category": "content-creation",
+      "path": "/creator-tools-hub/tools/bulk-content-generator",
+      "status": "ready",
+      "priority": 4
+    },
+    {
+      "id": "content-calendar-ai",
+      "name": "Content Calendar AI",
+      "description": "Smart scheduling with optimal posting time predictions",
+      "category": "content-creation",
+      "path": "/creator-tools-hub/tools/content-calendar-ai",
+      "status": "ready",
+      "priority": 5
+    },
+    {
+      "id": "smart-template-generator",
+      "name": "Smart Template Generator",
+      "description": "AI-powered design templates based on content type",
+      "category": "visual-design",
+      "path": "/creator-tools-hub/tools/smart-template-generator",
+      "status": "ready",
+      "priority": 1
+    },
+    {
+      "id": "brand-kit-manager",
+      "name": "Brand Kit Manager",
+      "description": "Centralized brand colors, fonts, logos with auto-application",
+      "category": "visual-design",
+      "path": "/creator-tools-hub/tools/brand-kit-manager",
+      "status": "ready",
+      "priority": 2
+    },
+    {
+      "id": "social-media-image-resizer",
+      "name": "Social Media Image Resizer",
+      "description": "One-click resize for all platforms with smart cropping",
+      "category": "visual-design",
+      "path": "/creator-tools-hub/tools/social-media-image-resizer",
+      "status": "ready",
+      "priority": 3
+    },
+    {
+      "id": "gradient-generator-pro",
+      "name": "Gradient Generator Pro",
+      "description": "Advanced gradient tools with animation and export options",
+      "category": "visual-design",
+      "path": "/creator-tools-hub/tools/gradient-generator-pro",
+      "status": "ready",
+      "priority": 4
+    },
+    {
+      "id": "color-palette-extractor",
+      "name": "Color Palette Extractor",
+      "description": "Extract palettes from images with accessibility checking",
+      "category": "visual-design",
+      "path": "/creator-tools-hub/tools/color-palette-extractor",
+      "status": "ready",
+      "priority": 5
+    },
+    {
+      "id": "auto-subtitle-generator",
+      "name": "Auto Subtitle Generator",
+      "description": "Multi-language subtitles with styling and positioning",
+      "category": "video-audio",
+      "path": "/creator-tools-hub/tools/auto-subtitle-generator",
+      "status": "ready",
+      "priority": 1
+    },
+    {
+      "id": "video-thumbnail-optimizer",
+      "name": "Video Thumbnail Optimizer",
+      "description": "AI-suggested thumbnails with A/B testing",
+      "category": "video-audio",
+      "path": "/creator-tools-hub/tools/video-thumbnail-optimizer",
+      "status": "ready",
+      "priority": 2
+    },
+    {
+      "id": "audio-waveform-visualizer",
+      "name": "Audio Waveform Visualizer",
+      "description": "Customizable waveform graphics for podcasts",
+      "category": "video-audio",
+      "path": "/creator-tools-hub/tools/audio-waveform-visualizer",
+      "status": "ready",
+      "priority": 3
+    },
+    {
+      "id": "video-speed-optimizer",
+      "name": "Video Speed Optimizer",
+      "description": "Smart compression without quality loss",
+      "category": "video-audio",
+      "path": "/creator-tools-hub/tools/video-speed-optimizer",
+      "status": "ready",
+      "priority": 4
+    },
+    {
+      "id": "background-music-matcher",
+      "name": "Background Music Matcher",
+      "description": "Match music to video mood and length",
+      "category": "video-audio",
+      "path": "/creator-tools-hub/tools/background-music-matcher",
+      "status": "ready",
+      "priority": 5
+    },
+    {
+      "id": "seo-content-optimizer",
+      "name": "SEO Content Optimizer",
+      "description": "Real-time SEO scoring with suggestions",
+      "category": "writing-text",
+      "path": "/creator-tools-hub/tools/seo-content-optimizer",
+      "status": "ready",
+      "priority": 1
+    },
+    {
+      "id": "readability-enhancer",
+      "name": "Readability Enhancer",
+      "description": "Improve readability scores with AI suggestions",
+      "category": "writing-text",
+      "path": "/creator-tools-hub/tools/readability-enhancer",
+      "status": "ready",
+      "priority": 2
+    },
+    {
+      "id": "headline-analyzer",
+      "name": "Headline Analyzer",
+      "description": "Test headlines for engagement and click-through potential",
+      "category": "writing-text",
+      "path": "/creator-tools-hub/tools/headline-analyzer",
+      "status": "ready",
+      "priority": 3
+    },
+    {
+      "id": "plagiarism-checker",
+      "name": "Plagiarism Checker",
+      "description": "Fast, accurate plagiarism detection",
+      "category": "writing-text",
+      "path": "/creator-tools-hub/tools/plagiarism-checker",
+      "status": "ready",
+      "priority": 4
+    },
+    {
+      "id": "writing-style-analyzer",
+      "name": "Writing Style Analyzer",
+      "description": "Analyze and improve writing tone and style",
+      "category": "writing-text",
+      "path": "/creator-tools-hub/tools/writing-style-analyzer",
+      "status": "ready",
+      "priority": 5
+    },
+    {
+      "id": "cross-platform-scheduler",
+      "name": "Cross-Platform Scheduler",
+      "description": "Schedule to all platforms from one interface",
+      "category": "social-media",
+      "path": "/creator-tools-hub/tools/cross-platform-scheduler",
+      "status": "ready",
+      "priority": 1
+    },
+    {
+      "id": "hashtag-research-tool",
+      "name": "Hashtag Research Tool",
+      "description": "Find trending hashtags with performance data",
+      "category": "social-media",
+      "path": "/creator-tools-hub/tools/hashtag-research-tool",
+      "status": "ready",
+      "priority": 2
+    },
+    {
+      "id": "social-media-analytics-dashboard",
+      "name": "Social Media Analytics Dashboard",
+      "description": "Unified analytics across all platforms",
+      "category": "social-media",
+      "path": "/creator-tools-hub/tools/social-media-analytics-dashboard",
+      "status": "ready",
+      "priority": 3
+    },
+    {
+      "id": "engagement-rate-calculator",
+      "name": "Engagement Rate Calculator",
+      "description": "Calculate and compare engagement rates",
+      "category": "social-media",
+      "path": "/creator-tools-hub/tools/engagement-rate-calculator",
+      "status": "ready",
+      "priority": 4
+    },
+    {
+      "id": "best-time-to-post-analyzer",
+      "name": "Best Time to Post Analyzer",
+      "description": "Analyze your audience's active times",
+      "category": "social-media",
+      "path": "/creator-tools-hub/tools/best-time-to-post-analyzer",
+      "status": "ready",
+      "priority": 5
+    },
+    {
+      "id": "audience-sentiment-analyzer",
+      "name": "Audience Sentiment Analyzer",
+      "description": "Analyze comments and mentions for sentiment",
+      "category": "audience-community",
+      "path": "/creator-tools-hub/tools/audience-sentiment-analyzer",
+      "status": "ready",
+      "priority": 1
+    },
+    {
+      "id": "community-engagement-tracker",
+      "name": "Community Engagement Tracker",
+      "description": "Track engagement across all platforms",
+      "category": "audience-community",
+      "path": "/creator-tools-hub/tools/community-engagement-tracker",
+      "status": "ready",
+      "priority": 2
+    },
+    {
+      "id": "fan-message-organizer",
+      "name": "Fan Message Organizer",
+      "description": "Organize and prioritize messages from fans",
+      "category": "audience-community",
+      "path": "/creator-tools-hub/tools/fan-message-organizer",
+      "status": "ready",
+      "priority": 3
+    },
+    {
+      "id": "collaboration-finder",
+      "name": "Collaboration Finder",
+      "description": "Find and connect with other creators",
+      "category": "audience-community",
+      "path": "/creator-tools-hub/tools/collaboration-finder",
+      "status": "ready",
+      "priority": 4
+    },
+    {
+      "id": "audience-demographics-visualizer",
+      "name": "Audience Demographics Visualizer",
+      "description": "Visual breakdown of audience demographics",
+      "category": "audience-community",
+      "path": "/creator-tools-hub/tools/audience-demographics-visualizer",
+      "status": "ready",
+      "priority": 5
+    },
+    {
+      "id": "revenue-stream-tracker",
+      "name": "Revenue Stream Tracker",
+      "description": "Track all income sources in one place",
+      "category": "monetization",
+      "path": "/creator-tools-hub/tools/revenue-stream-tracker",
+      "status": "ready",
+      "priority": 1
+    },
+    {
+      "id": "sponsorship-rate-calculator",
+      "name": "Sponsorship Rate Calculator",
+      "description": "Calculate fair sponsorship rates",
+      "category": "monetization",
+      "path": "/creator-tools-hub/tools/sponsorship-rate-calculator",
+      "status": "ready",
+      "priority": 2
+    },
+    {
+      "id": "affiliate-link-manager",
+      "name": "Affiliate Link Manager",
+      "description": "Organize and track affiliate links",
+      "category": "monetization",
+      "path": "/creator-tools-hub/tools/affiliate-link-manager",
+      "status": "ready",
+      "priority": 3
+    },
+    {
+      "id": "pricing-strategy-advisor",
+      "name": "Pricing Strategy Advisor",
+      "description": "Get pricing recommendations for products/services",
+      "category": "monetization",
+      "path": "/creator-tools-hub/tools/pricing-strategy-advisor",
+      "status": "ready",
+      "priority": 4
+    },
+    {
+      "id": "tax-deduction-finder",
+      "name": "Tax Deduction Finder",
+      "description": "Identify creator-related tax deductions",
+      "category": "monetization",
+      "path": "/creator-tools-hub/tools/tax-deduction-finder",
+      "status": "ready",
+      "priority": 5
+    },
+    {
+      "id": "content-performance-predictor",
+      "name": "Content Performance Predictor",
+      "description": "Predict content success before publishing",
+      "category": "analytics",
+      "path": "/creator-tools-hub/tools/content-performance-predictor",
+      "status": "ready",
+      "priority": 1
+    },
+    {
+      "id": "trend-analyzer",
+      "name": "Trend Analyzer",
+      "description": "Identify trending topics in your niche",
+      "category": "analytics",
+      "path": "/creator-tools-hub/tools/trend-analyzer",
+      "status": "ready",
+      "priority": 2
+    },
+    {
+      "id": "competitor-content-analyzer",
+      "name": "Competitor Content Analyzer",
+      "description": "Analyze competitor content strategies",
+      "category": "analytics",
+      "path": "/creator-tools-hub/tools/competitor-content-analyzer",
+      "status": "ready",
+      "priority": 3
+    },
+    {
+      "id": "roi-calculator",
+      "name": "ROI Calculator",
+      "description": "Calculate ROI for different content types",
+      "category": "analytics",
+      "path": "/creator-tools-hub/tools/roi-calculator",
+      "status": "ready",
+      "priority": 4
+    },
+    {
+      "id": "growth-trajectory-projector",
+      "name": "Growth Trajectory Projector",
+      "description": "Project future growth based on current metrics",
+      "category": "analytics",
+      "path": "/creator-tools-hub/tools/growth-trajectory-projector",
+      "status": "ready",
+      "priority": 5
+    },
+    {
+      "id": "creator-task-manager",
+      "name": "Creator Task Manager",
+      "description": "Task management tailored for creators",
+      "category": "productivity",
+      "path": "/creator-tools-hub/tools/creator-task-manager",
+      "status": "ready",
+      "priority": 1
+    },
+    {
+      "id": "content-asset-library",
+      "name": "Content Asset Library",
+      "description": "Organize images, videos, templates, etc.",
+      "category": "productivity",
+      "path": "/creator-tools-hub/tools/content-asset-library",
+      "status": "ready",
+      "priority": 2
+    },
+    {
+      "id": "workflow-automator",
+      "name": "Workflow Automator",
+      "description": "Automate repetitive creator tasks",
+      "category": "productivity",
+      "path": "/creator-tools-hub/tools/workflow-automator",
+      "status": "ready",
+      "priority": 3
+    },
+    {
+      "id": "time-tracker-creators",
+      "name": "Time Tracker for Creators",
+      "description": "Track time spent on different content types",
+      "category": "productivity",
+      "path": "/creator-tools-hub/tools/time-tracker-creators",
+      "status": "ready",
+      "priority": 4
+    },
+    {
+      "id": "burnout-prevention-monitor",
+      "name": "Burnout Prevention Monitor",
+      "description": "Monitor work patterns and suggest breaks",
+      "category": "productivity",
+      "path": "/creator-tools-hub/tools/burnout-prevention-monitor",
+      "status": "ready",
+      "priority": 5
+    },
+    {
+      "id": "url-shortener-analytics",
+      "name": "URL Shortener with Analytics",
+      "description": "Shorten URLs with click tracking",
+      "category": "utilities",
+      "path": "/creator-tools-hub/tools/url-shortener-analytics",
+      "status": "ready",
+      "priority": 1
+    },
+    {
+      "id": "qr-code-generator-pro",
+      "name": "QR Code Generator Pro",
+      "description": "Generate QR codes with custom designs",
+      "category": "utilities",
+      "path": "/creator-tools-hub/tools/qr-code-generator-pro",
+      "status": "ready",
+      "priority": 2
+    },
+    {
+      "id": "file-format-converter",
+      "name": "File Format Converter",
+      "description": "Convert between various media formats",
+      "category": "utilities",
+      "path": "/creator-tools-hub/tools/file-format-converter",
+      "status": "ready",
+      "priority": 3
+    },
+    {
+      "id": "metadata-editor",
+      "name": "Metadata Editor",
+      "description": "Edit EXIF and other metadata for media files",
+      "category": "utilities",
+      "path": "/creator-tools-hub/tools/metadata-editor",
+      "status": "ready",
+      "priority": 4
+    },
+    {
+      "id": "bulk-image-optimizer",
+      "name": "Bulk Image Optimizer",
+      "description": "Optimize multiple images at once",
+      "category": "utilities",
+      "path": "/creator-tools-hub/tools/bulk-image-optimizer",
+      "status": "ready",
+      "priority": 5
+    }
+  ]
+}
+

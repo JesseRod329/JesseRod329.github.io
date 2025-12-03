@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Content Optimizer - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📝 SEO Content Optimizer</h1>
+            <p>Real-time SEO scoring with suggestions</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="content">Your Content</label>
+                    <textarea id="content" rows="15" placeholder="Paste your content here..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="targetKeyword">Target Keyword</label>
+                    <input type="text" id="targetKeyword" placeholder="e.g., content creation tips">
+                </div>
+                <button id="analyzeBtn" class="btn-primary">Analyze SEO</button>
+            </div>
+            <div class="output-section">
+                <div class="score-display">
+                    <div class="score-circle">
+                        <div id="scoreValue">0</div>
+                        <div class="score-label">SEO Score</div>
+                    </div>
+                </div>
+                <div id="suggestions" class="suggestions"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

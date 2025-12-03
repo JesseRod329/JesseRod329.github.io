@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Image Optimizer - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🔧 Bulk Image Optimizer</h1>
+            <p>Optimize multiple images at once</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="fileInput">Select Images</label>
+                    <input type="file" id="fileInput" accept="image/*" multiple>
+                </div>
+                <div class="form-group">
+                    <label for="quality">Quality (1-100)</label>
+                    <input type="number" id="quality" min="1" max="100" value="80">
+                </div>
+                <button id="optimizeBtn" class="btn-primary">Optimize Images</button>
+            </div>
+            <div class="output-section">
+                <div id="results" class="results"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

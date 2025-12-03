@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing Strategy Advisor - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>💰 Pricing Strategy Advisor</h1>
+            <p>Get pricing recommendations for products/services</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="productType">Product/Service Type</label>
+                    <select id="productType">
+                        <option value="digital">Digital Product</option>
+                        <option value="course">Online Course</option>
+                        <option value="consulting">Consulting</option>
+                        <option value="service">Service</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cost">Your Cost ($)</label>
+                    <input type="number" id="cost" step="0.01" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="marketValue">Market Value ($)</label>
+                    <input type="number" id="marketValue" step="0.01" placeholder="0.00">
+                </div>
+                <button id="adviseBtn" class="btn-primary">Get Pricing Advice</button>
+            </div>
+            <div class="output-section">
+                <div id="recommendations" class="recommendations"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

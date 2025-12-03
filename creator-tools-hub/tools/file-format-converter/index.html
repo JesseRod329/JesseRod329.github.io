@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Format Converter - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🔧 File Format Converter</h1>
+            <p>Convert between various media formats</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="fileInput">Upload File</label>
+                    <input type="file" id="fileInput" accept="*/*">
+                </div>
+                <div class="form-group">
+                    <label for="targetFormat">Convert To</label>
+                    <select id="targetFormat">
+                        <option value="png">PNG</option>
+                        <option value="jpg">JPG</option>
+                        <option value="webp">WebP</option>
+                        <option value="pdf">PDF</option>
+                    </select>
+                </div>
+                <button id="convertBtn" class="btn-primary">Convert File</button>
+            </div>
+            <div class="output-section">
+                <div id="preview" class="preview"></div>
+                <button id="downloadBtn" class="btn-secondary" style="display:none;">Download</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

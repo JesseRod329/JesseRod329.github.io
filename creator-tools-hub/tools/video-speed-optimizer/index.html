@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Speed Optimizer - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🎬 Video Speed Optimizer</h1>
+            <p>Smart compression without quality loss</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="videoInput">Upload Video</label>
+                    <input type="file" id="videoInput" accept="video/*">
+                </div>
+                <div class="form-group">
+                    <label for="quality">Target Quality</label>
+                    <select id="quality">
+                        <option value="high">High (Large file)</option>
+                        <option value="medium" selected>Medium (Balanced)</option>
+                        <option value="low">Low (Small file)</option>
+                    </select>
+                </div>
+                <button id="optimizeBtn" class="btn-primary">Optimize Video</button>
+            </div>
+            <div class="output-section">
+                <div id="info" class="info"></div>
+                <div id="preview" class="preview"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

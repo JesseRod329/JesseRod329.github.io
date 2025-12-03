@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ADHD Fidget Device</title>
+    <link rel="stylesheet" href="../css/chromatic.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        /* Override or add specific styles here if needed before style.css loads */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            /* Prevent scrolling on the app itself */
+            margin: 0;
+        }
+
+        #canvas-container {
+            width: 100%;
+            height: 60vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="gradient-bg"></div>
+
+    <div class="fidget-console">
+        <div class="console-header">
+            <h1>FIDGET.3D</h1>
+            <div class="status-light"></div>
+        </div>
+
+        <div class="fidget-grid">
+            <!-- Section 1: 3D Viewport -->
+            <div id="canvas-container"></div>
+
+            <!-- Section 2: Slider -->
+            <div class="fidget-module slider-module">
+                <input type="range" min="0" max="100" value="50" class="fidget-slider" id="warp-slider">
+                <div class="label">WARP FACTOR</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

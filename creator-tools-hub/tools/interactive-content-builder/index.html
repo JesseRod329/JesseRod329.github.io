@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Content Builder - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>✍️ Interactive Content Builder</h1>
+            <p>Create quizzes, polls, and interactive videos</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="contentType">Content Type</label>
+                    <select id="contentType">
+                        <option value="quiz">Quiz</option>
+                        <option value="poll">Poll</option>
+                        <option value="survey">Survey</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" placeholder="Enter title">
+                </div>
+                <div id="questionsContainer" class="questions-container"></div>
+                <button id="addQuestionBtn" class="btn-secondary">+ Add Question</button>
+                <button id="generateBtn" class="btn-primary">Generate Interactive Content</button>
+            </div>
+            <div class="output-section">
+                <div id="preview" class="preview"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

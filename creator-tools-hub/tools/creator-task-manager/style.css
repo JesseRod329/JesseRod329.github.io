@@ -1,0 +1,53 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+.container { max-width: 1200px; margin: 0 auto; }
+.header { text-align: center; color: white; margin-bottom: 30px; }
+.header h1 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+.main-content { display: grid; grid-template-columns: 400px 1fr; gap: 30px; }
+.input-section, .output-section {
+    background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
+.form-group input, .form-group select {
+    width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem;
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.btn-primary {
+    width: 100%; padding: 15px; background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+    color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer;
+}
+.tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+.tab {
+    padding: 10px 20px; background: #f0f0f0; border: none; border-radius: 6px;
+    cursor: pointer; font-weight: 500; transition: all 0.2s;
+}
+.tab.active { background: #14b8a6; color: white; }
+.tasks-list { display: flex; flex-direction: column; gap: 10px; max-height: 600px; overflow-y: auto; }
+.task-item {
+    display: flex; align-items: center; gap: 15px; background: #f8f9fa;
+    padding: 15px; border-radius: 8px; border: 2px solid #e0e0e0;
+}
+.task-item.completed { opacity: 0.6; }
+.task-item.completed .task-name { text-decoration: line-through; }
+.task-content { flex: 1; }
+.task-name { font-weight: 600; color: #333; }
+.task-meta { display: flex; gap: 15px; margin-top: 5px; font-size: 0.9rem; color: #666; }
+.priority-badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 600;
+}
+.priority-badge.high { background: #fee2e2; color: #ef4444; }
+.priority-badge.medium { background: #fef3c7; color: #f59e0b; }
+.priority-badge.low { background: #dbeafe; color: #3b82f6; }
+.delete-btn {
+    background: #ef4444; color: white; border: none; border-radius: 50%;
+    width: 30px; height: 30px; cursor: pointer; font-size: 1.2rem; line-height: 1;
+}
+.empty { text-align: center; color: #999; padding: 40px; }
+@media (max-width: 968px) { .main-content { grid-template-columns: 1fr; } }
+

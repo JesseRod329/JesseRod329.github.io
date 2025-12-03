@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaboration Finder - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>👥 Collaboration Finder</h1>
+            <p>Find and connect with other creators</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="niche">Your Niche</label>
+                    <input type="text" id="niche" placeholder="e.g., tech reviews">
+                </div>
+                <div class="form-group">
+                    <label for="platform">Platform</label>
+                    <select id="platform">
+                        <option value="youtube">YouTube</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="tiktok">TikTok</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="followerRange">Follower Range</label>
+                    <select id="followerRange">
+                        <option value="similar">Similar to mine</option>
+                        <option value="larger">Larger than mine</option>
+                        <option value="smaller">Smaller than mine</option>
+                    </select>
+                </div>
+                <button id="findBtn" class="btn-primary">Find Collaborators</button>
+            </div>
+            <div class="output-section">
+                <h2>Suggested Collaborators</h2>
+                <div id="collaborators" class="collaborators"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

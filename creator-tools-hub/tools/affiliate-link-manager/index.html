@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affiliate Link Manager - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>💰 Affiliate Link Manager</h1>
+            <p>Organize and track affiliate links</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="linkName">Link Name</label>
+                    <input type="text" id="linkName" placeholder="e.g., Amazon Product">
+                </div>
+                <div class="form-group">
+                    <label for="affiliateUrl">Affiliate URL</label>
+                    <input type="url" id="affiliateUrl" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category">
+                        <option value="tech">Tech</option>
+                        <option value="fashion">Fashion</option>
+                        <option value="beauty">Beauty</option>
+                        <option value="home">Home</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <button id="addBtn" class="btn-primary">Add Link</button>
+            </div>
+            <div class="output-section">
+                <h2>Your Affiliate Links</h2>
+                <div id="links" class="links"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

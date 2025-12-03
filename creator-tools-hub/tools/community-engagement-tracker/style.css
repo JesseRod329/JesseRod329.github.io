@@ -1,0 +1,42 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+.container { max-width: 1200px; margin: 0 auto; }
+.header { text-align: center; color: white; margin-bottom: 30px; }
+.header h1 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+.main-content { display: grid; grid-template-columns: 400px 1fr; gap: 30px; }
+.input-section, .output-section {
+    background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
+.form-group input, .form-group select {
+    width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem;
+}
+.btn-primary {
+    width: 100%; padding: 15px; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer;
+}
+.history { display: flex; flex-direction: column; gap: 15px; max-height: 600px; overflow-y: auto; }
+.engagement-item {
+    display: flex; align-items: center; justify-content: space-between;
+    background: #f8f9fa; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px;
+}
+.engagement-platform { font-weight: 600; color: #f97316; min-width: 100px; }
+.engagement-stats {
+    display: flex; gap: 15px; flex: 1; justify-content: center;
+    font-size: 0.9rem; color: #666;
+}
+.engagement-stats .total { font-weight: 600; color: #f97316; }
+.engagement-date { font-size: 0.9rem; color: #999; }
+.delete-btn {
+    background: #ef4444; color: white; border: none; border-radius: 50%;
+    width: 30px; height: 30px; cursor: pointer; font-size: 1.2rem; line-height: 1;
+}
+.empty { text-align: center; color: #999; padding: 40px; }
+@media (max-width: 968px) { .main-content { grid-template-columns: 1fr; } .engagement-item { flex-wrap: wrap; } }
+

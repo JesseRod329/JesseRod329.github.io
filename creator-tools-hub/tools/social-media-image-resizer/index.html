@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Image Resizer - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🎨 Social Media Image Resizer</h1>
+            <p>One-click resize for all platforms with smart cropping</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="imageInput">Upload Image</label>
+                    <input type="file" id="imageInput" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label>Select Platform</label>
+                    <div class="platform-grid">
+                        <button class="platform-btn" data-size="1080x1080">Instagram Post</button>
+                        <button class="platform-btn" data-size="1080x1920">Instagram Story</button>
+                        <button class="platform-btn" data-size="1200x630">Facebook</button>
+                        <button class="platform-btn" data-size="1280x720">YouTube Thumbnail</button>
+                        <button class="platform-btn" data-size="1200x1200">Twitter</button>
+                        <button class="platform-btn" data-size="1080x1080">LinkedIn</button>
+                    </div>
+                </div>
+                <button id="resizeBtn" class="btn-primary">Resize Image</button>
+            </div>
+            <div class="output-section">
+                <h2>Resized Image</h2>
+                <div id="preview" class="preview"></div>
+                <button id="downloadBtn" class="btn-secondary" style="display:none;">Download</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

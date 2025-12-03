@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audience Sentiment Analyzer - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>👥 Audience Sentiment Analyzer</h1>
+            <p>Analyze comments and mentions for sentiment</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="comments">Comments/Mentions (one per line)</label>
+                    <textarea id="comments" rows="12" placeholder="Paste comments here, one per line..."></textarea>
+                </div>
+                <button id="analyzeBtn" class="btn-primary">Analyze Sentiment</button>
+            </div>
+            <div class="output-section">
+                <div class="sentiment-summary">
+                    <div class="sentiment-card positive">
+                        <div class="sentiment-value" id="positiveCount">0</div>
+                        <div class="sentiment-label">Positive</div>
+                    </div>
+                    <div class="sentiment-card neutral">
+                        <div class="sentiment-value" id="neutralCount">0</div>
+                        <div class="sentiment-label">Neutral</div>
+                    </div>
+                    <div class="sentiment-card negative">
+                        <div class="sentiment-value" id="negativeCount">0</div>
+                        <div class="sentiment-label">Negative</div>
+                    </div>
+                </div>
+                <div id="results" class="results"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

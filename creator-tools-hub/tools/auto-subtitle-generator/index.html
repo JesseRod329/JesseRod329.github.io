@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Subtitle Generator - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🎬 Auto Subtitle Generator</h1>
+            <p>Multi-language subtitles with styling and positioning</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="transcript">Video Transcript</label>
+                    <textarea id="transcript" rows="10" placeholder="Paste your video transcript here..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="language">Language</label>
+                        <select id="language">
+                            <option value="en">English</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                            <option value="zh">Chinese</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="position">Position</label>
+                        <select id="position">
+                            <option value="bottom">Bottom</option>
+                            <option value="top">Top</option>
+                            <option value="center">Center</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="maxChars">Max Characters/Line</label>
+                        <input type="number" id="maxChars" value="42" min="20" max="80">
+                    </div>
+                </div>
+                <button id="generateBtn" class="btn-primary">Generate Subtitles</button>
+            </div>
+            <div class="output-section">
+                <div class="output-header">
+                    <h2>Generated Subtitles (SRT Format)</h2>
+                    <button id="copyBtn" class="btn-secondary">Copy</button>
+                </div>
+                <div id="subtitleOutput" class="subtitle-output"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

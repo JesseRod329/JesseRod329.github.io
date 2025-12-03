@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Palette Extractor - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🎨 Color Palette Extractor</h1>
+            <p>Extract palettes from images with accessibility checking</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="imageInput">Upload Image</label>
+                    <input type="file" id="imageInput" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="paletteSize">Palette Size</label>
+                    <input type="number" id="paletteSize" min="3" max="10" value="5">
+                </div>
+                <button id="extractBtn" class="btn-primary">Extract Palette</button>
+            </div>
+            <div class="output-section">
+                <div id="imagePreview" class="image-preview"></div>
+                <h2>Extracted Palette</h2>
+                <div id="palette" class="palette"></div>
+                <div id="accessibility" class="accessibility"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

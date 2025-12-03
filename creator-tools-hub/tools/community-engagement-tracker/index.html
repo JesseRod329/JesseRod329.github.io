@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Engagement Tracker - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>👥 Community Engagement Tracker</h1>
+            <p>Track engagement across all platforms</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="platform">Platform</label>
+                    <select id="platform">
+                        <option value="instagram">Instagram</option>
+                        <option value="twitter">Twitter/X</option>
+                        <option value="youtube">YouTube</option>
+                        <option value="tiktok">TikTok</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="likes">Likes</label>
+                    <input type="number" id="likes" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label for="comments">Comments</label>
+                    <input type="number" id="comments" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label for="shares">Shares</label>
+                    <input type="number" id="shares" placeholder="0">
+                </div>
+                <button id="addBtn" class="btn-primary">Add Engagement</button>
+            </div>
+            <div class="output-section">
+                <h2>Engagement History</h2>
+                <div id="history" class="history"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+

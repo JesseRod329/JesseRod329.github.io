@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best Time to Post Analyzer - Creator Tools</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📱 Best Time to Post Analyzer</h1>
+            <p>Analyze your audience's active times</p>
+        </header>
+        <div class="main-content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="platform">Platform</label>
+                    <select id="platform">
+                        <option value="instagram">Instagram</option>
+                        <option value="twitter">Twitter/X</option>
+                        <option value="facebook">Facebook</option>
+                        <option value="linkedin">LinkedIn</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="timezone">Timezone</label>
+                    <select id="timezone">
+                        <option value="EST">Eastern (EST)</option>
+                        <option value="PST">Pacific (PST)</option>
+                        <option value="CST">Central (CST)</option>
+                        <option value="GMT">GMT</option>
+                    </select>
+                </div>
+                <button id="analyzeBtn" class="btn-primary">Analyze Best Times</button>
+            </div>
+            <div class="output-section">
+                <h2>Optimal Posting Times</h2>
+                <div id="times" class="times-grid"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
