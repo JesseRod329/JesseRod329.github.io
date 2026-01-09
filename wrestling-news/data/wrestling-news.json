@@ -1,51 +1,315 @@
 [
   {
-    "title": "AEW Files To Trademark 'Exile On Pain St'",
-    "summary": "AEW has filed a new trademark. On January 8, All Elite Wrestling filed to trademark \"Exile on Pain St.\" It is unknown how AEW intends to utilize the trademark. Full description: Entertainment in the...",
-    "source": "Fightful",
-    "url": "https://www.fightful.com/wrestling/aew-files-to-trademark-exile-on-pain-st",
-    "publishedAt": "2026-01-09T12:06:48+00:00",
-    "category": "aew"
-  },
-  {
-    "title": "Shota Umino Announces He's Re-Signed With NJPW",
-    "summary": "Shota Umino is staying with New Japan Pro-Wrestling. On social media, Shota announced that he has re-signed with NJPW. \"I have signed a contract with New Japan Pro-Wrestling Co., Ltd. for the 2026...",
-    "source": "Fightful",
-    "url": "https://www.fightful.com/wrestling/shota-umino-announces-hes-re-signed-with-njpw",
-    "publishedAt": "2026-01-09T12:01:45+00:00",
-    "category": "njpw"
-  },
-  {
-    "title": "Jim Ross: ‘I Think It’s WWE Or Nothing For’ Chris Jericho",
-    "summary": "Jim Ross has addressed the swirling rumors regarding Chris Jericho’s future, suggesting that his departure from AEW would significantly hurt the brand. For several months, the former World Champion...",
-    "source": "Wrestling News",
-    "url": "https://wrestlingnews.co/aew-news/jim-ross-think-its-wwe-nothing-chris-jericho/",
-    "publishedAt": "2026-01-09T12:00:14+00:00",
+    "title": "Unfortunate Update On Tiffany Stratton’s WWE Status — Report",
+    "summary": "Former WWE Women’s Champion Tiffany Stratton hasn’t been on SmackDown in quite some time. Unfortunately, there’s a good reason for that. Tiffany Stratton hasn’t been seen on WWE programming since...",
+    "source": "Wrestlezone",
+    "url": "https://www.wrestlezone.com/news/1603346-unfortunate-update-on-tiffany-stratton-wwe-status-report",
+    "publishedAt": "2026-01-09T18:17:16+00:00",
     "category": "wwe"
   },
   {
-    "title": "CM Punk Says He Wore Two Shirts At WWE House Show Just To Pop Bronson Reed: \"Doesn’t Go Any Deeper Than That\"",
-    "summary": "Punk said it's not anything deeper other than him trying to make Bronson Reed laugh. During WWE's holiday house show tour to close out 2025, CM Punk defended the World Heavyweight Championship...",
+    "title": "Kit Wilson On Elton Prince: He's Just Working On Himself Right Now",
+    "summary": "Kit Wilson provides a brief update on Elton Prince. Wilson returned with a new presentation on the January 2 episode of WWE SmackDown, prompting fans to speculate about the status of Elton Prince,...",
     "source": "Fightful",
-    "url": "https://www.fightful.com/wrestling/cm-punk-says-he-wore-two-shirts-at-wwe-house-show-just-to-pop-bronson-reed-doesnt-go-any-deeper-than-that",
-    "publishedAt": "2026-01-09T12:00:00+00:00",
+    "url": "https://www.fightful.com/wrestling/kit-wilson-elton-prince-280965",
+    "publishedAt": "2026-01-09T18:05:57+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "Injured Star Backstage At WWE SmackDown — Report",
+    "summary": "Could a former champion be making their return from injury later today on WWE SmackDown? Today’s episode of WWE SmackDown will air early for international viewers at 2 PM ET on Netflix as the event...",
+    "source": "Wrestlezone",
+    "url": "https://www.wrestlezone.com/news/1603338-injured-star-backstage-at-wwe-smackdown-report",
+    "publishedAt": "2026-01-09T18:01:46+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "WWE SmackDown Spoilers & Results (1/9/2025): Three Stages of Hell, MFT vs. Wyatt Sicks, More",
+    "summary": "Full results & spoilers for the January 9, 2026, edition of WWE SmackDown from the Uber Arena in Berlin, Germany. On January 9, 2026, World Wrestling Entertainment hosted a new episode of Friday...",
+    "source": "Fightful",
+    "url": "https://www.fightful.com/wrestling/wwe-smackdown-spoilers-results-1-9-2025-three-stages-of-hell-mft-vs-wyatt-sicks-more",
+    "publishedAt": "2026-01-09T18:00:00+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "Giulia To Defend WWE Women's US Title Against Alexa Bliss On 1/9 WWE SmackDown",
+    "summary": "Giulia is set to make her first defense of the WWE Women's United States Championship against Alexa Bliss on WWE SmackDown. The match was announced by general manager Nick Aldis. Giulia won the...",
+    "source": "Fightful",
+    "url": "https://www.fightful.com/wrestling/giulia-to-defend-wwe-womens-us-title-against-alexa-bliss-on-1-9-wwe-smackdown",
+    "publishedAt": "2026-01-09T17:53:21+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "Surprising Backstage Internal Push For Today’s WWE SmackDown — Report",
+    "summary": "If some people in the company have their way, it sounds like today’s episode of WWE SmackDown will be very memorable. Today’s episode of WWE SmackDown will air early for international viewers at 2 PM...",
+    "source": "Wrestlezone",
+    "url": "https://www.wrestlezone.com/news/1603329-surprising-backstage-internal-push-for-todays-wwe-smackdown-report",
+    "publishedAt": "2026-01-09T17:48:38+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "Natalya Says She 'Felt A Little Sad' After John Cena Lost Final Match At WWE SNME",
+    "summary": "WWE star Natalya became emotional on the day of John Cena's final match, but for different reasons than many fans.",
+    "source": "Wrestling Inc",
+    "url": "https://www.wrestlinginc.com/2071818/natalya-felt-little-sad-john-cena-lost-final-match-wwe-snme/",
+    "publishedAt": "2026-01-09T17:48:04+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "Report: Undefeated MMA Fighter, Former Marine, Canadian Basketball Player Set For Upcoming WWE Tryout",
+    "summary": "Three names are reportedly set for an upcoming WWE tryout. PWInsider reported on January 9 that Joshua Hillen, James Karnik, and Regina Tarin will take part in the upcoming WWE tryout. Joshua Hillen...",
+    "source": "Fightful",
+    "url": "https://www.fightful.com/wrestling/report-undefeated-mma-fighter-former-marine-canadian-basketball-player-set-for-upcoming-wwe-tryout",
+    "publishedAt": "2026-01-09T17:37:01+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "WWE NXT Viewership & Ratings Report: 1/6/2026",
+    "summary": "\"WWE NXT's\" viewership increases for its New Year's Evil special on Tuesday.",
+    "source": "Wrestling Inc",
+    "url": "https://www.wrestlinginc.com/2071804/wwe-nxt-viewership-ratings-january-6-2026/",
+    "publishedAt": "2026-01-09T17:36:13+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "POTENTIAL SPOILER: Absent WWE Star Backstage At SmackDown",
+    "summary": "WWE fans may soon see the return of one of the most physically dominant forces in the industry as the road to the Royal Rumble begins. Jacob Fatu has been noticeably absent from television for the...",
+    "source": "Wrestling News",
+    "url": "https://wrestlingnews.co/wwe-news/potential-spoiler-absent-wwe-star-backstage-smackdown-2/",
+    "publishedAt": "2026-01-09T17:34:36+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "CJ Perry Defends Logan Paul’s Place In The Vision",
+    "summary": "Logan Paul’s recent transition to a full-time WWE contract has sparked debate among fans, but CJ Perry is firmly in the corner of Paul. During an interview on TMZ Inside The Ring, Perry pushed back...",
+    "source": "Wrestling News",
+    "url": "https://wrestlingnews.co/wwe-news/perry-defends-logan-pauls-place-vision/",
+    "publishedAt": "2026-01-09T17:34:19+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "AEW Files Trademark On Rolling Stones Parody For New Event Name",
+    "summary": "This week, AEW filed a new trademark application for a future event that refers yet parodies Rock and Roll Fall of Famers, the Rolling Stones.",
+    "source": "Wrestling Inc",
+    "url": "https://www.wrestlinginc.com/2071797/aew-rolling-stones-trademark-exile-pain-st/",
+    "publishedAt": "2026-01-09T17:30:17+00:00",
+    "category": "aew"
+  },
+  {
+    "title": "The Undertaker Didn't Believe These Two WWE Headliners Would Make It In Wrestling",
+    "summary": "WWE Hall of Famer The Undertaker initially wasn't convinced that two WWE headliners would make it far in professional wrestling.",
+    "source": "Wrestling Inc",
+    "url": "https://www.wrestlinginc.com/2071787/wwe-undertaker-john-cena-rock-dwayne-johnson-didnt-believe/",
+    "publishedAt": "2026-01-09T17:24:01+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "New Class Action Lawsuit Filed Against WWE Regarding ESPN PLE Deal",
+    "summary": "A new class action lawsuit has been filed against WWE regarding their ESPN deal and how it has mislead customers.",
+    "source": "Wrestling Inc",
+    "url": "https://www.wrestlinginc.com/2071774/wwe-espn-ple-deal-class-action-lawsuit-filed/",
+    "publishedAt": "2026-01-09T17:14:37+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "Kit Wilson Didn't Have To Sell WWE On His New Theme Song, Says It Wasn't Created With AI",
+    "summary": "Kit Wilson discusses his new theme song. Wilson returned to televised singles action on the January 2 episode of WWE SmackDown, facing the returning Matt Cardona. Wilson notably returned with a...",
+    "source": "Fightful",
+    "url": "https://www.fightful.com/wrestling/kit-wilson-theme-ai-280953",
+    "publishedAt": "2026-01-09T17:09:37+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "WWE SmackDown Results: Review, Grades, Card For Jan 9",
+    "summary": "Our WWE SmackDown results for tonight include Cody Rhodes defending the WWE Championship against Drew McIntyre in a Three Stages of Hell match, The Wyatt Sicks taking on The MFTs in a gigantic 8-man...",
+    "source": "Wrestlezone",
+    "url": "https://www.wrestlezone.com/news/1603223-wwe-smackdown-results-review-grades-card-for-jan-9",
+    "publishedAt": "2026-01-09T17:00:00+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "Opening Statements Begin In Federal Welfare Fraud Trial Of Ted DiBiase Jr.",
+    "summary": "The federal trial of former WWE Superstar Ted DiBiase Jr. is officially underway in Jackson, Mississippi, marking a pivotal moment in what prosecutors have called the largest public embezzlement case...",
+    "source": "Wrestling News",
+    "url": "https://wrestlingnews.co/wwe-news/opening-statements-begin-federal-welfare-fraud-trial-ted-dibiase/",
+    "publishedAt": "2026-01-09T16:52:08+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "WWE Star Reportedly Sidelined With Significant Neck Injury",
+    "summary": "A member of the WWE SmackDown roster has been forced to the sidelines, leaving his longtime partner to navigate the main roster as a singles competitor. According to Dave Meltzer of the Wrestling...",
+    "source": "Wrestling News",
+    "url": "https://wrestlingnews.co/wwe-news/wwe-star-reportedly-sidelined-significant-neck-injury/",
+    "publishedAt": "2026-01-09T16:44:23+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "Bryan Danielson On AEW Commentary Role: A Lot Of Times, I Still Think I'm Rotten",
+    "summary": "Bryan Danielson discusses his commentary role. Aside from his recent absence, Danielson has been a commentary staple for AEW since September 2025. In addition to his work on Dynamite and Collision,...",
+    "source": "Fightful",
+    "url": "https://www.fightful.com/wrestling/bryan-danielson-on-aew-commentary-role-a-lot-of-times-i-still-think-im-rotten",
+    "publishedAt": "2026-01-09T16:27:39+00:00",
+    "category": "aew"
+  },
+  {
+    "title": "Watch WWE SmackDown (1/9) Live With NordVPN",
+    "summary": "Viewership information and lineup for the January 9, 2026, episode of WWE SmackDown. WWE SmackDown (January 9, 2026) Venue: Berlin, Germany City: Berlin, Germany Time: 8 pm ET (Taped) 2 pm ET (Live)...",
+    "source": "Fightful",
+    "url": "https://www.fightful.com/wrestling/watch-wwe-smackdown-1-9-live-with-nordvpn",
+    "publishedAt": "2026-01-09T16:27:35+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "Mark Henry Thinks This WWE SmackDown Storyline Went On For Too Long",
+    "summary": "WWE Hall of Famer Mark Henry feels a certain \"WWE SmackDown\" storyline went on for too long, resulting in fans growing tired.",
+    "source": "Wrestling Inc",
+    "url": "https://www.wrestlinginc.com/2071726/wwe-smackdown-mark-henry-aleister-black-damian-priest-storyline-too-long/",
+    "publishedAt": "2026-01-09T16:08:42+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "Mustafa Ali Says Bout With Ethan Page Was The Best NXT TV Match Of 2025",
+    "summary": "Mustafa Ali celebrates his recent bout with Ethan Page. The October 7 episode of WWE NXT featured a huge match for the NXT North American Championship, as Ethan Page defended the belt against Mustafa...",
+    "source": "Fightful",
+    "url": "https://www.fightful.com/wrestling/mustafa-ali-nxt-tv-280939",
+    "publishedAt": "2026-01-09T16:03:29+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "WWE Officials Are Reportedly High On AEW Star",
+    "summary": "WWE officials are keeping a close watch on the contract status of several top names in the industry as 2026 begins to take shape. One particular athlete, known for his incredible physical presence...",
+    "source": "Wrestling News",
+    "url": "https://wrestlingnews.co/wwe-news/wwe-officials-reportedly-high-aew-star/",
+    "publishedAt": "2026-01-09T16:00:14+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "Jim Ross: ‘I Didn’t Know’ Andrade ‘Was Even In The Building’ For AEW Dynamite Return",
+    "summary": "Jim Ross made a return to the commentary booth for the January 7, 2026, episode of AEW Dynamite in Tulsa, Oklahoma, his first on-air appearance since mid-2025. Reflecting on the night during a recent...",
+    "source": "Wrestling News",
+    "url": "https://wrestlingnews.co/aew-news/jim-ross-didnt-know-andrade-even-building-aew-dynamite-return/",
+    "publishedAt": "2026-01-09T16:00:12+00:00",
+    "category": "aew"
+  },
+  {
+    "title": "Chelsea Green Explains WWE Unreal Cameras Are Ever-Present Backstage",
+    "summary": "Chelsea Green provides her thoughts on always being filmed backstage because of \"WWE Unreal.\"",
+    "source": "Wrestling Inc",
+    "url": "https://www.wrestlinginc.com/2071715/chelsea-green-wwe-unreal-cameras-ever-present-backstage/",
+    "publishedAt": "2026-01-09T15:52:59+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "Reason Why Tiffany Stratton Has Been Absent From WWE TV",
+    "summary": "A new report has confirmed that a physical setback is the primary reason for Tiffany Stratton’s current hiatus from the ring. Dave Meltzer reported in the Wrestling Observer Newsletter that Stratton...",
+    "source": "Wrestling News",
+    "url": "https://wrestlingnews.co/wwe-news/reason-why-tiffany-stratton-been-absent-wwe/",
+    "publishedAt": "2026-01-09T15:49:25+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "Lawsuit Filed Against WWE Claiming Fans Were Misled About PLE Access On ESPN",
+    "summary": "A new class action lawsuit has been filed against WWE, accusing WWE and ESPN of deceptive marketing practices. Brandon Thurston of POST Wrestling, \"The complaint takes issue with how some fans who...",
+    "source": "Fightful",
+    "url": "https://www.fightful.com/wrestling/lawsuit-filed-against-wwe-claiming-fans-were-misled-about-ple-access-on-espn",
+    "publishedAt": "2026-01-09T15:45:50+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "Rising WWE Wrestler Reportedly Not Internally Seen As Franchise Star",
+    "summary": "Je’Von Evans recently capped off a spectacular 2025 by being named the NXT Male Superstar of the Year following a fan-voted process. Despite this clear connection with the WWE Universe, reports...",
+    "source": "Wrestling News",
+    "url": "https://wrestlingnews.co/wwe-news/rising-wwe-wrestler-reportedly-not-internally-seen-franchise-star/",
+    "publishedAt": "2026-01-09T15:42:56+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "Raven Doesn’t Think ECW Crucifixion Angle Was Too Controversial",
+    "summary": "Raven shares his thoughts on the controversial crucifixion angle in ECW. Wrestling and religion collided in 1996 when Extreme Championship Wrestling aired an angle involving Raven and The Sandman....",
+    "source": "Wrestlezone",
+    "url": "https://www.wrestlezone.com/news/1603203-raven-ecw-crucifixion-angle-not-too-controversial",
+    "publishedAt": "2026-01-09T15:28:47+00:00",
     "category": "general"
   },
   {
-    "title": "AEW Files Trademark For ‘Exile On Pain St’",
-    "summary": "AEW has officially filed to trademark the term “EXILE ON PAIN ST” with the United States Patent and Trademark Office (USPTO). The filing, which surfaced in early January 2026, is intended for...",
-    "source": "Wrestling News",
-    "url": "https://wrestlingnews.co/aew-news/aew-files-trademark-exile-pain/",
-    "publishedAt": "2026-01-09T11:34:42+00:00",
-    "category": "aew"
+    "title": "Mike Santana Says AEW Tried To Drain His Passion During TNA Promo",
+    "summary": "Mike Santana referenced his AEW exit during a promo segment on this week’s TNA iMPACT. This week’s episode of TNA iMPACT featured Mike Santana and Frankie Kazarian signing the contract for their...",
+    "source": "Wrestlezone",
+    "url": "https://www.wrestlezone.com/news/1603280-mike-santana-aew-drained-his-passion-tna-promo",
+    "publishedAt": "2026-01-09T15:24:58+00:00",
+    "category": "tna"
   },
   {
-    "title": "Jim Ross Details Original Plan For AEW Dynamite Commentary Return",
-    "summary": "Jim Ross has shared his thoughts on his emotional return to the commentary booth for the first AEW Dynamite of 2026. The show, which took place in Ross’s home state of Oklahoma at the BOK Center in...",
+    "title": "Rob Van Dam Explains Why WWE’s Women’s Division Has Surpassed Expectations",
+    "summary": "Rob Van Dam explained why WWE’s women’s division has exceeded expectations and become one of the most impressive parts of today’s product. Speaking in a recent interview with GamesHub, Van Dam was...",
+    "source": "Wrestlezone",
+    "url": "https://www.wrestlezone.com/news/1603250-rob-van-dam-wwe-womens-division",
+    "publishedAt": "2026-01-09T15:14:44+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "WWE Live Event Results From Leipzig, Germany on January 8, 2026",
+    "summary": "WWE hosted a live event in Leipzig, Germany, on Thursday night. This stop on WWE’s “Road to Royal Rumble Tour” took place at QUARTERBACK Immobilien Arena in Leipzig, Saxony, Germany. The following...",
+    "source": "Wrestlezone",
+    "url": "https://www.wrestlezone.com/news/1603269-wwe-live-event-results-leipzig-germany-january-8-2026",
+    "publishedAt": "2026-01-09T15:13:45+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "Liv Morgan Reveals Why WWE Stars Call Her ‘Oprah’",
+    "summary": "Liv Morgan has revealed that her WWE career nearly began under a very different and surprising ring name. She also shed light on a running gag that some in the company won’t let her live down....",
+    "source": "Wrestlezone",
+    "url": "https://www.wrestlezone.com/news/1603257-liv-morgan-oprah-wwe-name",
+    "publishedAt": "2026-01-09T14:55:52+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "Jim Ross Reacts To D-Von Dudley Racism In WWE Allegations",
+    "summary": "Jim Ross has once again denied D-Von Dudley’s allegations that he is a racist. D-Von Dudley has accused Jim Ross of being racist towards him while they were both in WWE. Ross addressed the initial...",
+    "source": "Wrestlezone",
+    "url": "https://www.wrestlezone.com/news/1603276-jim-ross-reacts-d-von-dudley-racism-wwe-allegations",
+    "publishedAt": "2026-01-09T14:46:15+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "WWE United States Champ Carmelo Hayes Reacts To Title Win",
+    "summary": "Carmelo Hayes has discussed his United States Championship win and how the victory has given him some direction on the WWE main roster.",
+    "source": "Wrestling Inc",
+    "url": "https://www.wrestlinginc.com/2071523/wwe-united-states-champ-carmelo-hayes-reacts-title-win/",
+    "publishedAt": "2026-01-09T14:30:00+00:00",
+    "category": "general"
+  },
+  {
+    "title": "CJ Perry Announces Return To Professional Wrestling",
+    "summary": "CJ Perry recently appeared on the TMZ Inside The Ring podcast, where she shared major news regarding her future in professional wrestling and reflected on her recent experiences in the industry....",
     "source": "Wrestling News",
-    "url": "https://wrestlingnews.co/wwe-news/jim-ross-details-original-plan-aew-dynamite-commentary-return/",
-    "publishedAt": "2026-01-09T11:32:15+00:00",
-    "category": "aew"
+    "url": "https://wrestlingnews.co/wwe-news/perry-announces-return-professional-wrestling/",
+    "publishedAt": "2026-01-09T14:26:21+00:00",
+    "category": "general"
+  },
+  {
+    "title": "TNA's Mustafa Ali On John Cena Tapping Out At WWE SNME: 'Now He Can Finally Rest'",
+    "summary": "TNA Wrestling Mustafa Ali has discussed what John Cena tried to convey when he smiled while tapping out to Gunther on WWE's Saturday Night's Main Event.",
+    "source": "Wrestling Inc",
+    "url": "https://www.wrestlinginc.com/2071519/tna-mustafa-ali-john-cena-tapping-out-wwe-snme-finally-rest/",
+    "publishedAt": "2026-01-09T14:00:00+00:00",
+    "category": "wwe"
+  },
+  {
+    "title": "TNA Star Frankie Kazarian Opens Up About Friendship With WWE's John Cena",
+    "summary": "Frankie Kazarian has remembered his early years in pro wrestling, where he trained with John Cena, and was convinced Cena would become a star.",
+    "source": "Wrestling Inc",
+    "url": "https://www.wrestlinginc.com/2068779/tna-wwe-frankie-kazarian-john-cena-friendship/",
+    "publishedAt": "2026-01-09T13:30:00+00:00",
+    "category": "general"
+  },
+  {
+    "title": "Jeff Hardy: ‘I’ve Been Dealing With An Injury Since We Dropped’ The WWE NXT Tag Team Titles",
+    "summary": "Jeff Hardy is entering the new year dealing with physical challenges following a high-profile championship loss in late 2025. At NXT Halloween Havoc, the Hardy Boyz (Matt and Jeff Hardy) dropped the...",
+    "source": "Wrestling News",
+    "url": "https://wrestlingnews.co/wwe-news/jeff-hardy-ive-been-dealing-injury-since-dropped-wwe-nxt-tag-team-titles/",
+    "publishedAt": "2026-01-09T13:02:44+00:00",
+    "category": "wwe"
   },
   {
     "title": "WWE SmackDown Results – LIVE from Berlin – 1/9/26 (Three Stages of Hell Title Match, More!)",
@@ -53,46 +317,6 @@
     "source": "Wrestleview",
     "url": "https://www.wrestleview.com/top-story/371607-wwe-smackdown-results-live-from-berlin-1-9-26-three-stages-of-hell-title-match-more/",
     "publishedAt": "2026-01-09T09:00:00+00:00",
-    "category": "wwe"
-  },
-  {
-    "title": "WWE SmackDown Preview, Start Time, How To Watch (1/9): Cody Rhodes vs. Drew McIntyre Three Stages Of Hell",
-    "summary": "Viewership information and lineup for the January 9, 2026, episode of WWE SmackDown. WWE SmackDown (January 9, 2026) Venue: Berlin, Germany City: Berlin, Germany Time: 8 pm ET (Taped) 2 pm ET (Live)...",
-    "source": "Fightful",
-    "url": "https://www.fightful.com/wrestling/wwe-smackdown-preview-start-time-how-to-watch-1-9-cody-rhodes-vs-drew-mcintyre-three-stages-of-hell",
-    "publishedAt": "2026-01-09T07:00:00+00:00",
-    "category": "wwe"
-  },
-  {
-    "title": "WWE To Hold Tryouts Next Week In Orlando, Florida",
-    "summary": "WWE is holding its next set of talent tryouts. There's a write-up on F4WOnline which notes that Bryan Alvarez reported that WWE is set to hold their next talent tryouts next week in Orlando, Florida....",
-    "source": "Fightful",
-    "url": "https://www.fightful.com/wrestling/wwe-to-hold-tryouts-next-week-in-orlando-florida",
-    "publishedAt": "2026-01-09T06:33:08+00:00",
-    "category": "wwe"
-  },
-  {
-    "title": "BIGBOSS Shimizu Returns To Dragongate After Being Away Since November 2024",
-    "summary": "He's back after a full year-plus away. Kobe Sambo Hall is playing host to Dragongate Japan Pro-Wrestling's January 9th show. The event is going to feature the in-ring return of BIGBOSS Shimizu, who...",
-    "source": "Fightful",
-    "url": "https://www.fightful.com/wrestling/bigboss-shimizu-returns-to-dragongate-after-being-away-since-november-2024",
-    "publishedAt": "2026-01-09T06:22:49+00:00",
-    "category": "general"
-  },
-  {
-    "title": "Rei Saito Returning To In-Ring Action At AJPW's February 23rd Show",
-    "summary": "Rei Saito is back. At All Japan Pro Wrestling's January 3rd show, there was a surprise appearance from two-time AJPW World Tag Team Champion Rei Saito. Rei has been out of action since August 2025....",
-    "source": "Fightful",
-    "url": "https://www.fightful.com/wrestling/rei-saito-returning-to-in-ring-action-at-ajpws-february-23rd-show",
-    "publishedAt": "2026-01-09T05:25:53+00:00",
-    "category": "general"
-  },
-  {
-    "title": "WWE Road To Royal Rumble House Show Results (1/8/26): Cody Rhodes vs. Drew McIntyre, GUNTHER vs. Sami Zayn",
-    "summary": "Results from the first stop of the tour. WWE kicked off its Road to Royal Rumble tour on January 8th. The first stop was a house show at QUARTERBACK Immobilien ARENA in Leipzig, Germany. The show was...",
-    "source": "Fightful",
-    "url": "https://www.fightful.com/wrestling/wwe-road-to-royal-rumble-house-show-results-1-8-26-cody-rhodes-vs-drew-mcintyre-gunther-vs-sami-zayn",
-    "publishedAt": "2026-01-09T04:24:20+00:00",
     "category": "wwe"
   },
   {
@@ -104,14 +328,6 @@
     "category": "wwe"
   },
   {
-    "title": "Mike Santana Addresses He & Frankie Kazarian's History: \"We Were At A Place That Tried To Drain The Passion Out Of What We Love The Most... We Left That Place\"",
-    "summary": "Santana speaks about him and Kazarian's history at another 'place.' Headlining the debut episode of TNA Thursday Night iMPACT on AMC is Frankie Kazarian defending the TNA World Championship against...",
-    "source": "Fightful",
-    "url": "https://www.fightful.com/wrestling/mike-santana-addresses-he-frankie-kazarians-history-we-were-at-a-place-that-tried-to-drain-the-passion-out-of-what-we-love-the-most-we-left-that-place",
-    "publishedAt": "2026-01-09T03:49:10+00:00",
-    "category": "tna"
-  },
-  {
     "title": "TNA IMPACT Results – 1/8/26 (Final episode on AXS TV)",
     "summary": "TNA IMPACT Results are courtesy of tnawrestling.com. This was the final episode on AXS TV, as IMPACT premieres… The post TNA IMPACT Results – 1/8/26 (Final episode on AXS TV) appeared first on WWE...",
     "source": "Wrestleview",
@@ -120,32 +336,8 @@
     "category": "tna"
   },
   {
-    "title": "Former WWE Star Mustafa Ali Re-Signs With TNA Wrestling",
-    "summary": "Ahead of TNA Wrestling's debut on AMC, former X-Division Champion Mustafa Ali confirms that he has re-signed with the company.",
-    "source": "Wrestling Inc",
-    "url": "https://www.wrestlinginc.com/2071509/former-wwe-mustafa-ali-resigns-tna-wrestling/",
-    "publishedAt": "2026-01-09T03:31:46+00:00",
-    "category": "general"
-  },
-  {
-    "title": "AEW's Tony Khan Continues To Praise Chris Jericho Amidst Rumors Of Departure For WWE",
-    "summary": "With rumors circulating as to the status of AEW star Chris Jericho, AEW CEO & President Tony Khan has voiced the respect he has for the in-ring veteran.",
-    "source": "Wrestling Inc",
-    "url": "https://www.wrestlinginc.com/2071505/aew-tony-khan-continues-praise-chris-jericho-rumors-departure-wwe/",
-    "publishedAt": "2026-01-09T03:30:02+00:00",
-    "category": "aew"
-  },
-  {
-    "title": "TNA Wrestling Thanks AXS TV For Six Year Run And 324 Episodes Of TNA iMPACT!",
-    "summary": "TNA iMPACT! finished its run on AXS TV on Thursday, January 8th. 324 episodes aired across six years. The first episode aired on October 29, 2019. After the final episode aired, TNA Wrestling sent...",
-    "source": "Fightful",
-    "url": "https://www.fightful.com/wrestling/tna-wrestling-thanks-axs-tv-for-six-year-run-and-324-episodes-tna-impact",
-    "publishedAt": "2026-01-09T03:27:57+00:00",
-    "category": "tna"
-  },
-  {
-    "title": "NXT viewership and key demo up for New Year’s Eve special",
-    "summary": "This past Tuesday’s NXT New Year’s Eve special on the CW, came in with 627,000 viewers and a… The post NXT viewership and key demo up for New Year’s Eve special appeared first on WWE News, WWE...",
+    "title": "NXT viewership and key demo up for New Year’s Evil special",
+    "summary": "This past Tuesday’s NXT New Year’s Evil special on the CW, came in with 627,000 viewers and a… The post NXT viewership and key demo up for New Year’s Evil special appeared first on WWE News, WWE...",
     "source": "Wrestleview",
     "url": "https://www.wrestleview.com/wwe-news/371619-nxt-viewership-and-key-demo-up-for-new-years-eve-special/",
     "publishedAt": "2026-01-09T03:27:46+00:00",
@@ -157,14 +349,6 @@
     "source": "Wrestleview",
     "url": "https://www.wrestleview.com/top-story/371612-wwe-hall-of-famer-attends-miami-vs-ole-miss-with-custom-cfp-title-belt/",
     "publishedAt": "2026-01-09T03:15:06+00:00",
-    "category": "wwe"
-  },
-  {
-    "title": "WWE Hall Of Famer Says Vince McMahon Buying Everything 'Was Good For The Business'",
-    "summary": "Vince McMahon's wrestling business model may be monopolistic, but according to this WWE Hall of Famer, the McMahons' tactics were just good for business.",
-    "source": "Wrestling Inc",
-    "url": "https://www.wrestlinginc.com/2071490/wwe-hall-of-famer-dory-funk-jr-vince-mcmahon-buying-everything-good-business/",
-    "publishedAt": "2026-01-09T02:26:04+00:00",
     "category": "wwe"
   },
   {
@@ -182,14 +366,6 @@
     "url": "https://www.wrestleview.com/aew-news/371585-jim-ross-talks-on-returning-to-aew-commentary-d-von-dudleys-racism-accusations-andrade-chris-jericho/",
     "publishedAt": "2026-01-09T02:10:21+00:00",
     "category": "wwe"
-  },
-  {
-    "title": "AEW's MVP Discusses The Importance Of Body Language In Wrestling",
-    "summary": "MVP brought up a former WWE co-worker while discussing the importance of body language for performers in the pro wrestling industry.",
-    "source": "Wrestling Inc",
-    "url": "https://www.wrestlinginc.com/2068136/aew-mvp-importance-body-language-rey-mysterio-jeff-hardy/",
-    "publishedAt": "2026-01-09T02:00:00+00:00",
-    "category": "general"
   },
   {
     "title": "WWF Raw Results – 1/8/95 (“The Ringmaster” Steve Austin debuts, Shawn Michaels makes a Royal Rumble announcement)",
@@ -213,158 +389,6 @@
     "source": "Wrestleview",
     "url": "https://www.wrestleview.com/wwe-news/371578-what-drives-you-with-john-cena-returns-former-wwe-womens-champion-to-be-a-guest/",
     "publishedAt": "2026-01-09T01:36:32+00:00",
-    "category": "wwe"
-  },
-  {
-    "title": "Natalya Reacts To WWE IC Champ Becky Lynch's Behavior",
-    "summary": "WWE star Natalya reacts to the recent behavior changes seen in fellow veteran Becky Lynch across television and social media.",
-    "source": "Wrestling Inc",
-    "url": "https://www.wrestlinginc.com/2071469/natalya-reacts-wwe-ic-champ-becky-lynch-behavior/",
-    "publishedAt": "2026-01-09T01:19:02+00:00",
-    "category": "wwe"
-  },
-  {
-    "title": "Jacy Jayne Responds To Breaking WWE Rookie's Tooth: 'Welcome To The Biz Kid'",
-    "summary": "While wrestlers keep in shape, wrestling itself is anything but pretty. Jacy Jayne was an WWE upstart's reminder of that reality.",
-    "source": "Wrestling Inc",
-    "url": "https://www.wrestlinginc.com/2071451/jacy-jayne-responds-wwe-kendal-grey-tooth-welcome-biz-kid/",
-    "publishedAt": "2026-01-09T00:39:20+00:00",
-    "category": "general"
-  },
-  {
-    "title": "Logan Paul Pitches Surprising Idea For WWE’s The Vision Stable",
-    "summary": "Logan Paul has an interesting merchandise idea for The Vision. Former WWE United States Champion Logan Paul has become an integral part of The Vision on RAW since he joined the group in November...",
-    "source": "Wrestlezone",
-    "url": "https://www.wrestlezone.com/news/1603013-logan-paul-pitch-wwe-the-vision-stable",
-    "publishedAt": "2026-01-08T23:15:00+00:00",
-    "category": "wwe"
-  },
-  {
-    "title": "TNA iMPACT Results: Review, Grades, Card for January 8",
-    "summary": "Our TNA iMPACT results for tonight include a TNA World Championship contract signing segment featuring Frankie Kazarian and Mike Santana, The System vs. Leon Slater, Cedric Alexander, and The Hardys,...",
-    "source": "Wrestlezone",
-    "url": "https://www.wrestlezone.com/news/1603008-tna-impact-results-review-grades-card-for-january-8",
-    "publishedAt": "2026-01-08T23:00:00+00:00",
-    "category": "tna"
-  },
-  {
-    "title": "WWE’s Plans For Oba Femi On The Main Roster — Report",
-    "summary": "Oba Femi‘s NXT run has officially come to an end, and WWE reportedly has big plans for The Ruler on the main roster. The main event of Tuesday’s WWE NXT saw Femi successfully defend the NXT...",
-    "source": "Wrestlezone",
-    "url": "https://www.wrestlezone.com/news/1603213-wwe-plans-for-oba-femi-on-the-main-roster-report",
-    "publishedAt": "2026-01-08T22:48:49+00:00",
-    "category": "wwe"
-  },
-  {
-    "title": "Backstage Reaction To Je’Von Evans Signing WWE RAW Contract During A Commercial —Report",
-    "summary": "WWE‘s decision to have Je’Von Evans sign his RAW contract during a commercial break on Monday is a hot topic among fans this week. During one of the Netflix commercial breaks during this week’s...",
-    "source": "Wrestlezone",
-    "url": "https://www.wrestlezone.com/news/1603211-backstage-reaction-to-jevon-evans-signing-wwe-raw-contract-during-a-commercial-report",
-    "publishedAt": "2026-01-08T22:37:08+00:00",
-    "category": "wwe"
-  },
-  {
-    "title": "WWE Has Interest In Top NJPW Star — Report",
-    "summary": "WWE management reportedly has their eyes on one of New Japan Pro-Wrestling‘s top stars whose contract is set to expire soon. In recent weeks, WWE has moved some of its top NXT performers to the main...",
-    "source": "Wrestlezone",
-    "url": "https://www.wrestlezone.com/news/1603208-wwe-has-interest-in-top-njpw-star-report",
-    "publishedAt": "2026-01-08T22:25:51+00:00",
-    "category": "wwe"
-  },
-  {
-    "title": "AEW’s MJF Would Choose Suicide Over Listening To Hardcore Music",
-    "summary": "It seems as if MJF is not a fan of hardcore music. MJF made a surprise cameo on the Hardlore podcast with Colin Young and Bo Lueders. The episode, which featured a tournament to crown the best...",
-    "source": "Wrestlezone",
-    "url": "https://www.wrestlezone.com/news/1603199-aew-mjf-choose-suicide-over-hardcore-music",
-    "publishedAt": "2026-01-08T22:12:38+00:00",
-    "category": "aew"
-  },
-  {
-    "title": "Bruce Prichard Reveals The Real Reason WWE Cut Down On PLE Matches",
-    "summary": "Bruce Prichard recently offered insight into why WWE has transitioned to smaller match cards for its Premium Live Events. Over the years, the company has cut down on the number of matches, typically...",
-    "source": "Wrestling News",
-    "url": "https://wrestlingnews.co/wwe-news/bruce-prichard-reveals-real-reason-wwe-cut-down-ple-matches/",
-    "publishedAt": "2026-01-08T22:00:28+00:00",
-    "category": "wwe"
-  },
-  {
-    "title": "AEW's Jeff Jarrett Speculates On TNA's New AMC Show, Relationship With WWE",
-    "summary": "According to TNA co-founder Jeff Jarrett, WWE may have some kind of involvement in the smaller promotion's latest TV deal.",
-    "source": "Wrestling Inc",
-    "url": "https://www.wrestlinginc.com/2071347/aew-jeff-jarrett-speculates-tna-new-amc-show-relationship-wwe/",
-    "publishedAt": "2026-01-08T21:52:33+00:00",
-    "category": "wwe"
-  },
-  {
-    "title": "Moose Can’t See TNA Landing AMC TV Deal Without WWE Partnership",
-    "summary": "Moose believes TNA’s partnership with WWE played a big factor in the former’s new TV deal. PWMania.com recently spoke with Moose about TNA landing a new media rights deal with AMC Networks. The deal...",
-    "source": "Wrestlezone",
-    "url": "https://www.wrestlezone.com/news/1603184-moose-tna-amc-tv-deal-without-wwe",
-    "publishedAt": "2026-01-08T21:21:20+00:00",
-    "category": "wwe"
-  },
-  {
-    "title": "AEW's Tony Khan Responds To Recent William Regal Comments About Career-Ending Injuries",
-    "summary": "AEW's Tony Khan responds to comments made by WWE's William Regal, where Regal implored wrestlers to avoid dangerous spots that put their careers in jeopardy",
-    "source": "Wrestling Inc",
-    "url": "https://www.wrestlinginc.com/2071302/aew-tony-khan-responds-william-regal-career-ending-injuries/",
-    "publishedAt": "2026-01-08T21:13:47+00:00",
-    "category": "aew"
-  },
-  {
-    "title": "WWE’s Liv Morgan Says 2023 Arrest Turned Into Police Meet and Greet",
-    "summary": "Liv Morgan reveals how her 2023 arrest turned into a police meet-and-greet after the officers realized she was a WWE Superstar. Former Women’s World Champion Liv Morgan was arrested and charged with...",
-    "source": "Wrestlezone",
-    "url": "https://www.wrestlezone.com/news/1603135-wwe-liv-morgan-arrest-police-meet-and-greet",
-    "publishedAt": "2026-01-08T21:09:44+00:00",
-    "category": "wwe"
-  },
-  {
-    "title": "WWE NXT Star Gets Teeth Fixed After Taking Knee To The Face",
-    "summary": "Kendal Grey sarcastically thanked Jacy Jayne for her latest trip to the dentist. WWE Evolve Women’s Champion Kendal Grey faced off against Jacy Jayne for the NXT Women’s Championship on Tuesday’s...",
-    "source": "Wrestlezone",
-    "url": "https://www.wrestlezone.com/news/1603177-wwe-nxt-star-gets-teeth-fixed-knee-to-the-face",
-    "publishedAt": "2026-01-08T21:02:57+00:00",
-    "category": "wwe"
-  },
-  {
-    "title": "Bruce Prichard On Shorter PLEs In WWE: 10-Match Cards Are 'Hard To Watch'",
-    "summary": "WWE producer Bruce Prichard is grateful that the promotion has made the move to shorter cards for its monthly PLEs.",
-    "source": "Wrestling Inc",
-    "url": "https://www.wrestlinginc.com/2071243/wwe-bruce-prichard-ples-10-matches-hard-watch/",
-    "publishedAt": "2026-01-08T20:27:26+00:00",
-    "category": "wwe"
-  },
-  {
-    "title": "WWE Reportedly Interested In Signing Major NJPW Star For NXT When His Contract Expires",
-    "summary": "WWE is reportedly interesting in signing a major New Japan Pro Wrestling star and using him on NXT once his NJPW contract expires in the next few weeks",
-    "source": "Wrestling Inc",
-    "url": "https://www.wrestlinginc.com/2071237/wwe-interested-signing-david-finlay-njpw-contract-expires/",
-    "publishedAt": "2026-01-08T20:23:02+00:00",
-    "category": "njpw"
-  },
-  {
-    "title": "Liv Morgan: ‘WWE Fans Are Going To See Me In A Way That I Don’t Think They’ve Ever Expected’ In Bad Lieutenant: Tokyo",
-    "summary": "Liv Morgan was off WWE television for a stretch in May 2025 while filming “Bad Lieutenant: Tokyo” in Japan. Morgan has prior acting experience, having been featured in the “Chucky” TV series and “The...",
-    "source": "Wrestling News",
-    "url": "https://wrestlingnews.co/wwe-news/liv-morgan-wwe-universe-going-see-way-dont-think-theyve-ever-expected-bad-lieutenant-tokyo/",
-    "publishedAt": "2026-01-08T20:00:53+00:00",
-    "category": "wwe"
-  },
-  {
-    "title": "Backstage Reaction To Je’Von Evans’ WWE Raw Contract Signing Segment",
-    "summary": "The decision to hold the contract signing during a commercial break was met with confusion, as the segment was not aired on the US television feed. While the footage was shown to international...",
-    "source": "Wrestling News",
-    "url": "https://wrestlingnews.co/wwe-news/backstage-reaction-jevon-evans-wwe-raw-contract-signing-segment/",
-    "publishedAt": "2026-01-08T18:50:55+00:00",
-    "category": "wwe"
-  },
-  {
-    "title": "Backstage News On Which WWE Main Roster Brand Oba Femi Is Expected To Join",
-    "summary": "Oba Femi officially vacated the NXT Championship following a successful title defense in the main event of NXT New Year’s Evil on January 6, 2026. Competing in Orlando, Florida, at the WWE...",
-    "source": "Wrestling News",
-    "url": "https://wrestlingnews.co/wwe-news/backstage-news-which-wwe-main-roster-brand-oba-femi-expected-join/",
-    "publishedAt": "2026-01-08T18:13:54+00:00",
     "category": "wwe"
   }
 ]
