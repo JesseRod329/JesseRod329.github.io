@@ -13,7 +13,7 @@ from config import get_config
 from database import Database
 from playlist_parser import PlaylistParser
 from epg_fetcher import EPGFetcher
-import hashlib
+import bcrypt
 
 app = Flask(__name__)
 config = get_config()
@@ -44,11 +44,12 @@ def is_local_network_origin(origin):
     return False
 
 # Use resources parameter for more flexible CORS
-CORS(app, 
+CORS(app,
      origins=config.CORS_ORIGINS,
+     supports_credentials=True,
      resources={
          r"/api/*": {
-             "origins": "*",  # Allow all origins for local network (you can restrict this)
+             "origins": config.CORS_ORIGINS,
              "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
              "allow_headers": ["Content-Type", "Authorization"]
          }
@@ -56,6 +57,15 @@ CORS(app,
 
 # Initialize database
 db = Database()
+
+def get_password_hash(raw_password):
+    if not raw_password:
+        return None
+    if raw_password.startswith("$2"):
+        return raw_password.encode()
+    return bcrypt.hashpw(raw_password.encode(), bcrypt.gensalt(rounds=12))
+
+PASSWORD_HASH = get_password_hash(config.APP_PASSWORD)
 
 # Password authentication decorator
 def require_auth(f):
@@ -82,12 +92,10 @@ def login():
     if not config.PASSWORD_REQUIRED:
         return jsonify({'success': True, 'authenticated': True, 'message': 'Password protection is disabled'})
     
-    # Hash the provided password and compare with stored hash
-    # Simple hash comparison (in production, use proper password hashing like bcrypt)
-    password_hash = hashlib.sha256(password.encode()).hexdigest()
-    stored_hash = hashlib.sha256(config.APP_PASSWORD.encode()).hexdigest()
-    
-    if password_hash == stored_hash:
+    if not PASSWORD_HASH:
+        return jsonify({'success': False, 'error': 'Password protection not configured'}), 500
+
+    if bcrypt.checkpw(password.encode(), PASSWORD_HASH):
         session['authenticated'] = True
         return jsonify({'success': True, 'authenticated': True})
     else:

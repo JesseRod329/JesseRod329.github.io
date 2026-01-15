@@ -269,7 +269,22 @@ app.get('/', (res, req) => {
 // maintenance mode
 if (process.env.MAINTENANCE_SECRET) {
   const maintenanceSecret = process.env.MAINTENANCE_SECRET;
-  app.get(`/setmaintenance/${maintenanceSecret}/true`, (res) => {
+  const isMaintenanceAuthorized = (req) => {
+    const headerSecret = req.getHeader('x-maintenance-secret') || '';
+    return headerSecret && headerSecret === maintenanceSecret;
+  };
+  const rejectUnauthorized = (res) => {
+    setCorsHeaders(res);
+    res.writeHeader('Content-Type', 'text/plain');
+    res.writeStatus('401 Unauthorized');
+    res.end('unauthorized');
+  };
+
+  app.get(`/setmaintenance/true`, (res, req) => {
+    if (!isMaintenanceAuthorized(req)) {
+      rejectUnauthorized(res);
+      return;
+    }
     maintenanceMode = true;
     // notify all players
     for (const player of players.values()) {
@@ -286,7 +301,11 @@ if (process.env.MAINTENANCE_SECRET) {
 
   });
 
-  app.get(`/setmaintenance/${maintenanceSecret}/false`, (res) => {
+  app.get(`/setmaintenance/false`, (res, req) => {
+    if (!isMaintenanceAuthorized(req)) {
+      rejectUnauthorized(res);
+      return;
+    }
     maintenanceMode = false;
     // notify all players
     for (const player of players.values()) {
@@ -303,7 +322,11 @@ if (process.env.MAINTENANCE_SECRET) {
   });
 
   // get all players & ips
-  app.get(`/getips/${maintenanceSecret}`, (res) => {
+  app.get(`/getips`, (res, req) => {
+    if (!isMaintenanceAuthorized(req)) {
+      rejectUnauthorized(res);
+      return;
+    }
     const playerData = [];
     for (const player of players.values()) {
       playerData.push({
@@ -317,7 +340,11 @@ if (process.env.MAINTENANCE_SECRET) {
     res.writeHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(playerData));
   });
-  app.get(`/banIp/${maintenanceSecret}/:ip`, (res, req) => {
+  app.get(`/banIp/:ip`, (res, req) => {
+    if (!isMaintenanceAuthorized(req)) {
+      rejectUnauthorized(res);
+      return;
+    }
     const ip = req.getParameter(0);
     bannedIps.add(ip);
     let cnt = 0;
@@ -334,7 +361,11 @@ if (process.env.MAINTENANCE_SECRET) {
     res.end('kick count: ' + cnt+'<br>banned ip: '+ip+'<br> all ips: '+[...bannedIps].join('<br>'));
     console.log('Banned ip', ip, 'kicked', cnt, currentDate());
   });
-  app.get(`/unbanIp/${maintenanceSecret}/:ip`, (res, req) => {
+  app.get(`/unbanIp/:ip`, (res, req) => {
+    if (!isMaintenanceAuthorized(req)) {
+      rejectUnauthorized(res);
+      return;
+    }
     const ip = req.getParameter(0);
     bannedIps.delete(ip);
 
@@ -343,7 +374,11 @@ if (process.env.MAINTENANCE_SECRET) {
     res.end('ok');
     console.log('Unbanned ip', ip, currentDate());
   });
-  app.get(`/getIpCounts/${maintenanceSecret}`, (res) => {
+  app.get(`/getIpCounts`, (res, req) => {
+    if (!isMaintenanceAuthorized(req)) {
+      rejectUnauthorized(res);
+      return;
+    }
     const ipCounts = [...ipConnectionCount.entries()].map(([ip, cnt]) => ({ ip, cnt }));
     setCorsHeaders(res);
     res.writeHeader('Content-Type', 'application/json');

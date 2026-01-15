@@ -45,7 +45,14 @@ import User from './models/User.js';
 function currentDate() {
   return new Date().toLocaleString("en-US", { timeZone: "America/Chicago" });
 }
-app.use(cors());
+const allowedOrigins = (process.env.CORS_ORIGINS || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+app.use(cors({
+  origin: allowedOrigins.length ? allowedOrigins : true
+}));
 app.use(bodyParser.json({limit: '30mb'}));
 app.use(bodyParser.urlencoded({limit: '30mb', extended: true, parameterLimit: 50000}));
 

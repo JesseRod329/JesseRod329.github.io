@@ -30,10 +30,12 @@ DATABASES = {
 
 DATABASE_PATH = DATABASES.get(ENV, DATABASES['dev'])
 
+DEFAULT_DEV_SECRET = 'dev-secret-key-change-in-production'
+
 # Flask configuration
 class Config:
     """Base configuration."""
-    SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
+    SECRET_KEY = os.getenv('SECRET_KEY', '')
     DATABASE_PATH = str(DATABASE_PATH)
     # CORS origins: localhost for local dev, plus regex for local network access
     # Allows access from iPhone and other devices on the same WiFi network
@@ -77,12 +79,14 @@ class DevConfig(Config):
     """Development configuration."""
     DEBUG = True
     TESTING = False
+    SECRET_KEY = os.getenv('SECRET_KEY', DEFAULT_DEV_SECRET)
 
 class TestConfig(Config):
     """Testing configuration."""
     DEBUG = True
     TESTING = True
     DATABASE_PATH = str(DATABASES['test'])
+    SECRET_KEY = os.getenv('SECRET_KEY', 'test-secret-key')
 
 class ProdConfig(Config):
     """Production configuration."""
@@ -100,7 +104,10 @@ config_map = {
 
 def get_config():
     """Get configuration for current environment."""
-    return config_map.get(ENV, DevConfig)
+    config_class = config_map.get(ENV, DevConfig)
+    if ENV == 'prod' and not config_class.SECRET_KEY:
+        raise RuntimeError('SECRET_KEY must be set in production')
+    return config_class
 
 
 

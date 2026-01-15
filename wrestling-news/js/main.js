@@ -62,15 +62,21 @@ class WrestlingNewsHub {
         countElement.textContent = newsData.length;
 
         // Clear loading spinner
-        container.innerHTML = '';
+        container.textContent = '';
 
         if (newsData.length === 0) {
-            container.innerHTML = `
-                <div class="no-news">
-                    <p>No wrestling news available at the moment.</p>
-                    <p>Check back soon for updates!</p>
-                </div>
-            `;
+            const emptyState = document.createElement('div');
+            emptyState.className = 'no-news';
+
+            const message = document.createElement('p');
+            message.textContent = 'No wrestling news available at the moment.';
+
+            const followup = document.createElement('p');
+            followup.textContent = 'Check back soon for updates!';
+
+            emptyState.appendChild(message);
+            emptyState.appendChild(followup);
+            container.appendChild(emptyState);
             return;
         }
 
@@ -88,14 +94,31 @@ class WrestlingNewsHub {
         
         const timeAgo = this.getTimeAgo(article.publishedAt);
         
-        articleDiv.innerHTML = `
-            <div class="article-title">${article.title}</div>
-            <div class="article-summary">${article.summary}</div>
-            <div class="article-meta">
-                <span class="article-source">${article.source}</span>
-                <span class="article-time">${timeAgo}</span>
-            </div>
-        `;
+        const title = document.createElement('div');
+        title.className = 'article-title';
+        title.textContent = article.title;
+
+        const summary = document.createElement('div');
+        summary.className = 'article-summary';
+        summary.textContent = article.summary;
+
+        const meta = document.createElement('div');
+        meta.className = 'article-meta';
+
+        const source = document.createElement('span');
+        source.className = 'article-source';
+        source.textContent = article.source;
+
+        const time = document.createElement('span');
+        time.className = 'article-time';
+        time.textContent = timeAgo;
+
+        meta.appendChild(source);
+        meta.appendChild(time);
+
+        articleDiv.appendChild(title);
+        articleDiv.appendChild(summary);
+        articleDiv.appendChild(meta);
 
         // Add click handler to open external link
         articleDiv.addEventListener('click', () => {
@@ -195,7 +218,7 @@ class WrestlingNewsHub {
     addRefreshButton() {
         const header = document.querySelector('.header-content');
         const refreshButton = document.createElement('button');
-        refreshButton.innerHTML = '🔄 Refresh';
+        refreshButton.textContent = '🔄 Refresh';
         refreshButton.className = 'refresh-button';
         refreshButton.style.cssText = `
             background: var(--glass-bg);
@@ -224,14 +247,14 @@ class WrestlingNewsHub {
     async refreshNews() {
         const refreshButton = document.querySelector('.refresh-button');
         if (refreshButton) {
-            refreshButton.innerHTML = '🔄 Refreshing...';
+            refreshButton.textContent = '🔄 Refreshing...';
             refreshButton.disabled = true;
         }
 
         await this.loadNewsData();
 
         if (refreshButton) {
-            refreshButton.innerHTML = '🔄 Refresh';
+            refreshButton.textContent = '🔄 Refresh';
             refreshButton.disabled = false;
         }
     }
