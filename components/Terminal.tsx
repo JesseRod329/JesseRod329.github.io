@@ -1,6 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Icon } from './Icon';
+import { PROJECTS } from '../constants';
 
 interface TerminalMessage {
   text: string;
@@ -11,35 +12,40 @@ const COMMANDS: Record<string, string> = {
   help: `Available commands:
   help     - Show this help message
   about    - Learn about Jesse
-  projects - View featured projects
+  projects - View all projects
   skills   - List technical skills
   contact  - Get in touch
+  github   - Open GitHub profile
   clear    - Clear terminal`,
   
   about: `Jesse Rodriguez - Senior Software Engineer
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Based in San Francisco, CA. Specializing in React, 
-Node.js, and modern web development. Currently open 
-to new opportunities.`,
-  
-  projects: `Featured Projects:
-━━━━━━━━━━━━━━━━━━
-▸ FinTech Dashboard - Real-time crypto analytics
-▸ AI Chat Interface - Generative AI with streaming
-▸ Spatial Audio Engine - 3D sound in the browser`,
+Based in San Francisco, CA. Building modern web 
+experiences with React, TypeScript, and Node.js.
+
+15,000+ lines of code across 12+ specialized apps.
+All projects achieve >95 Lighthouse scores.
+
+Currently open to new opportunities.`,
   
   skills: `Technical Skills:
 ━━━━━━━━━━━━━━━━━━
-Frontend: React, TypeScript, Tailwind, Next.js
-Backend: Node.js, Python, PostgreSQL, Redis
-Tools: Git, Docker, AWS, Vercel`,
+Frontend:  React 19, TypeScript, Next.js, Tailwind CSS
+           Three.js, Framer Motion, Chart.js
+Backend:   Node.js, Python, PostgreSQL, Redis
+Tools:     Git, Docker, AWS, Vercel, Vite
+Practices: WCAG AA, PWA, Security Best Practices`,
   
   contact: `Get in Touch:
 ━━━━━━━━━━━━━━━━━
-📧 jesse@jesserodriguez.me
-🌐 jesserodriguez.me
-💼 linkedin.com/in/jesserodriguez
-🐙 github.com/JesseRod329`,
+📧 Email:    jesse@jesserodriguez.me
+🌐 Website:  jesserodriguez.me
+💼 LinkedIn: linkedin.com/in/jesse-rodriguez-sf
+🐙 GitHub:   github.com/JesseRod329
+
+Type 'github' to open GitHub profile in new tab.`,
+
+  github: `Opening GitHub profile...`,
 };
 
 export const Terminal: React.FC = () => {
@@ -56,6 +62,15 @@ export const Terminal: React.FC = () => {
     }
   }, [messages]);
 
+  const getProjectsList = () => {
+    return `All Projects (${PROJECTS.length}):
+━━━━━━━━━━━━━━━━━━━━━━
+${PROJECTS.map((p, i) => `${(i + 1).toString().padStart(2, '0')}. ${p.name}
+    └─ ${p.demoUrl}`).join('\n')}
+
+Click any project card above to view demo.`;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
@@ -66,6 +81,17 @@ export const Terminal: React.FC = () => {
 
     if (cmd === 'clear') {
       setMessages([{ text: "Terminal cleared. Type 'help' for commands.", type: 'system' }]);
+      return;
+    }
+
+    if (cmd === 'projects') {
+      setMessages(prev => [...prev, { text: getProjectsList(), type: 'response' }]);
+      return;
+    }
+
+    if (cmd === 'github') {
+      setMessages(prev => [...prev, { text: COMMANDS.github, type: 'response' }]);
+      window.open('https://github.com/JesseRod329', '_blank');
       return;
     }
 
@@ -81,7 +107,7 @@ export const Terminal: React.FC = () => {
   };
 
   return (
-    <div className={`flex flex-col border-t border-[#293638] bg-[#111316] transition-all duration-300 ${isOpen ? 'h-64' : 'h-10'}`}>
+    <div className={`flex flex-col border-t border-[#293638] bg-[#111316] transition-all duration-300 ${isOpen ? 'h-72' : 'h-10'}`}>
       <div 
         className="flex items-center justify-between px-4 h-10 border-b border-[#293638] cursor-pointer hover:bg-slate-800/30"
         onClick={() => setIsOpen(!isOpen)}

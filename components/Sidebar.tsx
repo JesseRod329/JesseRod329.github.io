@@ -38,6 +38,24 @@ const FileTreeItem: React.FC<FileTreeItemProps> = ({
   );
 };
 
+interface SocialLinkProps {
+  href: string;
+  icon: string;
+  label: string;
+}
+
+const SocialLink: React.FC<SocialLinkProps> = ({ href, icon, label }) => (
+  <a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="flex items-center justify-center w-9 h-9 rounded-lg bg-[#1f2329] hover:bg-[#149cb8]/20 hover:text-[#149cb8] text-slate-400 transition-all duration-200 group"
+    title={label}
+  >
+    <Icon name={icon} size={18} />
+  </a>
+);
+
 export const Sidebar: React.FC = () => {
   const [srcOpen, setSrcOpen] = useState(true);
 
@@ -83,12 +101,32 @@ export const Sidebar: React.FC = () => {
                 <FileTreeItem name="projects.json" icon="javascript" colorClass="text-yellow-400" indent={2} />
                 <FileTreeItem name="style.css" icon="css" colorClass="text-pink-400" indent={2} />
                 <FileTreeItem name="README.md" icon="description" colorClass="text-slate-400" indent={2} />
-                <FileTreeItem name=".env.local" icon="settings" colorClass="text-orange-400" indent={2} />
               </>
             )}
             
             <FileTreeItem name="package.json" icon="adb" colorClass="text-red-400" indent={1} />
           </div>
+        </div>
+      </div>
+
+      {/* Social Links Bar */}
+      <div className="px-4 py-3 border-t border-[#293638]">
+        <div className="flex items-center justify-center gap-2">
+          <SocialLink 
+            href="https://github.com/JesseRod329" 
+            icon="code" 
+            label="GitHub"
+          />
+          <SocialLink 
+            href="https://linkedin.com/in/jesse-rodriguez-sf" 
+            icon="work" 
+            label="LinkedIn"
+          />
+          <SocialLink 
+            href="mailto:jesse@jesserodriguez.me" 
+            icon="mail" 
+            label="Email"
+          />
         </div>
       </div>
 
