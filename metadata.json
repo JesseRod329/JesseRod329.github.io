@@ -1,0 +1,7 @@
+{
+  "name": "Jesse Rodriguez Portfolio - IDE Edition",
+  "description": "A high-fidelity developer portfolio designed as a functional VS Code-like IDE, featuring interactive project cards, syntax-highlighted code blocks, and an AI-powered terminal.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
