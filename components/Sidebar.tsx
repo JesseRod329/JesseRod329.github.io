@@ -11,20 +11,14 @@ interface FileTreeItemProps {
   isFolder?: boolean;
   isOpen?: boolean;
   onClick?: () => void;
+  href?: string;
 }
 
 const FileTreeItem: React.FC<FileTreeItemProps> = ({ 
-  name, icon, colorClass = 'text-slate-400', isActive, indent = 0, isFolder, isOpen, onClick 
+  name, icon, colorClass = 'text-slate-400', isActive, indent = 0, isFolder, isOpen, onClick, href 
 }) => {
-  return (
-    <div 
-      onClick={onClick}
-      className={`
-        flex items-center gap-2 px-3 py-1.5 cursor-pointer rounded-md transition-colors
-        ${isActive ? 'bg-[#293638]/50 text-white border-l-2 border-[#149cb8]' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'}
-      `}
-      style={{ paddingLeft: `${(indent + 1) * 12}px` }}
-    >
+  const content = (
+    <>
       {isFolder && (
         <Icon 
           name={isOpen ? 'expand_more' : 'chevron_right'} 
@@ -34,6 +28,36 @@ const FileTreeItem: React.FC<FileTreeItemProps> = ({
       )}
       <Icon name={icon} className={colorClass} size={18} />
       <span className={`text-sm ${isActive ? 'font-medium' : ''}`}>{name}</span>
+    </>
+  );
+
+  const className = `
+    flex items-center gap-2 px-3 py-1.5 cursor-pointer rounded-md transition-colors
+    ${isActive ? 'bg-[#293638]/50 text-white border-l-2 border-[#149cb8]' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'}
+  `;
+
+  if (href) {
+    return (
+      <a 
+        href={href}
+        target={href.startsWith('http') ? '_blank' : undefined}
+        rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+        onClick={onClick}
+        className={className}
+        style={{ paddingLeft: `${(indent + 1) * 12}px` }}
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <div 
+      onClick={onClick}
+      className={className}
+      style={{ paddingLeft: `${(indent + 1) * 12}px` }}
+    >
+      {content}
     </div>
   );
 };
@@ -58,6 +82,13 @@ const SocialLink: React.FC<SocialLinkProps> = ({ href, icon, label }) => (
 
 export const Sidebar: React.FC = () => {
   const [srcOpen, setSrcOpen] = useState(true);
+
+  const scrollToProjects = () => {
+    const projectsSection = document.querySelector('[data-projects]');
+    if (projectsSection) {
+      projectsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <aside className="w-64 bg-[#111316] flex flex-col border-r border-[#293638] hidden lg:flex shrink-0 select-none">
@@ -84,7 +115,14 @@ export const Sidebar: React.FC = () => {
           </div>
 
           <div className="mt-1">
-            <FileTreeItem name=".github" icon="folder" colorClass="text-yellow-500" indent={1} isFolder />
+            <FileTreeItem 
+              name=".github" 
+              icon="folder" 
+              colorClass="text-yellow-500" 
+              indent={1} 
+              isFolder 
+              href="https://github.com/JesseRod329"
+            />
             <FileTreeItem 
               name="src" 
               icon={srcOpen ? "folder_open" : "folder"} 
@@ -98,9 +136,21 @@ export const Sidebar: React.FC = () => {
             {srcOpen && (
               <>
                 <FileTreeItem name="home.tsx" icon="code" colorClass="text-[#61dafb]" indent={2} isActive />
-                <FileTreeItem name="projects.json" icon="javascript" colorClass="text-yellow-400" indent={2} />
+                <FileTreeItem 
+                  name="projects.json" 
+                  icon="javascript" 
+                  colorClass="text-yellow-400" 
+                  indent={2} 
+                  onClick={scrollToProjects}
+                />
                 <FileTreeItem name="style.css" icon="css" colorClass="text-pink-400" indent={2} />
-                <FileTreeItem name="README.md" icon="description" colorClass="text-slate-400" indent={2} />
+                <FileTreeItem 
+                  name="README.md" 
+                  icon="description" 
+                  colorClass="text-slate-400" 
+                  indent={2}
+                  href="https://github.com/JesseRod329/JesseRod329.github.io#readme"
+                />
               </>
             )}
             

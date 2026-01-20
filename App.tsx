@@ -112,12 +112,14 @@ const App: React.FC = () => {
               <CodeLine number={14} indent={1}><span className="text-white">{"}"}</span></CodeLine>
               <CodeLine number={15}>&nbsp;</CodeLine>
               <CodeLine number={16} indent={1}><span className="text-comment">// Scroll down to view compiled portfolio projects...</span></CodeLine>
-              <CodeLine number={17} indent={1}>
-                <span className="text-keyword">renderProjects</span><span className="text-white">() {"{"}</span>
-              </CodeLine>
-              <CodeLine number={18} indent={2}>
-                <span className="text-keyword">return</span><span className="text-white"> [</span>
-              </CodeLine>
+              <div data-projects>
+                <CodeLine number={17} indent={1}>
+                  <span className="text-keyword">renderProjects</span><span className="text-white">() {"{"}</span>
+                </CodeLine>
+                <CodeLine number={18} indent={2}>
+                  <span className="text-keyword">return</span><span className="text-white"> [</span>
+                </CodeLine>
+              </div>
 
               {/* Projects Rendering */}
               {PROJECTS.map((project, index) => (
