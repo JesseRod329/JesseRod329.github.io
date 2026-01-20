@@ -22,7 +22,7 @@ export const StatusBar: React.FC = () => {
         <div className="flex items-center gap-2 hover:bg-black/10 px-1 rounded cursor-pointer h-full px-2">
           <div className="flex items-center gap-1">
             <Icon name="check_circle" size={14} className="text-green-900" />
-            <span>12 projects</span>
+            <span>22 projects</span>
           </div>
         </div>
       </div>
