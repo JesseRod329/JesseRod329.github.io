@@ -1,0 +1,249 @@
+{
+  "main": {
+    "id": "e831d355fcd1dc31",
+    "type": "split",
+    "children": [
+      {
+        "id": "6329de89722a3823",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "8eeeca98551c0fa5",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Project Readmes/WRESTLEMERCH_README.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "WRESTLEMERCH_README"
+            }
+          },
+          {
+            "id": "10673e06b8bbebe1",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "0e02b16ca51d830c",
+    "type": "split",
+    "children": [
+      {
+        "id": "04e2dd34920a240a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c24c5336661d6e7f",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "df49e138fca557e2",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "d3d7d581e872487d",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "c4b22abdfc0851f4",
+    "type": "split",
+    "children": [
+      {
+        "id": "8ba9e3d04b9d00f7",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "cc330ec95f89fa59",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Untitled/Welcome.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Welcome"
+            }
+          },
+          {
+            "id": "e9098971253be9ba",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Untitled/Welcome.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Welcome"
+            }
+          },
+          {
+            "id": "ddfffec4f65b6ee5",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "4e3d2c732664c486",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "55955314c963d7d7",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Untitled/Welcome.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Welcome"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false,
+      "obsidian-importer:Open Importer": false,
+      "nexus-ai-chat-importer:Nexus AI Chat Importer - Import new file": false
+    }
+  },
+  "active": "10673e06b8bbebe1",
+  "lastOpenFiles": [
+    "Project Readmes/WRESTLEMERCH_README.md",
+    "Project Readmes/maurice_README.md",
+    "Project Readmes/katseye_README.md",
+    "Project Readmes/jules_README.md",
+    "Project Readmes/game_README.md",
+    "Project Readmes/anafood_README.md",
+    "Project Readmes/3d_README.md",
+    "Project Readmes/WrestlePick_README.md",
+    "Project Readmes/WSTATS_README.md",
+    "Project Readmes/wifi_README.md",
+    "Project Readmes/web_README.md",
+    "Project Readmes/SVG_README.md",
+    "Project Readmes/ely_README.md",
+    "Project Readmes/claey_README.md",
+    "Project Readmes/cam1_README.md",
+    "Project Readmes/testing_README.md",
+    "Project Readmes/stream_README.md",
+    "Project Readmes/STREA_README.md",
+    "Project Readmes/reddittool_README.md",
+    "Project Readmes/ratings.io_README.md",
+    "Project Readmes/nanabook_README.md",
+    "Project Readmes/nana_README.md",
+    "Project Readmes/nana new _README.md",
+    "Project Readmes/MRNA_README.md",
+    "Project Readmes/MIRROR_README.md",
+    "Project Readmes/JesseRod329.github.io_README.md",
+    "Project Readmes",
+    "obsidian_export/Untitled.canvas",
+    "obsidian_export",
+    "Chat gpt chats /Assets/file-PNkY4D5QNmg3NYjrUaghxn-4A8FFC4C-09F2-4ABD-AC42-DB0E3B1D9193.jpeg",
+    "Nexus/Reports/chatgpt",
+    "Nexus/Reports",
+    "Nexus",
+    "Google Keep",
+    "Chat gpt chats /Assets/file-P5gf9WBkr1juTxcTQDnsa5-065B6B34-9070-424A-A0D2-94AA3EA84EEE.jpeg",
+    "Chat gpt chats /Assets/file_00000000a0bc622f9d476eb6607e906c-ca8b5bee-8c9f-4241-a64f-d6cbd5264a9a.wav",
+    "Chat gpt chats /Assets/file_00000000ffa46243872380aadea751d4-831957de-f6d0-4282-b006-4877d0b2a0e8.png",
+    "Chat gpt chats /Assets/file_00000000fc6061f8951eeb8753f2f785-da32bd28-eafa-4a3e-a69c-91ad8da2b963.png",
+    "Chat gpt chats /Assets/file_00000000fa94622f8f32f0f0d2e11223-e6288726-3f15-4068-bae2-624f9502c341.png",
+    "Chat gpt chats /Assets/file_00000000f988622f8f02062d811a37ea-775b9af2-3898-444d-9df4-0b3277d2f993.png",
+    "Chat gpt chats /Assets/file_00000000f85861f9a36686d20d5f5bbf-9f2af8fb-9d52-4368-913f-7c9aef8bf48c.png",
+    "Chat gpt chats /Assets/file_00000000f39461fd8a64088385ffda95-cc5b26e7-bc41-4e43-ae61-f82223df23d1.png",
+    "Chat gpt chats /Assets/file_00000000f380622f998e58f79e231f6f-02a127c8-b706-4c10-a8f8-85baf32fa4f8.png",
+    "Chat gpt chats /Assets/file_00000000f11061fd9f3c2b2b55833b91-f8ab8b6d-fa63-4887-b4d6-88733c6f97f5.png",
+    "Chat gpt chats /Assets/file_00000000fe4071f7b370ac63c44c25cb-448432d6-213d-4ae0-8fea-deba1447cfa7.wav",
+    "Chat gpt chats /Assets/file_00000000ecc471f7a57d233a4bdeb315-704ec373-f736-4ef1-92c9-1b936d2195e3.wav",
+    "Chat gpt chats /Assets/file_00000000cb7471f7b36f37cef1222588-663ce758-43bd-4246-8cc2-bc7998b55667.wav"
+  ]
+}
