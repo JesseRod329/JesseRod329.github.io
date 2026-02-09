@@ -1,0 +1,23 @@
+# Jesse Rodriguez | AI Engineer & Apple Certified Developer
+> Specialized in Bridge Architecture: Connecting frontier models to business infrastructure.
+
+## Core Expertise
+- **AI Systems**: Fine-tuning (Opus 4.6, Kimi 2.5, Codex 5.3), Agentic Workflows, RAG Pipelines.
+- **Mobile Engineering**: SwiftUI, CoreML, Decentralized Systems (Pulse App).
+- **Backend**: Node.js, Python (FastAPI), Custom REST API Bridges.
+
+## Key Projects
+- **Pulse Messaging**: Decentralized SwiftUI iOS client. [Code: https://github.com/JesseRod329/Pulse-Messaging-]
+- **Kami Apps**: AI-integrated mobile ecosystem.
+- **Architecture Integration**: Custom API layers for automated music distribution and royalty tracking.
+- **World Globe**: 3D WebGL data visualization.
+
+## Engineering Stack
+- **Languages**: Swift, Python, TypeScript, SQL.
+- **AI Tools**: Google AI Studio, Gemini CLI, Cursor, Claude Code, Grok.
+- **Frameworks**: React, FastAPI, Node.js, SwiftUI.
+
+## Contact
+- Portfolio: https://jesserodriguez.me
+- Email: contact@jesserodriguez.me
+- GitHub: https://github.com/JesseRod329
