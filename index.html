@@ -3,50 +3,94 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Jesse Rodriguez | Apple Certified Developer & AI Engineer</title>
-    <meta name="description" content="Jesse Rodriguez is an Apple Certified Developer and AI Engineer specializing in frontier model fine-tuning, multi-agent systems, and business intelligence dashboards.">
-    <meta name="keywords" content="AI Engineer, Apple Certified Developer, SwiftUI, LLM Fine-tuning, Gemini, Opus, Kimi, Codex, Node.js, Python, Business Intelligence">
-    <link rel="canonical" href="https://jesserodriguez.me" />
-
-    <!-- Open Graph / Social -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://jesserodriguez.me">
-    <meta property="og:title" content="Jesse Rodriguez | Apple Certified Developer & AI Engineer">
-    <meta property="og:description" content="Bridging the gap between frontier AI and business infrastructure.">
-    <meta property="og:image" content="https://jesserodriguez.me/assets/og-preview.png">
-
-    <!-- Structured Data for AI Agents -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Jesse Rodriguez",
-      "jobTitle": "AI Engineer & Apple Certified Developer",
-      "url": "https://jesserodriguez.me",
-      "sameAs": [
-        "https://github.com/JesseRod329",
-        "https://linkedin.com/in/jesserodriguez"
-      ],
-      "knowsAbout": [
-        "Artificial Intelligence",
-        "iOS Development",
-        "SwiftUI",
-        "Large Language Models",
-        "Machine Learning",
-        "Business Intelligence"
-      ],
-      "description": "Specialist in connecting autonomous AI agents to existing business architectures and fine-tuning frontier models."
-    }
+    <title>Jesse Rodriguez | AI Engineering & Solutions</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0b'/%3E%3Cpath d='M18 16h28v8H28v8h14v8H28v8h18v8H18z' fill='%2300f3ff'/%3E%3C/svg%3E" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bebas+Neue&family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;700;900&family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              neon: {
+                blue: '#00f3ff',
+                purple: '#bc13fe',
+                green: '#0aff68',
+              },
+              dark: {
+                900: '#0a0a0b',
+                800: '#121214',
+                700: '#1c1c1f',
+              }
+            },
+            animation: {
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'float': 'float 6s ease-in-out infinite',
+              'marquee': 'marquee 25s linear infinite',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-20px)' },
+              },
+              marquee: {
+                '0%': { transform: 'translateX(0)' },
+                '100%': { transform: 'translateX(-50%)' },
+              }
+            }
+          },
+        },
+      }
     </script>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-      body { background: #0a0a0b; margin: 0; }
+      body {
+        background-color: #0a0a0b;
+        color: #ffffff;
+      }
+      .glass-panel {
+        background: rgba(28, 28, 31, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .neon-glow {
+        box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0a0a0b; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #333; 
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #555; 
+      }
     </style>
-    <script type="module" crossorigin src="/assets/index-4A7qzXN_.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DTt6uDb3.css">
-  </head>
+
+  <script type="importmap">
+{
+  "imports": {
+    "recharts": "https://esm.sh/recharts@^3.7.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.40.0",
+    "react": "https://esm.sh/react@^19.2.4",
+    "react/": "https://esm.sh/react@^19.2.4/"
+  }
+}
+</script>
+  <script type="module" crossorigin src="/assets/index-BZKpvTDr.js"></script>
+</head>
   <body>
     <div id="root"></div>
-  </body>
+</body>
 </html>
