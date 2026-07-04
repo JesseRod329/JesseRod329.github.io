@@ -3,94 +3,124 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Jesse Rodriguez | AI Engineering & Solutions</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0b'/%3E%3Cpath d='M18 16h28v8H28v8h14v8H28v8h18v8H18z' fill='%2300f3ff'/%3E%3C/svg%3E" />
+    <title>Jesse Rodriguez — AI Engineer & Agent Builder</title>
+    <meta name="description" content="Jesse Rodriguez builds multi-agent systems, MCP integrations, fine-tuned models, and the dashboards that run them. NYC-based AI engineer." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0907'/%3E%3Cpath d='M18 16h28v8H28v8h14v8H28v8h18v8H18z' fill='%23ffb224'/%3E%3C/svg%3E" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bebas+Neue&family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;700;900&family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bebas+Neue&family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;700;900&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,300;1,9..144,400;1,9..144,900&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-              mono: ['JetBrains Mono', 'monospace'],
+              display: ['Fraunces', 'Georgia', 'serif'],
+              sans: ['"Instrument Sans"', 'system-ui', 'sans-serif'],
+              mono: ['"IBM Plex Mono"', 'monospace'],
             },
             colors: {
-              neon: {
-                blue: '#00f3ff',
-                purple: '#bc13fe',
-                green: '#0aff68',
+              ink: {
+                950: '#0a0907',
+                900: '#12100c',
+                800: '#181510',
+                700: '#231e16',
+                600: '#332c20',
               },
-              dark: {
-                900: '#0a0a0b',
-                800: '#121214',
-                700: '#1c1c1f',
-              }
+              bone: {
+                DEFAULT: '#ece4d3',
+                dim: '#a89f8b',
+                mute: '#6f6757',
+              },
+              signal: {
+                DEFAULT: '#ffb224',
+                deep: '#c97f10',
+                dark: '#8a5a0a',
+              },
+              live: '#8ae234',
             },
             animation: {
-              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-              'float': 'float 6s ease-in-out infinite',
-              'marquee': 'marquee 25s linear infinite',
+              'marquee': 'marquee 32s linear infinite',
+              'blink': 'blink 1.1s step-end infinite',
+              'spin-slow': 'spin 14s linear infinite',
             },
             keyframes: {
-              float: {
-                '0%, 100%': { transform: 'translateY(0)' },
-                '50%': { transform: 'translateY(-20px)' },
-              },
               marquee: {
                 '0%': { transform: 'translateX(0)' },
                 '100%': { transform: 'translateX(-50%)' },
-              }
-            }
+              },
+              blink: {
+                '0%, 100%': { opacity: '1' },
+                '50%': { opacity: '0' },
+              },
+            },
           },
         },
       }
     </script>
     <style>
+      html { scroll-behavior: smooth; }
       body {
-        background-color: #0a0a0b;
-        color: #ffffff;
+        background-color: #0a0907;
+        color: #ece4d3;
       }
-      .glass-panel {
-        background: rgba(28, 28, 31, 0.6);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+      ::selection {
+        background: #ffb224;
+        color: #0a0907;
       }
-      .neon-glow {
-        box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
-      }
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #0a0a0b; 
-      }
+      ::-webkit-scrollbar { width: 10px; }
+      ::-webkit-scrollbar-track { background: #0a0907; }
       ::-webkit-scrollbar-thumb {
-        background: #333; 
-        border-radius: 4px;
+        background: #332c20;
+        border: 2px solid #0a0907;
+        border-radius: 6px;
       }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #555; 
+      ::-webkit-scrollbar-thumb:hover { background: #8a5a0a; }
+
+      /* Film grain over everything */
+      .grain::after {
+        content: '';
+        position: fixed;
+        inset: -50%;
+        width: 200%;
+        height: 200%;
+        pointer-events: none;
+        z-index: 90;
+        opacity: 0.05;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      }
+
+      /* Hairline panel used across the system sections */
+      .panel {
+        background: linear-gradient(180deg, rgba(236, 228, 211, 0.035), rgba(236, 228, 211, 0.012));
+        border: 1px solid rgba(236, 228, 211, 0.1);
+      }
+      .panel-hover { transition: border-color 0.4s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+      .panel-hover:hover { border-color: rgba(255, 178, 36, 0.45); }
+
+      .eyebrow {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+      }
+
+      /* Blueprint grid backdrop */
+      .blueprint {
+        background-image:
+          linear-gradient(rgba(236, 228, 211, 0.045) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(236, 228, 211, 0.045) 1px, transparent 1px);
+        background-size: 56px 56px;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .animate-marquee { animation: none; }
       }
     </style>
-
-  <script type="importmap">
-{
-  "imports": {
-    "recharts": "https://esm.sh/recharts@^3.7.0",
-    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.40.0",
-    "react": "https://esm.sh/react@^19.2.4",
-    "react/": "https://esm.sh/react@^19.2.4/"
-  }
-}
-</script>
-  <script type="module" crossorigin src="/assets/index-BZKpvTDr.js"></script>
-</head>
-  <body>
+    <script type="module" crossorigin src="/assets/index-Cd98hfnx.js"></script>
+  </head>
+  <body class="grain">
     <div id="root"></div>
-</body>
+  </body>
 </html>
