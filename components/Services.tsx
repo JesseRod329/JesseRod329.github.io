@@ -1,76 +1,62 @@
 import React from 'react';
-import { Bot, LineChart, BrainCircuit, Cable } from 'lucide-react';
-import { Service } from '../types';
+import { ArrowUpRight } from 'lucide-react';
+import { Reveal, SectionHeading } from './Reveal';
 
-const services: Service[] = [
+const services = [
   {
-    id: 'ai-agents',
-    title: 'Custom AI Agents',
-    description: 'Autonomous agents designed to perform specific tasks, handle customer support, or automate complex workflows 24/7.',
-    icon: 'brain'
+    num: '01',
+    title: 'Agent Systems for Business',
+    body: 'Autonomous agents wired into your actual operations — support queues, research pipelines, internal tooling — running around the clock with human-grade hand-offs.',
+    meta: 'orchestration · MCP · workflows',
   },
   {
-    id: 'fine-tuning',
+    num: '02',
     title: 'Model Fine-Tuning',
-    description: 'Specializing in fine-tuning open-source LLMs (Llama, Mistral) on your proprietary data for maximum domain accuracy.',
-    icon: 'cpu'
+    body: 'Open models (Llama, Mistral, Qwen) trained on your proprietary data. Local deployment on Apple Silicon or cloud, whichever your privacy posture demands.',
+    meta: 'MLX · PyTorch · HuggingFace',
   },
   {
-    id: 'dashboards',
-    title: 'Business Dashboards',
-    description: 'Full-stack BI dashboards visualization. Turning raw AI outputs into actionable, real-time visual insights for stakeholders.',
-    icon: 'layout'
+    num: '03',
+    title: 'Intelligence Dashboards',
+    body: 'Real-time views into what your agents are doing and what they are worth: token spend, task throughput, ROI. WebSocket streams into custom React visualizations.',
+    meta: 'React · Recharts · WebSockets',
   },
   {
-    id: 'integration',
-    title: 'Architecture Integration',
-    description: 'Seamlessly connecting new AI layers into legacy infrastructure. API development, vector databases, and secure pipelines.',
-    icon: 'network'
-  }
+    num: '04',
+    title: 'The Bridge Build',
+    body: 'Connecting new AI layers to legacy infrastructure. Custom Node.js and Python APIs, vector pipelines, auth handshakes — the unglamorous plumbing that makes it real.',
+    meta: 'Node.js · Python · vector DBs',
+  },
 ];
 
-const Services: React.FC = () => {
-  const getIcon = (type: string) => {
-    switch (type) {
-      case 'brain': return <Bot className="w-8 h-8 text-neon-blue" />;
-      case 'cpu': return <BrainCircuit className="w-8 h-8 text-neon-purple" />;
-      case 'layout': return <LineChart className="w-8 h-8 text-neon-green" />;
-      case 'network': return <Cable className="w-8 h-8 text-yellow-400" />;
-      default: return <Bot />;
-    }
-  };
+const Services: React.FC = () => (
+  <section id="services" className="py-28 md:py-36 relative">
+    <div className="max-w-7xl mx-auto px-6">
+      <SectionHeading
+        eyebrow="Engagements"
+        index="/ 02"
+        title={<>What I build <em className="italic font-light text-signal">for clients</em></>}
+      />
 
-  return (
-    <section id="services" className="py-24 bg-dark-800 relative">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-bold mb-4">Core Competencies</h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            My technical focus bridges the gap between cutting-edge AI research and practical, revenue-generating business applications.
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map((service) => (
-            <div 
-              key={service.id}
-              className="glass-panel p-6 rounded-xl hover:border-neon-blue/40 transition-all duration-300 group hover:-translate-y-2"
-            >
-              <div className="mb-6 p-4 rounded-lg bg-white/5 inline-block group-hover:bg-neon-blue/10 transition-colors">
-                {getIcon(service.icon)}
-              </div>
-              <h3 className="text-xl font-bold mb-3 group-hover:text-neon-blue transition-colors">
-                {service.title}
+      <div className="border-t border-bone/10">
+        {services.map((s, i) => (
+          <Reveal key={s.num} delay={i * 0.05} y={16}>
+            <div className="group grid md:grid-cols-[80px_1fr_1.4fr_auto] gap-4 md:gap-10 items-baseline py-10 border-b border-bone/10 transition-colors duration-300 hover:bg-bone/[0.02] px-2 md:px-4">
+              <span className="font-mono text-sm text-bone-mute">{s.num}</span>
+              <h3 className="font-display text-2xl md:text-3xl font-semibold text-bone group-hover:text-signal transition-colors duration-300">
+                {s.title}
               </h3>
-              <p className="text-gray-400 leading-relaxed text-sm">
-                {service.description}
-              </p>
+              <div>
+                <p className="text-bone-dim leading-relaxed mb-3">{s.body}</p>
+                <span className="font-mono text-[11px] text-bone-mute tracking-wide">{s.meta}</span>
+              </div>
+              <ArrowUpRight className="hidden md:block w-6 h-6 text-bone-mute transition-all duration-300 group-hover:text-signal group-hover:translate-x-1 group-hover:-translate-y-1 self-center" />
             </div>
-          ))}
-        </div>
+          </Reveal>
+        ))}
       </div>
-    </section>
-  );
-};
+    </div>
+  </section>
+);
 
 export default Services;

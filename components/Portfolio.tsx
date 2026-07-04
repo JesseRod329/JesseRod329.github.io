@@ -1,145 +1,133 @@
 import React, { useState } from 'react';
-import { ExternalLink, Github, Smartphone, Terminal, Layout, Layers, Brain, ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { ExternalLink, Github } from 'lucide-react';
 import { projects } from '../data/projects';
 import { ProjectCategory } from '../types';
+import { Reveal, SectionHeading } from './Reveal';
+
+const tabs: { id: ProjectCategory | 'all'; label: string }[] = [
+  { id: 'all', label: 'All work' },
+  { id: 'system', label: 'Agents & systems' },
+  { id: 'interface', label: 'Mobile & interface' },
+  { id: 'creative', label: 'Creative & web' },
+];
+
+const categoryLabel: Record<ProjectCategory, string> = {
+  system: 'system',
+  interface: 'interface',
+  creative: 'creative',
+};
 
 const Portfolio: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ProjectCategory | 'all'>('all');
 
-  const filteredProjects = activeTab === 'all' 
-    ? projects 
-    : projects.filter(p => p.category === activeTab);
-
-  const tabs: { id: ProjectCategory | 'all'; label: string; icon: React.ReactNode }[] = [
-    { id: 'all', label: 'All Work', icon: <Layers className="w-4 h-4" /> },
-    { id: 'interface', label: 'Mobile & Interface', icon: <Smartphone className="w-4 h-4" /> },
-    { id: 'system', label: 'System Architecture', icon: <Terminal className="w-4 h-4" /> },
-    { id: 'creative', label: 'Creative & Web', icon: <Layout className="w-4 h-4" /> },
-  ];
+  const filtered = activeTab === 'all' ? projects : projects.filter(p => p.category === activeTab);
 
   return (
-    <section id="portfolio" className="py-24 bg-dark-900 relative">
+    <section id="work" className="py-28 md:py-36 relative">
       <div className="max-w-7xl mx-auto px-6">
-        
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-          <div>
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">Selected Projects</h2>
-            <p className="text-gray-400 max-w-xl">
-              From high-performance iOS apps to autonomous agent systems.
-            </p>
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 mb-4">
+          <SectionHeading
+            eyebrow="Selected Work"
+            index="/ 04"
+            title={<>Projects with a <em className="italic font-light text-signal">pulse</em></>}
+          />
+          <Reveal delay={0.2}>
+            <a
+              href="https://github.com/JesseRod329"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group mb-16 inline-flex items-center gap-2 font-mono text-sm text-bone-dim hover:text-signal transition-colors"
+            >
+              view all on github
+              <ExternalLink className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </a>
+          </Reveal>
+        </div>
+
+        <Reveal>
+          <div className="flex flex-wrap gap-2 mb-14">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`relative px-5 py-2.5 font-mono text-xs uppercase tracking-widest transition-colors duration-300 border ${
+                  activeTab === tab.id
+                    ? 'border-signal text-signal bg-signal/5'
+                    : 'border-bone/15 text-bone-mute hover:text-bone hover:border-bone/40'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
-          <a 
-            href="https://github.com/JesseRod329" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="text-neon-blue hover:text-white transition-colors flex items-center gap-2 font-mono text-sm group"
-          >
-            View all on GitHub <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </a>
-        </div>
+        </Reveal>
 
-        {/* Tabs */}
-        <div className="flex flex-wrap gap-2 mb-12">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 border ${
-                activeTab === tab.id
-                  ? 'bg-neon-blue/10 border-neon-blue text-neon-blue'
-                  : 'bg-white/5 border-transparent text-gray-400 hover:text-white hover:bg-white/10'
-              }`}
-            >
-              {tab.icon}
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProjects.map((project) => (
-            <div 
-              key={project.id} 
-              className="group relative bg-dark-800 rounded-xl overflow-hidden border border-white/5 hover:border-neon-purple/40 transition-all duration-300 hover:-translate-y-1"
-            >
-              {/* Image / Placeholder */}
-              <div className="aspect-video overflow-hidden bg-dark-900 relative">
-                <img 
-                  src={project.imageUrl} 
-                  alt={project.title} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-100" 
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                  }}
-                />
-                {/* Fallback for broken images */}
-                <div className="hidden absolute inset-0 flex items-center justify-center bg-dark-900">
-                   {project.category === 'interface' && <Smartphone className="w-12 h-12 text-gray-700" />}
-                   {project.category === 'system' && <Terminal className="w-12 h-12 text-gray-700" />}
-                   {project.category === 'creative' && <Layout className="w-12 h-12 text-gray-700" />}
-                </div>
-
-                {/* Category Badge */}
-                <div className="absolute top-4 left-4">
-                  <span className={`
-                    text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider backdrop-blur-md border border-white/10
-                    ${project.category === 'interface' ? 'bg-neon-green/10 text-neon-green' : ''}
-                    ${project.category === 'system' ? 'bg-neon-purple/10 text-neon-purple' : ''}
-                    ${project.category === 'creative' ? 'bg-neon-blue/10 text-neon-blue' : ''}
-                  `}>
-                    {project.category}
+        <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-bone/10 border border-bone/10">
+          <AnimatePresence mode="popLayout">
+            {filtered.map(project => (
+              <motion.article
+                key={project.id}
+                layout
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.96 }}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                className="group relative bg-ink-950 p-8 flex flex-col min-h-[300px] transition-colors duration-500 hover:bg-ink-800"
+              >
+                <div className="flex items-center justify-between mb-8">
+                  <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-bone-mute">
+                    {categoryLabel[project.category]}
                   </span>
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="p-6">
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.tags.slice(0, 3).map(tag => (
-                    <span key={tag} className="text-xs font-mono px-2 py-1 rounded bg-white/5 text-gray-400 border border-white/5">
-                      {tag}
+                  {project.featured && (
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-signal border border-signal/30 px-2.5 py-1">
+                      featured
                     </span>
-                  ))}
+                  )}
                 </div>
-                
-                <h3 className="text-xl font-bold mb-2 group-hover:text-neon-blue transition-colors flex items-center gap-2">
-                  {project.title}
-                  {project.featured && <span className="text-xs bg-yellow-400/10 text-yellow-400 px-2 py-0.5 rounded border border-yellow-400/20">Featured</span>}
-                </h3>
-                
-                <p className="text-gray-400 text-sm mb-6 leading-relaxed h-12 line-clamp-2">
-                  {project.description}
-                </p>
 
-                <div className="flex items-center gap-4 pt-4 border-t border-white/5">
-                  {project.github && (
-                    <a 
-                      href={project.github} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors"
-                    >
-                      <Github className="w-4 h-4" /> Code
-                    </a>
-                  )}
-                  {project.link && project.link !== '#' && (
-                    <a 
-                      href={project.link} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors ml-auto"
-                    >
-                      Live Demo <ExternalLink className="w-4 h-4" />
-                    </a>
-                  )}
+                <h3 className="font-display text-2xl font-semibold text-bone mb-3 group-hover:text-signal transition-colors duration-300">
+                  {project.title}
+                </h3>
+                <p className="text-sm text-bone-dim leading-relaxed mb-8">{project.description}</p>
+
+                <div className="mt-auto">
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {project.tags.slice(0, 4).map(tag => (
+                      <span key={tag} className="font-mono text-[11px] text-bone-mute">
+                        #{tag.replace(/\s+/g, '-').toLowerCase()}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-5 pt-5 border-t border-bone/10">
+                    {project.github && (
+                      <a
+                        href={project.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 font-mono text-xs text-bone-dim hover:text-signal transition-colors"
+                      >
+                        <Github className="w-3.5 h-3.5" /> code
+                      </a>
+                    )}
+                    {project.link && project.link !== '#' && (
+                      <a
+                        href={project.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 font-mono text-xs text-bone-dim hover:text-signal transition-colors ml-auto"
+                      >
+                        live <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
+
+                <div className="absolute top-0 left-0 h-[2px] w-0 bg-signal transition-all duration-500 group-hover:w-full" />
+              </motion.article>
+            ))}
+          </AnimatePresence>
+        </motion.div>
       </div>
     </section>
   );
